@@ -110,7 +110,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete }: WineTab
   const getStatusText = (status: string) => {
     switch (status) {
       case 'in_cellar':
-        return 'In Cellar';
+        return 'Cellar';
       case 'consumed':
         return 'Consumed';
       case 'sold':
@@ -118,7 +118,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete }: WineTab
       case 'gifted':
         return 'Gifted';
       default:
-        return 'In Cellar';
+        return 'Cellar';
     }
   };
 
@@ -138,7 +138,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete }: WineTab
     <>
       <div className="card">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="w-full divide-y divide-gray-200 text-xs">
             <thead className="bg-gray-50">
               <tr>
                 <th 
@@ -181,7 +181,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete }: WineTab
                 <th className="table-header">Style</th>
                 <th className="table-header">Food Pairing</th>
                 <th className="table-header">Suggested Meal</th>
-                <th className="table-header">Status</th>
+                <th className="table-header status-column">Status</th>
                 <th className="table-header">Location</th>
                 <th className="table-header">Actions</th>
               </tr>
@@ -191,66 +191,68 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete }: WineTab
                 <tr key={wine.id} className="hover:bg-gray-50">
                   <td className="table-cell">
                     <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10">
-                        <div className="h-10 w-10 rounded-lg bg-wine-100 flex items-center justify-center">
-                          <WineIcon className="h-6 w-6 text-wine-600" />
+                      <div className="flex-shrink-0 h-8 w-8">
+                        <div className="h-8 w-8 rounded-lg bg-wine-100 flex items-center justify-center">
+                          <WineIcon className="h-5 w-5 text-wine-600" />
                         </div>
                       </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
+                      <div className="ml-2">
+                        <div className="text-xs font-medium text-gray-900 leading-tight">
                           {wine.bottle}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-xs text-gray-500 leading-tight">
                           {wine.grapes}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="table-cell">
-                    <div className="text-sm text-gray-900 font-medium">{wine.vintage}</div>
+                    <div className="text-xs text-gray-900 font-medium">{wine.vintage}</div>
                   </td>
                   <td className="table-cell">
-                    <div className="text-sm text-gray-900">{wine.drinkingWindow}</div>
+                    <div className="text-xs text-gray-900">{wine.drinkingWindow}</div>
                   </td>
                   <td className="table-cell">
-                    <div className="text-sm text-gray-900">{wine.peakYear}</div>
+                    <div className="text-xs text-gray-900">{wine.peakYear}</div>
                   </td>
                   <td className="table-cell">
-                    <div className="text-sm text-gray-900">{wine.country}</div>
-                    <div className="text-sm text-gray-500">{wine.region}</div>
+                    <div className="text-xs text-gray-900">{wine.country}</div>
+                    <div className="text-xs text-gray-500">{wine.region}</div>
                   </td>
                   <td className="table-cell">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                       {wine.style}
                     </span>
                   </td>
                   <td className="table-cell">
-                    <div className="max-w-xs">
-                      <div className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed">
+                    <div className="max-w-32">
+                      <div className="text-xs text-gray-900 whitespace-pre-wrap leading-tight">
                         {wine.foodPairingNotes}
                       </div>
                     </div>
                   </td>
                   <td className="table-cell">
-                    <div className="max-w-xs">
-                      <div className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed">
+                    <div className="max-w-32">
+                      <div className="text-xs text-gray-900 whitespace-pre-wrap leading-tight">
                         {wine.mealToHaveWithThisWine}
                       </div>
                     </div>
                   </td>
-                  <td className="table-cell">
-                    <span className={getStatusBadge(wine.status)}>
-                      {getStatusText(wine.status)}
-                    </span>
-                    {wine.consumedDate && (
-                      <div className="text-xs text-gray-500 mt-1">
-                        {wine.consumedDate}
-                      </div>
-                    )}
+                  <td className="table-cell status-column">
+                    <div className="flex flex-col space-y-1">
+                      <span className={getStatusBadge(wine.status)}>
+                        {getStatusText(wine.status)}
+                      </span>
+                      {wine.consumedDate && (
+                        <div className="text-xs text-gray-500">
+                          {wine.consumedDate}
+                        </div>
+                      )}
+                    </div>
                   </td>
                   <td className="table-cell">
-                    <div className="flex items-center text-sm text-gray-500">
-                      <MapPin className="h-4 w-4 mr-1" />
+                    <div className="flex items-center text-xs text-gray-500">
+                      <MapPin className="h-3 w-3 mr-1" />
                       {wine.location}
                     </div>
                     {wine.quantity > 1 && (
@@ -260,13 +262,13 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete }: WineTab
                     )}
                   </td>
                   <td className="table-cell">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1">
                       <button
                         onClick={() => setEditingWine(wine)}
                         className="text-wine-600 hover:text-wine-900 p-1 rounded"
                         title="Edit wine"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit className="h-3 w-3" />
                       </button>
                       
                       {wine.status === 'in_cellar' && (
@@ -275,7 +277,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete }: WineTab
                           className="text-blue-600 hover:text-blue-900 p-1 rounded"
                           title="Mark as consumed"
                         >
-                          <Calendar className="h-4 w-4" />
+                          <Calendar className="h-3 w-3" />
                         </button>
                       )}
                       
@@ -284,7 +286,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete }: WineTab
                         className="text-red-600 hover:text-red-900 p-1 rounded"
                         title="Delete wine"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3 w-3" />
                       </button>
                     </div>
                   </td>

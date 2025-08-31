@@ -5,7 +5,7 @@ import { Wine, WineFilters } from '@/types/wine';
 import WineTable from '@/components/WineTable';
 import WineFiltersComponent from '@/components/WineFilters';
 import AddWineModal from '@/components/AddWineModal';
-import { Plus, Wine as WineIcon, BarChart3 } from 'lucide-react';
+import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar } from 'lucide-react';
 
 export default function Home() {
   const [wines, setWines] = useState<Wine[]>([]);
@@ -19,6 +19,7 @@ export default function Home() {
   });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [expandedCountries, setExpandedCountries] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchWines();
@@ -144,12 +145,44 @@ export default function Home() {
   };
 
   const getStats = () => {
-    const total = wines.length;
-    const inCellar = wines.filter(w => w.status === 'in_cellar').length;
-    const consumed = wines.filter(w => w.status === 'consumed').length;
-    const totalValue = wines.reduce((sum, w) => sum + (w.price || 0), 0);
+    // Get detailed breakdowns for countries, styles, and vintages
+    const countryBreakdown = wines.reduce((acc, wine) => {
+      if (!acc[wine.country]) {
+        acc[wine.country] = { count: 0, regions: {} as Record<string, number> };
+      }
+      acc[wine.country].count += 1;
+      
+      if (!acc[wine.country].regions[wine.region]) {
+        acc[wine.country].regions[wine.region] = 0;
+      }
+      acc[wine.country].regions[wine.region] += 1;
+      
+      return acc;
+    }, {} as Record<string, { count: number; regions: Record<string, number> }>);
+    
+    const styleBreakdown = wines.reduce((acc, wine) => {
+      acc[wine.style] = (acc[wine.style] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const vintageBreakdown = wines.reduce((acc, wine) => {
+      acc[wine.vintage] = (acc[wine.vintage] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
-    return { total, inCellar, consumed, totalValue };
+    return { countryBreakdown, styleBreakdown, vintageBreakdown };
+  };
+
+  const toggleCountryExpansion = (country: string) => {
+    setExpandedCountries(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(country)) {
+        newSet.delete(country);
+      } else {
+        newSet.add(country);
+      }
+      return newSet;
+    });
   };
 
   const stats = getStats();
@@ -172,75 +205,131 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-3">
-              <WineIcon className="h-8 w-8 text-wine-600" />
-              <h1 className="text-3xl font-bold text-gray-900">Wine Cellar Manager</h1>
+              <div className="h-10 w-10 bg-gradient-to-br from-wine-500 to-wine-700 rounded-xl flex items-center justify-center shadow-lg">
+                <WineIcon className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-wine-600 to-wine-800 bg-clip-text text-transparent">
+                  Flint
+                </h1>
+                <p className="text-sm text-gray-500 font-medium tracking-wide">
+                  CELLAR MANAGEMENT
+                </p>
+              </div>
             </div>
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="btn-primary flex items-center space-x-2"
-            >
-              <Plus className="h-5 w-5" />
-              <span>Add Wine</span>
-            </button>
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <div className="text-xs text-gray-500 font-medium">Total Wines</div>
+                <div className="text-lg font-bold text-wine-600">{wines.length}</div>
+              </div>
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="btn-primary flex items-center space-x-2"
+              >
+                <Plus className="h-5 w-5" />
+                <span>Add Wine</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Stats */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+
+        {/* Additional Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="card">
-            <div className="flex items-center">
+            <div className="flex items-start">
               <div className="flex-shrink-0">
-                <WineIcon className="h-8 w-8 text-wine-600" />
+                <div className="h-8 w-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <MapPin className="h-5 w-5 text-purple-600" />
+                </div>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Total Wines</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+              <div className="ml-4 flex-1">
+                <p className="text-sm font-medium text-gray-500 mb-2">Countries</p>
+                <div className="space-y-1">
+                  {Object.entries(stats.countryBreakdown)
+                    .sort(([,a], [,b]) => b.count - a.count)
+                    .map(([country, data]) => (
+                      <div key={country}>
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center space-x-1">
+                            <button
+                              onClick={() => toggleCountryExpansion(country)}
+                              className="text-gray-500 hover:text-gray-700 transition-colors"
+                            >
+                              {expandedCountries.has(country) ? (
+                                <span className="text-xs">−</span>
+                              ) : (
+                                <span className="text-xs">+</span>
+                              )}
+                            </button>
+                            <span className="text-gray-700">{country}</span>
+                          </div>
+                          <span className="font-medium text-gray-900">{data.count}</span>
+                        </div>
+                        {expandedCountries.has(country) && (
+                          <div className="ml-4 mt-1 space-y-1">
+                            {Object.entries(data.regions)
+                              .sort(([,a], [,b]) => b - a)
+                              .map(([region, count]) => (
+                                <div key={region} className="flex justify-between text-xs text-gray-600">
+                                  <span className="ml-2">{region}</span>
+                                  <span>{count}</span>
+                                </div>
+                              ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                </div>
               </div>
             </div>
           </div>
           
           <div className="card">
-            <div className="flex items-center">
+            <div className="flex items-start">
               <div className="flex-shrink-0">
-                <div className="h-8 w-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <WineIcon className="h-5 w-5 text-green-600" />
+                <div className="h-8 w-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <Palette className="h-5 w-5 text-orange-600" />
                 </div>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">In Cellar</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.inCellar}</p>
+              <div className="ml-4 flex-1">
+                <p className="text-sm font-medium text-gray-500 mb-2">Styles</p>
+                <div className="space-y-1">
+                  {Object.entries(stats.styleBreakdown)
+                    .sort(([,a], [,b]) => b - a)
+                    .map(([style, count]) => (
+                      <div key={style} className="flex justify-between text-sm">
+                        <span className="text-gray-700">{style}</span>
+                        <span className="font-medium text-gray-900">{count}</span>
+                      </div>
+                    ))}
+                </div>
               </div>
             </div>
           </div>
           
           <div className="card">
-            <div className="flex items-center">
+            <div className="flex items-start">
               <div className="flex-shrink-0">
-                <div className="h-8 w-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <BarChart3 className="h-5 w-5 text-blue-600" />
+                <div className="h-8 w-8 bg-teal-100 rounded-lg flex items-center justify-center">
+                  <Calendar className="h-5 w-5 text-teal-600" />
                 </div>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Consumed</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.consumed}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="card">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="h-8 w-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <span className="text-lg font-bold text-yellow-600">$</span>
+              <div className="ml-4 flex-1">
+                <p className="text-sm font-medium text-gray-500 mb-2">Vintages</p>
+                <div className="space-y-1">
+                  {Object.entries(stats.vintageBreakdown)
+                    .sort(([a], [b]) => parseInt(a) - parseInt(b))
+                    .map(([vintage, count]) => (
+                      <div key={vintage} className="flex justify-between text-sm">
+                        <span className="text-gray-700">{vintage}</span>
+                        <span className="font-medium text-gray-900">{count}</span>
+                      </div>
+                    ))}
                 </div>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Total Value</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  ${stats.totalValue.toLocaleString()}
-                </p>
               </div>
             </div>
           </div>
@@ -270,3 +359,5 @@ export default function Home() {
     </div>
   );
 }
+
+
