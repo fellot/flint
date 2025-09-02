@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Wine, WineFilters } from '@/types/wine';
 import CellarJournalWineTable from '@/components/CellarJournalWineTable';
 import CellarJournalFilters from '@/components/CellarJournalFilters';
-import { Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, ArrowLeft, Plus } from 'lucide-react';
+import { Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, ArrowLeft, Plus, Filter } from 'lucide-react';
 import AddExternalWineModal from '@/components/AddExternalWineModal';
 import AIWineModal from '@/components/AIWineModal';
 
@@ -22,6 +22,7 @@ export default function CellarJournal() {
   const [loading, setLoading] = useState(true);
   const [expandedCountries, setExpandedCountries] = useState<Set<string>>(new Set());
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
+  const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
   const [isAddExternalWineModalOpen, setIsAddExternalWineModalOpen] = useState(false);
   const [isAIWineModalOpen, setIsAIWineModalOpen] = useState(false);
 
@@ -341,47 +342,65 @@ export default function CellarJournal() {
                   )}
                 </div>
               </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => setIsAIWineModalOpen(true)}
+                  className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
+                >
+                  <Plus className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => setIsAddExternalWineModalOpen(true)}
+                  className="flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-medium rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md hover:shadow-lg"
+                >
+                  <Plus className="h-5 w-5" />
+                  <span>Add External Wine</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Collapsible Statistics Section */}
+      {/* Collapsible Sections Container */}
       <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out ${
-        isStatsExpanded ? 'pt-6 pb-4' : 'pt-4 pb-4'
+        isStatsExpanded || isFiltersExpanded ? 'pt-6 pb-4' : 'pt-4 pb-4'
       }`}>
-        {/* Statistics Header */}
-        <div className={`flex items-center justify-between transition-all duration-300 ease-in-out ${
-          isStatsExpanded ? 'mb-4' : 'mb-0'
+        {/* Statistics and Filters Header */}
+        <div className={`transition-all duration-300 ease-in-out ${
+          isStatsExpanded || isFiltersExpanded ? 'mb-4' : 'mb-0'
         }`}>
-          <button
-            onClick={() => setIsStatsExpanded(!isStatsExpanded)}
-            className="flex items-center space-x-3 text-lg font-semibold text-white hover:text-red-100 transition-colors cursor-pointer bg-gradient-to-r from-red-800 to-red-900 px-4 py-3 rounded-lg shadow-md hover:shadow-lg"
-          >
-            <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-              <BarChart3 className="h-4 w-4 text-white" />
-            </div>
-            <span>Journal Statistics</span>
-            {isStatsExpanded ? (
-              <ChevronUp className="h-5 w-5 text-white ml-auto" />
-            ) : (
-              <ChevronDown className="h-5 w-5 text-white ml-auto" />
-            )}
-          </button>
-          
-          <div className="flex space-x-2">
+          <div className="flex justify-between items-center">
+            {/* Statistics Button */}
             <button
-              onClick={() => setIsAIWineModalOpen(true)}
-              className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
+              onClick={() => setIsStatsExpanded(!isStatsExpanded)}
+              className="flex items-center space-x-3 text-lg font-semibold text-white hover:text-red-100 transition-colors cursor-pointer bg-gradient-to-r from-red-800 to-red-900 px-4 py-3 rounded-lg shadow-md hover:shadow-lg"
             >
-              <Plus className="h-5 w-5" />
+              <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                <BarChart3 className="h-4 w-4 text-white" />
+              </div>
+              <span>Journal Statistics</span>
+              {isStatsExpanded ? (
+                <ChevronUp className="h-5 w-5 text-white ml-auto" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-white ml-auto" />
+              )}
             </button>
+
+            {/* Filters Button */}
             <button
-              onClick={() => setIsAddExternalWineModalOpen(true)}
-              className="flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-medium rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md hover:shadow-lg"
+              onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
+              className="flex items-center space-x-3 text-lg font-semibold text-white hover:text-red-100 transition-colors cursor-pointer bg-gradient-to-r from-red-800 to-red-900 px-4 py-3 rounded-lg shadow-md hover:shadow-lg"
             >
-              <Plus className="h-5 w-5" />
-              <span>Add External Wine</span>
+              <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                <Filter className="h-4 w-4 text-white" />
+              </div>
+              <span>Filters</span>
+              {isFiltersExpanded ? (
+                <ChevronUp className="h-5 w-5 text-white ml-auto" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-white ml-auto" />
+              )}
             </button>
           </div>
         </div>
@@ -540,14 +559,20 @@ export default function CellarJournal() {
           </div>
         </div>
 
-        {/* Filters */}
-        <CellarJournalFilters
-          filters={filters}
-          onFiltersChange={setFilters}
-          wines={wines.filter(w => ['consumed', 'gifted', 'sold'].includes(w.status))}
-        />
+        {/* Collapsible Filters Content */}
+        <div className={`transition-all duration-300 ease-in-out ${
+          isFiltersExpanded ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden'
+        }`}>
+          <CellarJournalFilters
+            filters={filters}
+            onFiltersChange={setFilters}
+            wines={wines.filter(w => ['consumed', 'gifted', 'sold'].includes(w.status))}
+          />
+        </div>
+      </div>
 
-        {/* Wine Table */}
+      {/* Wine Table */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <CellarJournalWineTable
           wines={filteredWines}
           onWineUpdate={() => {}} // Read-only in journal

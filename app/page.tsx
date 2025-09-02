@@ -5,7 +5,7 @@ import { Wine, WineFilters } from '@/types/wine';
 import WineTable from '@/components/WineTable';
 import WineFiltersComponent from '@/components/WineFilters';
 import AIWineModal from '@/components/AIWineModal';
-import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, Filter } from 'lucide-react';
 
 export default function Home() {
   const [wines, setWines] = useState<Wine[]>([]);
@@ -22,6 +22,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [expandedCountries, setExpandedCountries] = useState<Set<string>>(new Set());
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
+  const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
 
   useEffect(() => {
     fetchWines();
@@ -362,28 +363,47 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Collapsible Statistics Section */}
+      {/* Collapsible Sections Container */}
       <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out ${
-        isStatsExpanded ? 'pt-6 pb-4' : 'pt-4 pb-4'
+        isStatsExpanded || isFiltersExpanded ? 'pt-6 pb-4' : 'pt-4 pb-4'
       }`}>
-        {/* Statistics Header */}
+        {/* Statistics and Filters Header */}
         <div className={`transition-all duration-300 ease-in-out ${
-          isStatsExpanded ? 'mb-4' : 'mb-0'
+          isStatsExpanded || isFiltersExpanded ? 'mb-4' : 'mb-0'
         }`}>
-          <button
-            onClick={() => setIsStatsExpanded(!isStatsExpanded)}
-            className="flex items-center space-x-3 text-lg font-semibold text-white hover:text-red-100 transition-colors cursor-pointer bg-gradient-to-r from-red-800 to-red-900 px-4 py-3 rounded-lg shadow-md hover:shadow-lg"
-          >
-            <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-              <BarChart3 className="h-4 w-4 text-white" />
-            </div>
-            <span>Statistics</span>
-            {isStatsExpanded ? (
-              <ChevronUp className="h-5 w-5 text-white ml-auto" />
-            ) : (
-              <ChevronDown className="h-5 w-5 text-white ml-auto" />
-            )}
-          </button>
+          <div className="flex justify-between items-center">
+            {/* Statistics Button */}
+            <button
+              onClick={() => setIsStatsExpanded(!isStatsExpanded)}
+              className="flex items-center space-x-3 text-lg font-semibold text-white hover:text-red-100 transition-colors cursor-pointer bg-gradient-to-r from-red-800 to-red-900 px-4 py-3 rounded-lg shadow-md hover:shadow-lg"
+            >
+              <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                <BarChart3 className="h-4 w-4 text-white" />
+              </div>
+              <span>Statistics</span>
+              {isStatsExpanded ? (
+                <ChevronUp className="h-5 w-5 text-white ml-auto" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-white ml-auto" />
+              )}
+            </button>
+
+            {/* Filters Button */}
+            <button
+              onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
+              className="flex items-center space-x-3 text-lg font-semibold text-white hover:text-red-100 transition-colors cursor-pointer bg-gradient-to-r from-red-800 to-red-900 px-4 py-3 rounded-lg shadow-md hover:shadow-lg"
+            >
+              <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                <Filter className="h-4 w-4 text-white" />
+              </div>
+              <span>Filters</span>
+              {isFiltersExpanded ? (
+                <ChevronUp className="h-5 w-5 text-white ml-auto" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-white ml-auto" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Collapsible Stats Grid */}
@@ -540,14 +560,20 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Filters */}
-        <WineFiltersComponent
-          filters={filters}
-          onFiltersChange={setFilters}
-          wines={wines}
-        />
+        {/* Collapsible Filters Content */}
+        <div className={`transition-all duration-300 ease-in-out ${
+          isFiltersExpanded ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden'
+        }`}>
+          <WineFiltersComponent
+            filters={filters}
+            onFiltersChange={setFilters}
+            wines={wines}
+          />
+        </div>
+      </div>
 
-        {/* Wine Table */}
+      {/* Wine Table */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <WineTable
           wines={filteredWines}
           onWineUpdate={handleWineUpdate}

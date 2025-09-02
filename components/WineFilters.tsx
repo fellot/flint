@@ -44,20 +44,18 @@ export default function WineFiltersComponent({
                           filters.search !== '';
 
   return (
-    <div className="card mb-4 p-3">
+    <div className="card p-3">
       {/* Filter Options */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-        {/* Filters Title */}
+        {/* Clear Filters Button */}
         <div className="flex items-center space-x-2">
-          <Filter className="h-4 w-4 text-gray-400" />
-          <h3 className="text-sm font-medium text-gray-900">Filters</h3>
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
               className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200"
             >
               <X className="h-3 w-3 mr-1" />
-              Clear
+              Clear Filters
             </button>
           )}
         </div>
