@@ -128,7 +128,7 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
     onClose();
   };
 
-  const handleInputChange = (field: keyof WineFormData, value: string | number) => {
+  const handleInputChange = (field: keyof WineFormData, value: string | number | undefined) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -239,7 +239,7 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
         )}
 
         {/* Review Step */}
-        {currentStep === 'review' && (
+        {(currentStep === 'review' || currentStep === 'saving') && (
           <div className="space-y-6">
             <div className="text-center mb-6">
               <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-2" />
@@ -389,6 +389,7 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
               <button
                 onClick={handleSave}
                 className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center"
+                disabled={currentStep === 'saving'}
               >
                 {currentStep === 'saving' ? (
                   <>
