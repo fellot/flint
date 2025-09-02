@@ -14,10 +14,12 @@ interface WineModalProps {
 
 export default function WineModal({ wine, isOpen, onClose, onSave, mode }: WineModalProps) {
   const [formData, setFormData] = useState<Wine>(wine);
-  const [errors, setErrors] = useState<Partial<Wine>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [originalLocation, setOriginalLocation] = useState<string>(wine.location);
 
   useEffect(() => {
     setFormData(wine);
+    setOriginalLocation(wine.location);
   }, [wine]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -32,20 +34,20 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode }: WineM
     }));
     
     // Clear error when user starts typing
-    if (errors[name as keyof Wine]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<Wine> = {};
+    const newErrors: Record<string, string> = {};
 
     if (!formData.bottle.trim()) newErrors.bottle = 'Bottle name is required';
     if (!formData.country.trim()) newErrors.country = 'Country is required';
     if (!formData.region.trim()) newErrors.region = 'Region is required';
     if (!formData.style.trim()) newErrors.style = 'Style is required';
     if (!formData.grapes.trim()) newErrors.grapes = 'Grapes are required';
-    if (!formData.location.trim()) newErrors.location = 'Location is required';
+    if (!formData.location.trim() && formData.status !== 'consumed') newErrors.location = 'Location is required';
     if (formData.vintage && (formData.vintage < 1900 || formData.vintage > new Date().getFullYear() + 1)) {
       newErrors.vintage = 'Vintage must be between 1900 and next year';
     }
@@ -67,11 +69,35 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode }: WineM
   };
 
   const handleStatusChange = (newStatus: Wine['status']) => {
-    setFormData(prev => ({
-      ...prev,
-      status: newStatus,
-      consumedDate: newStatus === 'consumed' ? new Date().toISOString().split('T')[0] : null,
-    }));
+    setFormData(prev => {
+      // If changing to consumed, store the current location and set to N/A
+      if (newStatus === 'consumed' && prev.status !== 'consumed') {
+        setOriginalLocation(prev.location);
+        return {
+          ...prev,
+          status: newStatus,
+          consumedDate: new Date().toISOString().split('T')[0],
+          location: 'N/A',
+        };
+      }
+      
+      // If changing from consumed to something else, restore the original location
+      if (prev.status === 'consumed' && newStatus !== 'consumed') {
+        return {
+          ...prev,
+          status: newStatus,
+          consumedDate: null,
+          location: originalLocation,
+        };
+      }
+      
+      // For other status changes, just update the status
+      return {
+        ...prev,
+        status: newStatus,
+        consumedDate: newStatus === 'consumed' ? new Date().toISOString().split('T')[0] : null,
+      };
+    });
   };
 
   if (!isOpen) return null;
@@ -302,7 +328,7 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode }: WineM
 
             <div>
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-                Storage Location *
+                Storage Location {formData.status !== 'consumed' ? '*' : ''}
               </label>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-gray-400" />
@@ -313,10 +339,14 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode }: WineM
                   value={formData.location}
                   onChange={handleInputChange}
                   className={`input-field ${errors.location ? 'border-red-500' : ''}`}
-                  disabled={mode === 'view'}
+                  disabled={mode === 'view' || formData.status === 'consumed'}
+                  placeholder={formData.status === 'consumed' ? 'N/A - Wine has been consumed' : 'Enter storage location'}
                 />
               </div>
               {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
+              {formData.status === 'consumed' && (
+                <p className="mt-1 text-sm text-gray-500">Location set to N/A for consumed wines</p>
+              )}
             </div>
           </div>
 
@@ -403,6 +433,46 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode }: WineM
               placeholder="Add your tasting notes, thoughts, or any additional information..."
               disabled={mode === 'view'}
             />
+          </div>
+
+          {/* Technical Sheet */}
+          <div>
+            <label htmlFor="technical_sheet" className="block text-sm font-medium text-gray-700 mb-2">
+              Technical Sheet URL
+            </label>
+            <input
+              type="url"
+              id="technical_sheet"
+              name="technical_sheet"
+              value={formData.technical_sheet || ''}
+              onChange={handleInputChange}
+              className="input-field"
+              placeholder="https://example.com/technical-sheet.pdf"
+              disabled={mode === 'view'}
+            />
+            <p className="mt-1 text-sm text-gray-500">
+              Optional: Link to the wine's technical sheet or detailed information
+            </p>
+          </div>
+
+          {/* Bottle Image */}
+          <div>
+            <label htmlFor="bottle_image" className="block text-sm font-medium text-gray-700 mb-2">
+              Bottle Image URL
+            </label>
+            <input
+              type="url"
+              id="bottle_image"
+              name="bottle_image"
+              value={formData.bottle_image || ''}
+              onChange={handleInputChange}
+              className="input-field"
+              placeholder="https://example.com/bottle-image.jpg"
+              disabled={mode === 'view'}
+            />
+            <p className="mt-1 text-sm text-gray-500">
+              Optional: Link to the wine bottle's image
+            </p>
           </div>
 
           {/* Form Actions */}

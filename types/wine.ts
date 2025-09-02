@@ -17,10 +17,14 @@ export interface Wine {
   price: number | null;
   location: string;
   quantity: number;
+  technical_sheet?: string;
+  bottle_image?: string;
+  fromCellar?: boolean; // true if wine was originally in cellar, false if consumed from outside
 }
 
 export interface WineFilters {
   country: string;
+  region: string;
   style: string;
   vintage: string;
   status: string;
@@ -42,4 +46,7 @@ export interface WineFormData {
   quantity: number;
   price?: number;
   notes?: string;
+  technical_sheet?: string;
+  bottle_image?: string;
+  fromCellar?: boolean;
 }

@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { Wine, WineFilters } from '@/types/wine';
-import WineTable from '@/components/WineTable';
-import WineFiltersComponent from '@/components/WineFilters';
-import AddWineModal from '@/components/AddWineModal';
-import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp } from 'lucide-react';
+import CellarJournalWineTable from '@/components/CellarJournalWineTable';
+import CellarJournalFilters from '@/components/CellarJournalFilters';
+import { Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, ArrowLeft, Plus } from 'lucide-react';
+import AddExternalWineModal from '@/components/AddExternalWineModal';
 
-export default function Home() {
+export default function CellarJournal() {
   const [wines, setWines] = useState<Wine[]>([]);
   const [filteredWines, setFilteredWines] = useState<Wine[]>([]);
   const [filters, setFilters] = useState<WineFilters>({
@@ -15,13 +15,13 @@ export default function Home() {
     region: 'all',
     style: 'all',
     vintage: 'all',
-    status: 'all',
+    status: 'all', // Default to all statuses
     search: '',
   });
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [expandedCountries, setExpandedCountries] = useState<Set<string>>(new Set());
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
+  const [isAddExternalWineModalOpen, setIsAddExternalWineModalOpen] = useState(false);
 
   useEffect(() => {
     fetchWines();
@@ -65,8 +65,8 @@ export default function Home() {
   const applyFilters = () => {
     let filtered = [...wines];
 
-    // Only show wines that are in_cellar on the main page
-    filtered = filtered.filter(wine => wine.status === 'in_cellar');
+    // Show consumed, gifted, and sold wines in Cellar Journal
+    filtered = filtered.filter(wine => ['consumed', 'gifted', 'sold'].includes(wine.status));
 
     if (filters.country !== 'all') {
       filtered = filtered.filter(wine => wine.country === filters.country);
@@ -84,6 +84,10 @@ export default function Home() {
       filtered = filtered.filter(wine => wine.vintage.toString() === filters.vintage);
     }
 
+    if (filters.status !== 'all') {
+      filtered = filtered.filter(wine => wine.status === filters.status);
+    }
+
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
       filtered = filtered.filter(wine =>
@@ -99,62 +103,12 @@ export default function Home() {
     setFilteredWines(filtered);
   };
 
-  const handleWineUpdate = async (updatedWine: Wine) => {
-    try {
-      const response = await fetch(`/api/wines/${updatedWine.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedWine),
-      });
-
-      if (response.ok) {
-        setWines(prev => prev.map(w => w.id === updatedWine.id ? updatedWine : w));
-      }
-    } catch (error) {
-      console.error('Error updating wine:', error);
-    }
-  };
-
-  const handleWineDelete = async (wineId: string) => {
-    if (!confirm('Are you sure you want to delete this wine?')) return;
-
-    try {
-      const response = await fetch(`/api/wines/${wineId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        setWines(prev => prev.filter(w => w.id !== wineId));
-      }
-    } catch (error) {
-      console.error('Error deleting wine:', error);
-    }
-  };
-
-  const handleAddWine = async (wineData: any) => {
-    try {
-      const response = await fetch('/api/wines', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(wineData),
-      });
-
-      if (response.ok) {
-        const newWine = await response.json();
-        setWines(prev => [...prev, newWine]);
-        setIsAddModalOpen(false);
-      }
-    } catch (error) {
-      console.error('Error adding wine:', error);
-    }
-  };
-
   const getStats = () => {
-    // Only include in_cellar wines for statistics
-    const cellarWines = wines.filter(wine => wine.status === 'in_cellar');
+    // Include consumed, gifted, and sold wines for statistics
+    const journalWines = wines.filter(wine => ['consumed', 'gifted', 'sold'].includes(wine.status));
     
     // Get detailed breakdowns for countries, styles, and vintages
-    const countryBreakdown = cellarWines.reduce((acc, wine) => {
+    const countryBreakdown = journalWines.reduce((acc, wine) => {
       if (!acc[wine.country]) {
         acc[wine.country] = { count: 0, regions: {} as Record<string, number> };
       }
@@ -168,12 +122,12 @@ export default function Home() {
       return acc;
     }, {} as Record<string, { count: number; regions: Record<string, number> }>);
     
-    const styleBreakdown = cellarWines.reduce((acc, wine) => {
+    const styleBreakdown = journalWines.reduce((acc, wine) => {
       acc[wine.style] = (acc[wine.style] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
     
-    const vintageBreakdown = cellarWines.reduce((acc, wine) => {
+    const vintageBreakdown = journalWines.reduce((acc, wine) => {
       acc[wine.vintage] = (acc[wine.vintage] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
@@ -250,6 +204,33 @@ export default function Home() {
     }));
   };
 
+  const handleAddExternalWine = async (wineData: any) => {
+    try {
+      const response = await fetch('/api/wines', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...wineData,
+          status: 'consumed',
+          consumedDate: new Date().toISOString().split('T')[0],
+          fromCellar: false,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add external wine');
+      }
+
+      // Refresh the wines list
+      await fetchWines();
+    } catch (error) {
+      console.error('Error adding external wine:', error);
+      throw error;
+    }
+  };
+
   const handleRegionClick = (region: string) => {
     setFilters(prev => ({ 
       ...prev, 
@@ -286,18 +267,15 @@ export default function Home() {
     if (filters.vintage !== 'all') {
       activeFilters.push(filters.vintage);
     }
-    if (filters.status !== 'all') {
-      activeFilters.push(filters.status);
-    }
     if (filters.search) {
       activeFilters.push(`"${filters.search}"`);
     }
     
     if (activeFilters.length === 0) {
-      return 'Total Wines';
+      return 'Consumed Wines';
     }
     
-    return `Wines - ${activeFilters.join(' - ')}`;
+    return `Consumed Wines - ${activeFilters.join(' - ')}`;
   };
 
   const stats = getStats();
@@ -307,7 +285,7 @@ export default function Home() {
       <div className="min-h-screen bg-red-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-wine-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your wine cellar...</p>
+          <p className="mt-4 text-gray-600">Loading your cellar journal...</p>
         </div>
       </div>
     );
@@ -319,10 +297,20 @@ export default function Home() {
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent tracking-tight">
-                Flint Cellar
-              </h1>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => window.location.href = '/'}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5" />
+                <span>Back to Cellar</span>
+              </button>
+              <div className="h-px bg-gray-300 w-8"></div>
+              <div className="flex items-center">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent tracking-tight">
+                  Cellar Journal
+                </h1>
+              </div>
             </div>
             
             {/* Search Box - Centered */}
@@ -333,7 +321,7 @@ export default function Home() {
                 </div>
                 <input
                   type="text"
-                  placeholder="Search wines, grapes, food pairings..."
+                  placeholder="Search consumed wines, grapes, food pairings..."
                   value={filters.search}
                   onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                   className="w-full input-field pl-12 py-3 text-base"
@@ -346,18 +334,11 @@ export default function Home() {
                 <div className="text-xs text-gray-500 font-medium">{getDynamicWineLabel()}</div>
                 <div className="text-lg font-bold text-red-500">
                   {filteredWines.length}
-                  {filteredWines.length !== wines.filter(w => w.status === 'in_cellar').length && (
-                    <span className="text-sm text-gray-400 ml-1">/ {wines.filter(w => w.status === 'in_cellar').length}</span>
+                  {filteredWines.length !== wines.filter(w => ['consumed', 'gifted', 'sold'].includes(w.status)).length && (
+                    <span className="text-sm text-gray-400 ml-1">/ {wines.filter(w => ['consumed', 'gifted', 'sold'].includes(w.status)).length}</span>
                   )}
                 </div>
               </div>
-              <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="btn-primary flex items-center space-x-2"
-              >
-                <Plus className="h-5 w-5" />
-                <span>Add Wine</span>
-              </button>
             </div>
           </div>
         </div>
@@ -368,7 +349,7 @@ export default function Home() {
         isStatsExpanded ? 'pt-6 pb-4' : 'pt-4 pb-4'
       }`}>
         {/* Statistics Header */}
-        <div className={`transition-all duration-300 ease-in-out ${
+        <div className={`flex items-center justify-between transition-all duration-300 ease-in-out ${
           isStatsExpanded ? 'mb-4' : 'mb-0'
         }`}>
           <button
@@ -378,12 +359,20 @@ export default function Home() {
             <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
               <BarChart3 className="h-4 w-4 text-white" />
             </div>
-            <span>Statistics</span>
+            <span>Journal Statistics</span>
             {isStatsExpanded ? (
               <ChevronUp className="h-5 w-5 text-white ml-auto" />
             ) : (
               <ChevronDown className="h-5 w-5 text-white ml-auto" />
             )}
+          </button>
+          
+          <button
+            onClick={() => setIsAddExternalWineModalOpen(true)}
+            className="flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-medium rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md hover:shadow-lg"
+          >
+            <Plus className="h-5 w-5" />
+            <span>Add External Wine</span>
           </button>
         </div>
 
@@ -542,47 +531,27 @@ export default function Home() {
         </div>
 
         {/* Filters */}
-        <WineFiltersComponent
+        <CellarJournalFilters
           filters={filters}
           onFiltersChange={setFilters}
-          wines={wines}
+          wines={wines.filter(w => ['consumed', 'gifted', 'sold'].includes(w.status))}
         />
 
         {/* Wine Table */}
-        <WineTable
+        <CellarJournalWineTable
           wines={filteredWines}
-          onWineUpdate={handleWineUpdate}
-          onWineDelete={handleWineDelete}
+          onWineUpdate={() => {}} // Read-only in journal
+          onWineDelete={() => {}} // Read-only in journal
           searchTerm={filters.search}
         />
       </div>
 
-      {/* Add Wine Modal */}
-      <AddWineModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onAddWine={handleAddWine}
+      {/* Add External Wine Modal */}
+      <AddExternalWineModal
+        isOpen={isAddExternalWineModalOpen}
+        onClose={() => setIsAddExternalWineModalOpen(false)}
+        onAddWine={handleAddExternalWine}
       />
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-center">
-            <button
-              onClick={() => window.location.href = '/cellar-journal'}
-              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
-            >
-              <Calendar className="h-5 w-5" />
-              <span>Cellar Journal</span>
-            </button>
-          </div>
-          <p className="text-center text-sm text-gray-500 mt-3">
-            View your consumed wines and tasting notes
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
-
-

@@ -8,13 +8,13 @@
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-red-900 text-gray-900;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-wine-600 hover:bg-wine-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
   }
   
   .btn-secondary {
@@ -30,15 +30,20 @@
   }
   
   .input-field {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wine-500 focus:border-transparent;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent;
   }
   
   .select-field {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wine-500 focus:border-transparent bg-white;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white;
   }
   
   .table-header {
     @apply px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    background-color: rgb(249 250 251) !important; /* Ensure background is solid */
   }
   
   .table-cell {
@@ -67,6 +72,23 @@
   
   .status-column {
     @apply w-20;
+  }
+  
+  .text-2xs {
+    font-size: 0.625rem;
+    line-height: 0.75rem;
+  }
+  
+  .wine-thumbnail {
+    @apply object-contain bg-gray-50 rounded-lg;
+    max-width: 100%;
+    max-height: 100%;
+  }
+  
+  .table-icon {
+    @apply h-3 w-3;
+    min-width: 12px;
+    min-height: 12px;
   }
   
 

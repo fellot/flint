@@ -1,26 +1,21 @@
 'use client';
 
-import { Wine, WineFilters } from '@/types/wine';
+import { WineFilters } from '@/types/wine';
 import { Filter, X } from 'lucide-react';
 
-interface WineFiltersComponentProps {
+interface CellarJournalFiltersProps {
   filters: WineFilters;
   onFiltersChange: (filters: WineFilters) => void;
-  wines: Wine[];
+  wines: any[];
 }
 
-export default function WineFiltersComponent({
-  filters,
-  onFiltersChange,
-  wines,
-}: WineFiltersComponentProps) {
-  // Get unique values for filter options
+export default function CellarJournalFilters({ filters, onFiltersChange, wines }: CellarJournalFiltersProps) {
   const countries = ['all', ...Array.from(new Set(wines.map(w => w.country))).sort()];
   const styles = ['all', ...Array.from(new Set(wines.map(w => w.style)))];
   const vintages = ['all', ...Array.from(new Set(wines.map(w => w.vintage.toString())))
     .filter(v => v !== 'all')
     .sort((a, b) => parseInt(b) - parseInt(a))];
-  // Removed statuses array since status filter is no longer needed
+  const statuses = ['all', 'consumed', 'gifted', 'sold'];
 
   const handleFilterChange = (key: keyof WineFilters, value: string) => {
     onFiltersChange({ ...filters, [key]: value });
@@ -38,30 +33,30 @@ export default function WineFiltersComponent({
   };
 
   const hasActiveFilters = filters.country !== 'all' || 
-                          filters.region !== 'all' || 
                           filters.style !== 'all' || 
                           filters.vintage !== 'all' || 
+                          filters.status !== 'all' || 
                           filters.search !== '';
 
   return (
     <div className="card mb-4 p-3">
-      {/* Filter Options */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-        {/* Filters Title */}
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
           <Filter className="h-4 w-4 text-gray-400" />
           <h3 className="text-sm font-medium text-gray-900">Filters</h3>
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
-              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200"
+              className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200"
             >
               <X className="h-3 w-3 mr-1" />
-              Clear
+              Clear All
             </button>
           )}
         </div>
-        {/* Country Filter */}
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         <div>
           <label htmlFor="country-filter" className="block text-xs font-medium text-gray-700 mb-0.5">
             Country
@@ -80,7 +75,8 @@ export default function WineFiltersComponent({
           </select>
         </div>
 
-        {/* Style Filter */}
+
+
         <div>
           <label htmlFor="style-filter" className="block text-xs font-medium text-gray-700 mb-0.5">
             Style
@@ -99,7 +95,6 @@ export default function WineFiltersComponent({
           </select>
         </div>
 
-        {/* Vintage Filter */}
         <div>
           <label htmlFor="vintage-filter" className="block text-xs font-medium text-gray-700 mb-0.5">
             Vintage
@@ -118,8 +113,26 @@ export default function WineFiltersComponent({
           </select>
         </div>
 
-        {/* Status Filter */}
-
+        <div>
+          <label htmlFor="status-filter" className="block text-xs font-medium text-gray-700 mb-0.5">
+            Status
+          </label>
+          <select
+            id="status-filter"
+            value={filters.status}
+            onChange={(e) => handleFilterChange('status', e.target.value)}
+            className="select-field py-1 text-sm"
+          >
+            {statuses.map((status) => (
+              <option key={status} value={status}>
+                {status === 'all' ? 'All Statuses' : 
+                 status === 'consumed' ? 'Consumed' :
+                 status === 'gifted' ? 'Gifted' :
+                 status === 'sold' ? 'Sold' : status}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Active Filters Display */}
@@ -160,7 +173,19 @@ export default function WineFiltersComponent({
                 </button>
               </span>
             )}
-
+            {filters.status !== 'all' && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-wine-100 text-wine-800">
+                {filters.status === 'consumed' ? 'Consumed' :
+                 filters.status === 'gifted' ? 'Gifted' :
+                 filters.status === 'sold' ? 'Sold' : filters.status}
+                <button
+                  onClick={() => handleFilterChange('status', 'all')}
+                  className="ml-1 text-wine-600 hover:text-wine-800"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            )}
           </div>
         </div>
       )}

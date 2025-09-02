@@ -5,7 +5,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Wine Cellar Manager',
+  title: 'Flint Cellar',
   description: 'Manage your wine collection with ease - track inventory, mark wines as consumed, and add tasting notes.',
   keywords: 'wine, cellar, inventory, management, collection',
 };
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-red-900">
           {children}
         </div>
       </body>

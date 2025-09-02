@@ -26,9 +26,11 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
     quantity: 1,
     price: undefined,
     notes: '',
+    technical_sheet: '',
+    bottle_image: '',
   });
 
-  const [errors, setErrors] = useState<Partial<WineFormData>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -38,13 +40,13 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
     }));
     
     // Clear error when user starts typing
-    if (errors[name as keyof WineFormData]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<WineFormData> = {};
+    const newErrors: Record<string, string> = {};
 
     if (!formData.bottle.trim()) newErrors.bottle = 'Bottle name is required';
     if (!formData.country.trim()) newErrors.country = 'Country is required';
@@ -53,10 +55,10 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
     if (!formData.grapes.trim()) newErrors.grapes = 'Grapes are required';
     if (!formData.location.trim()) newErrors.location = 'Location is required';
     if (formData.vintage < 1900 || formData.vintage > new Date().getFullYear() + 1) {
-      newErrors.vintage = 'Vintage must be between 1900 and next year';
+      newErrors['vintage'] = 'Vintage must be between 1900 and next year';
     }
     if (formData.peakYear < formData.vintage) {
-      newErrors.peakYear = 'Peak year must be after vintage';
+      newErrors['peakYear'] = 'Peak year must be after vintage';
     }
 
     setErrors(newErrors);
@@ -74,8 +76,8 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
         country: '',
         region: '',
         vintage: new Date().getFullYear(),
-        drinkingWindow: '',
         peakYear: new Date().getFullYear() + 5,
+        drinkingWindow: '',
         foodPairingNotes: '',
         mealToHaveWithThisWine: '',
         style: '',
@@ -84,6 +86,8 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
         quantity: 1,
         price: undefined,
         notes: '',
+        technical_sheet: '',
+        bottle_image: '',
       });
       setErrors({});
     }
@@ -355,6 +359,44 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
               className="input-field"
               placeholder="Any additional notes about this wine..."
             />
+          </div>
+
+          {/* Technical Sheet */}
+          <div>
+            <label htmlFor="technical_sheet" className="block text-sm font-medium text-gray-700 mb-2">
+              Technical Sheet URL
+            </label>
+            <input
+              type="url"
+              id="technical_sheet"
+              name="technical_sheet"
+              value={formData.technical_sheet}
+              onChange={handleInputChange}
+              className="input-field"
+              placeholder="https://example.com/technical-sheet.pdf"
+            />
+            <p className="mt-1 text-sm text-gray-500">
+              Optional: Link to the wine's technical sheet or detailed information
+            </p>
+          </div>
+
+          {/* Bottle Image */}
+          <div>
+            <label htmlFor="bottle_image" className="block text-sm font-medium text-gray-700 mb-2">
+              Bottle Image URL
+            </label>
+            <input
+              type="url"
+              id="bottle_image"
+              name="bottle_image"
+              value={formData.bottle_image}
+              onChange={handleInputChange}
+              className="input-field"
+              placeholder="https://example.com/bottle-image.jpg"
+            />
+            <p className="mt-1 text-sm text-gray-500">
+              Optional: Link to the wine bottle's image
+            </p>
           </div>
 
           {/* Form Actions */}

@@ -43,7 +43,8 @@ export async function GET(request: NextRequest) {
         wine.region.toLowerCase().includes(searchLower) ||
         wine.grapes.toLowerCase().includes(searchLower) ||
         wine.foodPairingNotes.toLowerCase().includes(searchLower) ||
-        wine.mealToHaveWithThisWine.toLowerCase().includes(searchLower)
+        wine.mealToHaveWithThisWine.toLowerCase().includes(searchLower) ||
+        wine.notes.toLowerCase().includes(searchLower)
       );
     }
 
@@ -73,12 +74,15 @@ export async function POST(request: NextRequest) {
     const newWine: Wine = {
       id: Date.now().toString(),
       ...body,
-      status: 'in_cellar',
-      consumedDate: null,
+      status: body.status || 'in_cellar',
+      consumedDate: body.consumedDate || null,
       notes: body.notes || '',
       rating: null,
       price: body.price || null,
       quantity: body.quantity || 1,
+      technical_sheet: body.technical_sheet || undefined,
+      bottle_image: body.bottle_image || undefined,
+      fromCellar: body.fromCellar !== undefined ? body.fromCellar : true,
     };
 
     wines.push(newWine);
