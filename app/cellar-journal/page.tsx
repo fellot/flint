@@ -6,6 +6,7 @@ import CellarJournalWineTable from '@/components/CellarJournalWineTable';
 import CellarJournalFilters from '@/components/CellarJournalFilters';
 import { Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, ArrowLeft, Plus } from 'lucide-react';
 import AddExternalWineModal from '@/components/AddExternalWineModal';
+import AIWineModal from '@/components/AIWineModal';
 
 export default function CellarJournal() {
   const [wines, setWines] = useState<Wine[]>([]);
@@ -22,6 +23,7 @@ export default function CellarJournal() {
   const [expandedCountries, setExpandedCountries] = useState<Set<string>>(new Set());
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
   const [isAddExternalWineModalOpen, setIsAddExternalWineModalOpen] = useState(false);
+  const [isAIWineModalOpen, setIsAIWineModalOpen] = useState(false);
 
   useEffect(() => {
     fetchWines();
@@ -296,7 +298,7 @@ export default function CellarJournal() {
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex justify-between items-center py-3">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => window.location.href = '/'}
@@ -331,8 +333,8 @@ export default function CellarJournal() {
             
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <div className="text-xs text-gray-500 font-medium">{getDynamicWineLabel()}</div>
-                <div className="text-lg font-bold text-red-500">
+                <div className="text-xs text-gray-500 font-medium leading-tight">{getDynamicWineLabel()}</div>
+                <div className="text-lg font-bold text-red-500 leading-tight">
                   {filteredWines.length}
                   {filteredWines.length !== wines.filter(w => ['consumed', 'gifted', 'sold'].includes(w.status)).length && (
                     <span className="text-sm text-gray-400 ml-1">/ {wines.filter(w => ['consumed', 'gifted', 'sold'].includes(w.status)).length}</span>
@@ -367,13 +369,21 @@ export default function CellarJournal() {
             )}
           </button>
           
-          <button
-            onClick={() => setIsAddExternalWineModalOpen(true)}
-            className="flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-medium rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md hover:shadow-lg"
-          >
-            <Plus className="h-5 w-5" />
-            <span>Add External Wine</span>
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setIsAIWineModalOpen(true)}
+              className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              <Plus className="h-5 w-5" />
+            </button>
+            <button
+              onClick={() => setIsAddExternalWineModalOpen(true)}
+              className="flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-medium rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              <Plus className="h-5 w-5" />
+              <span>Add External Wine</span>
+            </button>
+          </div>
         </div>
 
         {/* Collapsible Stats Grid */}
@@ -545,6 +555,13 @@ export default function CellarJournal() {
           searchTerm={filters.search}
         />
       </div>
+
+      {/* AI Wine Modal */}
+      <AIWineModal
+        isOpen={isAIWineModalOpen}
+        onClose={() => setIsAIWineModalOpen(false)}
+        onAddWine={handleAddExternalWine}
+      />
 
       {/* Add External Wine Modal */}
       <AddExternalWineModal

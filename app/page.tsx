@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Wine, WineFilters } from '@/types/wine';
 import WineTable from '@/components/WineTable';
 import WineFiltersComponent from '@/components/WineFilters';
-import AddWineModal from '@/components/AddWineModal';
+import AIWineModal from '@/components/AIWineModal';
 import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
     status: 'all',
     search: '',
   });
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAIWineModalOpen, setIsAIWineModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [expandedCountries, setExpandedCountries] = useState<Set<string>>(new Set());
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
@@ -142,7 +142,7 @@ export default function Home() {
       if (response.ok) {
         const newWine = await response.json();
         setWines(prev => [...prev, newWine]);
-        setIsAddModalOpen(false);
+        setIsAIWineModalOpen(false);
       }
     } catch (error) {
       console.error('Error adding wine:', error);
@@ -318,7 +318,7 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex justify-between items-center py-3">
             <div className="flex items-center">
               <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent tracking-tight">
                 Flint Cellar
@@ -343,8 +343,8 @@ export default function Home() {
             
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <div className="text-xs text-gray-500 font-medium">{getDynamicWineLabel()}</div>
-                <div className="text-lg font-bold text-red-500">
+                <div className="text-xs text-gray-500 font-medium leading-tight">{getDynamicWineLabel()}</div>
+                <div className="text-lg font-bold text-red-500 leading-tight">
                   {filteredWines.length}
                   {filteredWines.length !== wines.filter(w => w.status === 'in_cellar').length && (
                     <span className="text-sm text-gray-400 ml-1">/ {wines.filter(w => w.status === 'in_cellar').length}</span>
@@ -352,11 +352,10 @@ export default function Home() {
                 </div>
               </div>
               <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="btn-primary flex items-center space-x-2"
+                onClick={() => setIsAIWineModalOpen(true)}
+                className="btn-primary flex items-center justify-center"
               >
                 <Plus className="h-5 w-5" />
-                <span>Add Wine</span>
               </button>
             </div>
           </div>
@@ -557,10 +556,10 @@ export default function Home() {
         />
       </div>
 
-      {/* Add Wine Modal */}
-      <AddWineModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+      {/* AI Wine Modal */}
+      <AIWineModal
+        isOpen={isAIWineModalOpen}
+        onClose={() => setIsAIWineModalOpen(false)}
         onAddWine={handleAddWine}
       />
 
