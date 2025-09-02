@@ -85,6 +85,11 @@
     max-height: 100%;
   }
   
+  .wine-column {
+    @apply min-w-0;
+    max-width: 200px;
+  }
+  
   .table-icon {
     @apply h-3 w-3;
     min-width: 12px;

@@ -246,7 +246,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
                   onClick={(e) => wine.technical_sheet && handleWineClick(wine, e)}
                   title={wine.technical_sheet ? `Click to open technical sheet` : undefined}
                 >
-                  <td className="table-cell">
+                  <td className="table-cell wine-column">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
                         {wine.bottle_image ? (
@@ -276,27 +276,29 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
                         </div>
                       </div>
                                               <div className="ml-2">
-                          <div className="text-xs font-medium text-gray-900 leading-tight flex items-center">
-                            {highlightSearchTerm(wine.bottle, searchTerm).map((part, index) => 
-                              typeof part === 'string' ? part : (
-                                part.highlighted ? (
-                                  <span key={index} className="bg-yellow-200 font-semibold">
-                                    {part.text}
-                                  </span>
-                                ) : (
-                                  part.text
+                          <div className="text-xs font-medium text-gray-900 leading-tight flex items-center min-w-0">
+                            <div className="flex-1 min-w-0 break-words">
+                              {highlightSearchTerm(wine.bottle, searchTerm).map((part, index) => 
+                                typeof part === 'string' ? part : (
+                                  part.highlighted ? (
+                                    <span key={index} className="bg-yellow-200 font-semibold break-words">
+                                      {part.text}
+                                    </span>
+                                  ) : (
+                                    part.text
+                                  )
                                 )
-                              )
-                            )}
+                              )}
+                            </div>
                             {wine.technical_sheet && (
-                              <ExternalLink className="table-icon ml-1 text-red-600" />
+                              <ExternalLink className="table-icon ml-1 text-red-600 flex-shrink-0" />
                             )}
                           </div>
-                        <div className="text-xs text-gray-500 leading-tight">
+                        <div className="text-xs text-gray-500 leading-tight break-words">
                           {highlightSearchTerm(wine.grapes, searchTerm).map((part, index) => 
                             typeof part === 'string' ? part : (
                               part.highlighted ? (
-                                <span key={index} className="bg-yellow-200 font-semibold">
+                                <span key={index} className="bg-yellow-200 font-semibold break-words">
                                   {part.text}
                                 </span>
                               ) : (
