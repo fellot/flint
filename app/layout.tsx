@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: 'Flint Cellar',
   description: 'Manage your wine collection with ease - track inventory, mark wines as consumed, and add tasting notes.',
   keywords: 'wine, cellar, inventory, management, collection',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
