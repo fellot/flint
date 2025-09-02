@@ -49,4 +49,6 @@ export interface WineFormData {
   technical_sheet?: string;
   bottle_image?: string;
   fromCellar?: boolean;
+  status?: 'in_cellar' | 'consumed' | 'sold' | 'gifted';
+  consumedDate?: string | null;
 }
