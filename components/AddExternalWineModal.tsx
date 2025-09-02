@@ -60,7 +60,7 @@ export default function AddExternalWineModal({ isOpen, onClose, onAddWine }: Add
     if (!formData.peakYear || formData.peakYear < 1900 || formData.peakYear > new Date().getFullYear() + 50) {
       newErrors.peakYear = 'Please enter a valid peak year';
     }
-    if (!formData.notes.trim()) newErrors.notes = 'Tasting notes are required for external wines';
+    if (!formData.notes?.trim()) newErrors.notes = 'Tasting notes are required for external wines';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

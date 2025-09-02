@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Wine } from '@/types/wine';
-import { Edit, Trash2, Wine as WineIcon, Calendar, Star, ChevronUp, ChevronDown, ExternalLink, X } from 'lucide-react';
+import { Edit, Trash2, Wine as WineIcon, Calendar, Star, ChevronUp, ChevronDown, ExternalLink, X, MapPin } from 'lucide-react';
 import WineModal from './WineModal';
 import { highlightSearchTerm } from '@/utils/highlight';
 
@@ -113,8 +113,8 @@ export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDele
     }
     
     // Open technical sheet in new tab
-    if (wine.technicalSheetUrl) {
-      window.open(wine.technicalSheetUrl, '_blank');
+    if (wine.technical_sheet) {
+      window.open(wine.technical_sheet, '_blank');
     }
   };
 
@@ -326,11 +326,11 @@ export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDele
                       >
                         <Edit className="h-4 w-4" />
                       </button>
-                      {wine.technicalSheetUrl && (
+                      {wine.technical_sheet && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            window.open(wine.technicalSheetUrl, '_blank');
+                            window.open(wine.technical_sheet, '_blank');
                           }}
                           className="text-gray-400 hover:text-blue-600 transition-colors"
                           title="Open technical sheet"
@@ -354,6 +354,7 @@ export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDele
           isOpen={!!editingWine}
           onClose={() => setEditingWine(null)}
           onSave={onWineUpdate}
+          mode="edit"
         />
       )}
 
