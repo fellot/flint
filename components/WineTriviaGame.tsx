@@ -21,9 +21,10 @@ interface WineTriviaGameProps {
   questions: TriviaQuestion[];
   setInfo: SetInfo | null;
   onGameComplete: (setId: number) => void;
+  onShowSetSelection: () => void;
 }
 
-export default function WineTriviaGame({ questions, setInfo, onGameComplete }: WineTriviaGameProps) {
+export default function WineTriviaGame({ questions, setInfo, onGameComplete, onShowSetSelection }: WineTriviaGameProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -150,12 +151,20 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete }: W
               </ul>
             </div>
 
-            <button
-              onClick={startGame}
-              className="btn-primary text-lg px-8 py-3"
-            >
-              Start Trivia Challenge
-            </button>
+            <div className="space-y-4">
+              <button
+                onClick={startGame}
+                className="btn-primary text-lg px-8 py-3 w-full"
+              >
+                Start Trivia Challenge
+              </button>
+              <button
+                onClick={onShowSetSelection}
+                className="btn-secondary text-lg px-8 py-3 w-full"
+              >
+                Choose Different Set
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -204,7 +213,7 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete }: W
               </div>
             </div>
 
-            <div className="flex space-x-4 justify-center">
+            <div className="flex flex-wrap gap-3 justify-center">
               <button
                 onClick={resetGame}
                 className="btn-secondary flex items-center space-x-2"
@@ -213,11 +222,11 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete }: W
                 <span>Play Again</span>
               </button>
               <button
-                onClick={() => window.location.reload()}
+                onClick={onShowSetSelection}
                 className="btn-primary flex items-center space-x-2"
               >
                 <ArrowRight className="h-4 w-4" />
-                <span>Next Set</span>
+                <span>Choose Set</span>
               </button>
               <button
                 onClick={() => window.location.href = '/'}

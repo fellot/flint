@@ -23,16 +23,24 @@ export async function GET(request: NextRequest) {
       { id: 4, name: 'Wine Production & Techniques', questions: set4 }
     ];
     
-    // Get completed sets from query parameter
+    // Get parameters from query
     const { searchParams } = new URL(request.url);
     const completedSetsParam = searchParams.get('completedSets');
+    const selectedSetIdParam = searchParams.get('selectedSetId');
     const completedSets = completedSetsParam ? JSON.parse(completedSetsParam) : [];
     
-    // Find the next available set
+    // Determine which set to use
     let selectedSet = questionSets[0]; // Default to first set
     
-    if (completedSets.length > 0) {
-      // Find the next uncompleted set
+    if (selectedSetIdParam) {
+      // User selected a specific set
+      const setId = parseInt(selectedSetIdParam);
+      const requestedSet = questionSets.find(set => set.id === setId);
+      if (requestedSet) {
+        selectedSet = requestedSet;
+      }
+    } else if (completedSets.length > 0) {
+      // Auto-select next uncompleted set
       const nextSet = questionSets.find(set => !completedSets.includes(set.id));
       if (nextSet) {
         selectedSet = nextSet;
@@ -51,7 +59,12 @@ export async function GET(request: NextRequest) {
         id: selectedSet.id,
         name: selectedSet.name,
         totalSets: questionSets.length
-      }
+      },
+      allSets: questionSets.map(set => ({
+        id: set.id,
+        name: set.name,
+        isCompleted: completedSets.includes(set.id)
+      }))
     });
   } catch (error) {
     console.error('Error reading trivia questions:', error);
