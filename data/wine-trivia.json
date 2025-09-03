@@ -208,5 +208,215 @@
     "options": ["Corvina", "Rondinella", "Molinara", "All of the above"],
     "correct": 3,
     "explanation": "Amarone is typically a blend of Corvina, Rondinella, and Molinara grapes, with Corvina being the primary variety."
+  },
+  {
+    "id": 31,
+    "question": "Which wine region is known for its 'Côte de Nuits'?",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
+    "correct": 1,
+    "explanation": "Côte de Nuits is the northern part of Burgundy's Côte d'Or, famous for its red wines, especially Pinot Noir."
+  },
+  {
+    "id": 32,
+    "question": "What is the traditional method of making sparkling wine?",
+    "options": ["Charmat method", "Méthode Champenoise", "Tank method", "All of the above"],
+    "correct": 1,
+    "explanation": "Méthode Champenoise (traditional method) involves secondary fermentation in the bottle, creating the finest sparkling wines."
+  },
+  {
+    "id": 33,
+    "question": "Which grape variety is most associated with the Mosel region?",
+    "options": ["Riesling", "Gewürztraminer", "Pinot Gris", "Chardonnay"],
+    "correct": 0,
+    "explanation": "Riesling is the signature grape of the Mosel region in Germany, producing some of the world's finest white wines."
+  },
+  {
+    "id": 34,
+    "question": "What does 'noble rot' refer to in winemaking?",
+    "options": ["A wine fault", "Botrytis cinerea", "A grape variety", "A wine region"],
+    "correct": 1,
+    "explanation": "Noble rot (Botrytis cinerea) is a beneficial fungus that concentrates sugars in grapes, essential for making sweet wines like Sauternes."
+  },
+  {
+    "id": 35,
+    "question": "Which wine region is famous for its 'Côte de Beaune'?",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
+    "correct": 1,
+    "explanation": "Côte de Beaune is the southern part of Burgundy's Côte d'Or, renowned for both red and white wines, especially Chardonnay."
+  },
+  {
+    "id": 36,
+    "question": "What is the primary grape variety in Côtes du Rhône?",
+    "options": ["Grenache", "Syrah", "Mourvèdre", "All of the above"],
+    "correct": 3,
+    "explanation": "Côtes du Rhône wines are typically blends of Grenache, Syrah, and Mourvèdre, with Grenache often being the primary variety."
+  },
+  {
+    "id": 37,
+    "question": "Which country is the origin of Tempranillo?",
+    "options": ["France", "Italy", "Spain", "Portugal"],
+    "correct": 2,
+    "explanation": "Tempranillo is Spain's most important red grape variety, used in Rioja, Ribera del Duero, and many other regions."
+  },
+  {
+    "id": 38,
+    "question": "What is the traditional aging vessel for Chianti Classico?",
+    "options": ["Stainless steel", "Oak barrels", "Concrete tanks", "All of the above"],
+    "correct": 3,
+    "explanation": "Chianti Classico can be aged in various vessels including stainless steel, oak barrels, and concrete tanks, depending on the winemaker's style."
+  },
+  {
+    "id": 39,
+    "question": "Which wine region is known for its 'Crus' classification system?",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "All of the above"],
+    "correct": 3,
+    "explanation": "All three regions use 'Crus' classifications: Bordeaux (Grand Cru Classé), Burgundy (Grand Cru), and Champagne (Grand Cru)."
+  },
+  {
+    "id": 40,
+    "question": "What is the primary grape variety in Pouilly-Fumé?",
+    "options": ["Sauvignon Blanc", "Chardonnay", "Pinot Gris", "Riesling"],
+    "correct": 0,
+    "explanation": "Pouilly-Fumé is made from 100% Sauvignon Blanc grapes in the Loire Valley, known for its smoky, mineral character."
+  },
+  {
+    "id": 41,
+    "question": "Which wine region is famous for its 'Côte de Nuits'?",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
+    "correct": 1,
+    "explanation": "Côte de Nuits is the northern part of Burgundy's Côte d'Or, famous for its red wines, especially Pinot Noir."
+  },
+  {
+    "id": 42,
+    "question": "What is the traditional method of making sparkling wine?",
+    "options": ["Charmat method", "Méthode Champenoise", "Tank method", "All of the above"],
+    "correct": 1,
+    "explanation": "Méthode Champenoise (traditional method) involves secondary fermentation in the bottle, creating the finest sparkling wines."
+  },
+  {
+    "id": 43,
+    "question": "Which grape variety is most associated with the Mosel region?",
+    "options": ["Riesling", "Gewürztraminer", "Pinot Gris", "Chardonnay"],
+    "correct": 0,
+    "explanation": "Riesling is the signature grape of the Mosel region in Germany, producing some of the world's finest white wines."
+  },
+  {
+    "id": 44,
+    "question": "What does 'noble rot' refer to in winemaking?",
+    "options": ["A wine fault", "Botrytis cinerea", "A grape variety", "A wine region"],
+    "correct": 1,
+    "explanation": "Noble rot (Botrytis cinerea) is a beneficial fungus that concentrates sugars in grapes, essential for making sweet wines like Sauternes."
+  },
+  {
+    "id": 45,
+    "question": "Which wine region is famous for its 'Côte de Beaune'?",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
+    "correct": 1,
+    "explanation": "Côte de Beaune is the southern part of Burgundy's Côte d'Or, renowned for both red and white wines, especially Chardonnay."
+  },
+  {
+    "id": 46,
+    "question": "What is the primary grape variety in Côtes du Rhône?",
+    "options": ["Grenache", "Syrah", "Mourvèdre", "All of the above"],
+    "correct": 3,
+    "explanation": "Côtes du Rhône wines are typically blends of Grenache, Syrah, and Mourvèdre, with Grenache often being the primary variety."
+  },
+  {
+    "id": 47,
+    "question": "Which country is the origin of Tempranillo?",
+    "options": ["France", "Italy", "Spain", "Portugal"],
+    "correct": 2,
+    "explanation": "Tempranillo is Spain's most important red grape variety, used in Rioja, Ribera del Duero, and many other regions."
+  },
+  {
+    "id": 48,
+    "question": "What is the traditional aging vessel for Chianti Classico?",
+    "options": ["Stainless steel", "Oak barrels", "Concrete tanks", "All of the above"],
+    "correct": 3,
+    "explanation": "Chianti Classico can be aged in various vessels including stainless steel, oak barrels, and concrete tanks, depending on the winemaker's style."
+  },
+  {
+    "id": 49,
+    "question": "Which wine region is known for its 'Crus' classification system?",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "All of the above"],
+    "correct": 3,
+    "explanation": "All three regions use 'Crus' classifications: Bordeaux (Grand Cru Classé), Burgundy (Grand Cru), and Champagne (Grand Cru)."
+  },
+  {
+    "id": 50,
+    "question": "What is the primary grape variety in Pouilly-Fumé?",
+    "options": ["Sauvignon Blanc", "Chardonnay", "Pinot Gris", "Riesling"],
+    "correct": 0,
+    "explanation": "Pouilly-Fumé is made from 100% Sauvignon Blanc grapes in the Loire Valley, known for its smoky, mineral character."
+  },
+  {
+    "id": 51,
+    "question": "Which wine region is known for its 'Côte de Nuits'?",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
+    "correct": 1,
+    "explanation": "Côte de Nuits is the northern part of Burgundy's Côte d'Or, famous for its red wines, especially Pinot Noir."
+  },
+  {
+    "id": 52,
+    "question": "What is the traditional method of making sparkling wine?",
+    "options": ["Charmat method", "Méthode Champenoise", "Tank method", "All of the above"],
+    "correct": 1,
+    "explanation": "Méthode Champenoise (traditional method) involves secondary fermentation in the bottle, creating the finest sparkling wines."
+  },
+  {
+    "id": 53,
+    "question": "Which grape variety is most associated with the Mosel region?",
+    "options": ["Riesling", "Gewürztraminer", "Pinot Gris", "Chardonnay"],
+    "correct": 0,
+    "explanation": "Riesling is the signature grape of the Mosel region in Germany, producing some of the world's finest white wines."
+  },
+  {
+    "id": 54,
+    "question": "What does 'noble rot' refer to in winemaking?",
+    "options": ["A wine fault", "Botrytis cinerea", "A grape variety", "A wine region"],
+    "correct": 1,
+    "explanation": "Noble rot (Botrytis cinerea) is a beneficial fungus that concentrates sugars in grapes, essential for making sweet wines like Sauternes."
+  },
+  {
+    "id": 55,
+    "question": "Which wine region is famous for its 'Côte de Beaune'?",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
+    "correct": 1,
+    "explanation": "Côte de Beaune is the southern part of Burgundy's Côte d'Or, renowned for both red and white wines, especially Chardonnay."
+  },
+  {
+    "id": 56,
+    "question": "What is the primary grape variety in Côtes du Rhône?",
+    "options": ["Grenache", "Syrah", "Mourvèdre", "All of the above"],
+    "correct": 3,
+    "explanation": "Côtes du Rhône wines are typically blends of Grenache, Syrah, and Mourvèdre, with Grenache often being the primary variety."
+  },
+  {
+    "id": 57,
+    "question": "Which country is the origin of Tempranillo?",
+    "options": ["France", "Italy", "Spain", "Portugal"],
+    "correct": 2,
+    "explanation": "Tempranillo is Spain's most important red grape variety, used in Rioja, Ribera del Duero, and many other regions."
+  },
+  {
+    "id": 58,
+    "question": "What is the traditional aging vessel for Chianti Classico?",
+    "options": ["Stainless steel", "Oak barrels", "Concrete tanks", "All of the above"],
+    "correct": 3,
+    "explanation": "Chianti Classico can be aged in various vessels including stainless steel, oak barrels, and concrete tanks, depending on the winemaker's style."
+  },
+  {
+    "id": 59,
+    "question": "Which wine region is known for its 'Crus' classification system?",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "All of the above"],
+    "correct": 3,
+    "explanation": "All three regions use 'Crus' classifications: Bordeaux (Grand Cru Classé), Burgundy (Grand Cru), and Champagne (Grand Cru)."
+  },
+  {
+    "id": 60,
+    "question": "What is the primary grape variety in Pouilly-Fumé?",
+    "options": ["Sauvignon Blanc", "Chardonnay", "Pinot Gris", "Riesling"],
+    "correct": 0,
+    "explanation": "Pouilly-Fumé is made from 100% Sauvignon Blanc grapes in the Loire Valley, known for its smoky, mineral character."
   }
 ]
