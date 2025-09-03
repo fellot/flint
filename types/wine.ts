@@ -51,4 +51,5 @@ export interface WineFormData {
   fromCellar?: boolean;
   status?: 'in_cellar' | 'consumed' | 'sold' | 'gifted';
   consumedDate?: string | null;
+  dataSource?: string;
 }
