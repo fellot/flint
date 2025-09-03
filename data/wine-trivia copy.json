@@ -104,7 +104,6 @@
     "correct": 1,
     "explanation": "‘Old World’ means Europe/Mediterranean origins (France, Italy, Spain, etc.), with styles often emphasizing terroir and restraint."
   },
-
   {
     "id": 16,
     "question": "Châteauneuf-du-Pape reds are typically blends featuring which trio?",
@@ -210,7 +209,6 @@
     "correct": 0,
     "explanation": "Amarone grapes are dried (appassimento) to concentrate sugars and flavor before fermentation—rich, powerful, and dry."
   },
-
   {
     "id": 31,
     "question": "Côte de Nuits, famed for powerful Pinot Noir, lies in…",
@@ -316,7 +314,6 @@
     "correct": 0,
     "explanation": "High-altitude, lava-soiled slopes in Sicily yield pale-colored, tension-filled reds from Nerello Mascalese (often with Nerello Cappuccio)."
   },
-
   {
     "id": 46,
     "question": "Which method creates bubbles via secondary fermentation in the same bottle sold?",
