@@ -592,7 +592,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-center">
+          <div className="flex justify-center space-x-4">
             <button
               onClick={() => window.location.href = '/cellar-journal'}
               className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
@@ -600,9 +600,16 @@ export default function Home() {
               <Calendar className="h-5 w-5" />
               <span>Cellar Journal</span>
             </button>
+            <button
+              onClick={() => window.location.href = '/wine-trivia'}
+              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              <WineIcon className="h-5 w-5" />
+              <span>Wine Trivia</span>
+            </button>
           </div>
           <p className="text-center text-sm text-gray-500 mt-3">
-            View your consumed wines and tasting notes
+            Explore your wine collection and test your knowledge
           </p>
         </div>
       </footer>

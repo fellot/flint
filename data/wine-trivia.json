@@ -1,0 +1,107 @@
+[
+  {
+    "id": 1,
+    "question": "Which country produces the most wine in the world?",
+    "options": ["France", "Italy", "Spain", "United States"],
+    "correct": 1,
+    "explanation": "Italy is the world's largest wine producer, followed by France and Spain."
+  },
+  {
+    "id": 2,
+    "question": "What is the main grape variety used in Champagne?",
+    "options": ["Chardonnay", "Pinot Noir", "Pinot Meunier", "All of the above"],
+    "correct": 3,
+    "explanation": "Champagne is typically made from a blend of Chardonnay, Pinot Noir, and Pinot Meunier grapes."
+  },
+  {
+    "id": 3,
+    "question": "Which wine region is known as the 'King of Wines'?",
+    "options": ["Bordeaux", "Burgundy", "Barolo", "Champagne"],
+    "correct": 2,
+    "explanation": "Barolo from Piedmont, Italy is often called the 'King of Wines' due to its complexity and aging potential."
+  },
+  {
+    "id": 4,
+    "question": "What does 'terroir' refer to in winemaking?",
+    "options": ["The wine cellar", "The soil and climate", "The winemaker", "The grape variety"],
+    "correct": 1,
+    "explanation": "Terroir refers to the complete natural environment where grapes are grown, including soil, climate, and topography."
+  },
+  {
+    "id": 5,
+    "question": "Which grape variety is most commonly used in Chianti?",
+    "options": ["Sangiovese", "Nebbiolo", "Barbera", "Dolcetto"],
+    "correct": 0,
+    "explanation": "Sangiovese is the primary grape variety used in Chianti wines from Tuscany, Italy."
+  },
+  {
+    "id": 6,
+    "question": "What is the minimum alcohol content for a wine to be considered 'fortified'?",
+    "options": ["15%", "18%", "20%", "22%"],
+    "correct": 1,
+    "explanation": "Fortified wines have alcohol added during production, typically resulting in 18-22% alcohol content."
+  },
+  {
+    "id": 7,
+    "question": "Which country is the origin of Malbec?",
+    "options": ["Argentina", "France", "Spain", "Italy"],
+    "correct": 1,
+    "explanation": "Malbec originated in France, specifically in the Cahors region, but is now most famous in Argentina."
+  },
+  {
+    "id": 8,
+    "question": "What is the traditional aging vessel for Rioja wines?",
+    "options": ["Stainless steel", "Oak barrels", "Concrete tanks", "Glass bottles"],
+    "correct": 1,
+    "explanation": "Rioja wines are traditionally aged in oak barrels, which gives them their characteristic vanilla and spice notes."
+  },
+  {
+    "id": 9,
+    "question": "Which wine is known as 'Liquid Gold'?",
+    "options": ["Sauternes", "Champagne", "Port", "Sherry"],
+    "correct": 0,
+    "explanation": "Sauternes, the sweet dessert wine from Bordeaux, is often called 'Liquid Gold' due to its golden color and precious nature."
+  },
+  {
+    "id": 10,
+    "question": "What does 'brut' mean on a Champagne label?",
+    "options": ["Sweet", "Dry", "Aged", "Expensive"],
+    "correct": 1,
+    "explanation": "Brut indicates a dry Champagne with very little residual sugar (less than 12 grams per liter)."
+  },
+  {
+    "id": 11,
+    "question": "Which grape variety is the most planted in the world?",
+    "options": ["Cabernet Sauvignon", "Merlot", "Chardonnay", "Airen"],
+    "correct": 3,
+    "explanation": "Airen, a white grape variety from Spain, is the most planted grape in the world, though it's not as well-known internationally."
+  },
+  {
+    "id": 12,
+    "question": "What is the primary grape in Pinot Grigio?",
+    "options": ["Pinot Gris", "Pinot Noir", "Pinot Blanc", "Pinot Meunier"],
+    "correct": 0,
+    "explanation": "Pinot Grigio is the Italian name for Pinot Gris, the same grape variety with different winemaking styles."
+  },
+  {
+    "id": 13,
+    "question": "Which wine region is famous for its 'Grand Cru' classification?",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
+    "correct": 1,
+    "explanation": "Burgundy is famous for its Grand Cru classification, representing the highest quality vineyards in the region."
+  },
+  {
+    "id": 14,
+    "question": "What is the traditional glass shape for Burgundy wines?",
+    "options": ["Tall and narrow", "Wide and bowl-shaped", "Flute", "Tulip"],
+    "correct": 1,
+    "explanation": "Burgundy glasses are wide and bowl-shaped to allow the wine's aromas to develop and be appreciated."
+  },
+  {
+    "id": 15,
+    "question": "Which country produces the most Prosecco?",
+    "options": ["France", "Italy", "Spain", "Germany"],
+    "correct": 1,
+    "explanation": "Italy is the exclusive producer of Prosecco, with the majority coming from the Veneto region."
+  }
+]
