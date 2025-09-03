@@ -100,6 +100,11 @@ export default function WineTriviaGame({ questions }: WineTriviaGameProps) {
               <p className="text-gray-600">
                 Test your wine knowledge with {totalQuestions} challenging questions!
               </p>
+              <div className="mt-4 px-4 py-2 bg-purple-100 border border-purple-200 rounded-lg">
+                <p className="text-sm text-purple-800 font-medium">
+                  🎯 Today's Set: {questions[0]?.id <= 15 ? 'Classic Wine Knowledge' : 'Advanced Wine Expertise'}
+                </p>
+              </div>
             </div>
             
             <div className="bg-gray-50 rounded-lg p-6 mb-6">
@@ -120,6 +125,10 @@ export default function WineTriviaGame({ questions }: WineTriviaGameProps) {
                 <li className="flex items-center">
                   <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
                   Track your progress and score
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                  Questions alternate daily between two sets
                 </li>
               </ul>
             </div>
@@ -152,6 +161,11 @@ export default function WineTriviaGame({ questions }: WineTriviaGameProps) {
               <p className="text-gray-600">
                 You scored {score} out of {totalQuestions} questions
               </p>
+              <div className="mt-3 px-3 py-1 bg-purple-100 border border-purple-200 rounded-full">
+                <p className="text-xs text-purple-800 font-medium">
+                  Set: {questions[0]?.id <= 15 ? 'Classic Wine Knowledge' : 'Advanced Wine Expertise'}
+                </p>
+              </div>
             </div>
 
             <div className="bg-gray-50 rounded-lg p-6 mb-6">
