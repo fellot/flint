@@ -1,0 +1,425 @@
+[
+  {
+    "id": 1,
+    "question": "Which country produces the most wine in the world in recent years?",
+    "options": ["France", "Italy", "Spain", "United States"],
+    "correct": 1,
+    "explanation": "Italy holds the top spot. Vintage conditions can swing rankings year to year, but Italy’s vast vineyard area and output keep it #1, followed closely by France and Spain"
+  },
+  {
+    "id": 2,
+    "question": "What is the main grape variety used in Champagne?",
+    "options": ["Chardonnay", "Pinot Noir", "Pinot Meunier", "All of the above"],
+    "correct": 3,
+    "explanation": "Most Champagnes are blends of Chardonnay, Pinot Noir, and Pinot Meunier. Some cuvées omit one or more (e.g., Blanc de Blancs is 100% Chardonnay)."
+  },
+  {
+    "id": 3,
+    "question": "Which wine region is known as the 'King of Wines'?",
+    "options": ["Bordeaux", "Burgundy", "Barolo", "Champagne"],
+    "correct": 2,
+    "explanation": "Barolo (Piedmont) is famed for power and longevity from Nebbiolo. Its counterpart Barbaresco is sometimes called the “Queen of Wines.”"
+  },
+  {
+    "id": 4,
+    "question": "In wine, what does the French term ‘terroir’ encompass?",
+    "options": ["The wine cellar", "Soil, climate, exposure, and site", "The winemaker’s style", "The grape variety alone"],
+    "correct": 1,
+    "explanation": "Terroir is the complete natural environment—soil, climate, topography, and even local microbiology—shaping a wine’s character."
+  },
+  {
+    "id": 5,
+    "question": "Which grape is the backbone of Chianti?",
+    "options": ["Sangiovese", "Nebbiolo", "Barbera", "Dolcetto"],
+    "correct": 0,
+    "explanation": "Chianti (Tuscany) must predominantly be Sangiovese, a grape known for bright acidity and cherry-herbal notes."
+  },
+  {
+    "id": 6,
+    "question": "Which description best defines a fortified wine?",
+    "options": ["Wine with added sugar after fermentation", "Wine with spirit (brandy) added to raise alcohol", "Wine with no tannin", "Wine fermented in clay vessels only"],
+    "correct": 1,
+    "explanation": "Fortified wines (e.g., Port, Sherry, Madeira) have distilled spirit added, typically ending up around 17–20% ABV and concentrating flavor."
+  },
+  {
+    "id": 7,
+    "question": "Where did the Malbec grape originate before becoming Argentina’s star?",
+    "options": ["Argentina", "France", "Spain", "Italy"],
+    "correct": 1,
+    "explanation": "Malbec hails from France (think Cahors). Argentina later popularized it with a riper, plush style from high-altitude vineyards."
+  },
+  {
+    "id": 8,
+    "question": "Traditionally, Rioja wines achieve their vanilla-spice notes from aging in…",
+    "options": ["Stainless steel", "Oak barrels", "Concrete tanks", "Glass demijohns"],
+    "correct": 1,
+    "explanation": "Rioja’s identity is tied to oak maturation (historically American oak), building warm spice over red-fruited Tempranillo."
+  },
+  {
+    "id": 9,
+    "question": "Which sweet Bordeaux wine is often nicknamed “Liquid Gold”?",
+    "options": ["Sauternes", "Champagne", "Port", "Fino Sherry"],
+    "correct": 0,
+    "explanation": "Sauternes gleams deep gold thanks to botrytized grapes (notably Sémillon), delivering honeyed apricot and saffron complexity."
+  },
+  {
+    "id": 10,
+    "question": "On a Champagne label, what does ‘Brut’ indicate?",
+    "options": ["Sweet", "Dry", "Aged over 10 years", "Expensive"],
+    "correct": 1,
+    "explanation": "‘Brut’ is dry (≤12 g/L residual sugar). Fun twist: ‘Extra Dry’ is actually slightly sweeter than Brut."
+  },
+  {
+    "id": 11,
+    "question": "What grape is the classic base for Prosecco?",
+    "options": ["Glera", "Trebbiano", "Chardonnay", "Moscato"],
+    "correct": 0,
+    "explanation": "Prosecco is built on Glera (the grape’s formal name since 2009), usually made by the Charmat (tank) method for fresh, fruity bubbles."
+  },
+  {
+    "id": 12,
+    "question": "Pinot Grigio and Pinot Gris refer to…",
+    "options": ["Different grapes", "The same grape, different styles/names", "Different regions only", "A blend of Pinot Noir and Pinot Blanc"],
+    "correct": 1,
+    "explanation": "Same grape; ‘Pinot Gris’ is the French name, often richer in style; ‘Pinot Grigio’ is the Italian name, often crisper and lighter."
+  },
+  {
+    "id": 13,
+    "question": "In which region do you find Grand Cru vineyards like Romanée-Conti and Montrachet?",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
+    "correct": 1,
+    "explanation": "Burgundy’s Grand Crus are tiny, prized plots (‘climats’) delivering some of the world’s most sought-after wines."
+  },
+  {
+    "id": 14,
+    "question": "Which glass shape is traditionally used for fine Burgundy Pinot Noir?",
+    "options": ["Tall and narrow", "Wide, bowl-shaped", "Flute", "Tulip for spirits"],
+    "correct": 1,
+    "explanation": "A wide bowl opens delicate aromas (violet, cherry, sous-bois) and softens perception of acidity and tannin."
+  },
+  {
+    "id": 15,
+    "question": "In wine talk, “Old World” generally refers to…",
+    "options": ["Any wine older than 10 years", "Europe and the Mediterranean basin", "Wines aged in old barrels", "Traditional family wineries only"],
+    "correct": 1,
+    "explanation": "‘Old World’ means Europe/Mediterranean origins (France, Italy, Spain, etc.), with styles often emphasizing terroir and restraint."
+  },
+
+  {
+    "id": 16,
+    "question": "Châteauneuf-du-Pape reds are typically blends featuring which trio?",
+    "options": ["Grenache, Syrah, Mourvèdre", "Cabernet, Merlot, Cabernet Franc", "Nebbiolo, Barbera, Dolcetto", "Tempranillo, Garnacha, Graciano"],
+    "correct": 0,
+    "explanation": "GSM (Grenache-Syrah-Mourvèdre) is the classic backbone. The appellation allows many more varieties, including white grapes in red blends."
+  },
+  {
+    "id": 17,
+    "question": "Where is high-quality Icewine (Eiswein) classically produced?",
+    "options": ["Germany", "Canada", "Austria", "All of the above"],
+    "correct": 3,
+    "explanation": "These regions regularly achieve naturally frozen grapes, concentrating sugar and acidity for electric sweetness."
+  },
+  {
+    "id": 18,
+    "question": "‘Cork taint’ is primarily linked to which compound?",
+    "options": ["SO₂", "Brettanomyces", "TCA (2,4,6-trichloroanisole)", "VA (volatile acidity)"],
+    "correct": 2,
+    "explanation": "TCA gives musty, damp-cardboard aromas. Even tiny amounts can mute fruit and ruin a bottle."
+  },
+  {
+    "id": 19,
+    "question": "Which grape is often nicknamed the “Heartbreak grape” due to its difficulty in the vineyard?",
+    "options": ["Pinot Noir", "Cabernet Sauvignon", "Syrah", "Sangiovese"],
+    "correct": 0,
+    "explanation": "Pinot Noir is thin-skinned, site-sensitive, and fickle—but transcendent when it all comes together."
+  },
+  {
+    "id": 20,
+    "question": "Vintage Port is best described as a style that…",
+    "options": ["Is ready to drink on release", "Is aged only in large casks for decades", "Improves for 20+ years in bottle", "Is always off-dry"],
+    "correct": 2,
+    "explanation": "Top Vintage Ports evolve for decades in bottle, developing fig, cacao, violet, and exotic spice complexity."
+  },
+  {
+    "id": 21,
+    "question": "In Burgundy, a ‘climat’ is…",
+    "options": ["A named vineyard parcel with distinct terroir", "An oak aging regime", "A weather pattern", "A grape clone"],
+    "correct": 0,
+    "explanation": "Climats are precisely delineated vineyard sites, each expressing a unique combination of soil, slope, and microclimate."
+  },
+  {
+    "id": 22,
+    "question": "What does ‘sur lie’ aging mean?",
+    "options": ["On the skins", "On the lees (spent yeast)", "Under flor", "Under vacuum"],
+    "correct": 1,
+    "explanation": "Lees contact can add texture (creaminess), savory notes (brioche), and protection against oxidation."
+  },
+  {
+    "id": 23,
+    "question": "Which country has the largest organically farmed vineyard area?",
+    "options": ["France", "Italy", "Spain", "Germany"],
+    "correct": 2,
+    "explanation": "Spain’s vast vineyard acreage includes extensive organic conversion, leading global totals in organic hectares."
+  },
+  {
+    "id": 24,
+    "question": "Which technique is central to the fresh, fruity style of Beaujolais Nouveau?",
+    "options": ["Carbonic maceration", "Extended barrel aging", "Fortification", "Flor aging"],
+    "correct": 0,
+    "explanation": "Whole berries ferment in a CO₂-rich environment, producing low-tannin wines with vivid banana-and-bubblegum esters."
+  },
+  {
+    "id": 25,
+    "question": "‘Super Tuscan’ wines come primarily from…",
+    "options": ["Piedmont", "Tuscany", "Veneto", "Sicily"],
+    "correct": 1,
+    "explanation": "Originally ‘rebel’ wines that broke DOC rules (using e.g., Cabernet or Merlot), many now sit under IGT Toscana or Bolgheri DOC."
+  },
+  {
+    "id": 26,
+    "question": "Which glass is now widely preferred for serious Champagne tasting?",
+    "options": ["Coupe", "Tall flute", "Tulip-shaped white-wine glass", "Shot glass"],
+    "correct": 2,
+    "explanation": "A tulip or white-wine glass preserves bubbles while amplifying aroma—more perfumed and nuanced than a narrow flute."
+  },
+  {
+    "id": 27,
+    "question": "Which trio of grapes is most associated with the Loire Valley?",
+    "options": ["Sauvignon Blanc, Chenin Blanc, Cabernet Franc", "Chardonnay, Pinot Noir, Pinot Meunier", "Glera, Garganega, Corvina", "Riesling, Grüner, Blaufränkisch"],
+    "correct": 0,
+    "explanation": "Think Sancerre (Sauvignon), Vouvray (Chenin), and Chinon (Cabernet Franc) as Loire hallmarks."
+  },
+  {
+    "id": 28,
+    "question": "Minimum traditional aging for Rioja Reserva (tinto) is…",
+    "options": ["1 year total", "2 years with 6 months oak", "3 years with at least 1 year in oak", "5 years with 2 years in oak"],
+    "correct": 2,
+    "explanation": "Classic Rioja Reserva requires at least 3 years of aging, with at least 1 year in oak (longer rules for Gran Reserva)."
+  },
+  {
+    "id": 29,
+    "question": "In Champagne, ‘Grand Cru’ historically referred to…",
+    "options": ["Single-vineyard bottlings only", "Villages rated 100% on the Échelle des Crus", "Wines aged 10+ years on lees", "Only Blanc de Blancs wines"],
+    "correct": 1,
+    "explanation": "The old village-rating system placed certain communes at 100%, designated as Grand Cru (e.g., Ambonnay, Avize)."
+  },
+  {
+    "id": 30,
+    "question": "Amarone della Valpolicella is typically a blend of…",
+    "options": ["Corvina, Rondinella, Molinara", "Nebbiolo, Barbera, Dolcetto", "Sangiovese, Canaiolo, Colorino", "Merlot, Cabernet, Syrah"],
+    "correct": 0,
+    "explanation": "Amarone grapes are dried (appassimento) to concentrate sugars and flavor before fermentation—rich, powerful, and dry."
+  },
+
+  {
+    "id": 31,
+    "question": "Côte de Nuits, famed for powerful Pinot Noir, lies in…",
+    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône Valley"],
+    "correct": 1,
+    "explanation": "The northern half of Burgundy’s Côte d’Or (Côte de Nuits) hosts icons like Gevrey-Chambertin and Vosne-Romanée."
+  },
+  {
+    "id": 32,
+    "question": "Germany’s Mosel region is most synonymous with which grape?",
+    "options": ["Riesling", "Gewürztraminer", "Pinot Gris", "Chardonnay"],
+    "correct": 0,
+    "explanation": "Mosel Riesling brings racy acidity, slate-driven minerality, and delicacy—from bone-dry to lusciously sweet."
+  },
+  {
+    "id": 33,
+    "question": "Marlborough, New Zealand, rose to fame primarily for…",
+    "options": ["Syrah", "Sauvignon Blanc", "Pinotage", "Tempranillo"],
+    "correct": 1,
+    "explanation": "Zesty, pungent Sauvignon Blanc—think passion fruit and lime—with cool nights preserving electrifying acidity."
+  },
+  {
+    "id": 34,
+    "question": "Napa Valley’s global flagship style is…",
+    "options": ["Pinot Noir", "Cabernet Sauvignon", "Riesling", "Sangiovese"],
+    "correct": 1,
+    "explanation": "Napa Cabernet delivers ripe blackcurrant, plush tannins, and polished oak—California’s calling card."
+  },
+  {
+    "id": 35,
+    "question": "Australia’s Barossa Valley is most associated with…",
+    "options": ["Shiraz (Syrah)", "Nebbiolo", "Cabernet Franc", "Gamay"],
+    "correct": 0,
+    "explanation": "Barossa Shiraz is rich and full-bodied, often with dark fruit, chocolate, and spice."
+  },
+  {
+    "id": 36,
+    "question": "Ribera del Duero reds are anchored by which grape?",
+    "options": ["Garnacha", "Tempranillo (Tinto Fino)", "Mencía", "Monastrell"],
+    "correct": 1,
+    "explanation": "High-altitude Tempranillo yields deep color and structure; ‘Tinto Fino’ is the local name."
+  },
+  {
+    "id": 37,
+    "question": "Albariño, famed for saline citrus zest, hails from…",
+    "options": ["Rías Baixas (Galicia, Spain)", "Vinho Verde (Portugal)", "Sicily (Italy)", "Provence (France)"],
+    "correct": 0,
+    "explanation": "Coastal Rías Baixas is Albariño’s stronghold, though neighboring Minho (Vinho Verde) also shines with Alvarinho."
+  },
+  {
+    "id": 38,
+    "question": "Port wine originates in the Douro Valley of which country?",
+    "options": ["Spain", "Portugal", "France", "Greece"],
+    "correct": 1,
+    "explanation": "Terraced schist slopes along the Douro River bake grapes to ripeness—ideal for powerful fortified wines."
+  },
+  {
+    "id": 39,
+    "question": "In Bordeaux’s Left Bank, the dominant red grape is usually…",
+    "options": ["Merlot", "Cabernet Sauvignon", "Pinot Noir", "Syrah"],
+    "correct": 1,
+    "explanation": "Gravelly Left Bank soils favor Cabernet Sauvignon (think Médoc and Graves), with Merlot playing a supporting role."
+  },
+  {
+    "id": 40,
+    "question": "Right Bank Bordeaux (Saint-Émilion, Pomerol) leans most on…",
+    "options": ["Merlot and Cabernet Franc", "Cabernet Sauvignon and Petit Verdot", "Syrah and Grenache", "Pinot Noir and Gamay"],
+    "correct": 0,
+    "explanation": "Clay and limestone soils suit Merlot and Cabernet Franc, creating plush, perfumed wines."
+  },
+  {
+    "id": 41,
+    "question": "Alsace’s hallmark dry whites prominently feature…",
+    "options": ["Riesling", "Chardonnay", "Sauvignon Blanc", "Vermentino"],
+    "correct": 0,
+    "explanation": "Alsace Riesling is typically dry, intensely aromatic, and racy; Gewürztraminer and Pinot Gris also star."
+  },
+  {
+    "id": 42,
+    "question": "Which Greek island is famous for laser-bright Assyrtiko?",
+    "options": ["Crete", "Rhodes", "Santorini", "Corfu"],
+    "correct": 2,
+    "explanation": "Volcanic Santorini yields mineral, high-acid Assyrtiko—often trained in basket-like kouloura to shield grapes from wind."
+  },
+  {
+    "id": 43,
+    "question": "Hungary’s Tokaj region is renowned for which sweet wine?",
+    "options": ["Recioto", "Tokaji Aszú", "Vin Santo", "Sauternes"],
+    "correct": 1,
+    "explanation": "Tokaji Aszú is made from botrytized grapes (mainly Furmint), measured in historic ‘puttonyos’ sweetness levels."
+  },
+  {
+    "id": 44,
+    "question": "Bolgheri, home to many ‘Super Tuscans,’ sits in…",
+    "options": ["Piedmont", "Lazio", "Tuscany’s coast", "Sardinia"],
+    "correct": 2,
+    "explanation": "Sea breezes and gravelly soils help ripen Bordeaux varieties—think Sassicaia, Ornellaia, and friends."
+  },
+  {
+    "id": 45,
+    "question": "Mount Etna’s signature red (Etna Rosso) relies on…",
+    "options": ["Nerello Mascalese", "Aglianico", "Sangiovese", "Corvina"],
+    "correct": 0,
+    "explanation": "High-altitude, lava-soiled slopes in Sicily yield pale-colored, tension-filled reds from Nerello Mascalese (often with Nerello Cappuccio)."
+  },
+
+  {
+    "id": 46,
+    "question": "Which method creates bubbles via secondary fermentation in the same bottle sold?",
+    "options": ["Charmat (tank) method", "Traditional method", "Soda stream addition", "Carbonic maceration"],
+    "correct": 1,
+    "explanation": "Traditional method (a.k.a. méthode champenoise/classique) builds fine mousse, autolytic notes (brioche) from time on lees."
+  },
+  {
+    "id": 47,
+    "question": "Prosecco is most commonly made by which sparkling process?",
+    "options": ["Traditional method", "Ancestral method", "Charmat (tank) method", "Carbonic bottle method"],
+    "correct": 2,
+    "explanation": "Charmat preserves Glera’s bright pear-apple fruit in large pressurized tanks, then bottles under pressure."
+  },
+  {
+    "id": 48,
+    "question": "‘Riddling’ (remuage) in sparkling wine production is done to…",
+    "options": ["Adjust sweetness", "Collect yeast sediment in the neck", "Sterilize the wine", "Add bubbles"],
+    "correct": 1,
+    "explanation": "Gradual tilting/rotating moves lees to the crown cap for clean removal during disgorgement."
+  },
+  {
+    "id": 49,
+    "question": "What is ‘disgorgement’?",
+    "options": ["Lees stirring", "Removing sediment from sparkling bottles", "Cold-stabilizing tartrates", "Adding base wine to top up barrels"],
+    "correct": 1,
+    "explanation": "After riddling, the neck is frozen and the yeast plug is expelled—then dosage is added and the bottle is sealed."
+  },
+  {
+    "id": 50,
+    "question": "In Champagne, ‘dosage’ primarily…",
+    "options": ["Raises alcohol", "Controls sweetness style", "Adds tannin", "Clarifies the wine"],
+    "correct": 1,
+    "explanation": "A mix of wine and sugar (liqueur d’expédition) sets styles from Brut Nature (no sugar added) to Demi-Sec (sweeter)."
+  },
+  {
+    "id": 51,
+    "question": "Malolactic fermentation (MLF) transforms…",
+    "options": ["Sugar into alcohol", "Malic acid into lactic acid", "Tannins into anthocyanins", "SO₂ into oxygen"],
+    "correct": 1,
+    "explanation": "MLF softens sharp malic acid (apple-like) into creamier lactic acid, adding roundness (and buttery notes in some Chardonnays)."
+  },
+  {
+    "id": 52,
+    "question": "‘Bâtonnage’ is the practice of…",
+    "options": ["Punching down skins", "Stirring lees", "Blending varieties", "Racking off sediment"],
+    "correct": 1,
+    "explanation": "Lees stirring increases texture and can bring savory, bready complexity while protecting against oxidation."
+  },
+  {
+    "id": 53,
+    "question": "Which rosé technique draws off juice from a red ferment to intensify the red?",
+    "options": ["Direct press", "Saignée", "Blanc de noirs", "Free-run"],
+    "correct": 1,
+    "explanation": "Saignée (to ‘bleed’) removes some pale juice early, making the remaining red more concentrated; the bled juice becomes rosé."
+  },
+  {
+    "id": 54,
+    "question": "Whole-cluster (stem-in) fermentation often contributes…",
+    "options": ["Lower aromatics", "Greener tannin and spicy aromatics", "Higher alcohol", "Less structure"],
+    "correct": 1,
+    "explanation": "Including stems can add peppery spice, floral lift, and firm, sometimes herbal tannin—especially in Pinot Noir and Syrah."
+  },
+  {
+    "id": 55,
+    "question": "Amphorae and qvevri are…",
+    "options": ["Types of oak barrels", "Clay vessels used for fermenting/aging", "Filtration devices", "Sweetness measurement tools"],
+    "correct": 1,
+    "explanation": "Clay vessels (revived from ancient/Georgian traditions) allow gentle micro-oxygenation and unique texture development."
+  },
+  {
+    "id": 56,
+    "question": "Punch-downs (pigeage) vs pump-overs (remontage) both manage…",
+    "options": ["Fermentation temperature only", "Cap extraction in red winemaking", "Lees integration in whites", "Bottle pressure"],
+    "correct": 1,
+    "explanation": "They submerge or circulate the floating ‘cap’ of skins to control color, tannin, and flavor extraction."
+  },
+  {
+    "id": 57,
+    "question": "A ‘cold soak’ is…",
+    "options": ["Cold stabilization before bottling", "Pre-fermentation maceration at low temp", "A method to lower alcohol", "A filtration step"],
+    "correct": 1,
+    "explanation": "Chilling crushed grapes pre-fermentation can extract color and aroma gently, often used for Pinot Noir."
+  },
+  {
+    "id": 58,
+    "question": "Fining vs filtration—what’s the key difference?",
+    "options": ["Fining adds sweetness; filtration adds tannin", "Fining binds/settles particles; filtration physically strains them", "Both are the same", "Neither affects clarity"],
+    "correct": 1,
+    "explanation": "Fining agents (e.g., bentonite) bind colloids to settle out; filtration passes wine through media to remove particles."
+  },
+  {
+    "id": 59,
+    "question": "SO₂ (sulfur dioxide) is primarily used in winemaking to…",
+    "options": ["Increase alcohol", "Sweeten wine", "Protect against oxidation and microbes", "Add bubbles"],
+    "correct": 2,
+    "explanation": "SO₂ is an antioxidant and antimicrobial tool—key for stability when used judiciously."
+  },
+  {
+    "id": 60,
+    "question": "Concrete ‘egg’ fermenters are prized because they…",
+    "options": ["Are completely inert like glass", "Add heavy oak flavors", "Encourage natural convection and subtle oxygen exchange", "Carbonate wine naturally"],
+    "correct": 2,
+    "explanation": "The egg’s shape circulates fermenting wine, enhancing texture; concrete is neutral but slightly permeable to oxygen."
+  }
+]

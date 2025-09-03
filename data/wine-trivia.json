@@ -29,10 +29,10 @@
   },
   {
     "id": 5,
-    "question": "Which grape variety is most commonly used in Chianti?",
+    "question": "Which grape is the backbone of Chianti?",
     "options": ["Sangiovese", "Nebbiolo", "Barbera", "Dolcetto"],
     "correct": 0,
-    "explanation": "Sangiovese is the primary grape variety used in Chianti wines from Tuscany, Italy."
+    "explanation": "Chianti (Tuscany) must predominantly be Sangiovese, a grape known for bright acidity and cherry-herbal notes."
   },
   {
     "id": 6,
@@ -50,7 +50,7 @@
   },
   {
     "id": 8,
-    "question": "What is the traditional aging vessel for Rioja wines?",
+    "question": "What is the traditional aging vessel for Rioja wines, achieving their vanilla-spice notes?",
     "options": ["Stainless steel", "Oak barrels", "Concrete tanks", "Glass bottles"],
     "correct": 1,
     "explanation": "Rioja wines are traditionally aged in oak barrels, which gives them their characteristic vanilla and spice notes."
@@ -71,10 +71,10 @@
   },
   {
     "id": 11,
-    "question": "Which grape variety is the most planted in the world?",
-    "options": ["Cabernet Sauvignon", "Merlot", "Chardonnay", "Airen"],
+    "question": "Which wine grape variety is the most planted in the world?",
+    "options": ["Cabernet Sauvignon", "Merlot", "Chardonnay", "Kyoho"],
     "correct": 3,
-    "explanation": "Airen, a white grape variety from Spain, is the most planted grape in the world, though it's not as well-known internationally."
+    "explanation": "The Cabernet Sauvignon grape is the most planted wine grape variety in the world, though the Kyoho grape, a Chinese table grape, is the most planted overall. Cabernet Sauvignon is grown on over 840,000 acres globally and is a highly versatile and popular choice for winemaking."
   },
   {
     "id": 12,
@@ -88,14 +88,14 @@
     "question": "Which wine region is famous for its 'Grand Cru' classification?",
     "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
     "correct": 1,
-    "explanation": "Burgundy is famous for its Grand Cru classification, representing the highest quality vineyards in the region."
+    "explanation": "Burgundy is famous for its Grand Cru classification, representing ttiny, prized plots (‘climats’) delivering some of the world’s most sought-after wines."
   },
   {
     "id": 14,
-    "question": "What is the traditional glass shape for Burgundy wines?",
+    "question": "Which glass shape is traditionally used for fine Burgundy Pinot Noir?",
     "options": ["Tall and narrow", "Wide and bowl-shaped", "Flute", "Tulip"],
     "correct": 1,
-    "explanation": "Burgundy glasses are wide and bowl-shaped to allow the wine's aromas to develop and be appreciated."
+    "explanation": "A wide bowl opens delicate aromas (violet, cherry, sous-bois) and softens perception of acidity and tannin."
   },
   {
     "id": 15,
