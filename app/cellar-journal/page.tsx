@@ -364,7 +364,7 @@ export default function CellarJournal() {
 
       {/* Collapsible Sections Container */}
       <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out ${
-        isStatsExpanded || isFiltersExpanded ? 'pt-6 pb-4' : 'pt-4 pb-4'
+        isStatsExpanded || isFiltersExpanded ? 'pt-6 pb-4' : 'pt-4 pb-1'
       }`}>
         {/* Statistics and Filters Header */}
         <div className={`transition-all duration-300 ease-in-out ${
@@ -594,6 +594,8 @@ export default function CellarJournal() {
         onClose={() => setIsAddExternalWineModalOpen(false)}
         onAddWine={handleAddExternalWine}
       />
+
+
     </div>
   );
 }

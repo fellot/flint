@@ -190,7 +190,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
   return (
     <>
       <div className="card">
-        <div className="overflow-x-auto overflow-y-auto max-h-[70vh] relative">
+        <div className="overflow-x-auto relative">
           <table className="w-full divide-y divide-gray-200 text-xs">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
