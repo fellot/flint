@@ -134,24 +134,24 @@
   },
   {
     "id": 20,
-    "question": "What is the traditional aging period for Vintage Port?",
-    "options": ["2-3 years", "5-10 years", "10-20 years", "20+ years"],
+    "question": "Vintage Port is best described as a style that…",
+    "options": ["Is ready to drink on release", "Is aged only in large casks for decades", "Improves for 20+ years in bottle", "Is always off-dry"],
     "correct": 2,
-    "explanation": "Vintage Port is typically aged for 10-20 years in bottle, developing complex flavors over time."
+    "explanation": "Top Vintage Ports evolve for decades in bottle, developing fig, cacao, violet, and exotic spice complexity."
   },
   {
     "id": 21,
-    "question": "Which wine region is famous for its 'Côte' system?",
-    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
-    "correct": 1,
-    "explanation": "Burgundy uses the 'Côte' system to classify its vineyards, with Côte d'Or being the most famous."
+    "question": "In Burgundy, a ‘climat’ is…",
+    "options": ["A named vineyard parcel with distinct terroir", "An oak aging regime", "A weather pattern", "A grape clone"],
+    "correct": 0,
+    "explanation": "Climats are precisely delineated vineyard sites, each expressing a unique combination of soil, slope, and microclimate."
   },
   {
     "id": 22,
-    "question": "What is the primary grape in Gewürztraminer?",
-    "options": ["Gewürztraminer", "Riesling", "Pinot Gris", "Muscat"],
-    "correct": 0,
-    "explanation": "Gewürztraminer is both the grape variety and the wine name, known for its aromatic, spicy character."
+    "question": "What does ‘sur lie’ aging mean?",
+    "options": ["On the skins", "On the lees (spent yeast)", "Under flor", "Under vacuum"],
+    "correct": 1,
+    "explanation": "Lees contact can add texture (creaminess), savory notes (brioche), and protection against oxidation."
   },
   {
     "id": 23,
@@ -162,24 +162,24 @@
   },
   {
     "id": 24,
-    "question": "What does 'sur lie' mean in winemaking?",
-    "options": ["On the lees", "In the sun", "In the cellar", "In the barrel"],
+    "question": "Which technique is central to the fresh, fruity style of Beaujolais Nouveau?",
+    "options": ["Carbonic maceration", "Extended barrel aging", "Fortification", "Flor aging"],
     "correct": 0,
-    "explanation": "'Sur lie' means 'on the lees' - aging wine on the dead yeast cells to add complexity and texture."
+    "explanation": "Whole berries ferment in a CO₂-rich environment, producing low-tannin wines with vivid banana-and-bubblegum esters."
   },
   {
     "id": 25,
-    "question": "Which wine region is known for its 'Super Tuscans'?",
-    "options": ["Piedmont", "Tuscany", "Veneto", "Sicily"],
+    "question": "Which compound is primarily responsible for the classic 'petrol' aroma in aged Riesling?",
+    "options": ["TCA (2,4,6-trichloroanisole)", "TDN (1,1,6-trimethyl-1,2-dihydronaphthalene)", "Diacetyl", "Rotundone"],
     "correct": 1,
-    "explanation": "Super Tuscans are high-quality wines from Tuscany that don't follow traditional DOC regulations."
-  },
+    "explanation": "TDN forms as Riesling ages—its development is influenced by sun exposure, ripeness, and bottle age—giving that kerosene/petrol note at very low thresholds. It’s not a fault; in balance, it signals complexity and maturity."
+  }
   {
     "id": 26,
-    "question": "What is the traditional glass shape for Champagne?",
-    "options": ["Wide bowl", "Tall flute", "Tulip shape", "All of the above"],
+    "question": "Which glass is now widely preferred for serious Champagne tasting?",
+    "options": ["Coupe", "Tall flute", "Tulip-shaped white-wine glass", "Shot glass"],
     "correct": 2,
-    "explanation": "The tulip-shaped glass is preferred for Champagne as it preserves bubbles and concentrates aromas."
+    "explanation": "A tulip or white-wine glass preserves bubbles while amplifying aroma—more perfumed and nuanced than a narrow flute."
   },
   {
     "id": 27,
@@ -204,7 +204,7 @@
   },
   {
     "id": 30,
-    "question": "What is the primary grape variety in Amarone della Valpolicella?",
+    "question": "Amarone della Valpolicella is typically a blend of which grapes?",
     "options": ["Corvina, Rondinella, Molinara", "Nebbiolo, Barbera, Dolcetto", "Sangiovese, Canaiolo, Colorino", "Merlot, Cabernet, Syrah"],
     "correct": 0,
     "explanation": "Amarone grapes are dried (appassimento) to concentrate sugars and flavor before fermentation—rich, powerful, and dry."
@@ -218,45 +218,45 @@
   },
   {
     "id": 32,
-    "question": "What is the traditional method of making sparkling wine?",
-    "options": ["Charmat method", "Méthode Champenoise", "Tank method", "All of the above"],
-    "correct": 1,
-    "explanation": "Méthode Champenoise (traditional method) involves secondary fermentation in the bottle, creating the finest sparkling wines."
+    "question": "Germany’s Mosel region is most synonymous with which grape?",
+    "options": ["Riesling", "Gewürztraminer", "Pinot Gris", "Chardonnay"],
+    "correct": 0,
+    "explanation": "Mosel Riesling brings racy acidity, slate-driven minerality, and delicacy—from bone-dry to lusciously sweet."
   },
   {
     "id": 33,
-    "question": "Which grape variety is most associated with the Mosel region?",
-    "options": ["Riesling", "Gewürztraminer", "Pinot Gris", "Chardonnay"],
-    "correct": 0,
-    "explanation": "Riesling is the signature grape of the Mosel region in Germany, producing some of the world's finest white wines."
+    "question": "Marlborough, New Zealand, rose to fame primarily for…",
+    "options": ["Syrah", "Sauvignon Blanc", "Pinotage", "Tempranillo"],
+    "correct": 1,
+    "explanation": "Zesty, pungent Sauvignon Blanc—think passion fruit and lime—with cool nights preserving electrifying acidity."
   },
   {
     "id": 34,
-    "question": "What does 'noble rot' refer to in winemaking?",
-    "options": ["A wine fault", "Botrytis cinerea", "A grape variety", "A wine region"],
+    "question": "What is Napa Valley’s global flagship grape variety?",
+    "options": ["Pinot Noir", "Cabernet Sauvignon", "Riesling", "Sangiovese"],
     "correct": 1,
-    "explanation": "Noble rot (Botrytis cinerea) is a beneficial fungus that concentrates sugars in grapes, essential for making sweet wines like Sauternes."
+    "explanation": "Napa Cabernet delivers ripe blackcurrant, plush tannins, and polished oak—California’s calling card."
   },
   {
     "id": 35,
-    "question": "Which wine region is famous for its 'Côte de Beaune'?",
-    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
-    "correct": 1,
-    "explanation": "Côte de Beaune is the southern part of Burgundy's Côte d'Or, renowned for both red and white wines, especially Chardonnay."
+    "question": "Australia’s Barossa Valley is most associated with…",
+    "options": ["Shiraz (Syrah)", "Nebbiolo", "Cabernet Franc", "Gamay"],
+    "correct": 0,
+    "explanation": "Barossa Shiraz is rich and full-bodied, often with dark fruit, chocolate, and spice."
   },
   {
     "id": 36,
-    "question": "What is the primary grape variety in Côtes du Rhône?",
-    "options": ["Grenache", "Syrah", "Mourvèdre", "All of the above"],
-    "correct": 3,
-    "explanation": "Côtes du Rhône wines are typically blends of Grenache, Syrah, and Mourvèdre, with Grenache often being the primary variety."
+    "question": "Ribera del Duero reds are anchored by which grape?",
+    "options": ["Garnacha", "Tempranillo (Tinto Fino)", "Mencía", "Monastrell"],
+    "correct": 1,
+    "explanation": "High-altitude Tempranillo yields deep color and structure; ‘Tinto Fino’ is the local name."
   },
   {
     "id": 37,
-    "question": "Which country is the origin of Tempranillo?",
-    "options": ["France", "Italy", "Spain", "Portugal"],
-    "correct": 2,
-    "explanation": "Tempranillo is Spain's most important red grape variety, used in Rioja, Ribera del Duero, and many other regions."
+    "question": "Where does Albariño, famed for saline citrus zest, hails from?",
+    "options": ["Rías Baixas (Galicia, Spain)", "Vinho Verde (Portugal)", "Sicily (Italy)", "Provence (France)"],
+    "correct": 0,
+    "explanation": "Coastal Rías Baixas is Albariño’s stronghold, though neighboring Minho (Vinho Verde) also shines with Alvarinho."
   },
   {
     "id": 38,
@@ -274,17 +274,17 @@
   },
   {
     "id": 40,
-    "question": "What is the primary grape variety in Pouilly-Fumé?",
-    "options": ["Sauvignon Blanc", "Chardonnay", "Pinot Gris", "Riesling"],
+    "question": "Right Bank Bordeaux (Saint-Émilion, Pomerol) leans most on…",
+    "options": ["Merlot and Cabernet Franc", "Cabernet Sauvignon and Petit Verdot", "Syrah and Grenache", "Pinot Noir and Gamay"],
     "correct": 0,
-    "explanation": "Pouilly-Fumé is made from 100% Sauvignon Blanc grapes in the Loire Valley, known for its smoky, mineral character."
+    "explanation": "Clay and limestone soils suit Merlot and Cabernet Franc, creating plush, perfumed wines."
   },
   {
     "id": 41,
-    "question": "Which wine region is famous for its 'Côte de Nuits'?",
-    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
-    "correct": 1,
-    "explanation": "Côte de Nuits is the northern part of Burgundy's Côte d'Or, famous for its red wines, especially Pinot Noir."
+    "question": "Alsace’s hallmark dry whites prominently feature…",
+    "options": ["Riesling", "Chardonnay", "Sauvignon Blanc", "Vermentino"],
+    "correct": 0,
+    "explanation": "Alsace Riesling is typically dry, intensely aromatic, and racy; Gewürztraminer and Pinot Gris also star."
   },
   {
     "id": 42,
@@ -295,17 +295,17 @@
   },
   {
     "id": 43,
-    "question": "Which grape variety is most associated with the Mosel region?",
-    "options": ["Riesling", "Gewürztraminer", "Pinot Gris", "Chardonnay"],
-    "correct": 0,
-    "explanation": "Riesling is the signature grape of the Mosel region in Germany, producing some of the world's finest white wines."
+    "question": "Hungary’s Tokaj region is renowned for which sweet wine?",
+    "options": ["Recioto", "Tokaji Aszú", "Vin Santo", "Sauternes"],
+    "correct": 1,
+    "explanation": "Tokaji Aszú is made from botrytized grapes (mainly Furmint), measured in historic ‘puttonyos’ sweetness levels."
   },
   {
     "id": 44,
-    "question": "What does 'noble rot' refer to in winemaking?",
-    "options": ["A wine fault", "Botrytis cinerea", "A grape variety", "A wine region"],
-    "correct": 1,
-    "explanation": "Noble rot (Botrytis cinerea) is a beneficial fungus that concentrates sugars in grapes, essential for making sweet wines like Sauternes."
+    "question": "Bolgheri, home to many ‘Super Tuscans,’ sits in…",
+    "options": ["Piedmont", "Lazio", "Tuscany’s coast", "Sardinia"],
+    "correct": 2,
+    "explanation": "Sea breezes and gravelly soils help ripen Bordeaux varieties—think Sassicaia, Ornellaia, and friends."
   },
   {
     "id": 45,
