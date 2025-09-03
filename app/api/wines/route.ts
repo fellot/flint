@@ -4,6 +4,7 @@ import path from 'path';
 import { Wine, WineFormData } from '@/types/wine';
 
 const dataFilePath = path.join(process.cwd(), 'data', 'wines.json');
+const dataFilePath2 = path.join(process.cwd(), 'data', 'wines2.json');
 
 // GET all wines
 export async function GET(request: NextRequest) {
@@ -14,8 +15,11 @@ export async function GET(request: NextRequest) {
     const vintage = searchParams.get('vintage');
     const status = searchParams.get('status');
     const search = searchParams.get('search');
+    const dataSource = searchParams.get('dataSource') || '1'; // Default to wines.json
 
-    const data = await fs.readFile(dataFilePath, 'utf8');
+    // Choose data file based on dataSource parameter
+    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
+    const data = await fs.readFile(filePath, 'utf8');
     let wines: Wine[] = JSON.parse(data);
 
     // Apply filters
@@ -68,7 +72,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const data = await fs.readFile(dataFilePath, 'utf8');
+    // Get data source from request body or default to 1
+    const dataSource = body.dataSource || '1';
+    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
+    const data = await fs.readFile(filePath, 'utf8');
     const wines: Wine[] = JSON.parse(data);
 
     const newWine: Wine = {
@@ -86,7 +93,7 @@ export async function POST(request: NextRequest) {
     };
 
     wines.push(newWine);
-    await fs.writeFile(dataFilePath, JSON.stringify(wines, null, 2));
+    await fs.writeFile(filePath, JSON.stringify(wines, null, 2));
 
     return NextResponse.json(newWine, { status: 201 });
   } catch (error) {

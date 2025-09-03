@@ -4,6 +4,7 @@ import path from 'path';
 import { Wine } from '@/types/wine';
 
 const dataFilePath = path.join(process.cwd(), 'data', 'wines.json');
+const dataFilePath2 = path.join(process.cwd(), 'data', 'wines2.json');
 
 // GET single wine
 export async function GET(
@@ -11,7 +12,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const data = await fs.readFile(dataFilePath, 'utf8');
+    const { searchParams } = new URL(request.url);
+    const dataSource = searchParams.get('dataSource') || '1';
+    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
+    const data = await fs.readFile(filePath, 'utf8');
     const wines: Wine[] = JSON.parse(data);
     
     const wine = wines.find(w => w.id === params.id);
@@ -34,7 +38,9 @@ export async function PUT(
 ) {
   try {
     const body = await request.json();
-    const data = await fs.readFile(dataFilePath, 'utf8');
+    const dataSource = body.dataSource || '1';
+    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
+    const data = await fs.readFile(filePath, 'utf8');
     const wines: Wine[] = JSON.parse(data);
     
     const wineIndex = wines.findIndex(w => w.id === params.id);
@@ -44,7 +50,7 @@ export async function PUT(
     }
 
     wines[wineIndex] = { ...wines[wineIndex], ...body };
-    await fs.writeFile(dataFilePath, JSON.stringify(wines, null, 2));
+    await fs.writeFile(filePath, JSON.stringify(wines, null, 2));
 
     return NextResponse.json(wines[wineIndex]);
   } catch (error) {
@@ -59,7 +65,10 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const data = await fs.readFile(dataFilePath, 'utf8');
+    const { searchParams } = new URL(request.url);
+    const dataSource = searchParams.get('dataSource') || '1';
+    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
+    const data = await fs.readFile(filePath, 'utf8');
     const wines: Wine[] = JSON.parse(data);
     
     const wineIndex = wines.findIndex(w => w.id === params.id);
@@ -69,7 +78,7 @@ export async function DELETE(
     }
 
     wines.splice(wineIndex, 1);
-    await fs.writeFile(dataFilePath, JSON.stringify(wines, null, 2));
+    await fs.writeFile(filePath, JSON.stringify(wines, null, 2));
 
     return NextResponse.json({ message: 'Wine deleted successfully' });
   } catch (error) {

@@ -5,7 +5,7 @@ import { Wine, WineFilters } from '@/types/wine';
 import WineTable from '@/components/WineTable';
 import WineFiltersComponent from '@/components/WineFilters';
 import AIWineModal from '@/components/AIWineModal';
-import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, Filter } from 'lucide-react';
+import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, Filter, Globe } from 'lucide-react';
 
 export default function Home() {
   const [wines, setWines] = useState<Wine[]>([]);
@@ -23,10 +23,12 @@ export default function Home() {
   const [expandedCountries, setExpandedCountries] = useState<Set<string>>(new Set());
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
+  const [dataSource, setDataSource] = useState<'1' | '2'>('1');
+  const [isPortugueseMode, setIsPortugueseMode] = useState(false);
 
   useEffect(() => {
     fetchWines();
-  }, []);
+  }, [dataSource]);
 
   useEffect(() => {
     applyFilters();
@@ -34,11 +36,12 @@ export default function Home() {
 
   const fetchWines = async () => {
     try {
-      console.log('Fetching wines...');
+      setLoading(true);
+      console.log('Fetching wines from dataSource:', dataSource);
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
       
-      const response = await fetch('/api/wines', {
+      const response = await fetch(`/api/wines?dataSource=${dataSource}`, {
         signal: controller.signal
       });
       
@@ -50,7 +53,7 @@ export default function Home() {
       }
       
       const data = await response.json();
-      console.log('Wines fetched:', data.length);
+      console.log('Wines fetched:', data.length, 'from dataSource:', dataSource);
       setWines(data);
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
@@ -102,10 +105,10 @@ export default function Home() {
 
   const handleWineUpdate = async (updatedWine: Wine) => {
     try {
-      const response = await fetch(`/api/wines/${updatedWine.id}`, {
+      const response = await fetch(`/api/wines/${updatedWine.id}?dataSource=${dataSource}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedWine),
+        body: JSON.stringify({ ...updatedWine, dataSource }),
       });
 
       if (response.ok) {
@@ -117,10 +120,13 @@ export default function Home() {
   };
 
   const handleWineDelete = async (wineId: string) => {
-    if (!confirm('Are you sure you want to delete this wine?')) return;
+    const confirmMessage = isPortugueseMode 
+      ? 'Tem certeza de que deseja excluir este vinho?' 
+      : 'Are you sure you want to delete this wine?';
+    if (!confirm(confirmMessage)) return;
 
     try {
-      const response = await fetch(`/api/wines/${wineId}`, {
+      const response = await fetch(`/api/wines/${wineId}?dataSource=${dataSource}`, {
         method: 'DELETE',
       });
 
@@ -137,7 +143,7 @@ export default function Home() {
       const response = await fetch('/api/wines', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(wineData),
+        body: JSON.stringify({ ...wineData, dataSource }),
       });
 
       if (response.ok) {
@@ -272,6 +278,13 @@ export default function Home() {
     }));
   };
 
+  const toggleDataSource = () => {
+    const newDataSource = dataSource === '1' ? '2' : '1';
+    console.log('Toggling dataSource from', dataSource, 'to', newDataSource);
+    setDataSource(newDataSource);
+    setIsPortugueseMode(newDataSource === '2');
+  };
+
   const getDynamicWineLabel = () => {
     const activeFilters = [];
     
@@ -295,10 +308,12 @@ export default function Home() {
     }
     
     if (activeFilters.length === 0) {
-      return 'Total Wines';
+      return isPortugueseMode ? 'Total de Vinhos' : 'Total Wines';
     }
     
-    return `Wines - ${activeFilters.join(' - ')}`;
+    return isPortugueseMode 
+      ? `Vinhos - ${activeFilters.join(' - ')}`
+      : `Wines - ${activeFilters.join(' - ')}`;
   };
 
   const stats = getStats();
@@ -308,7 +323,9 @@ export default function Home() {
       <div className="min-h-screen bg-red-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-wine-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your wine cellar...</p>
+          <p className="mt-4 text-gray-600">
+            {isPortugueseMode ? 'Carregando sua adega...' : 'Loading your wine cellar...'}
+          </p>
         </div>
       </div>
     );
@@ -334,7 +351,7 @@ export default function Home() {
                 </div>
                 <input
                   type="text"
-                  placeholder="Search wines, grapes, food pairings..."
+                  placeholder={isPortugueseMode ? "Buscar vinhos, uvas, harmonizações..." : "Search wines, grapes, food pairings..."}
                   value={filters.search}
                   onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                   className="w-full input-field pl-12 py-3 text-base"
@@ -380,7 +397,7 @@ export default function Home() {
               <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
                 <BarChart3 className="h-4 w-4 text-white" />
               </div>
-              <span>Statistics</span>
+              <span>{isPortugueseMode ? 'Estatísticas' : 'Statistics'}</span>
               {isStatsExpanded ? (
                 <ChevronUp className="h-5 w-5 text-white ml-auto" />
               ) : (
@@ -396,7 +413,7 @@ export default function Home() {
               <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
                 <Filter className="h-4 w-4 text-white" />
               </div>
-              <span>Filters</span>
+              <span>{isPortugueseMode ? 'Filtros' : 'Filters'}</span>
               {isFiltersExpanded ? (
                 <ChevronUp className="h-5 w-5 text-white ml-auto" />
               ) : (
@@ -421,8 +438,10 @@ export default function Home() {
               </div>
               <div className="ml-4 flex-1">
                 <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
-                  Countries
-                  <span className="ml-2 text-xs text-gray-400">(click to filter/clear)</span>
+                  {isPortugueseMode ? 'Países' : 'Countries'}
+                  <span className="ml-2 text-xs text-gray-400">
+                    {isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}
+                  </span>
                 </p>
                 <div className="space-y-1">
                   {Object.entries(stats.countryBreakdown)
@@ -496,8 +515,10 @@ export default function Home() {
               </div>
               <div className="ml-4 flex-1">
                 <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
-                  Styles
-                  <span className="ml-2 text-xs text-gray-400">(click to filter/clear)</span>
+                  {isPortugueseMode ? 'Estilos' : 'Styles'}
+                  <span className="ml-2 text-xs text-gray-400">
+                    {isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}
+                  </span>
                 </p>
                 <div className="space-y-1">
                   {Object.entries(stats.styleBreakdown)
@@ -533,8 +554,10 @@ export default function Home() {
               </div>
               <div className="ml-4 flex-1">
                 <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
-                  Vintages
-                  <span className="ml-2 text-xs text-gray-400">(click to filter/clear)</span>
+                  {isPortugueseMode ? 'Safras' : 'Vintages'}
+                  <span className="ml-2 text-xs text-gray-400">
+                    {isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}
+                  </span>
                 </p>
                 <div className="space-y-1">
                   {Object.entries(stats.vintageBreakdown)
@@ -565,6 +588,7 @@ export default function Home() {
           isFiltersExpanded ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden'
         }`}>
           <WineFiltersComponent
+            key={`wine-filters-${dataSource}`}
             filters={filters}
             onFiltersChange={setFilters}
             wines={wines}
@@ -575,6 +599,7 @@ export default function Home() {
       {/* Wine Table */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <WineTable
+          key={`wine-table-${dataSource}`}
           wines={filteredWines}
           onWineUpdate={handleWineUpdate}
           onWineDelete={handleWineDelete}
@@ -598,18 +623,48 @@ export default function Home() {
               className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
             >
               <Calendar className="h-5 w-5" />
-              <span>Cellar Journal</span>
+              <span>{isPortugueseMode ? 'Diário da Adega' : 'Cellar Journal'}</span>
             </button>
             <button
               onClick={() => window.location.href = '/wine-trivia'}
               className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md hover:shadow-lg"
             >
               <WineIcon className="h-5 w-5" />
-              <span>Wine Trivia</span>
+              <span>{isPortugueseMode ? 'Quiz de Vinhos' : 'Wine Trivia'}</span>
             </button>
+            <div className="flex items-center space-x-3 px-6 py-3 bg-gray-100 rounded-lg">
+              <Globe className="h-5 w-5 text-gray-600" />
+              <div className="flex items-center space-x-2">
+                <span className={`text-sm font-medium transition-colors ${
+                  dataSource === '1' ? 'text-blue-600' : 'text-gray-500'
+                }`}>
+                  {isPortugueseMode ? 'EN' : 'EN'}
+                </span>
+                <button
+                  onClick={toggleDataSource}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                    dataSource === '2' ? 'bg-green-600' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      dataSource === '2' ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+                <span className={`text-sm font-medium transition-colors ${
+                  dataSource === '2' ? 'text-green-600' : 'text-gray-500'
+                }`}>
+                  {isPortugueseMode ? 'PT' : 'PT'}
+                </span>
+              </div>
+            </div>
           </div>
           <p className="text-center text-sm text-gray-500 mt-3">
-            Explore your wine collection and test your knowledge
+            {isPortugueseMode 
+              ? 'Explore sua coleção de vinhos e teste seus conhecimentos'
+              : 'Explore your wine collection and test your knowledge'
+            }
           </p>
         </div>
       </footer>

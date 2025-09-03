@@ -15,10 +15,10 @@ export default function WineFiltersComponent({
   wines,
 }: WineFiltersComponentProps) {
   // Get unique values for filter options
-  const countries = ['all', ...Array.from(new Set(wines.map(w => w.country))).sort()];
-  const styles = ['all', ...Array.from(new Set(wines.map(w => w.style)))];
-  const vintages = ['all', ...Array.from(new Set(wines.map(w => w.vintage.toString())))
-    .filter(v => v !== 'all')
+  const countries = ['all', ...Array.from(new Set(wines.map(w => w.country).filter(Boolean))).sort()];
+  const styles = ['all', ...Array.from(new Set(wines.map(w => w.style).filter(Boolean)))];
+  const vintages = ['all', ...Array.from(new Set(wines.map(w => w.vintage?.toString() || '')))
+    .filter(v => v !== 'all' && v !== '')
     .sort((a, b) => parseInt(b) - parseInt(a))];
   // Removed statuses array since status filter is no longer needed
 
