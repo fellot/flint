@@ -309,17 +309,17 @@
   },
   {
     "id": 45,
-    "question": "Which wine region is famous for its 'Côte de Beaune'?",
-    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
-    "correct": 1,
-    "explanation": "Côte de Beaune is the southern part of Burgundy's Côte d'Or, renowned for both red and white wines, especially Chardonnay."
+    "question": "Mount Etna’s signature red (Etna Rosso) relies on…",
+    "options": ["Nerello Mascalese", "Aglianico", "Sangiovese", "Corvina"],
+    "correct": 0,
+    "explanation": "High-altitude, lava-soiled slopes in Sicily yield pale-colored, tension-filled reds from Nerello Mascalese (often with Nerello Cappuccio)."
   },
   {
     "id": 46,
-    "question": "What is the primary grape variety in Côtes du Rhône?",
-    "options": ["Grenache", "Syrah", "Mourvèdre", "All of the above"],
-    "correct": 3,
-    "explanation": "Côtes du Rhône wines are typically blends of Grenache, Syrah, and Mourvèdre, with Grenache often being the primary variety."
+    "question": "Which method creates bubbles via secondary fermentation in the same bottle sold?",
+    "options": ["Charmat (tank) method", "Traditional method", "Soda stream addition", "Carbonic maceration"],
+    "correct": 1,
+    "explanation": "Traditional method (a.k.a. méthode champenoise/classique) builds fine mousse, autolytic notes (brioche) from time on lees."
   },
   {
     "id": 47,
@@ -330,93 +330,93 @@
   },
   {
     "id": 48,
-    "question": "What is the traditional aging vessel for Chianti Classico?",
-    "options": ["Stainless steel", "Oak barrels", "Concrete tanks", "All of the above"],
-    "correct": 3,
-    "explanation": "Chianti Classico can be aged in various vessels including stainless steel, oak barrels, and concrete tanks, depending on the winemaker's style."
+    "question": "‘Riddling’ (remuage) in sparkling wine production is done to…",
+    "options": ["Adjust sweetness", "Collect yeast sediment in the neck", "Sterilize the wine", "Add bubbles"],
+    "correct": 1,
+    "explanation": "Gradual tilting/rotating moves lees to the crown cap for clean removal during disgorgement."
   },
   {
     "id": 49,
-    "question": "Which wine region is known for its 'Crus' classification system?",
-    "options": ["Bordeaux", "Burgundy", "Champagne", "All of the above"],
-    "correct": 3,
-    "explanation": "All three regions use 'Crus' classifications: Bordeaux (Grand Cru Classé), Burgundy (Grand Cru), and Champagne (Grand Cru)."
+    "question": "What is ‘disgorgement’?",
+    "options": ["Lees stirring", "Cold-stabilizing tartrates", "Removing sediment from sparkling bottles", "Adding base wine to top up barrels"],
+    "correct": 2,
+    "explanation": "After riddling, the neck is frozen and the yeast plug is expelled—then dosage is added and the bottle is sealed."
   },
   {
     "id": 50,
-    "question": "What is the primary grape variety in Pouilly-Fumé?",
-    "options": ["Sauvignon Blanc", "Chardonnay", "Pinot Gris", "Riesling"],
-    "correct": 0,
-    "explanation": "Pouilly-Fumé is made from 100% Sauvignon Blanc grapes in the Loire Valley, known for its smoky, mineral character."
+    "question": "In Champagne, ‘dosage’ primarily…",
+    "options": ["Raises alcohol", "Controls sweetness style", "Adds tannin", "Clarifies the wine"],
+    "correct": 1,
+    "explanation": "A mix of wine and sugar (liqueur d’expédition) sets styles from Brut Nature (no sugar added) to Demi-Sec (sweeter)."
   },
   {
     "id": 51,
-    "question": "Which wine region is known for its 'Côte de Nuits'?",
-    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
+    "question": "Malolactic fermentation (MLF) transforms…",
+    "options": ["Sugar into alcohol", "Malic acid into lactic acid", "Tannins into anthocyanins", "SO₂ into oxygen"],
     "correct": 1,
-    "explanation": "Côte de Nuits is the northern part of Burgundy's Côte d'Or, famous for its red wines, especially Pinot Noir."
+    "explanation": "MLF softens sharp malic acid (apple-like) into creamier lactic acid, adding roundness (and buttery notes in some Chardonnays)."
   },
   {
     "id": 52,
-    "question": "What is the traditional method of making sparkling wine?",
-    "options": ["Charmat method", "Méthode Champenoise", "Tank method", "All of the above"],
+    "question": "‘Bâtonnage’ is the practice of…",
+    "options": ["Punching down skins", "Stirring lees", "Blending varieties", "Racking off sediment"],
     "correct": 1,
-    "explanation": "Méthode Champenoise (traditional method) involves secondary fermentation in the bottle, creating the finest sparkling wines."
+    "explanation": "Lees stirring increases texture and can bring savory, bready complexity while protecting against oxidation."
   },
   {
     "id": 53,
-    "question": "Which grape variety is most associated with the Mosel region?",
-    "options": ["Riesling", "Gewürztraminer", "Pinot Gris", "Chardonnay"],
-    "correct": 0,
-    "explanation": "Riesling is the signature grape of the Mosel region in Germany, producing some of the world's finest white wines."
+    "question": "Which rosé technique draws off juice from a red ferment to intensify the red?",
+    "options": ["Direct press", "Saignée", "Blanc de noirs", "Free-run"],
+    "correct": 1,
+    "explanation": "Saignée (to ‘bleed’) removes some pale juice early, making the remaining red more concentrated; the bled juice becomes rosé."
   },
   {
     "id": 54,
-    "question": "What does 'noble rot' refer to in winemaking?",
-    "options": ["A wine fault", "Botrytis cinerea", "A grape variety", "A wine region"],
+    "question": "Whole-cluster (stem-in) fermentation often contributes…",
+    "options": ["Lower aromatics", "Greener tannin and spicy aromatics", "Higher alcohol", "Less structure"],
     "correct": 1,
-    "explanation": "Noble rot (Botrytis cinerea) is a beneficial fungus that concentrates sugars in grapes, essential for making sweet wines like Sauternes."
+    "explanation": "Including stems can add peppery spice, floral lift, and firm, sometimes herbal tannin—especially in Pinot Noir and Syrah."
   },
   {
     "id": 55,
-    "question": "Which wine region is famous for its 'Côte de Beaune'?",
-    "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
+    "question": "Amphorae and qvevri are…",
+    "options": ["Types of oak barrels", "Clay vessels used for fermenting/aging", "Filtration devices", "Sweetness measurement tools"],
     "correct": 1,
-    "explanation": "Côte de Beaune is the southern part of Burgundy's Côte d'Or, renowned for both red and white wines, especially Chardonnay."
+    "explanation": "Clay vessels (revived from ancient/Georgian traditions) allow gentle micro-oxygenation and unique texture development."
   },
   {
     "id": 56,
-    "question": "What is the primary grape variety in Côtes du Rhône?",
-    "options": ["Grenache", "Syrah", "Mourvèdre", "All of the above"],
-    "correct": 3,
-    "explanation": "Côtes du Rhône wines are typically blends of Grenache, Syrah, and Mourvèdre, with Grenache often being the primary variety."
+    "question": "Punch-downs (pigeage) vs pump-overs (remontage) both manage…",
+    "options": ["Fermentation temperature only", "Cap extraction in red winemaking", "Lees integration in whites", "Bottle pressure"],
+    "correct": 1,
+    "explanation": "They submerge or circulate the floating ‘cap’ of skins to control color, tannin, and flavor extraction."
   },
   {
     "id": 57,
-    "question": "Which country is the origin of Tempranillo?",
-    "options": ["France", "Italy", "Spain", "Portugal"],
-    "correct": 2,
-    "explanation": "Tempranillo is Spain's most important red grape variety, used in Rioja, Ribera del Duero, and many other regions."
+    "question": "A ‘cold soak’ is…",
+    "options": ["Cold stabilization before bottling", "Pre-fermentation maceration at low temp", "A method to lower alcohol", "A filtration step"],
+    "correct": 1,
+    "explanation": "Chilling crushed grapes pre-fermentation can extract color and aroma gently, often used for Pinot Noir."
   },
   {
     "id": 58,
-    "question": "What is the traditional aging vessel for Chianti Classico?",
-    "options": ["Stainless steel", "Oak barrels", "Concrete tanks", "All of the above"],
-    "correct": 3,
-    "explanation": "Chianti Classico can be aged in various vessels including stainless steel, oak barrels, and concrete tanks, depending on the winemaker's style."
+    "question": "Fining vs filtration: what’s the key difference?",
+    "options": ["Fining adds sweetness; filtration adds tannin", "Fining binds/settles particles; filtration physically strains them", "Both are the same", "Neither affects clarity"],
+    "correct": 1,
+    "explanation": "Fining agents (e.g., bentonite) bind colloids to settle out; filtration passes wine through media to remove particles."
   },
   {
     "id": 59,
-    "question": "Which wine region is known for its 'Crus' classification system?",
-    "options": ["Bordeaux", "Burgundy", "Champagne", "All of the above"],
-    "correct": 3,
-    "explanation": "All three regions use 'Crus' classifications: Bordeaux (Grand Cru Classé), Burgundy (Grand Cru), and Champagne (Grand Cru)."
+    "question": "SO₂ (sulfur dioxide) is primarily used in winemaking to…",
+    "options": ["Increase alcohol", "Sweeten wine", "Protect against oxidation and microbes", "Add bubbles"],
+    "correct": 2,
+    "explanation": "SO₂ is an antioxidant and antimicrobial tool—key for stability when used judiciously."
   },
   {
     "id": 60,
-    "question": "What is the primary grape variety in Pouilly-Fumé?",
-    "options": ["Sauvignon Blanc", "Chardonnay", "Pinot Gris", "Riesling"],
-    "correct": 0,
-    "explanation": "Pouilly-Fumé is made from 100% Sauvignon Blanc grapes in the Loire Valley, known for its smoky, mineral character."
+    "question": "Concrete ‘egg’ fermenters are prized because they…",
+    "options": ["Are completely inert like glass", "Add heavy oak flavors", "Encourage natural convection and subtle oxygen exchange", "Carbonate wine naturally"],
+    "correct": 2,
+    "explanation": "The egg’s shape circulates fermenting wine, enhancing texture; concrete is neutral but slightly permeable to oxygen."
   }
 ]
