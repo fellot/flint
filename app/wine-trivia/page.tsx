@@ -198,7 +198,7 @@ export default function WineTriviaPage() {
             <p className="text-gray-600 mb-6">{error}</p>
             <div className="space-y-3">
               <button
-                onClick={fetchQuestions}
+                onClick={() => fetchQuestions()}
                 className="btn-primary w-full"
               >
                 Try Again
