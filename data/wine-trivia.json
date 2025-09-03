@@ -73,7 +73,7 @@
     "id": 11,
     "question": "Which wine grape variety is the most planted in the world?",
     "options": ["Cabernet Sauvignon", "Merlot", "Chardonnay", "Kyoho"],
-    "correct": 3,
+    "correct": 0,
     "explanation": "The Cabernet Sauvignon grape is the most planted wine grape variety in the world, though the Kyoho grape, a Chinese table grape, is the most planted overall. Cabernet Sauvignon is grown on over 840,000 acres globally and is a highly versatile and popular choice for winemaking."
   },
   {
@@ -205,9 +205,9 @@
   {
     "id": 30,
     "question": "What is the primary grape variety in Amarone della Valpolicella?",
-    "options": ["Corvina", "Rondinella", "Molinara", "All of the above"],
-    "correct": 3,
-    "explanation": "Amarone is typically a blend of Corvina, Rondinella, and Molinara grapes, with Corvina being the primary variety."
+    "options": ["Corvina, Rondinella, Molinara", "Nebbiolo, Barbera, Dolcetto", "Sangiovese, Canaiolo, Colorino", "Merlot, Cabernet, Syrah"],
+    "correct": 0,
+    "explanation": "Amarone grapes are dried (appassimento) to concentrate sugars and flavor before fermentation—rich, powerful, and dry."
   },
   {
     "id": 31,
@@ -267,10 +267,10 @@
   },
   {
     "id": 39,
-    "question": "Which wine region is known for its 'Crus' classification system?",
-    "options": ["Bordeaux", "Burgundy", "Champagne", "All of the above"],
-    "correct": 3,
-    "explanation": "All three regions use 'Crus' classifications: Bordeaux (Grand Cru Classé), Burgundy (Grand Cru), and Champagne (Grand Cru)."
+    "question": "In Bordeaux’s Left Bank, the dominant red grape is usually…",
+    "options": ["Merlot", "Cabernet Sauvignon", "Pinot Noir", "Syrah"],
+    "correct": 1,
+    "explanation": "Gravelly Left Bank soils favor Cabernet Sauvignon (think Médoc and Graves), with Merlot playing a supporting role."
   },
   {
     "id": 40,
@@ -288,10 +288,10 @@
   },
   {
     "id": 42,
-    "question": "What is the traditional method of making sparkling wine?",
-    "options": ["Charmat method", "Méthode Champenoise", "Tank method", "All of the above"],
-    "correct": 1,
-    "explanation": "Méthode Champenoise (traditional method) involves secondary fermentation in the bottle, creating the finest sparkling wines."
+    "question": "Which Greek island is famous for laser-bright Assyrtiko?",
+    "options": ["Crete", "Rhodes", "Santorini", "Corfu"],
+    "correct": 2,
+    "explanation": "Volcanic Santorini yields mineral, high-acid Assyrtiko—often trained in basket-like kouloura to shield grapes from wind."
   },
   {
     "id": 43,
