@@ -184,9 +184,9 @@
   {
     "id": 27,
     "question": "Which grape variety is most associated with the Loire Valley?",
-    "options": ["Sauvignon Blanc", "Chenin Blanc", "Cabernet Franc", "All of the above"],
-    "correct": 3,
-    "explanation": "The Loire Valley is famous for Sauvignon Blanc (Sancerre), Chenin Blanc (Vouvray), and Cabernet Franc (Chinon)."
+    "options": ["Sauvignon Blanc, Chenin Blanc, Cabernet Franc", "Chardonnay, Pinot Noir, Pinot Meunier", "Glera, Garganega, Corvina", "Riesling, Grüner, Blaufränkisch"],
+    "correct": 0,
+    "explanation": "Think Sancerre (Sauvignon), Vouvray (Chenin), and Chinon (Cabernet Franc) as Loire hallmarks."
   },
   {
     "id": 28,
