@@ -88,7 +88,7 @@
     "question": "Which wine region is famous for its 'Grand Cru' classification?",
     "options": ["Bordeaux", "Burgundy", "Champagne", "Rhône"],
     "correct": 1,
-    "explanation": "Burgundy is famous for its Grand Cru classification, representing ttiny, prized plots (‘climats’) delivering some of the world’s most sought-after wines."
+    "explanation": "Burgundy is famous for its Grand Cru classification, representing tiny, prized plots (‘climats’) delivering some of the world’s most sought-after wines."
   },
   {
     "id": 14,
