@@ -11,11 +11,19 @@ interface TriviaQuestion {
   explanation: string;
 }
 
-interface WineTriviaGameProps {
-  questions: TriviaQuestion[];
+interface SetInfo {
+  id: number;
+  name: string;
+  totalSets: number;
 }
 
-export default function WineTriviaGame({ questions }: WineTriviaGameProps) {
+interface WineTriviaGameProps {
+  questions: TriviaQuestion[];
+  setInfo: SetInfo | null;
+  onGameComplete: (setId: number) => void;
+}
+
+export default function WineTriviaGame({ questions, setInfo, onGameComplete }: WineTriviaGameProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -54,6 +62,10 @@ export default function WineTriviaGame({ questions }: WineTriviaGameProps) {
       setTimeLeft(30);
     } else {
       setGameCompleted(true);
+      // Mark this set as completed
+      if (setInfo) {
+        onGameComplete(setInfo.id);
+      }
     }
   };
 
@@ -102,8 +114,13 @@ export default function WineTriviaGame({ questions }: WineTriviaGameProps) {
               </p>
               <div className="mt-4 px-4 py-2 bg-purple-100 border border-purple-200 rounded-lg">
                 <p className="text-sm text-purple-800 font-medium">
-                  🎯 Today's Set: {questions[0]?.id <= 15 ? 'Classic Wine Knowledge' : 'Advanced Wine Expertise'}
+                  🎯 Current Set: {setInfo?.name || 'Loading...'}
                 </p>
+                {setInfo && (
+                  <p className="text-xs text-purple-600 mt-1">
+                    Set {setInfo.id} of {setInfo.totalSets}
+                  </p>
+                )}
               </div>
             </div>
             
@@ -128,7 +145,7 @@ export default function WineTriviaGame({ questions }: WineTriviaGameProps) {
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                  Questions alternate daily between two sets
+                  Complete sets to unlock new question collections
                 </li>
               </ul>
             </div>
@@ -163,7 +180,7 @@ export default function WineTriviaGame({ questions }: WineTriviaGameProps) {
               </p>
               <div className="mt-3 px-3 py-1 bg-purple-100 border border-purple-200 rounded-full">
                 <p className="text-xs text-purple-800 font-medium">
-                  Set: {questions[0]?.id <= 15 ? 'Classic Wine Knowledge' : 'Advanced Wine Expertise'}
+                  Completed: {setInfo?.name || 'Unknown Set'}
                 </p>
               </div>
             </div>
@@ -196,8 +213,15 @@ export default function WineTriviaGame({ questions }: WineTriviaGameProps) {
                 <span>Play Again</span>
               </button>
               <button
-                onClick={() => window.location.href = '/'}
+                onClick={() => window.location.reload()}
                 className="btn-primary flex items-center space-x-2"
+              >
+                <ArrowRight className="h-4 w-4" />
+                <span>Next Set</span>
+              </button>
+              <button
+                onClick={() => window.location.href = '/'}
+                className="btn-secondary flex items-center space-x-2"
               >
                 <ArrowRight className="h-4 w-4" />
                 <span>Back to Cellar</span>

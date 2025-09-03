@@ -11,8 +11,20 @@ interface TriviaQuestion {
   explanation: string;
 }
 
+interface SetInfo {
+  id: number;
+  name: string;
+  totalSets: number;
+}
+
+interface TriviaResponse {
+  questions: TriviaQuestion[];
+  setInfo: SetInfo;
+}
+
 export default function WineTriviaPage() {
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
+  const [setInfo, setSetInfo] = useState<SetInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,20 +32,53 @@ export default function WineTriviaPage() {
     fetchQuestions();
   }, []);
 
+  const getCompletedSets = (): number[] => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const completed = localStorage.getItem('wine-trivia-completed-sets');
+      return completed ? JSON.parse(completed) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const markSetAsCompleted = (setId: number) => {
+    if (typeof window === 'undefined') return;
+    try {
+      const completed = getCompletedSets();
+      if (!completed.includes(setId)) {
+        completed.push(setId);
+        localStorage.setItem('wine-trivia-completed-sets', JSON.stringify(completed));
+      }
+    } catch (error) {
+      console.error('Error saving completed set:', error);
+    }
+  };
+
   const fetchQuestions = async () => {
     try {
-      const response = await fetch('/api/wine-trivia');
+      const completedSets = getCompletedSets();
+      const queryParams = completedSets.length > 0 
+        ? `?completedSets=${encodeURIComponent(JSON.stringify(completedSets))}`
+        : '';
+      
+      const response = await fetch(`/api/wine-trivia${queryParams}`);
       if (!response.ok) {
         throw new Error('Failed to fetch trivia questions');
       }
-      const data = await response.json();
-      setQuestions(data);
+      const data: TriviaResponse = await response.json();
+      setQuestions(data.questions);
+      setSetInfo(data.setInfo);
     } catch (error) {
       console.error('Error fetching trivia questions:', error);
       setError('Failed to load trivia questions. Please try again later.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGameComplete = (setId: number) => {
+    markSetAsCompleted(setId);
   };
 
   if (loading) {
@@ -99,5 +144,11 @@ export default function WineTriviaPage() {
     );
   }
 
-  return <WineTriviaGame questions={questions} />;
+  return (
+    <WineTriviaGame 
+      questions={questions} 
+      setInfo={setInfo}
+      onGameComplete={handleGameComplete}
+    />
+  );
 }

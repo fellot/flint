@@ -10,22 +10,49 @@ export async function GET(request: NextRequest) {
     const data = await fs.readFile(dataFilePath, 'utf8');
     const allQuestions = JSON.parse(data);
     
-    // Split questions into two sets (first 15 and last 15)
-    const set1 = allQuestions.slice(0, 15);
-    const set2 = allQuestions.slice(15, 30);
+    // Split questions into multiple sets (15 questions each)
+    const set1 = allQuestions.slice(0, 15);   // Classic Wine Knowledge
+    const set2 = allQuestions.slice(15, 30);  // Advanced Wine Expertise
+    const set3 = allQuestions.slice(30, 45);  // Regional Wine Specialties
+    const set4 = allQuestions.slice(45, 60);  // Wine Production & Techniques
     
-    // Get current date to determine which set to use
-    const today = new Date();
-    const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+    const questionSets = [
+      { id: 1, name: 'Classic Wine Knowledge', questions: set1 },
+      { id: 2, name: 'Advanced Wine Expertise', questions: set2 },
+      { id: 3, name: 'Regional Wine Specialties', questions: set3 },
+      { id: 4, name: 'Wine Production & Techniques', questions: set4 }
+    ];
     
-    // Alternate between sets based on day of year
-    const useSet1 = dayOfYear % 2 === 0;
-    const selectedSet = useSet1 ? set1 : set2;
+    // Get completed sets from query parameter
+    const { searchParams } = new URL(request.url);
+    const completedSetsParam = searchParams.get('completedSets');
+    const completedSets = completedSetsParam ? JSON.parse(completedSetsParam) : [];
+    
+    // Find the next available set
+    let selectedSet = questionSets[0]; // Default to first set
+    
+    if (completedSets.length > 0) {
+      // Find the next uncompleted set
+      const nextSet = questionSets.find(set => !completedSets.includes(set.id));
+      if (nextSet) {
+        selectedSet = nextSet;
+      } else {
+        // All sets completed, cycle back to the first set
+        selectedSet = questionSets[0];
+      }
+    }
     
     // Shuffle the selected set to randomize order
-    const shuffledQuestions = selectedSet.sort(() => Math.random() - 0.5);
+    const shuffledQuestions = selectedSet.questions.sort(() => Math.random() - 0.5);
     
-    return NextResponse.json(shuffledQuestions);
+    return NextResponse.json({
+      questions: shuffledQuestions,
+      setInfo: {
+        id: selectedSet.id,
+        name: selectedSet.name,
+        totalSets: questionSets.length
+      }
+    });
   } catch (error) {
     console.error('Error reading trivia questions:', error);
     return NextResponse.json({ error: 'Failed to fetch trivia questions' }, { status: 500 });
