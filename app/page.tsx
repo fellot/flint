@@ -635,10 +635,10 @@ export default function Home() {
             <div className="flex items-center space-x-3 px-6 py-3 bg-gray-100 rounded-lg">
               <Globe className="h-5 w-5 text-gray-600" />
               <div className="flex items-center space-x-2">
-                <span className={`text-sm font-medium transition-colors ${
-                  dataSource === '1' ? 'text-blue-600' : 'text-gray-500'
+                <span className={`text-2xl transition-colors ${
+                  dataSource === '1' ? 'opacity-100' : 'opacity-50'
                 }`}>
-                  {isPortugueseMode ? 'EN' : 'EN'}
+                  🇨🇦
                 </span>
                 <button
                   onClick={toggleDataSource}
@@ -652,10 +652,10 @@ export default function Home() {
                     }`}
                   />
                 </button>
-                <span className={`text-sm font-medium transition-colors ${
-                  dataSource === '2' ? 'text-green-600' : 'text-gray-500'
+                <span className={`text-2xl transition-colors ${
+                  dataSource === '2' ? 'opacity-100' : 'opacity-50'
                 }`}>
-                  {isPortugueseMode ? 'PT' : 'PT'}
+                  🇧🇷
                 </span>
               </div>
             </div>
