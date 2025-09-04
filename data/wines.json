@@ -899,7 +899,28 @@
     "location": "on the way",
     "quantity": 1,
     "bottle_image": "https://cache2.voyageursduvin.com/products/Luigi-Baudana-Barolo-Baudana-zoom.jpg",
-    "technical_sheet": "https://www.baudana.it/wp-content/uploads/2025/02/FS-BOBA21-IT-.pdf",
-    "dataSource": "1"
+    "technical_sheet": "https://www.baudana.it/wp-content/uploads/2025/02/FS-BOBA21-IT-.pdf"
+  },
+  {
+    "id": "44",
+    "bottle": "Two Hands Bella's Garden Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "vintage": 2021,
+    "drinkingWindow": "2023–2034",
+    "peakYear": 2028,
+    "foodPairingNotes": "Full-bodied Barossa Shiraz with ripe blackberry and blueberry, pepper, licorice and cocoa; great with grilled lamb, beef short ribs, barbecue, venison and aged hard cheeses.",
+    "mealToHaveWithThisWine": "Slow-braised lamb shanks with rosemary and garlic",
+    "style": "Red",
+    "grapes": "Shiraz (Syrah)",
+    "status": "in_cellar",
+    "consumedDate": null,
+    "notes": "",
+    "rating": null,
+    "price": null,
+    "location": "on the way",
+    "quantity": 2,
+    "bottle_image": "https://cache1.voyageursduvin.com/products/Two-Hands-Bellas-Garden-zoom.jpg",
+    "technical_sheet": "https://twohandswines.com/pages/bellas-garden"
   }
 ]
