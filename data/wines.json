@@ -46,7 +46,7 @@
     "id": "3",
     "bottle": "Abbazia di Novacella Alto Adige Valle Isarco DOC",
     "country": "Italy",
-    "region": "Alto Adige Valle Isarco",
+    "region": "Alto Adige (Valle Isarco)",
     "vintage": 2018,
     "drinkingWindow": "2020–2028",
     "peakYear": 2023,
@@ -61,7 +61,8 @@
     "price": null,
     "location": "Wine fridge A - L1",
     "quantity": 1,
-    "bottle_image": "https://images.vivino.com/thumbs/5SLjVc6QTXq8rtBkA-9FiA_pb_x600.png"
+    "bottle_image": "https://images.vivino.com/thumbs/5SLjVc6QTXq8rtBkA-9FiA_pb_x600.png",
+    "dataSource": "1"
   },
   {
     "id": "4",
@@ -860,7 +861,7 @@
     "id": "42",
     "bottle": "San Felice Campogiovanni Brunello di Montalcino",
     "country": "Italy",
-    "region": "Tuscany (Brunello di Montalcino DOCG, Siena)",
+    "region": "Tuscany (Brunello)",
     "vintage": 2012,
     "drinkingWindow": "2019–2035",
     "peakYear": 2027,
@@ -882,7 +883,7 @@
     "id": "43",
     "bottle": "Luigi Baudana Baudana Barolo",
     "country": "Italy",
-    "region": "Piedmont (Barolo DOCG, Serralunga d'Alba – Baudana cru)",
+    "region": "Piedmont (Barolo)",
     "vintage": 2021,
     "drinkingWindow": "2027–2043",
     "peakYear": 2034,
@@ -898,6 +899,7 @@
     "location": "on the way",
     "quantity": 1,
     "bottle_image": "https://cache2.voyageursduvin.com/products/Luigi-Baudana-Barolo-Baudana-zoom.jpg",
-    "technical_sheet": "https://www.baudana.it/wp-content/uploads/2025/02/FS-BOBA21-IT-.pdf"
+    "technical_sheet": "https://www.baudana.it/wp-content/uploads/2025/02/FS-BOBA21-IT-.pdf",
+    "dataSource": "1"
   }
 ]
