@@ -31,8 +31,8 @@
     "vintage": 2021,
     "drinkingWindow": "2023–2028",
     "peakYear": "2025",
-    "foodPairingNotes": "Grilled meats, pasta with tomato",
-    "mealToHaveWithThisWine": "Espaguete à bolonhesa",
+    "foodPairingNotes": "Fruta negra e toque de carvalho harmonizam com grelhados, hambúrguer e queijos curados.",
+    "mealToHaveWithThisWine": "Bife ancho grelhado com batatas rústicas",
     "style": "Tinto",
     "grapes": "Cabernet Sauvignon, Merlot",
     "status": "in_cellar",
@@ -43,8 +43,9 @@
     "location": "Adega - Setor frança",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSApT4ATtJAE6DACoiryY0xtQZyamKnj1zNlQ&s",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "3",
@@ -198,8 +199,8 @@
     "vintage": 2016,
     "drinkingWindow": "2018–2028",
     "peakYear": "2023",
-    "foodPairingNotes": "Game meats, roasted pork",
-    "mealToHaveWithThisWine": "Leitão à Bairrada",
+    "foodPairingNotes": "Frescor do Dão e taninos médios pedem porco assado, aves de sabor marcante e risotos de cogumelos.",
+    "mealToHaveWithThisWine": "Lombo de porco assado com ervas",
     "style": "Tinto",
     "grapes": "Touriga Nacional, Jaen, Alfrocheiro",
     "status": "in_cellar",
@@ -210,8 +211,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9Vy11BpXt8H4cVvMX6HhehcZqgpCJHsUJpA&s",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "10",
@@ -221,8 +223,8 @@
     "vintage": 2018,
     "drinkingWindow": "2021–2030",
     "peakYear": "2025",
-    "foodPairingNotes": "Red meats, hearty stews",
-    "mealToHaveWithThisWine": "Feijoada",
+    "foodPairingNotes": "Fruta preta e frescor equilibram cortes bovinos, grelhados e guisados.",
+    "mealToHaveWithThisWine": "Posta à mirandesa",
     "style": "Tinto",
     "grapes": "Touriga Nacional, Touriga Franca, Tinta Roriz",
     "status": "in_cellar",
@@ -233,8 +235,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://images.vivino.com/thumbs/rfixaHdESi61EeX2CI3Qjg_pb_x960.png",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "11",
@@ -244,8 +247,8 @@
     "vintage": 2014,
     "drinkingWindow": "2017–2027",
     "peakYear": "2022",
-    "foodPairingNotes": "Roast beef, cheese",
-    "mealToHaveWithThisWine": "Picanha com farofa",
+    "foodPairingNotes": "Fruta negra e taninos presentes combinam com carnes vermelhas grelhadas e pratos de forno.",
+    "mealToHaveWithThisWine": "Posta à mirandesa",
     "style": "Tinto",
     "grapes": "Touriga Nacional, Touriga Franca, Tinta Roriz",
     "status": "in_cellar",
@@ -256,8 +259,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://cdnx.jumpseller.com/the-yeatman/image/15837393/quinta-romaneira-syrah-1260965-s519_e.png?1663765220",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "12",
@@ -291,8 +295,8 @@
     "vintage": 2020,
     "drinkingWindow": "2022–2030",
     "peakYear": "2026",
-    "foodPairingNotes": "Red meats, charcuterie",
-    "mealToHaveWithThisWine": "Churrasco gaúcho",
+    "foodPairingNotes": "Corpo médio-cheio e especiarias combinam com churrasco, costela e massas ricas.",
+    "mealToHaveWithThisWine": "Picanha na brasa com farofa e vinagrete",
     "style": "Tinto",
     "grapes": "Merlot, Cabernet Sauvignon, Tannat",
     "status": "in_cellar",
@@ -303,7 +307,7 @@
     "location": "Adega - Setor brazil (campanha gaúcha)",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
+    "bottle_image": "https://images.tcdn.com.br/img/img_prod/1268793/miolo_quinta_do_seival_castas_portuguesas_2020_10534_1_ff000dfc0e2296ef525887b86b5505d5.jpg",
     "fromCellar": true,
     "dataSource": "2"
   },
@@ -387,8 +391,8 @@
     "vintage": 2023,
     "drinkingWindow": "2025–2035",
     "peakYear": "2030",
-    "foodPairingNotes": "Lamb, pork",
-    "mealToHaveWithThisWine": "Carne de porco à alentejana",
+    "foodPairingNotes": "Concentração e frescor de vinha velha harmonizam com assados de forno, estufados e pratos com cogumelos.",
+    "mealToHaveWithThisWine": "Cordeiro assado com ervas",
     "style": "Tinto",
     "grapes": "Old vines (field blend, mostly Aragonez, Trincadeira, Alicante Bouschet)",
     "status": "in_cellar",
@@ -399,8 +403,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6i0jPM-hBtZTLDG7quKUQ2Saf9Nz2VPGs6A&s",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "19",
@@ -410,8 +415,8 @@
     "vintage": 2021,
     "drinkingWindow": "2023–2032",
     "peakYear": "2027",
-    "foodPairingNotes": "Red meats, stews",
-    "mealToHaveWithThisWine": "Carne de panela",
+    "foodPairingNotes": "Fruta preta e especiarias com taninos firmes combinam com churrasco, costelas e queijos curados.",
+    "mealToHaveWithThisWine": "Picanha na brasa com farofa e vinagrete",
     "style": "Tinto",
     "grapes": "Alicante Bouschet, Syrah, Aragonez",
     "status": "in_cellar",
@@ -422,8 +427,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://www.bswliquor.com/cdn/shop/files/outeiro-red-2019.jpg?v=1740772468",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "20",
@@ -433,8 +439,8 @@
     "vintage": 2020,
     "drinkingWindow": "2022–2032",
     "peakYear": "2026",
-    "foodPairingNotes": "Game, truffle dishes",
-    "mealToHaveWithThisWine": "Tagliatelle com trufas",
+    "foodPairingNotes": "Acidez alta e taninos firmes pedem gordura e umami: cogumelos, trufas, embutidos e carnes de panela.",
+    "mealToHaveWithThisWine": "Tajarin com ragu de cogumelos",
     "style": "Tinto",
     "grapes": "Nebbiolo",
     "status": "in_cellar",
@@ -445,8 +451,9 @@
     "location": "Adega - Setor itália",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://images.vivino.com/thumbs/6gLXxekfTn-mPaOm1hNs1g_pb_x960.png",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "21",
@@ -456,8 +463,8 @@
     "vintage": 2016,
     "drinkingWindow": "2019–2030",
     "peakYear": "2024",
-    "foodPairingNotes": "Roasted meats, hearty stews",
-    "mealToHaveWithThisWine": "Feijoada mineira",
+    "foodPairingNotes": "Taninos presentes e notas de especiarias/balsâmico combinam com cordeiro, cabrito e enchidos.",
+    "mealToHaveWithThisWine": "Cabrito assado no forno",
     "style": "Tinto",
     "grapes": "Touriga Nacional, field blend",
     "status": "in_cellar",
@@ -468,8 +475,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://revistaadega.uol.com.br/media/_versions/garrafas/palacio_dos_tavoras_vinhas_velhas_grande_reserva_tinto_2016_md.jpg",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "22",
@@ -479,8 +487,8 @@
     "vintage": 2020,
     "drinkingWindow": "2022–2028",
     "peakYear": "2025",
-    "foodPairingNotes": "Roasted pork, seafood stews",
-    "mealToHaveWithThisWine": "Caldeirada de peixe",
+    "foodPairingNotes": "Acidez viva e fruta vermelha pedem porco grelhado, pratos com tomate e enchidos.",
+    "mealToHaveWithThisWine": "Entremeada de porco grelhada",
     "style": "Tinto",
     "grapes": "Portuguese red blend (Castelão, Aragonez)",
     "status": "in_cellar",
@@ -491,8 +499,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://www.wine.com.br/cdn-cgi/image/f=png/assets-images/produtos/28019-01.png",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "23",
@@ -646,8 +655,8 @@
     "vintage": 2015,
     "drinkingWindow": "2018–2030",
     "peakYear": "2025",
-    "foodPairingNotes": "Game, pork",
-    "mealToHaveWithThisWine": "Carne de porco à alentejana",
+    "foodPairingNotes": "Estrutura média-cheia, fruta escura e toques terrosos/especiados pedem porco, ensopados e assados de forno.",
+    "mealToHaveWithThisWine": "Lombo de porco assado com alho e alecrim",
     "style": "Tinto",
     "grapes": "Old vine blend (Trincadeira, Aragonez, Alicante Bouschet)",
     "status": "in_cellar",
@@ -657,9 +666,10 @@
     "price": null,
     "location": "Adega - Setor portugal",
     "quantity": 1,
-    "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "technical_sheet": "",
+    "bottle_image": "https://www.dogdouro.swiss/458-large_default/tapada-do-chaves-portalegre-2015-reserva-red-doc-alentejo.jpg",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "32",
@@ -693,8 +703,8 @@
     "vintage": 2019,
     "drinkingWindow": "2021–2028",
     "peakYear": "2025",
-    "foodPairingNotes": "Pasta, roasted meats",
-    "mealToHaveWithThisWine": "Polenta com ragu",
+    "foodPairingNotes": "Perfil toscano com frescor e especiarias combina com ragus, porchetta e pratos com ervas.",
+    "mealToHaveWithThisWine": "Pappardelle ao ragu de javali",
     "style": "Tinto",
     "grapes": "Sangiovese, Merlot, Cabernet Sauvignon",
     "status": "in_cellar",
@@ -705,8 +715,9 @@
     "location": "Adega - Setor itália",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://saornellaiastatic.blob.core.windows.net/media/0000685_le-volte-dellornellaia-2019.png",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "34",
@@ -714,10 +725,10 @@
     "country": "Brasil",
     "region": "Vale dos Vinhedos",
     "vintage": 2017,
-    "drinkingWindow": "2001–2010",
-    "peakYear": "Past peak",
-    "foodPairingNotes": "Hearty stews, cheese",
-    "mealToHaveWithThisWine": "Cozido brasileiro (drink with caution)",
+    "drinkingWindow": "2018-2024",
+    "peakYear": 2022,
+    "foodPairingNotes": "Taninos macios e fruta madura harmonizam com massas ao tomate, risotos e carnes grelhadas.",
+    "mealToHaveWithThisWine": "Nhoque ao ragu de carne",
     "style": "Tinto",
     "grapes": "Merlot",
     "status": "in_cellar",
@@ -728,7 +739,7 @@
     "location": "Adega - Setor brasileiro",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
+    "bottle_image": "https://www.meuvinho.com.br/imgdin/prod/SaltonGeracoesMarioSalton.jpg",
     "fromCellar": true,
     "dataSource": "2"
   },
@@ -740,7 +751,7 @@
     "vintage": 2018,
     "drinkingWindow": "2020–2027",
     "peakYear": "2024",
-    "foodPairingNotes": "Pasta, grilled chicken",
+    "foodPairingNotes": "Corpo médio, fruta madura e taninos redondos casam com massas ao tomate, aves assadas e carnes grelhadas.",
     "mealToHaveWithThisWine": "Frango assado com batatas",
     "style": "Tinto",
     "grapes": "Merlot",
@@ -752,8 +763,9 @@
     "location": "Adega - Setor brasileiro",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://cdn.dooca.store/278/products/mkk54phmechpayk2q2ak2jhydpw6fnq5auql_450x600+fill_ffffff+crop_center.jpg?v=1728071057&webp=0",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "36",
@@ -859,8 +871,8 @@
     "vintage": 2021,
     "drinkingWindow": "2023–2032",
     "peakYear": "2026",
-    "foodPairingNotes": "Lamb, steak",
-    "mealToHaveWithThisWine": "Cordeiro grelhado",
+    "foodPairingNotes": "Fruta negra e pimenta-preta casam com churrasco, costelas, linguiças e hambúrguer.",
+    "mealToHaveWithThisWine": "Picanha na brasa com farofa e vinagrete",
     "style": "Tinto",
     "grapes": "Syrah",
     "status": "in_cellar",
@@ -871,8 +883,9 @@
     "location": "Adega - Setor brasileiro",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://images.vivino.com/thumbs/CQRIHTDsS3CXQqjvfuLJJw_pb_x600.png",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "41",
@@ -882,8 +895,8 @@
     "vintage": 2019,
     "drinkingWindow": "2021–2029",
     "peakYear": "2025",
-    "foodPairingNotes": "Red meats, stews",
-    "mealToHaveWithThisWine": "Picadinho de carne",
+    "foodPairingNotes": "Taninos firmes e notas de cassis/cedro pedem cortes bovinos, cordeiro e molhos de ervas.",
+    "mealToHaveWithThisWine": "Bife ancho grelhado com batatas rústicas",
     "style": "Tinto",
     "grapes": "Cabernet Sauvignon",
     "status": "in_cellar",
@@ -894,7 +907,7 @@
     "location": "Adega - Setor chile (maipo andes)",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
+    "bottle_image": "https://cav.cl/storage/sku_images/29378.jpg",
     "fromCellar": true,
     "dataSource": "2"
   },
@@ -930,8 +943,8 @@
     "vintage": 2018,
     "drinkingWindow": "2021–2030",
     "peakYear": "2025",
-    "foodPairingNotes": "Steak, BBQ",
-    "mealToHaveWithThisWine": "Picanha na brasa",
+    "foodPairingNotes": "Corpo cheio e notas de cassis/cedro harmonizam com cortes bovinos, ragus e queijos curados.",
+    "mealToHaveWithThisWine": "Bife de chorizo com batatas rústicas",
     "style": "Tinto",
     "grapes": "Cabernet Sauvignon blend",
     "status": "in_cellar",
@@ -942,8 +955,9 @@
     "location": "Adega - Setor chile",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://www.saq.com/media/catalog/product/1/3/13217532-1_1639070464.png?optimize=high&fit=bounds&height=&width=&format=jpeg",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "44",
@@ -953,8 +967,8 @@
     "vintage": 2016,
     "drinkingWindow": "2019–2035",
     "peakYear": "2028",
-    "foodPairingNotes": "Braised meats, aged cheese",
-    "mealToHaveWithThisWine": "Rabada com polenta",
+    "foodPairingNotes": "Encorpado e untuoso, com ameixa passa e chocolate, combina com carnes de panela, caça e queijos curados.",
+    "mealToHaveWithThisWine": "Ossobuco com polenta cremosa",
     "style": "Tinto",
     "grapes": "Corvina, Rondinella, Molinara",
     "status": "in_cellar",
@@ -965,8 +979,9 @@
     "location": "Adega - Setor itália",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://www.zenato.it/templates/yootheme/cache/Amarone-Classico_DOCG-7f6527bd.png",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "45",
@@ -1000,8 +1015,8 @@
     "vintage": 2011,
     "drinkingWindow": "2014–2030",
     "peakYear": "2020",
-    "foodPairingNotes": "Game, roast beef",
-    "mealToHaveWithThisWine": "Javali assado",
+    "foodPairingNotes": "Vinho evoluído, com notas de especiarias e balsâmico, vai bem com caça e carnes de cozimento lento.",
+    "mealToHaveWithThisWine": "Javali estufado (ou ragu de carne)",
     "style": "Tinto",
     "grapes": "Touriga Nacional, Touriga Franca, Tinta Roriz",
     "status": "in_cellar",
@@ -1012,8 +1027,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://www.portuguesevinhos.uk/wp-content/uploads/2016/05/Castel-Ares.jpg",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "47",
@@ -1215,8 +1231,8 @@
     "vintage": 2016,
     "drinkingWindow": "2018–2030",
     "peakYear": "2024",
-    "foodPairingNotes": "Game meats, strong cheese",
-    "mealToHaveWithThisWine": "Picanha gorda na brasa",
+    "foodPairingNotes": "Taninos potentes e frescor alto pedem cortes gordos e cozimentos lentos (churrasco, costela, cordeiro).",
+    "mealToHaveWithThisWine": "Costela bovina assada lentamente",
     "style": "Tinto",
     "grapes": "Tannat",
     "status": "in_cellar",
@@ -1227,8 +1243,9 @@
     "location": "Adega - Setor uruguai",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://static.wixstatic.com/media/9e12c2_0a419f6758b0415fa974be521aa9749a~mv2.jpg/v1/fill/w_440,h_1523,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/9e12c2_0a419f6758b0415fa974be521aa9749a~mv2.jpg",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "57",
@@ -1262,8 +1279,8 @@
     "vintage": 2002,
     "drinkingWindow": "2004–2012",
     "peakYear": "Past peak",
-    "foodPairingNotes": "Rustic meats, stews",
-    "mealToHaveWithThisWine": "Cozido à portuguesa (drink with caution)",
+    "foodPairingNotes": "Vinho mais evoluído, com notas terrosas, pede porco, ensopados e queijos semiduros.",
+    "mealToHaveWithThisWine": "Porco preto alentejano assado",
     "style": "Tinto",
     "grapes": "Aragonez, Trincadeira",
     "status": "in_cellar",
@@ -1274,8 +1291,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://images.vivino.com/thumbs/0EFKjWbUS2a5l5PWZZJucQ_pl_480x640.png",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "59",
@@ -1333,8 +1351,8 @@
     "vintage": 2016,
     "drinkingWindow": "2018–2028",
     "peakYear": "2024",
-    "foodPairingNotes": "Beef, lamb",
-    "mealToHaveWithThisWine": "Carne de panela",
+    "foodPairingNotes": "Estrutura bordalesa pede carnes vermelhas, assados de forno e queijos intensos.",
+    "mealToHaveWithThisWine": "Bife à portuguesa",
     "style": "Tinto",
     "grapes": "Cabernet Sauvignon, Merlot",
     "status": "in_cellar",
@@ -1345,8 +1363,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://www.portugalvineyards.com/98755/palacio-da-bacalhoa-red-2016.jpg",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "62",
@@ -1356,8 +1375,8 @@
     "vintage": 2018,
     "drinkingWindow": "2020–2028",
     "peakYear": "2024",
-    "foodPairingNotes": "Roasted meats, game",
-    "mealToHaveWithThisWine": "Cordeiro ensopado",
+    "foodPairingNotes": "Encorpado e levemente tostado combina com cordeiro, porco assado e pratos levemente picantes.",
+    "mealToHaveWithThisWine": "Pernil suíno assado com ervas",
     "style": "Tinto",
     "grapes": "Monastrell",
     "status": "in_cellar",
@@ -1368,8 +1387,9 @@
     "location": "Adega - Setor espanha",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://raicesibericas.com/cdn/shop/files/Raices-1_Tinto.png?v=1747916758",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "63",
@@ -1403,8 +1423,8 @@
     "vintage": 2011,
     "drinkingWindow": "2014–2030",
     "peakYear": "2020",
-    "foodPairingNotes": "Game, beef",
-    "mealToHaveWithThisWine": "Javali assado",
+    "foodPairingNotes": "Estrutura elegante e taninos presentes pedem cordeiro, enchidos e pratos de forno.",
+    "mealToHaveWithThisWine": "Cordeiro assado com alecrim",
     "style": "Tinto",
     "grapes": "Touriga Nacional, Touriga Franca",
     "status": "in_cellar",
@@ -1415,8 +1435,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://www.castelares.com/wp-content/uploads/2018/09/reserva.png",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "65",
@@ -1450,8 +1471,8 @@
     "vintage": 2016,
     "drinkingWindow": "2019–2030",
     "peakYear": "2025",
-    "foodPairingNotes": "Roast beef, lamb",
-    "mealToHaveWithThisWine": "Picanha",
+    "foodPairingNotes": "Taninos firmes, fruta negra e toque balsâmico pedem assados de forno e carnes gordas.",
+    "mealToHaveWithThisWine": "Cabrito assado no forno",
     "style": "Tinto",
     "grapes": "Traditional field blend",
     "status": "in_cellar",
@@ -1462,8 +1483,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://images.vivino.com/thumbs/544TirM_Qril_6BP7Obyfg_pb_x600.png",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "67",
@@ -1473,8 +1495,8 @@
     "vintage": 2013,
     "drinkingWindow": "2016–2032",
     "peakYear": "2023",
-    "foodPairingNotes": "Game meats, roasted lamb",
-    "mealToHaveWithThisWine": "Cabrito assado",
+    "foodPairingNotes": "Estrutura, frescor e toques balsâmicos acompanham cabrito, cordeiro e enchidos assados.",
+    "mealToHaveWithThisWine": "Cabrito assado no forno",
     "style": "Tinto",
     "grapes": "Touriga Nacional, Tinta Roriz, Touriga Franca",
     "status": "in_cellar",
@@ -1485,8 +1507,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://winehouseportugal.com/8400-large_default/quanta-terra-grande-reserva-2020-vin-rouge.jpg",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "68",
@@ -1544,8 +1567,8 @@
     "vintage": 2014,
     "drinkingWindow": "2017–2028",
     "peakYear": "2023",
-    "foodPairingNotes": "Pork, lamb",
-    "mealToHaveWithThisWine": "Carne de porco assada",
+    "foodPairingNotes": "Estrutura média-cheia com fruta escura e especiarias combina com pratos de porco, ensopados ricos e assados de forno.",
+    "mealToHaveWithThisWine": "Carne de porco à alentejana",
     "style": "Tinto",
     "grapes": "Aragonez, Alicante Bouschet, Trincadeira",
     "status": "in_cellar",
@@ -1556,8 +1579,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://images.vivino.com/thumbs/Yea4zFs9QnqSYtPMJfbvLQ_pb_x600.png",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "71",
@@ -1567,8 +1591,8 @@
     "vintage": 2013,
     "drinkingWindow": "2017–2035",
     "peakYear": "2025",
-    "foodPairingNotes": "Game, truffles",
-    "mealToHaveWithThisWine": "Tagliatelle com trufas",
+    "foodPairingNotes": "Estrutura e complexidade pedem carnes de longa cocção, caça e polenta/risotos ricos.",
+    "mealToHaveWithThisWine": "Brasato al Barolo",
     "style": "Tinto",
     "grapes": "Nebbiolo",
     "status": "in_cellar",
@@ -1579,8 +1603,9 @@
     "location": "Adega - Setor itália",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://www.saq.com/media/catalog/product/1/4/14108936-1_1603915852.png?optimize=high&fit=bounds&height=&width=&format=jpeg",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "72",
@@ -1662,8 +1687,8 @@
     "vintage": 2001,
     "drinkingWindow": "2004–2020",
     "peakYear": "Past peak",
-    "foodPairingNotes": "Game, beef",
-    "mealToHaveWithThisWine": "Cabrito (historic value bottle)",
+    "foodPairingNotes": "Vinho evoluído, com notas de couro e especiarias, vai bem com caça, pato e cogumelos, além de queijos curados.",
+    "mealToHaveWithThisWine": "Arroz de pato",
     "style": "Tinto",
     "grapes": "Touriga Nacional",
     "status": "in_cellar",
@@ -1674,8 +1699,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://www.wine-searcher.com/images/labels/47/71/10554771.jpg",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "76",
@@ -1685,8 +1711,8 @@
     "vintage": 2008,
     "drinkingWindow": "2012–2040",
     "peakYear": "2028",
-    "foodPairingNotes": "Game, roasted meats",
-    "mealToHaveWithThisWine": "Cordeiro assado",
+    "foodPairingNotes": "Taninos firmes e carvalho elegante pedem cordeiro, vitela de forno e caça de sabor mais intenso.",
+    "mealToHaveWithThisWine": "Cordeiro assado com alecrim",
     "style": "Tinto",
     "grapes": "Trincadeira, Aragonez",
     "status": "in_cellar",
@@ -1697,8 +1723,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWbRK8UBGHwJebVyKjBR3AyW5vlazf8JmL7A&s",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "77",
@@ -1732,8 +1759,8 @@
     "vintage": 2001,
     "drinkingWindow": "2004–2018",
     "peakYear": "Past peak",
-    "foodPairingNotes": "Rustic meat",
-    "mealToHaveWithThisWine": "Cozido",
+    "foodPairingNotes": "Taninos macios e notas evoluídas (terrosas/couro) combinam com assados de porco, cogumelos e queijos semiduros.",
+    "mealToHaveWithThisWine": "Filé mignon ao molho de cogumelos.",
     "style": "Tinto",
     "grapes": "Merlot",
     "status": "in_cellar",
@@ -1744,8 +1771,9 @@
     "location": "Adega - Setor portugal",
     "quantity": 1,
     "technical_sheet": null,
-    "bottle_image": null,
-    "fromCellar": true
+    "bottle_image": "https://www.wine-searcher.com/images/labels/59/82/10385982.jpg",
+    "fromCellar": true,
+    "dataSource": "2"
   },
   {
     "id": "79",
