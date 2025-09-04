@@ -856,4 +856,27 @@
     "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTECAsU9jwXBMc7lHotRYEt52X9_n0SiuWkw&s",
     "technical_sheet": "https://static1.squarespace.com/static/5cfe6c2a8dc2800001ee4011/t/666f90602afbb055e7bda3ac/1718587489262/2021_THE+FARM_EOTR_retail.pdf"
   }
+  {
+    "id": "42",
+    "bottle": "San Felice Campogiovanni Brunello di Montalcino",
+    "country": "Italy",
+    "region": "Tuscany (Brunello di Montalcino DOCG, Siena)",
+    "vintage": 2012,
+    "drinkingWindow": "2019–2035",
+    "peakYear": 2027,
+    "foodPairingNotes": "Structured Sangiovese Grosso with cherry, leather and tobacco notes; excels with bistecca, wild-boar ragù, osso buco, mushroom dishes and aged Pecorino.",
+    "mealToHaveWithThisWine": "Pappardelle al ragù di cinghiale",
+    "style": "Red",
+    "grapes": "Sangiovese",
+    "status": "in_cellar",
+    "consumedDate": null,
+    "notes": "",
+    "rating": null,
+    "price": null,
+    "location": "on the way",
+    "quantity": 1,
+    "bottle_image": "https://cdn11.bigcommerce.com/s-oyi93ews/images/stencil/1280w/products/19330/15584/2025-01-16_14.24.41__53478.1737137892.png?c=2",
+    "technical_sheet": "https://admin.sanfelice.com/app/uploads/2023/04/SF-CampogiovanniBrunMontDocg-2015-IT.pdf?_gl=1*6552eb*_up*MQ..*_ga*MjA5OTc1ODk3OC4xNzU2OTk0OTA4*_ga_YJ8Q1ZCK2E*czE3NTY5OTQ5MDgkbzEkZzAkdDE3NTY5OTQ5MDgkajYwJGwwJGgw"
+    
+  }
 ]
