@@ -165,27 +165,27 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
             </div>
             
             <div className="bg-gray-50 rounded-lg p-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Game Rules:</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">{texts.rules}:</h3>
               <ul className="text-left text-gray-700 space-y-2">
                 <li className="flex items-center">
                   <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                  You have 30 seconds per question
+                  {texts.rule1}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                  Choose the best answer from 4 options
+                  {texts.rule2}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                  Learn from detailed explanations
+                  {isPortuguese ? 'Aprenda com explicações detalhadas' : 'Learn from detailed explanations'}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                  Track your progress and score
+                  {isPortuguese ? 'Acompanhe seu progresso e pontuação' : 'Track your progress and score'}
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                  Complete sets to unlock new question collections
+                  {texts.rule3}
                 </li>
               </ul>
             </div>
@@ -195,13 +195,13 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
                 onClick={startGame}
                 className="btn-primary text-lg px-8 py-3 w-full"
               >
-                Start Trivia Challenge
+                {texts.startGame}
               </button>
               <button
                 onClick={onShowSetSelection}
                 className="btn-secondary text-lg px-8 py-3 w-full"
               >
-                Choose Different Set
+                {texts.chooseDifferentSet}
               </button>
             </div>
           </div>
@@ -219,16 +219,16 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
               <div className="h-16 w-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Trophy className="h-8 w-8 text-yellow-600" />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Game Complete!</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{texts.gameComplete}</h1>
               <p className={`text-2xl font-bold ${getScoreColor()} mb-2`}>
                 {getScoreMessage()}
               </p>
               <p className="text-gray-600">
-                You scored {score} out of {totalQuestions} questions
+                {texts.youScored} {score} {texts.outOf} {totalQuestions} {texts.questionsText}
               </p>
               <div className="mt-3 px-3 py-1 bg-purple-100 border border-purple-200 rounded-full">
                 <p className="text-xs text-purple-800 font-medium">
-                  Completed: {setInfo?.name || 'Unknown Set'}
+                  {texts.completed} {setInfo?.name || (isPortuguese ? 'Conjunto Desconhecido' : 'Unknown Set')}
                 </p>
               </div>
             </div>
