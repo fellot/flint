@@ -300,7 +300,7 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
                 <div className={`text-lg font-bold ${timeLeft <= 10 ? 'text-red-600' : 'text-gray-900'}`}>
                   {timeLeft}s
                 </div>
-                <div className="text-xs text-gray-500">Time</div>
+                <div className="text-xs text-gray-500">{isPortuguese ? 'Tempo' : 'Time'}</div>
               </div>
             </div>
           </div>
@@ -367,7 +367,7 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
               <div className="flex items-start">
                 <Star className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
                 <div>
-                  <h4 className="font-semibold text-blue-900 mb-2">Explanation:</h4>
+                  <h4 className="font-semibold text-blue-900 mb-2">{texts.explanation}</h4>
                   <p className="text-blue-800">{currentQuestion.explanation}</p>
                 </div>
               </div>
@@ -382,7 +382,7 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
                 className="btn-primary flex items-center space-x-2"
               >
                 <span>
-                  {currentQuestionIndex < totalQuestions - 1 ? 'Next Question' : 'Finish Game'}
+                  {currentQuestionIndex < totalQuestions - 1 ? texts.nextQuestion : texts.finishGame}
                 </span>
                 <ArrowRight className="h-4 w-4" />
               </button>

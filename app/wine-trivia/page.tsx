@@ -37,6 +37,7 @@ export default function WineTriviaPage() {
   const [showSetSelection, setShowSetSelection] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isPortuguese, setIsPortuguese] = useState(false);
 
   useEffect(() => {
     // On first load, show set selection if no specific set is requested
@@ -84,7 +85,8 @@ export default function WineTriviaPage() {
       const urlParams = new URLSearchParams(window.location.search);
       const languageParam = urlParams.get('language');
       const storedLanguage = localStorage.getItem('wine-data-source');
-      const isPortuguese = languageParam === 'pt' || storedLanguage === '2';
+      const detectedPortuguese = languageParam === 'pt' || storedLanguage === '2';
+      setIsPortuguese(detectedPortuguese);
       
       let queryParams = completedSets.length > 0 
         ? `?completedSets=${encodeURIComponent(JSON.stringify(completedSets))}`
@@ -92,7 +94,7 @@ export default function WineTriviaPage() {
       
       // Add language parameter
       queryParams += queryParams ? '&' : '?';
-      queryParams += `language=${isPortuguese ? 'pt' : 'en'}`;
+      queryParams += `language=${detectedPortuguese ? 'pt' : 'en'}`;
       
       if (setId) {
         queryParams += `&selectedSetId=${setId}`;
@@ -249,11 +251,12 @@ export default function WineTriviaPage() {
   }
 
   return (
-    <WineTriviaGame 
-      questions={questions} 
-      setInfo={setInfo}
-      onGameComplete={handleGameComplete}
-      onShowSetSelection={showSetSelectionModal}
-    />
+            <WineTriviaGame 
+          questions={questions} 
+          setInfo={setInfo}
+          onGameComplete={handleGameComplete}
+          onShowSetSelection={showSetSelectionModal}
+          isPortuguese={isPortuguese}
+        />
   );
 }
