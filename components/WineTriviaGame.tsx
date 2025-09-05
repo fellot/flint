@@ -265,7 +265,7 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
                 className="btn-primary flex items-center space-x-2"
               >
                 <ArrowRight className="h-4 w-4" />
-                <span>Choose Set</span>
+                <span>{texts.chooseSet}</span>
               </button>
               <button
                 onClick={() => window.location.href = '/'}
@@ -288,8 +288,8 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Wine Trivia Challenge</h1>
-              <p className="text-gray-600">Question {currentQuestionIndex + 1} of {totalQuestions}</p>
+              <h1 className="text-2xl font-bold text-gray-900">{texts.title}</h1>
+              <p className="text-gray-600">{texts.question} {currentQuestionIndex + 1} {texts.of} {totalQuestions}</p>
             </div>
             <div className="flex items-center space-x-6">
               <div className="text-center">
