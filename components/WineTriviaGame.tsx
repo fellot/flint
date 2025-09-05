@@ -239,15 +239,15 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
                   <div className={`text-3xl font-bold ${getScoreColor()}`}>
                     {Math.round((score / totalQuestions) * 100)}%
                   </div>
-                  <div className="text-sm text-gray-600">Accuracy</div>
+                  <div className="text-sm text-gray-600">{texts.accuracy}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-gray-900">{score}</div>
-                  <div className="text-sm text-gray-600">Correct</div>
+                  <div className="text-sm text-gray-600">{texts.correct}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-gray-900">{totalQuestions - score}</div>
-                  <div className="text-sm text-gray-600">Incorrect</div>
+                  <div className="text-sm text-gray-600">{texts.incorrect}</div>
                 </div>
               </div>
             </div>
@@ -258,7 +258,7 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
                 className="btn-secondary flex items-center space-x-2"
               >
                 <RotateCcw className="h-4 w-4" />
-                <span>Play Again</span>
+                <span>{texts.playAgain}</span>
               </button>
               <button
                 onClick={onShowSetSelection}
