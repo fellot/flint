@@ -626,7 +626,7 @@ export default function Home() {
               <span>{isPortugueseMode ? 'Diário da Adega' : 'Cellar Journal'}</span>
             </button>
             <button
-              onClick={() => window.location.href = '/wine-trivia'}
+              onClick={() => window.location.href = `/wine-trivia?language=${isPortugueseMode ? 'pt' : 'en'}`}
               className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md hover:shadow-lg"
             >
               <WineIcon className="h-5 w-5" />

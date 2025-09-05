@@ -79,13 +79,23 @@ export default function WineTriviaPage() {
   const fetchQuestions = async (setId?: number) => {
     try {
       const completedSets = getCompletedSets();
+      
+      // Detect language from URL or localStorage
+      const urlParams = new URLSearchParams(window.location.search);
+      const languageParam = urlParams.get('language');
+      const storedLanguage = localStorage.getItem('wine-data-source');
+      const isPortuguese = languageParam === 'pt' || storedLanguage === '2';
+      
       let queryParams = completedSets.length > 0 
         ? `?completedSets=${encodeURIComponent(JSON.stringify(completedSets))}`
         : '';
       
+      // Add language parameter
+      queryParams += queryParams ? '&' : '?';
+      queryParams += `language=${isPortuguese ? 'pt' : 'en'}`;
+      
       if (setId) {
-        queryParams += queryParams ? '&' : '?';
-        queryParams += `selectedSetId=${setId}`;
+        queryParams += `&selectedSetId=${setId}`;
       }
       
       const response = await fetch(`/api/wine-trivia${queryParams}`);

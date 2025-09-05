@@ -22,9 +22,10 @@ interface WineTriviaGameProps {
   setInfo: SetInfo | null;
   onGameComplete: (setId: number) => void;
   onShowSetSelection: () => void;
+  isPortuguese?: boolean;
 }
 
-export default function WineTriviaGame({ questions, setInfo, onGameComplete, onShowSetSelection }: WineTriviaGameProps) {
+export default function WineTriviaGame({ questions, setInfo, onGameComplete, onShowSetSelection, isPortuguese = false }: WineTriviaGameProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -93,11 +94,49 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
 
   const getScoreMessage = () => {
     const percentage = (score / totalQuestions) * 100;
-    if (percentage >= 90) return 'Wine Master! 🍷';
-    if (percentage >= 80) return 'Excellent! 🎉';
-    if (percentage >= 70) return 'Great job! 👍';
-    if (percentage >= 60) return 'Good effort! 😊';
-    return 'Keep learning! 📚';
+    if (isPortuguese) {
+      if (percentage >= 90) return 'Mestre dos Vinhos! 🍷';
+      if (percentage >= 80) return 'Excelente! 🎉';
+      if (percentage >= 70) return 'Ótimo trabalho! 👍';
+      if (percentage >= 60) return 'Bom esforço! 😊';
+      return 'Continue aprendendo! 📚';
+    } else {
+      if (percentage >= 90) return 'Wine Master! 🍷';
+      if (percentage >= 80) return 'Excellent! 🎉';
+      if (percentage >= 70) return 'Great job! 👍';
+      if (percentage >= 60) return 'Good effort! 😊';
+      return 'Keep learning! 📚';
+    }
+  };
+
+  // Portuguese text constants
+  const texts = {
+    title: isPortuguese ? 'Desafio de Quiz de Vinhos' : 'Wine Trivia Challenge',
+    subtitle: isPortuguese ? 'Teste seu conhecimento sobre vinhos com' : 'Test your wine knowledge with',
+    questions: isPortuguese ? 'perguntas desafiadoras!' : 'challenging questions!',
+    rules: isPortuguese ? 'Regras do Jogo' : 'Game Rules',
+    rule1: isPortuguese ? '30 segundos por pergunta' : '30 seconds per question',
+    rule2: isPortuguese ? 'Escolha a melhor resposta' : 'Choose the best answer',
+    rule3: isPortuguese ? 'Complete conjuntos para desbloquear novas coleções de perguntas' : 'Complete sets to unlock new question collections',
+    gameComplete: isPortuguese ? 'Jogo Concluído!' : 'Game Complete!',
+    youScored: isPortuguese ? 'Você acertou' : 'You scored',
+    outOf: isPortuguese ? 'de' : 'out of',
+    questionsText: isPortuguese ? 'perguntas' : 'questions',
+    completed: isPortuguese ? 'Concluído:' : 'Completed:',
+    accuracy: isPortuguese ? 'Precisão' : 'Accuracy',
+    correct: isPortuguese ? 'Corretas' : 'Correct',
+    incorrect: isPortuguese ? 'Incorretas' : 'Incorrect',
+    playAgain: isPortuguese ? 'Jogar Novamente' : 'Play Again',
+    nextSet: isPortuguese ? 'Próximo Conjunto' : 'Next Set',
+    chooseSet: isPortuguese ? 'Escolher Conjunto' : 'Choose Set',
+    question: isPortuguese ? 'Pergunta' : 'Question',
+    of: isPortuguese ? 'de' : 'of',
+    timeLeft: isPortuguese ? 'Tempo restante:' : 'Time left:',
+    explanation: isPortuguese ? 'Explicação:' : 'Explanation:',
+    nextQuestion: isPortuguese ? 'Próxima Pergunta' : 'Next Question',
+    finishGame: isPortuguese ? 'Finalizar Jogo' : 'Finish Game',
+    startGame: isPortuguese ? 'Começar Quiz' : 'Start Quiz',
+    chooseDifferentSet: isPortuguese ? 'Escolher Conjunto Diferente' : 'Choose Different Set'
   };
 
   if (!gameStarted) {
@@ -109,9 +148,9 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
               <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <WineIcon className="h-8 w-8 text-red-600" />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Wine Trivia Challenge</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{texts.title}</h1>
               <p className="text-gray-600">
-                Test your wine knowledge with {totalQuestions} challenging questions!
+                {texts.subtitle} {totalQuestions} {texts.questions}
               </p>
               <div className="mt-4 px-4 py-2 bg-purple-100 border border-purple-200 rounded-lg">
                 <p className="text-sm text-purple-800 font-medium">

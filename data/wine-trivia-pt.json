@@ -1,0 +1,352 @@
+[
+  {
+    "id": 1,
+    "question": "Qual país produz mais vinho no mundo?",
+    "options": ["França", "Itália", "Espanha", "Estados Unidos"],
+    "correct": 1,
+    "explanation": "A Itália ocupa o primeiro lugar. As condições de safra podem alterar os rankings ano a ano, mas a vasta área de vinhedos e produção da Itália a mantém em #1, seguida de perto pela França e Espanha"
+  },
+  {
+    "id": 2,
+    "question": "Qual é a principal variedade de uva usada no Champagne?",
+    "options": ["Chardonnay", "Pinot Noir", "Pinot Meunier", "Todas as acima"],
+    "correct": 3,
+    "explanation": "O Champagne é tipicamente feito de uma mistura das uvas Chardonnay, Pinot Noir e Pinot Meunier."
+  },
+  {
+    "id": 3,
+    "question": "Qual região vinícola é conhecida como o 'Rei dos Vinhos'?",
+    "options": ["Bordeaux", "Burgundy", "Barolo", "Champagne"],
+    "correct": 2,
+    "explanation": "O Barolo do Piemonte, Itália, é frequentemente chamado de 'Rei dos Vinhos' devido à sua complexidade e potencial de envelhecimento."
+  },
+  {
+    "id": 4,
+    "question": "O que 'terroir' se refere na vinificação?",
+    "options": ["A adega", "O solo e clima", "O enólogo", "A variedade de uva"],
+    "correct": 1,
+    "explanation": "Terroir se refere ao ambiente natural completo onde as uvas são cultivadas, incluindo solo, clima e topografia."
+  },
+  {
+    "id": 5,
+    "question": "Qual uva é a base do Chianti?",
+    "options": ["Sangiovese", "Nebbiolo", "Barbera", "Dolcetto"],
+    "correct": 0,
+    "explanation": "O Chianti (Toscana) deve ser predominantemente Sangiovese, uma uva conhecida por sua acidez brilhante e notas de cereja e ervas."
+  },
+  {
+    "id": 6,
+    "question": "Qual é o teor alcoólico mínimo para um vinho ser considerado 'fortificado'?",
+    "options": ["15%", "18%", "20%", "22%"],
+    "correct": 1,
+    "explanation": "Vinhos fortificados têm álcool adicionado durante a produção, tipicamente resultando em 18-22% de teor alcoólico."
+  },
+  {
+    "id": 7,
+    "question": "Qual país é a origem do Malbec?",
+    "options": ["Argentina", "França", "Espanha", "Itália"],
+    "correct": 1,
+    "explanation": "O Malbec se originou na França, especificamente na região de Cahors, mas agora é mais famoso na Argentina."
+  },
+  {
+    "id": 8,
+    "question": "O que significa 'brut' no Champagne?",
+    "options": ["Doce", "Seco", "Muito seco", "Extra seco"],
+    "correct": 2,
+    "explanation": "'Brut' indica que o Champagne é muito seco, com menos de 12g/l de açúcar residual."
+  },
+  {
+    "id": 9,
+    "question": "Qual é a uva principal do Rioja?",
+    "options": ["Garnacha", "Tempranillo", "Monastrell", "Bobal"],
+    "correct": 1,
+    "explanation": "O Rioja é baseado principalmente na uva Tempranillo, conhecida por sua estrutura e potencial de envelhecimento."
+  },
+  {
+    "id": 10,
+    "question": "O que é 'crianza' no sistema de classificação espanhol?",
+    "options": ["Vinho jovem", "Envelhecido 6 meses", "Envelhecido 2 anos", "Envelhecido 3 anos"],
+    "correct": 2,
+    "explanation": "Crianza significa que o vinho foi envelhecido por pelo menos 2 anos, com pelo menos 6 meses em carvalho."
+  },
+  {
+    "id": 11,
+    "question": "Qual região é famosa pelo Pinot Noir?",
+    "options": ["Bordeaux", "Burgundy", "Tuscany", "Rioja"],
+    "correct": 1,
+    "explanation": "A Burgundy, França, é mundialmente famosa por seus Pinot Noir excepcionais, especialmente de regiões como Côte de Nuits."
+  },
+  {
+    "id": 12,
+    "question": "O que significa 'appellation'?",
+    "options": ["Tipo de uva", "Região controlada", "Método de produção", "Teor alcoólico"],
+    "correct": 1,
+    "explanation": "Appellation é um sistema francês que define e protege regiões vinícolas específicas e seus métodos de produção."
+  },
+  {
+    "id": 13,
+    "question": "Qual é a uva principal do Châteauneuf-du-Pape?",
+    "options": ["Grenache", "Syrah", "Mourvèdre", "Todas as acima"],
+    "correct": 3,
+    "explanation": "Châteauneuf-du-Pape permite até 13 variedades diferentes, mas Grenache, Syrah e Mourvèdre são as principais."
+  },
+  {
+    "id": 14,
+    "question": "O que é 'lees aging'?",
+    "options": ["Envelhecimento em carvalho", "Envelhecimento com borras", "Envelhecimento em garrafa", "Envelhecimento em tanque"],
+    "correct": 1,
+    "explanation": "Lees aging é o processo de envelhecer o vinho em contato com as borras (partículas de levedura mortas) para adicionar complexidade."
+  },
+  {
+    "id": 15,
+    "question": "Qual país é o maior produtor de vinho do Novo Mundo?",
+    "options": ["Argentina", "Chile", "Austrália", "Estados Unidos"],
+    "correct": 0,
+    "explanation": "A Argentina é o maior produtor de vinho do Novo Mundo, com vastas plantações principalmente em Mendoza."
+  },
+  {
+    "id": 16,
+    "question": "O que significa 'reserva' em vinhos espanhóis?",
+    "options": ["Envelhecido 1 ano", "Envelhecido 2 anos", "Envelhecido 3 anos", "Envelhecido 5 anos"],
+    "correct": 2,
+    "explanation": "Reserva significa que o vinho foi envelhecido por pelo menos 3 anos, com pelo menos 1 ano em carvalho."
+  },
+  {
+    "id": 17,
+    "question": "Qual é a uva principal do Sancerre?",
+    "options": ["Chardonnay", "Sauvignon Blanc", "Pinot Noir", "Chenin Blanc"],
+    "correct": 1,
+    "explanation": "Sancerre é feito exclusivamente de Sauvignon Blanc, conhecido por suas notas minerais e cítricas."
+  },
+  {
+    "id": 18,
+    "question": "O que é 'malolactic fermentation'?",
+    "options": ["Fermentação primária", "Conversão de ácido málico", "Fermentação secundária", "Estabilização"],
+    "correct": 1,
+    "explanation": "A fermentação malolática converte o ácido málico mais áspero em ácido lático mais suave, suavizando o vinho."
+  },
+  {
+    "id": 19,
+    "question": "Qual região é famosa pelo Riesling?",
+    "options": ["Burgundy", "Mosel", "Tuscany", "Rioja"],
+    "correct": 1,
+    "explanation": "A região do Mosel, Alemanha, é mundialmente famosa por seus Rieslings excepcionais, especialmente os doces Spätlese e Auslese."
+  },
+  {
+    "id": 20,
+    "question": "O que significa 'grand cru' na classificação francesa?",
+    "options": ["Vinho básico", "Vinho de qualidade superior", "Vinho de vinhedo específico", "Vinho de safra especial"],
+    "correct": 2,
+    "explanation": "Grand Cru indica que o vinho vem de um vinhedo específico de alta qualidade, especialmente em Burgundy e Alsace."
+  },
+  {
+    "id": 21,
+    "question": "Qual é a uva principal do Amarone?",
+    "options": ["Sangiovese", "Corvina", "Nebbiolo", "Barbera"],
+    "correct": 1,
+    "explanation": "Amarone é feito principalmente de Corvina, junto com Rondinella e Molinara, usando uvas parcialmente secas (appassimento)."
+  },
+  {
+    "id": 22,
+    "question": "O que é 'botrytis cinerea'?",
+    "options": ["Tipo de uva", "Fungo nobre", "Método de vinificação", "Tipo de solo"],
+    "correct": 1,
+    "explanation": "Botrytis cinerea é o 'fungo nobre' que causa a podridão nobre, concentrando açúcares e criando vinhos doces complexos."
+  },
+  {
+    "id": 23,
+    "question": "Qual país é famoso pelo Tokaji?",
+    "options": ["Hungria", "Romênia", "Bulgária", "República Tcheca"],
+    "correct": 0,
+    "explanation": "Tokaji é o famoso vinho doce da Hungria, feito com uvas afetadas por botrytis cinerea."
+  },
+  {
+    "id": 24,
+    "question": "O que significa 'sur lie'?",
+    "options": ["Sobre as borras", "Sobre carvalho", "Sobre casca", "Sobre sementes"],
+    "correct": 0,
+    "explanation": "'Sur lie' significa que o vinho foi envelhecido em contato com as borras de levedura para adicionar textura e complexidade."
+  },
+  {
+    "id": 25,
+    "question": "Qual é a uva principal do Chablis?",
+    "options": ["Chardonnay", "Sauvignon Blanc", "Pinot Grigio", "Riesling"],
+    "correct": 0,
+    "explanation": "Chablis é feito exclusivamente de Chardonnay, conhecido por sua mineralidade e acidez brilhante."
+  },
+  {
+    "id": 26,
+    "question": "O que é 'dosage' no Champagne?",
+    "options": ["Adição de açúcar", "Adição de álcool", "Adição de ácido", "Adição de cor"],
+    "correct": 0,
+    "explanation": "Dosage é a adição de uma pequena quantidade de açúcar e vinho (liqueur d'expédition) antes da rolha final no Champagne."
+  },
+  {
+    "id": 27,
+    "question": "Qual região é famosa pelo Zinfandel?",
+    "options": ["Burgundy", "Tuscany", "Califórnia", "Austrália"],
+    "correct": 2,
+    "explanation": "O Zinfandel é uma especialidade da Califórnia, especialmente em regiões como Sonoma e Paso Robles."
+  },
+  {
+    "id": 28,
+    "question": "O que significa 'cuvée'?",
+    "options": ["Safra", "Mistura especial", "Garrafa", "Garrafa grande"],
+    "correct": 1,
+    "explanation": "Cuvée se refere a uma mistura especial ou lote específico de vinho, frequentemente usado para denotar qualidade superior."
+  },
+  {
+    "id": 29,
+    "question": "Qual é a uva principal do Barolo?",
+    "options": ["Sangiovese", "Nebbiolo", "Barbera", "Dolcetto"],
+    "correct": 1,
+    "explanation": "Barolo é feito exclusivamente de Nebbiolo, uma uva conhecida por seus taninos firmes e potencial de envelhecimento excepcional."
+  },
+  {
+    "id": 30,
+    "question": "O que é 'mousse' no Champagne?",
+    "options": ["Aroma", "Sabor", "Efervescência", "Cor"],
+    "correct": 2,
+    "explanation": "Mousse se refere à qualidade e textura da efervescência no Champagne - pode ser fina, cremosa, persistente, etc."
+  },
+  {
+    "id": 31,
+    "question": "Qual país é famoso pelo Vinho do Porto?",
+    "options": ["Espanha", "Portugal", "França", "Itália"],
+    "correct": 1,
+    "explanation": "O Vinho do Porto é uma especialidade portuguesa da região do Douro, um vinho fortificado único."
+  },
+  {
+    "id": 32,
+    "question": "O que significa 'tannin'?",
+    "options": ["Açúcar", "Ácido", "Composto adstringente", "Álcool"],
+    "correct": 2,
+    "explanation": "Taninos são compostos naturais que vêm das cascas, sementes e caules das uvas, criando sensação de adstringência na boca."
+  },
+  {
+    "id": 33,
+    "question": "Qual é a uva principal do Chianti Classico?",
+    "options": ["Sangiovese", "Nebbiolo", "Barbera", "Dolcetto"],
+    "correct": 0,
+    "explanation": "Chianti Classico deve ser pelo menos 80% Sangiovese, com pequenas quantidades de outras uvas locais permitidas."
+  },
+  {
+    "id": 34,
+    "question": "O que é 'cork taint'?",
+    "options": ["Sabor de rolha", "Sabor de carvalho", "Sabor de fruta", "Sabor mineral"],
+    "correct": 0,
+    "explanation": "Cork taint é um defeito causado por TCA (tricloroanisol) que pode fazer o vinho ter sabor de papelão molhado ou jornal."
+  },
+  {
+    "id": 35,
+    "question": "Qual região é famosa pelo Chenin Blanc?",
+    "options": ["Burgundy", "Loire", "Bordeaux", "Alsace"],
+    "correct": 1,
+    "explanation": "O Loire, França, é famoso por seus Chenin Blanc excepcionais, especialmente em Vouvray e Savennières."
+  },
+  {
+    "id": 36,
+    "question": "O que significa 'vintage'?",
+    "options": ["Tipo de uva", "Ano da safra", "Método de produção", "Região"],
+    "correct": 1,
+    "explanation": "Vintage se refere ao ano em que as uvas foram colhidas, indicando a safra específica do vinho."
+  },
+  {
+    "id": 37,
+    "question": "Qual é a uva principal do Hermitage?",
+    "options": ["Grenache", "Syrah", "Mourvèdre", "Cinsault"],
+    "correct": 1,
+    "explanation": "Hermitage é feito exclusivamente de Syrah, produzindo alguns dos vinhos mais elegantes e longevos do Rhône."
+  },
+  {
+    "id": 38,
+    "question": "O que é 'bâtonnage'?",
+    "options": ["Pisamento", "Remoção de borras", "Agitação de borras", "Filtração"],
+    "correct": 2,
+    "explanation": "Bâtonnage é o processo de agitar as borras de levedura durante o envelhecimento para adicionar textura e complexidade ao vinho."
+  },
+  {
+    "id": 39,
+    "question": "Qual país é famoso pelo Sauternes?",
+    "options": ["França", "Alemanha", "Hungria", "Áustria"],
+    "correct": 0,
+    "explanation": "Sauternes é uma região famosa de Bordeaux, França, conhecida por seus vinhos doces excepcionais feitos com uvas botrytizadas."
+  },
+  {
+    "id": 40,
+    "question": "O que significa 'corkage fee'?",
+    "options": ["Taxa de rolha", "Taxa de abertura", "Taxa de garrafa", "Taxa de serviço"],
+    "correct": 1,
+    "explanation": "Corkage fee é uma taxa cobrada por restaurantes para abrir e servir uma garrafa de vinho trazida pelo cliente."
+  },
+  {
+    "id": 41,
+    "question": "Qual é a uva principal do Côte-Rôtie?",
+    "options": ["Grenache", "Syrah", "Mourvèdre", "Cinsault"],
+    "correct": 1,
+    "explanation": "Côte-Rôtie é feito principalmente de Syrah, com até 20% de Viognier permitido para adicionar perfume e suavidade."
+  },
+  {
+    "id": 42,
+    "question": "O que é 'lees stirring'?",
+    "options": ["Pisamento", "Agitação de borras", "Filtração", "Decantação"],
+    "correct": 1,
+    "explanation": "Lees stirring (ou bâtonnage) é o processo de agitar as borras de levedura para adicionar textura e complexidade ao vinho."
+  },
+  {
+    "id": 43,
+    "question": "Qual região é famosa pelo Gewürztraminer?",
+    "options": ["Burgundy", "Alsace", "Loire", "Bordeaux"],
+    "correct": 1,
+    "explanation": "Alsace, França, é famosa por seus Gewürztraminer excepcionais, conhecidos por seus aromas florais e especiados."
+  },
+  {
+    "id": 44,
+    "question": "O que significa 'appassimento'?",
+    "options": ["Secagem de uvas", "Fermentação", "Envelhecimento", "Filtração"],
+    "correct": 0,
+    "explanation": "Appassimento é o processo italiano de secar uvas parcialmente para concentrar açúcares e sabores, usado em Amarone e Recioto."
+  },
+  {
+    "id": 45,
+    "question": "Qual é a uva principal do Châteauneuf-du-Pape?",
+    "options": ["Grenache", "Syrah", "Mourvèdre", "Todas as acima"],
+    "correct": 3,
+    "explanation": "Châteauneuf-du-Pape permite até 13 variedades, mas Grenache, Syrah e Mourvèdre são as principais, frequentemente em misturas."
+  },
+  {
+    "id": 46,
+    "question": "O que é 'marc'?",
+    "options": ["Tipo de uva", "Bagaço de uva", "Tipo de solo", "Método de produção"],
+    "correct": 1,
+    "explanation": "Marc é o bagaço de uva (cascas, sementes, caules) restante após a prensagem, usado para fazer aguardente de uva."
+  },
+  {
+    "id": 47,
+    "question": "Qual país é famoso pelo Prosecco?",
+    "options": ["França", "Itália", "Espanha", "Alemanha"],
+    "correct": 1,
+    "explanation": "Prosecco é um vinho espumante italiano, principalmente da região do Veneto, feito com a uva Glera."
+  },
+  {
+    "id": 48,
+    "question": "O que significa 'cuvée spéciale'?",
+    "options": ["Safra especial", "Mistura especial", "Garrafa especial", "Região especial"],
+    "correct": 1,
+    "explanation": "Cuvée spéciale indica uma mistura especial ou lote de alta qualidade, frequentemente reservado para os melhores vinhos da casa."
+  },
+  {
+    "id": 49,
+    "question": "Qual é a uva principal do Condrieu?",
+    "options": ["Chardonnay", "Viognier", "Roussanne", "Marsanne"],
+    "correct": 1,
+    "explanation": "Condrieu é feito exclusivamente de Viognier, produzindo vinhos brancos perfumados e complexos no Rhône Norte."
+  },
+  {
+    "id": 50,
+    "question": "O que é 'pigeage'?",
+    "options": ["Pisamento", "Filtração", "Decantação", "Agitação"],
+    "correct": 0,
+    "explanation": "Pigeage é o processo de pisar as uvas ou agitar o mosto durante a fermentação para extrair cor e taninos das cascas."
+  }
+]
