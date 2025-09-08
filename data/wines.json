@@ -770,7 +770,8 @@
     "price": null,
     "location": "Wine fridge A - L0",
     "quantity": 1,
-    "bottle_image": "https://www.vinhosevinhos.com/media/catalog/product/cache/f551083cd20de7ac8cf7d25adc91480d/c/a/casa-geraldo-gran-reserva-merlot.jpg"
+    "bottle_image": "https://www.vinhosevinhos.com/media/catalog/product/cache/f551083cd20de7ac8cf7d25adc91480d/c/a/casa-geraldo-gran-reserva-merlot.jpg",
+    "technical_sheet": "https://www.casageraldo.com.br/merlot-gran-reserva-750ml"
   },
   {
     "id": "38",
