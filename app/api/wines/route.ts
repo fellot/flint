@@ -11,7 +11,7 @@ import { Wine, WineFormData } from '@/types/wine';
 const dataFilePath = path.join(process.cwd(), 'data', 'wines.json');
 const dataFilePath2 = path.join(process.cwd(), 'data', 'wines2.json');
 
-// GET all wines
+// GET all wines - check
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
