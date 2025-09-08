@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+const owner = process.env.GITHUB_OWNER!;
+const repo = process.env.GITHUB_REPO!;
+const branch = process.env.GITHUB_BRANCH ?? "main";
+const token = process.env.GITHUB_TOKEN!;
+//const path = "data/wines.json";
 import { promises as fs } from 'fs';
 import path from 'path';
 import { Wine, WineFormData } from '@/types/wine';
