@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
 import { Wine } from '@/types/wine';
-
-const dataFilePath = path.join(process.cwd(), 'data', 'wines.json');
-const dataFilePath2 = path.join(process.cwd(), 'data', 'wines2.json');
+import { loadWines, saveWines } from '@/lib/storage';
 
 // GET single wine
 export async function GET(
@@ -14,9 +10,7 @@ export async function GET(
   try {
     const { searchParams } = new URL(request.url);
     const dataSource = searchParams.get('dataSource') || '1';
-    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
-    const data = await fs.readFile(filePath, 'utf8');
-    const wines: Wine[] = JSON.parse(data);
+    const wines: Wine[] = await loadWines(dataSource);
     
     const wine = wines.find(w => w.id === params.id);
     
@@ -27,7 +21,10 @@ export async function GET(
     return NextResponse.json(wine);
   } catch (error) {
     console.error('Error reading wine:', error);
-    return NextResponse.json({ error: 'Failed to fetch wine' }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to fetch wine: ${error instanceof Error ? error.message : 'Unknown error'}` },
+      { status: 500 }
+    );
   }
 }
 
@@ -39,9 +36,7 @@ export async function PUT(
   try {
     const body = await request.json();
     const dataSource = body.dataSource || '1';
-    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
-    const data = await fs.readFile(filePath, 'utf8');
-    const wines: Wine[] = JSON.parse(data);
+    const wines: Wine[] = await loadWines(dataSource);
     
     const wineIndex = wines.findIndex(w => w.id === params.id);
     
@@ -50,12 +45,15 @@ export async function PUT(
     }
 
     wines[wineIndex] = { ...wines[wineIndex], ...body };
-    await fs.writeFile(filePath, JSON.stringify(wines, null, 2));
+    await saveWines(wines, dataSource);
 
     return NextResponse.json(wines[wineIndex]);
   } catch (error) {
     console.error('Error updating wine:', error);
-    return NextResponse.json({ error: 'Failed to update wine' }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to update wine: ${error instanceof Error ? error.message : 'Unknown error'}` },
+      { status: 500 }
+    );
   }
 }
 
@@ -67,9 +65,7 @@ export async function DELETE(
   try {
     const { searchParams } = new URL(request.url);
     const dataSource = searchParams.get('dataSource') || '1';
-    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
-    const data = await fs.readFile(filePath, 'utf8');
-    const wines: Wine[] = JSON.parse(data);
+    const wines: Wine[] = await loadWines(dataSource);
     
     const wineIndex = wines.findIndex(w => w.id === params.id);
     
@@ -78,11 +74,14 @@ export async function DELETE(
     }
 
     wines.splice(wineIndex, 1);
-    await fs.writeFile(filePath, JSON.stringify(wines, null, 2));
+    await saveWines(wines, dataSource);
 
     return NextResponse.json({ message: 'Wine deleted successfully' });
   } catch (error) {
     console.error('Error deleting wine:', error);
-    return NextResponse.json({ error: 'Failed to delete wine' }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to delete wine: ${error instanceof Error ? error.message : 'Unknown error'}` },
+      { status: 500 }
+    );
   }
 }

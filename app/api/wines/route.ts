@@ -1,15 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-const owner = process.env.GITHUB_OWNER!;
-const repo = process.env.GITHUB_REPO!;
-const branch = process.env.GITHUB_BRANCH ?? "main";
-const token = process.env.GITHUB_TOKEN!;
-
-import { promises as fs } from 'fs';
-import path from 'path';
 import { Wine, WineFormData } from '@/types/wine';
-
-const dataFilePath = path.join(process.cwd(), 'data', 'wines.json');
-const dataFilePath2 = path.join(process.cwd(), 'data', 'wines2.json');
+import { loadWines, saveWines } from '@/lib/storage';
 
 // GET all wines
 export async function GET(request: NextRequest) {
@@ -22,10 +13,8 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search');
     const dataSource = searchParams.get('dataSource') || '1'; // Default to wines.json
 
-    // Choose data file based on dataSource parameter
-    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
-    const data = await fs.readFile(filePath, 'utf8');
-    let wines: Wine[] = JSON.parse(data);
+    // Load wines using storage abstraction
+    let wines: Wine[] = await loadWines(dataSource);
 
     // Apply filters
     if (country && country !== 'all') {
@@ -60,7 +49,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(wines);
   } catch (error) {
     console.error('Error reading wines:', error);
-    return NextResponse.json({ error: 'Failed to fetch wines' }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to fetch wines: ${error instanceof Error ? error.message : 'Unknown error'}` },
+      { status: 500 }
+    );
   }
 }
 
@@ -79,9 +71,7 @@ export async function POST(request: NextRequest) {
 
     // Get data source from request body or default to 1
     const dataSource = body.dataSource || '1';
-    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
-    const data = await fs.readFile(filePath, 'utf8');
-    const wines: Wine[] = JSON.parse(data);
+    const wines: Wine[] = await loadWines(dataSource);
 
     const newWine: Wine = {
       id: Date.now().toString(),
@@ -98,13 +88,13 @@ export async function POST(request: NextRequest) {
     };
 
     wines.push(newWine);
-    await fs.writeFile(filePath, JSON.stringify(wines, null, 2));
+    await saveWines(wines, dataSource);
 
     return NextResponse.json(newWine, { status: 201 });
   } catch (error) {
     console.error('Error creating wine:', error);
     return NextResponse.json(
-      { error: 'Failed to create wine' },
+      { error: `Failed to create wine: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }
