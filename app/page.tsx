@@ -108,7 +108,7 @@ export default function Home() {
       const response = await fetch(`/api/wines/${updatedWine.id}?dataSource=${dataSource}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedWine),
+        body: JSON.stringify({ ...updatedWine, dataSource }),
       });
 
       if (response.ok) {
