@@ -32,16 +32,16 @@ export const POST = async (request: NextRequest) => {
     ].filter(Boolean).join('\n');
 
     const system = lang === 'pt-BR'
-      ? `Você é um sommelier mestre. Dadas informações do vinho, gere:\n- Notas de harmonização (clareza, perfil do vinho e combinações típicas).\n- UMA sugestão de prato específico (proteína + método + acompanhamentos/molho) que harmonize muito bem.\nSeja conciso e prático.`
-      : `You are a master sommelier. Given wine info, produce:\n- Food pairing notes (clarity, wine profile, typical matches).\n- ONE specific main dish (protein + method + sides/sauce) that pairs exceptionally well.\nBe concise and practical.`;
+      ? `Você é um sommelier mestre. Dadas informações do vinho, gere:\n- Notas de harmonização (clareza, perfil do vinho e combinações típicas), incluindo uma recomendação de decantação e, se conhecido, a sigla do crítico + nota (ex.: RP 94) integradas no texto.\n- UMA sugestão de prato específico (proteína + método + acompanhamentos/molho) que harmonize muito bem.\nSeja conciso e prático.`
+      : `You are a master sommelier. Given wine info, produce:\n- Food pairing notes (clarity, wine profile, typical matches) that also include a decanting recommendation and, if known, critic initials + score (e.g., RP 94) embedded in the text.\n- ONE specific main dish (protein + method + sides/sauce) that pairs exceptionally well.\nBe concise and practical.`;
 
     const user = [
       lang === 'pt-BR' ? 'Informações do vinho:' : 'Wine info:',
       summary,
       constraints,
       lang === 'pt-BR'
-        ? `Retorne APENAS JSON estrito neste formato:\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string\n}`
-        : `Return ONLY strict JSON in this format:\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string\n}`,
+        ? `Incorpore a recomendação de decantação e, se disponível, o código do crítico + nota (ex.: RP 94) dentro de \"foodPairingNotes\". Retorne APENAS JSON estrito neste formato:\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string\n}`
+        : `Embed the decanting recommendation and, if available, critic code + score (e.g., RP 94) inside \"foodPairingNotes\". Return ONLY strict JSON in this format:\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string\n}`,
       mode === 'meal'
         ? (lang === 'pt-BR' ? 'Escolha um prato diferente do atual, evitando repetição.' : 'Choose a different main dish than the current one; avoid repetition.')
         : '',
