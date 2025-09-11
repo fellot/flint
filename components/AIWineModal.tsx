@@ -59,30 +59,46 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
     setProcessingError(null);
 
     try {
-      // Simulate AI processing - replace with actual AI service call
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      // Mock extracted data - replace with actual AI response
-      const mockExtractedData: Partial<WineFormData> = {
-        bottle: 'Château Margaux 2015',
-        country: 'France',
-        region: 'Bordeaux',
-        vintage: 2015,
-        style: 'Red Wine',
-        grapes: 'Cabernet Sauvignon, Merlot, Cabernet Franc, Petit Verdot',
-        drinkingWindow: '2020-2040',
-        peakYear: 2025,
-        foodPairingNotes: 'Perfect with grilled meats, aged cheeses, and dark chocolate',
-        mealToHaveWithThisWine: 'Beef Wellington or roasted lamb',
-        notes: 'Exceptional vintage with great aging potential',
-        price: 450,
-        location: 'Wine Cellar A',
+      const res = await fetch('/api/ai/extract-wine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageData }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error || 'AI extraction failed');
+      }
+
+      const data = await res.json();
+      const extracted = data?.extracted as Partial<WineFormData>;
+
+      if (!extracted || !extracted.bottle) {
+        throw new Error('AI did not return valid data');
+      }
+
+      // Ensure style conforms to main app expectations
+      const normalizedStyle = (() => {
+        const s = (extracted.style || '').toLowerCase();
+        if (s.includes('spark')) return 'Sparkling';
+        if (s.includes('rosé') || s.includes('rose')) return 'Rosé';
+        if (s.includes('sweet') || s.includes('dessert')) return 'Sweet';
+        if (s.includes('fortified') || s.includes('port') || s.includes('sherry')) return 'Fortified';
+        if (s.includes('white')) return 'White';
+        if (s.includes('red')) return 'Red';
+        return extracted.style || '';
+      })();
+
+      const merged: Partial<WineFormData> = {
+        ...extracted,
+        style: normalizedStyle,
       };
 
-      setExtractedData(mockExtractedData);
-      setFormData(prev => ({ ...prev, ...mockExtractedData }));
+      setExtractedData(merged);
+      setFormData(prev => ({ ...prev, ...merged }));
       setCurrentStep('review');
     } catch (error) {
+      console.error('AI extraction error:', error);
       setProcessingError('Failed to process image. Please try again.');
       setCurrentStep('upload');
     }
