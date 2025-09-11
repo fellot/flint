@@ -53,10 +53,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing OPENAI_API_KEY' }, { status: 500 });
     }
 
+    const localeInstruction = locale === 'pt' ? 'Escreva os campos "foodPairingNotes" e "mealToHaveWithThisWine" em português (pt-BR).' : 'Write the fields "foodPairingNotes" and "mealToHaveWithThisWine" in English.';
+
     const systemPrompt = `You are a master sommelier and wine-knowledge assistant. Read the wine label and infer the wine's identity and typical profile (from region, grapes, producer, and vintage). Then:
  - Determine a realistic drinking window and peak year based on style, structure, and quality cues. Be conservative if uncertain.
  - Provide expert pairing guidance that complements the likely tasting profile (acidity, tannin, body, sweetness, aromatics, oak, bubbles).
  - Create ONE specific, creative meal suggestion that pairs exceptionally well with this wine (protein + method + sides/sauce), ideally coherent with origin or grape traditions.
+  - ${localeInstruction}
 
 Return ONLY strict JSON matching this schema (no commentary):
 {

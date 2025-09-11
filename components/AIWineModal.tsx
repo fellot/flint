@@ -8,11 +8,12 @@ interface AIWineModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddWine: (wineData: WineFormData) => void;
+  locale?: 'en' | 'pt';
 }
 
 type ProcessingStep = 'upload' | 'processing' | 'review' | 'saving';
 
-export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalProps) {
+export default function AIWineModal({ isOpen, onClose, onAddWine, locale = 'en' }: AIWineModalProps) {
   // Client-side image downscaling helpers
   const MAX_SIDE = 1600;
   const JPEG_QUALITY = 0.82;
@@ -146,7 +147,7 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
       const res = await fetch('/api/ai/extract-wine', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: imageData }),
+        body: JSON.stringify({ image: imageData, locale }),
       });
 
       if (!res.ok) {
@@ -248,6 +249,7 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
       currentPairing: formData.foodPairingNotes,
       currentMeal: formData.mealToHaveWithThisWine,
       mode,
+      locale,
     };
     const res = await fetch('/api/ai/enrich-pairing', {
       method: 'POST',

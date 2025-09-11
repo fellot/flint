@@ -612,6 +612,7 @@ export default function Home() {
         isOpen={isAIWineModalOpen}
         onClose={() => setIsAIWineModalOpen(false)}
         onAddWine={handleAddWine}
+        locale={isPortugueseMode ? 'pt' : 'en'}
       />
 
       {/* Footer */}
@@ -671,5 +672,4 @@ export default function Home() {
     </div>
   );
 }
-
 
