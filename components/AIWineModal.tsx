@@ -241,7 +241,7 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold text-gray-900 flex items-center">
             <WineIcon className="h-5 w-5 text-red-600 mr-2" />
-            Add Wine with AI Recognition
+            Add Wine
           </h3>
           <button
             onClick={handleClose}
