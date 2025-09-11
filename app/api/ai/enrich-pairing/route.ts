@@ -2,23 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
-type EnrichRequest = {
-  wine: {
-    bottle?: string;
-    country?: string;
-    region?: string;
-    vintage?: number;
-    style?: string;
-    grapes?: string;
-  };
-  currentPairing?: string;
-  currentMeal?: string;
-  mode?: 'pairing' | 'meal' | 'both';
-  locale?: string;
-
-export async function POST(request: NextRequest) {
+export const POST = async (request: NextRequest) => {
   try {
-    const { wine, currentPairing, currentMeal, mode = 'both', locale }: EnrichRequest = await request.json();
+    const { wine, currentPairing, currentMeal, mode = 'both', locale } = await request.json();
 
     if (!wine) {
       return NextResponse.json({ error: 'Missing wine data' }, { status: 400 });
@@ -100,7 +86,7 @@ export async function POST(request: NextRequest) {
       parsed = JSON.parse(match[0]);
     }
 
-    const out: EnrichResponse = {
+    const out = {
       foodPairingNotes: String(parsed.foodPairingNotes || '').trim(),
       mealToHaveWithThisWine: String(parsed.mealToHaveWithThisWine || '').trim(),
     };
@@ -110,5 +96,4 @@ export async function POST(request: NextRequest) {
     console.error('AI enrich error:', error);
     return NextResponse.json({ error: 'Failed to enrich pairing or meal' }, { status: 500 });
   }
-}
-
+};
