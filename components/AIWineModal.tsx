@@ -178,6 +178,9 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
 
       setExtractedData(merged);
       setFormData(prev => ({ ...prev, ...merged }));
+      if (merged.bottle_image && /^https?:\/\//i.test(String(merged.bottle_image))) {
+        setUploadedImage(String(merged.bottle_image));
+      }
       setCurrentStep('review');
     } catch (error) {
       console.error('AI extraction error:', error);
@@ -473,6 +476,27 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
                   onChange={(e) => handleInputChange('notes', e.target.value)}
                   className="input-field"
                   rows={3}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Bottle Image URL</label>
+                <input
+                  type="url"
+                  value={formData.bottle_image || ''}
+                  onChange={(e) => handleInputChange('bottle_image', e.target.value)}
+                  className="input-field"
+                  placeholder="https://..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Technical Sheet URL</label>
+                <input
+                  type="url"
+                  value={formData.technical_sheet || ''}
+                  onChange={(e) => handleInputChange('technical_sheet', e.target.value)}
+                  className="input-field"
+                  placeholder="https://... (prefer PDF)"
                 />
               </div>
             </div>

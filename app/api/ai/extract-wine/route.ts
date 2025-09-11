@@ -21,6 +21,7 @@ type ExtractedWine = {
   notes: string;
   price?: number;
   bottle_image?: string;
+  technical_sheet?: string;
 };
 
 function normalizeStyle(input: string): string {
@@ -53,25 +54,26 @@ export async function POST(request: NextRequest) {
     }
 
     const systemPrompt = `You are a master sommelier and wine-knowledge assistant. Read the wine label and infer the wine's identity and typical profile (from region, grapes, producer, and vintage). Then:
- - Determine a realistic drinking window and peak year based on style, structure, and quality cues.
- - Provide expert pairing guidance that complements the likely tasting profile (acidity, tannin, body, sweetness, aromatic set, oak, bubbles).
- - Create ONE specific, creative meal suggestion that pairs exceptionally well with this wine. The dish should be concrete (protein, cooking method, key sides/sauces).
+ - Determine a realistic drinking window and peak year based on style, structure, and quality cues. Be conservative if uncertain.
+ - Provide expert pairing guidance that complements the likely tasting profile (acidity, tannin, body, sweetness, aromatics, oak, bubbles).
+ - Create ONE specific, creative meal suggestion that pairs exceptionally well with this wine (protein + method + sides/sauce), ideally coherent with origin or grape traditions.
 
 Return ONLY strict JSON matching this schema (no commentary):
 {
-  "bottle": string,                 // winery + cuvée + vintage if present
-  "country": string,               // country name
-  "region": string,                // region/appellation
-  "vintage": number,               // 4-digit year; if missing, infer best guess else use current year
-  "style": string,                 // One of: Red, White, Rosé, Sparkling, Sweet, Fortified
-  "grapes": string,                // comma-separated varieties
-  "drinkingWindow": string,        // e.g., "2025-2035"; infer from structure/quality; be realistic
-  "peakYear": number,              // your best estimate of the maturity peak
-  "foodPairingNotes": string,      // Describe wine's characteristics and food pairing suggestions
-  "mealToHaveWithThisWine": string,// ONE creative dish (method + key sides/sauce)
-  "notes": string,                 // omit
-  "price": number,                 // omit
-  "bottle_image": string          // a public https URL to the bottle or label image; prefer official winery/retailer, avoid pinterest
+  "bottle": string,
+  "country": string,
+  "region": string,
+  "vintage": number,
+  "style": string,
+  "grapes": string,
+  "drinkingWindow": string,
+  "peakYear": number,
+  "foodPairingNotes": string,
+  "mealToHaveWithThisWine": string,
+  "notes": string,
+  "price": number,
+  "bottle_image": string,
+  "technical_sheet": string
 }`;
 
     const userPrompt = `${locale === 'pt' ? 'Extraia as informações do rótulo do vinho nesta imagem e retorne apenas JSON.' : 'Extract wine label information from this image and return JSON only.'}`;
@@ -137,6 +139,7 @@ Return ONLY strict JSON matching this schema (no commentary):
       notes: parsed.notes || '',
       price: parsed.price != null ? Number(parsed.price) : undefined,
       bottle_image: typeof parsed.bottle_image === 'string' ? parsed.bottle_image : undefined,
+      technical_sheet: typeof parsed.technical_sheet === 'string' ? parsed.technical_sheet : undefined,
     };
 
     // Try to enrich bottle_image with an actual web URL via Bing Image Search if configured
@@ -168,6 +171,38 @@ Return ONLY strict JSON matching this schema (no commentary):
       } catch (e) {
         // Ignore search errors; keep whatever we have
         console.warn('Bing image search failed', e);
+      }
+    }
+
+    // Try to enrich technical_sheet via Bing Web Search if configured and missing
+    const needsTech = !extracted.technical_sheet || !/^https?:\/\//i.test(extracted.technical_sheet);
+    if (bingKey && needsTech) {
+      try {
+        const q = [extracted.bottle, String(extracted.vintage || ''), 'technical sheet OR fact sheet OR "tech sheet" filetype:pdf']
+          .filter(Boolean)
+          .join(' ');
+        const searchUrl = `https://api.bing.microsoft.com/v7.0/search?q=${encodeURIComponent(q)}&safeSearch=Strict&count=15`;
+        const sRes = await fetch(searchUrl, { headers: { 'Ocp-Apim-Subscription-Key': bingKey } });
+        if (sRes.ok) {
+          const s = await sRes.json();
+          const webPages = s?.webPages?.value || [];
+          const blacklist = ['pinterest', 'aliexpress', 'ebay', 'shopee'];
+          const candidates = webPages.filter((it: any) => {
+            const url: string = it?.url || '';
+            const host = (() => { try { return new URL(url).hostname; } catch { return ''; } })();
+            const notBlacklisted = host && !blacklist.some(bad => host.includes(bad));
+            const hasCue = /(technical|tech|fact)\s*sheet/i.test(it?.name || '') || /(technical|tech|fact)\s*sheet/i.test(it?.snippet || '') || /\.pdf(\?|$)/i.test(url);
+            return url.startsWith('http') && notBlacklisted && hasCue;
+          });
+          // Prefer PDFs
+          const pdf = candidates.find((it: any) => /\.pdf(\?|$)/i.test(it?.url || ''));
+          const pick = pdf || candidates[0];
+          if (pick?.url) {
+            extracted.technical_sheet = pick.url;
+          }
+        }
+      } catch (e) {
+        console.warn('Bing web search failed', e);
       }
     }
 
