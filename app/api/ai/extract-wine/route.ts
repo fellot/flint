@@ -66,14 +66,12 @@ Return ONLY strict JSON matching this schema (no commentary):
   "vintage": number,               // 4-digit year; if missing, infer best guess else use current year
   "style": string,                 // One of: Red, White, Rosé, Sparkling, Sweet, Fortified
   "grapes": string,                // comma-separated varieties
-  "drinkingWindow": string,        // e.g., "2025-2035"; infer from structure/quality; be realistic
+  "drinkingWindow": string,        // e.g., "2025-2035"; infer from structure/quality; be realistic, but don't make it too short
   "peakYear": number,              // your best estimate of the maturity peak
   "foodPairingNotes": string,      // Describe wine's characteristics and food pairing suggestions
   "mealToHaveWithThisWine": string,// ONE creative dish (method + key sides/sauce)
   "notes": string,                 // omit
   "price": number,                 // omit
-  "bottle_image": string          // omit
-  "technical_sheet": string       // omit
 }`;
 
     const userPrompt = `${locale === 'pt' ? 'Extraia as informações do rótulo do vinho nesta imagem e retorne apenas JSON.' : 'Extract wine label information from this image and return JSON only.'}`;
@@ -142,42 +140,18 @@ Return ONLY strict JSON matching this schema (no commentary):
       technical_sheet: typeof parsed.technical_sheet === 'string' ? parsed.technical_sheet : undefined,
     };
 
-    // Try to enrich bottle_image using Google Images (Programmable Search) first, then Bing as fallback
-    const googleKey = process.env.GOOGLE_API_KEY;
-    const googleCx = process.env.GOOGLE_CSE_ID;
+    // Try to enrich bottle_image with an actual web URL via Bing Image Search if configured
     const bingKey = process.env.BING_IMAGE_SEARCH_KEY || process.env.AZURE_BING_SEARCH_KEY;
     const needsImage = !extracted.bottle_image || !/^https?:\/\//i.test(extracted.bottle_image);
-    const qImage = [extracted.bottle, String(extracted.vintage || ''), extracted.region, 'bottle OR label']
-      .filter(Boolean)
-      .join(' ');
-
-    if (googleKey && googleCx && needsImage) {
+    if (bingKey && needsImage) {
       try {
-        const gUrl = `https://www.googleapis.com/customsearch/v1?key=${encodeURIComponent(googleKey)}&cx=${encodeURIComponent(googleCx)}&q=${encodeURIComponent(qImage)}&searchType=image&safe=active&num=10`;
-        const gRes = await fetch(gUrl);
-        if (gRes.ok) {
-          const g = await gRes.json();
-          const blacklist = ['pinterest', 'aliexpress', 'ebay', 'shopee'];
-          const pick = (g.items || []).find((item: any) => {
-            const url: string = item?.link || '';
-            const host = (() => { try { return new URL(url).hostname; } catch { return ''; } })();
-            const okExt = /(\.jpg|\.jpeg|\.png|\.webp)(\?|$)/i.test(url);
-            const notBlacklisted = host && !blacklist.some(bad => host.includes(bad));
-            return url.startsWith('http') && (okExt || true) && notBlacklisted;
-          });
-          if (pick?.link) {
-            extracted.bottle_image = pick.link;
-          }
-        }
-      } catch (e) {
-        console.warn('Google image search failed', e);
-      }
-    }
-
-    if (bingKey && needsImage && !extracted.bottle_image) {
-      try {
-        const bingUrl = `https://api.bing.microsoft.com/v7.0/images/search?q=${encodeURIComponent(qImage)}&safeSearch=Strict&count=10`;
-        const bingRes = await fetch(bingUrl, { headers: { 'Ocp-Apim-Subscription-Key': bingKey } });
+        const qParts = [extracted.bottle, String(extracted.vintage || ''), extracted.region, 'bottle']
+          .filter(Boolean)
+          .join(' ');
+        const bingUrl = `https://api.bing.microsoft.com/v7.0/images/search?q=${encodeURIComponent(qParts)}&safeSearch=Strict&count=10`; 
+        const bingRes = await fetch(bingUrl, {
+          headers: { 'Ocp-Apim-Subscription-Key': bingKey },
+        });
         if (bingRes.ok) {
           const b = await bingRes.json();
           const blacklist = ['pinterest', 'aliexpress', 'ebay', 'shopee'];
@@ -193,6 +167,7 @@ Return ONLY strict JSON matching this schema (no commentary):
           }
         }
       } catch (e) {
+        // Ignore search errors; keep whatever we have
         console.warn('Bing image search failed', e);
       }
     }
