@@ -11,12 +11,13 @@ interface WineTableProps {
   onWineUpdate: (wine: Wine) => void;
   onWineDelete: (wineId: string) => void;
   searchTerm?: string;
+  isPortuguese?: boolean;
 }
 
 type SortColumn = 'bottle' | 'vintage' | 'country' | 'peakYear';
 type SortDirection = 'asc' | 'desc';
 
-export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTerm = '' }: WineTableProps) {
+export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTerm = '', isPortuguese = false }: WineTableProps) {
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [consumingWine, setConsumingWine] = useState<Wine | null>(null);
   const [wineNotes, setWineNotes] = useState<string>('');
@@ -199,7 +200,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
                   onClick={() => handleSort('bottle')}
                 >
                   <div className="flex items-center justify-between">
-                    <span>Wine</span>
+                    <span>{isPortuguese ? 'Vinho' : 'Wine'}</span>
                     {getSortIcon('bottle')}
                   </div>
                 </th>
@@ -208,17 +209,17 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
                   onClick={() => handleSort('vintage')}
                 >
                   <div className="flex items-center justify-between">
-                    <span>Vintage</span>
+                    <span>{isPortuguese ? 'Safra' : 'Vintage'}</span>
                     {getSortIcon('vintage')}
                   </div>
                 </th>
-                <th className="table-header">Drinking Window</th>
+                <th className="table-header">{isPortuguese ? 'Janela de Consumo' : 'Drinking Window'}</th>
                 <th 
                   className="table-header cursor-pointer hover:bg-gray-100 select-none"
                   onClick={() => handleSort('peakYear')}
                 >
                   <div className="flex items-center justify-between">
-                    <span>Peak</span>
+                    <span>{isPortuguese ? 'Pico' : 'Peak'}</span>
                     {getSortIcon('peakYear')}
                   </div>
                 </th>
@@ -227,15 +228,15 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
                   onClick={() => handleSort('country')}
                 >
                   <div className="flex items-center justify-between">
-                    <span>Country & Region</span>
+                    <span>{isPortuguese ? 'País e Região' : 'Country & Region'}</span>
                     {getSortIcon('country')}
                   </div>
                 </th>
-                <th className="table-header">Style</th>
-                <th className="table-header">Food Pairing</th>
-                <th className="table-header">Suggested Meal</th>
-                <th className="table-header">Location</th>
-                <th className="table-header">Actions</th>
+                <th className="table-header">{isPortuguese ? 'Estilo' : 'Style'}</th>
+                <th className="table-header">{isPortuguese ? 'Harmonização' : 'Food Pairing'}</th>
+                <th className="table-header">{isPortuguese ? 'Prato Sugerido' : 'Suggested Meal'}</th>
+                <th className="table-header">{isPortuguese ? 'Localização' : 'Location'}</th>
+                <th className="table-header">{isPortuguese ? 'Ações' : 'Actions'}</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">

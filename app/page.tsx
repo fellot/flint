@@ -604,6 +604,7 @@ export default function Home() {
           onWineUpdate={handleWineUpdate}
           onWineDelete={handleWineDelete}
           searchTerm={filters.search}
+          isPortuguese={isPortugueseMode}
         />
       </div>
 
@@ -672,4 +673,3 @@ export default function Home() {
     </div>
   );
 }
-
