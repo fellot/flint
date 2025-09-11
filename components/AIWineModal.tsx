@@ -258,7 +258,13 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
       const err = await res.json().catch(() => ({}));
       throw new Error(err?.error || 'AI enrichment failed');
     }
-    return res.json() as Promise<{ foodPairingNotes: string; mealToHaveWithThisWine: string }>;
+    return res.json() as Promise<{
+      foodPairingNotes: string;
+      mealToHaveWithThisWine: string;
+      decanting?: string;
+      criticScore?: number;
+      criticCode?: string;
+    }>;
   };
 
   const handleEnrichPairing = async () => {
@@ -266,7 +272,13 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
       setProcessingError(null);
       setIsEnrichingPairing(true);
       const out = await callEnrichAPI('pairing');
-      setFormData(prev => ({ ...prev, foodPairingNotes: out.foodPairingNotes || prev.foodPairingNotes }));
+      setFormData(prev => ({
+        ...prev,
+        foodPairingNotes: out.foodPairingNotes || prev.foodPairingNotes,
+        decanting: out.decanting ?? prev.decanting,
+        criticScore: typeof out.criticScore === 'number' ? out.criticScore : prev.criticScore,
+        criticCode: out.criticCode ?? prev.criticCode,
+      }));
     } catch (e) {
       console.error(e);
       setProcessingError('Failed to enrich pairing notes.');
@@ -313,6 +325,40 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
             <div className={`flex items-center ${currentStep === 'upload' ? 'text-red-600' : currentStep === 'processing' || currentStep === 'review' || currentStep === 'saving' ? 'text-green-600' : 'text-gray-400'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep === 'upload' ? 'bg-red-100' : currentStep === 'processing' || currentStep === 'review' || currentStep === 'saving' ? 'bg-green-100' : 'bg-gray-100'}`}>
                 {currentStep === 'upload' ? <Upload className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
+              </div>
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Decanting</label>
+                  <input
+                    type="text"
+                    value={formData.decanting || ''}
+                    onChange={(e) => handleInputChange('decanting', e.target.value)}
+                    className="input-field"
+                    placeholder="e.g., 30–60 min, Not necessary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Critic Score</label>
+                  <input
+                    type="number"
+                    value={formData.criticScore ?? ''}
+                    onChange={(e) => handleInputChange('criticScore', e.target.value ? Number(e.target.value) : undefined)}
+                    className="input-field"
+                    placeholder="e.g., 94"
+                    min={0}
+                    max={100}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Critic Code</label>
+                  <input
+                    type="text"
+                    value={formData.criticCode || ''}
+                    onChange={(e) => handleInputChange('criticCode', e.target.value.toUpperCase())}
+                    className="input-field"
+                    placeholder="e.g., RP, WS, JS"
+                  />
+                </div>
               </div>
               <span className="ml-2 text-sm font-medium">Upload</span>
             </div>
