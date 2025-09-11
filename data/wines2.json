@@ -1884,28 +1884,5 @@
     "quantity": 1,
     "bottle_image": "https://www.wine.com.br/cdn-cgi/image/f=png/assets-images/produtos/30074-01.png",
     "technical_sheet": ""
-  },
-  {
-    "id": "1757558532439",
-    "bottle": "Casa Ferreirinha Castas Escondidas 2019",
-    "country": "Portugal",
-    "region": "Douro",
-    "vintage": 2019,
-    "drinkingWindow": "2023-2030",
-    "peakYear": 2025,
-    "foodPairingNotes": "This wine typically exhibits rich dark fruit flavors, balanced acidity, and moderate tannins, making it versatile for pairing with grilled meats, stews, and hearty pasta dishes.",
-    "mealToHaveWithThisWine": "Grilled lamb chops with rosemary, served with a side of garlic mashed potatoes and sautéed green beans.",
-    "style": "Red",
-    "grapes": "Touriga Nacional, Touriga Franca, Tinta Roriz",
-    "location": "",
-    "quantity": 1,
-    "price": null,
-    "notes": "",
-    "bottle_image": "https://www.sograpevinhos.com/wp-content/uploads/2021/01/Castas-Escondidas-2019.jpg",
-    "fromCellar": true,
-    "status": "in_cellar",
-    "consumedDate": null,
-    "dataSource": "2",
-    "rating": null
   }
 ]
