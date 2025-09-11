@@ -13,6 +13,87 @@ interface AIWineModalProps {
 type ProcessingStep = 'upload' | 'processing' | 'review' | 'saving';
 
 export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalProps) {
+  // Client-side image downscaling helpers
+  const MAX_SIDE = 1600;
+  const JPEG_QUALITY = 0.82;
+
+  const fileToDataURL = (file: Blob): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onerror = () => reject(new Error('Failed to read file'));
+      fr.onload = () => resolve(String(fr.result));
+      fr.readAsDataURL(file);
+    });
+
+  const blobToDataURL = (blob: Blob): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onerror = () => reject(new Error('Failed to read blob'));
+      fr.onload = () => resolve(String(fr.result));
+      fr.readAsDataURL(blob);
+    });
+
+  const downscaleImageToDataURL = async (
+    file: File,
+    maxSide: number = MAX_SIDE,
+    quality: number = JPEG_QUALITY
+  ): Promise<string> => {
+    try {
+      if (typeof window !== 'undefined' && 'createImageBitmap' in window) {
+        // Use createImageBitmap to respect EXIF orientation when supported
+        // @ts-ignore - imageOrientation is supported in modern browsers
+        const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+        const { width, height } = bitmap;
+        const scale = Math.min(1, maxSide / Math.max(width, height));
+        const targetW = Math.max(1, Math.round(width * scale));
+        const targetH = Math.max(1, Math.round(height * scale));
+        const canvas = document.createElement('canvas');
+        canvas.width = targetW;
+        canvas.height = targetH;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas not supported');
+        ctx.drawImage(bitmap, 0, 0, targetW, targetH);
+        const blob: Blob | null = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+        if (!blob) throw new Error('Failed to encode image');
+        return await blobToDataURL(blob);
+      }
+    } catch (e) {
+      // Fallback to HTMLImageElement pipeline if createImageBitmap fails
+      console.warn('createImageBitmap pipeline failed, falling back:', e);
+    }
+
+    // Fallback path using Image element
+    const dataUrl = await fileToDataURL(file);
+    await new Promise<void>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve();
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = dataUrl;
+    });
+    const img = document.createElement('img');
+    img.src = dataUrl;
+    const targetPromise = new Promise<string>((resolve, reject) => {
+      img.onload = async () => {
+        const { width, height } = img;
+        const scale = Math.min(1, maxSide / Math.max(width, height));
+        const targetW = Math.max(1, Math.round(width * scale));
+        const targetH = Math.max(1, Math.round(height * scale));
+        const canvas = document.createElement('canvas');
+        canvas.width = targetW;
+        canvas.height = targetH;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return reject(new Error('Canvas not supported'));
+        ctx.drawImage(img, 0, 0, targetW, targetH);
+        const blob: Blob | null = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
+        if (!blob) return reject(new Error('Failed to encode image'));
+        const out = await blobToDataURL(blob);
+        resolve(out);
+      };
+      img.onerror = () => reject(new Error('Failed to load image'));
+    });
+    return targetPromise;
+  };
+
   const [currentStep, setCurrentStep] = useState<ProcessingStep>('upload');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [processingError, setProcessingError] = useState<string | null>(null);
@@ -40,17 +121,18 @@ export default function AIWineModal({ isOpen, onClose, onAddWine }: AIWineModalP
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageData = e.target?.result as string;
-        setUploadedImage(imageData);
-        setFormData(prev => ({ ...prev, bottle_image: imageData }));
-        processImageWithAI(imageData);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    try {
+      const compressedDataUrl = await downscaleImageToDataURL(file);
+      setUploadedImage(compressedDataUrl);
+      // Keep in form for preview; will be replaced by a web URL from AI if found
+      setFormData(prev => ({ ...prev, bottle_image: compressedDataUrl }));
+      await processImageWithAI(compressedDataUrl);
+    } catch (err) {
+      console.error('Image processing failed:', err);
+      setProcessingError('Could not process image. Please try a different photo.');
     }
   };
 
