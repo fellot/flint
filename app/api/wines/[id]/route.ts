@@ -1,10 +1,60 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
+const owner = process.env.GITHUB_OWNER!;
+const repo = process.env.GITHUB_REPO!;
+const branch = process.env.GITHUB_BRANCH ?? 'main';
+const token = process.env.GITHUB_TOKEN!;
+
 import { Wine } from '@/types/wine';
 
-const dataFilePath = path.join(process.cwd(), 'data', 'wines.json');
-const dataFilePath2 = path.join(process.cwd(), 'data', 'wines2.json');
+const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents`;
+
+async function getWineData(file: string) {
+  const res = await fetch(`${apiBase}/${file}?ref=${branch}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/vnd.github.v3+json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch wines');
+  }
+
+  const json = await res.json();
+  const content = Buffer.from(json.content, 'base64').toString('utf8');
+  const wines: Wine[] = JSON.parse(content);
+  return { wines, sha: json.sha };
+}
+
+async function commitWineData(
+  file: string,
+  wines: Wine[],
+  sha: string,
+  message: string
+) {
+  const content = Buffer.from(JSON.stringify(wines, null, 2)).toString('base64');
+  const res = await fetch(`${apiBase}/${file}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/vnd.github.v3+json',
+    },
+    body: JSON.stringify({
+      message,
+      content,
+      sha,
+      branch,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to commit wines');
+  }
+
+  return res.json();
+}
 
 // GET single wine
 export async function GET(
@@ -14,9 +64,8 @@ export async function GET(
   try {
     const { searchParams } = new URL(request.url);
     const dataSource = searchParams.get('dataSource') || '1';
-    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
-    const data = await fs.readFile(filePath, 'utf8');
-    const wines: Wine[] = JSON.parse(data);
+    const file = dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
+    const { wines } = await getWineData(file);
     
     const wine = wines.find(w => w.id === params.id);
     
@@ -39,9 +88,8 @@ export async function PUT(
   try {
     const body = await request.json();
     const dataSource = body.dataSource || '1';
-    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
-    const data = await fs.readFile(filePath, 'utf8');
-    const wines: Wine[] = JSON.parse(data);
+    const file = dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
+    const { wines, sha } = await getWineData(file);
     
     const wineIndex = wines.findIndex(w => w.id === params.id);
     
@@ -50,7 +98,7 @@ export async function PUT(
     }
 
     wines[wineIndex] = { ...wines[wineIndex], ...body };
-    await fs.writeFile(filePath, JSON.stringify(wines, null, 2));
+    await commitWineData(file, wines, sha, `Update wine ${wines[wineIndex].bottle}`);
 
     return NextResponse.json(wines[wineIndex]);
   } catch (error) {
@@ -67,9 +115,8 @@ export async function DELETE(
   try {
     const { searchParams } = new URL(request.url);
     const dataSource = searchParams.get('dataSource') || '1';
-    const filePath = dataSource === '2' ? dataFilePath2 : dataFilePath;
-    const data = await fs.readFile(filePath, 'utf8');
-    const wines: Wine[] = JSON.parse(data);
+    const file = dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
+    const { wines, sha } = await getWineData(file);
     
     const wineIndex = wines.findIndex(w => w.id === params.id);
     
@@ -77,8 +124,8 @@ export async function DELETE(
       return NextResponse.json({ error: 'Wine not found' }, { status: 404 });
     }
 
-    wines.splice(wineIndex, 1);
-    await fs.writeFile(filePath, JSON.stringify(wines, null, 2));
+    const [removed] = wines.splice(wineIndex, 1);
+    await commitWineData(file, wines, sha, `Delete wine ${removed.bottle}`);
 
     return NextResponse.json({ message: 'Wine deleted successfully' });
   } catch (error) {
