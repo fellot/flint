@@ -40,8 +40,8 @@ export const POST = async (request: NextRequest) => {
       summary,
       constraints,
       lang === 'pt-BR'
-        ? `Retorne APENAS JSON estrito neste formato (sem comentários):\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string,\n  "decanting": string,            // ex.: "30–60 min" ou "Não é necessário"\n  "criticScore": number,          // ex.: 94 (se desconhecido, omita)\n  "criticCode": string            // ex.: "RP", "WS", "JS" (se desconhecido, omita)\n}`
-        : `Return ONLY strict JSON (no commentary) in this format:\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string,\n  "decanting": string,            // e.g., "30–60 min" or "Not necessary"\n  "criticScore": number,          // e.g., 94 (if unknown, omit)\n  "criticCode": string            // e.g., "RP", "WS", "JS" (if unknown, omit)\n}`,
+        ? `Retorne APENAS JSON estrito neste formato:\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string\n}`
+        : `Return ONLY strict JSON in this format:\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string\n}`,
       mode === 'meal'
         ? (lang === 'pt-BR' ? 'Escolha um prato diferente do atual, evitando repetição.' : 'Choose a different main dish than the current one; avoid repetition.')
         : '',
@@ -89,9 +89,6 @@ export const POST = async (request: NextRequest) => {
     const out = {
       foodPairingNotes: String(parsed.foodPairingNotes || '').trim(),
       mealToHaveWithThisWine: String(parsed.mealToHaveWithThisWine || '').trim(),
-      decanting: typeof parsed.decanting === 'string' ? parsed.decanting.trim() : undefined,
-      criticScore: Number.isFinite(parsed.criticScore) ? Number(parsed.criticScore) : undefined,
-      criticCode: typeof parsed.criticCode === 'string' ? String(parsed.criticCode).trim().toUpperCase() : undefined,
     };
 
     return NextResponse.json(out);
