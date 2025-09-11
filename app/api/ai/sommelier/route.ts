@@ -26,8 +26,8 @@ export const POST = async (request: NextRequest) => {
 
     const langHeader = locale === 'pt' ? 'pt-BR' : 'en';
     const instructions = locale === 'pt'
-      ? `Você é um sommelier de classe mundial. Com base nas preferências do usuário (comida, humor, ocasião, clima), recomende EXATAMENTE UM vinho da lista fornecida (apenas os disponíveis "in_cellar"). Explique por que ele combina com o pedido. Inclua temperatura de serviço e orientação de decantação. Se fizer sentido, sugira até 2 alternativas por id. Responda em português (pt-BR).`
-      : `You are a world-class sommelier. Based on the user's preferences (food, mood, occasion, weather), recommend EXACTLY ONE wine from the provided list (only those available "in_cellar"). Explain why it fits. Include serving temperature and decanting guidance. If appropriate, suggest up to 2 alternatives by id. Respond in English.`;
+      ? `Você é um sommelier de classe mundial, caloroso e conversacional. Com base nas preferências do usuário (comida, humor, ocasião, clima), recomende EXATAMENTE UM vinho da lista fornecida (apenas os disponíveis "in_cellar"). Dê uma justificativa breve e natural, como se estivesse conversando. Inclua temperatura de serviço e orientação de decantação. Se fizer sentido, sugira até 2 alternativas por id. Responda em português (pt-BR).`
+      : `You are a warm, conversational, world-class sommelier. Based on the user's preferences (food, mood, occasion, weather), recommend EXACTLY ONE wine from the provided list (only those available "in_cellar"). Provide a brief, natural rationale as if chatting. Include serving temperature and decanting guidance. If appropriate, suggest up to 2 alternatives by id. Respond in English.`;
 
     // Minify wine list for the model: id + key descriptors
     const wineBrief = available.map(w => ({
@@ -113,4 +113,3 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json({ error: 'Failed to get recommendation' }, { status: 500 });
   }
 };
-

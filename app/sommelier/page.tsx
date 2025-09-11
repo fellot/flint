@@ -67,9 +67,17 @@ export default function SommelierPage() {
         throw new Error(err?.error || 'AI request failed');
       }
       const out = await res.json();
+      const picked = wines.find(w => String(w.id) === String(out.wineId));
+      const location = picked?.location ? String(picked.location) : undefined;
+      const regionYear = picked ? `${picked.region || ''}${picked.region ? ' • ' : ''}${picked.vintage || ''}` : '';
+      const locationLine = location
+        ? (isPortugueseMode ? `\n\nOnde está: ${location}` : `\n\nWhere to find it: ${location}`)
+        : '';
+
+      // Conversational, friendly tone
       const recText = isPortugueseMode
-        ? `Recomendação: ${out.bottle}\n\nMotivo: ${out.reason}\n\nServiço: ${out.servingTemperature} | Decantação: ${out.decanting}${out.alternatives?.length ? `\n\nAlternativas: ${out.alternatives.join(', ')}` : ''}`
-        : `Recommendation: ${out.bottle}\n\nReason: ${out.reason}\n\nService: ${out.servingTemperature} | Decanting: ${out.decanting}${out.alternatives?.length ? `\n\nAlternatives: ${out.alternatives.join(', ')}` : ''}`;
+        ? `Eu escolheria: ${out.bottle}${regionYear ? ` (${regionYear})` : ''}.\n\nPor quê: ${out.reason}\n\nPara aproveitar melhor, sirva a ${out.servingTemperature} · Decantação: ${out.decanting}.${locationLine}${out.alternatives?.length ? `\n\nAlternativas (ids): ${out.alternatives.join(', ')}` : ''}`
+        : `I’d go with: ${out.bottle}${regionYear ? ` (${regionYear})` : ''}.\n\nWhy: ${out.reason}\n\nFor best enjoyment, serve at ${out.servingTemperature} · Decanting: ${out.decanting}.${locationLine}${out.alternatives?.length ? `\n\nAlternatives (ids): ${out.alternatives.join(', ')}` : ''}`;
       setMessages(prev => [...prev, { role: 'assistant', content: recText }]);
       setLastRec(out);
     } catch (e) {
@@ -162,4 +170,3 @@ export default function SommelierPage() {
     </div>
   );
 }
-
