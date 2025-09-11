@@ -60,20 +60,20 @@ export async function POST(request: NextRequest) {
 
 Return ONLY strict JSON matching this schema (no commentary):
 {
-  "bottle": string,
-  "country": string,
-  "region": string,
-  "vintage": number,
-  "style": string,
-  "grapes": string,
-  "drinkingWindow": string,
-  "peakYear": number,
-  "foodPairingNotes": string,
-  "mealToHaveWithThisWine": string,
-  "notes": string,
-  "price": number,
-  "bottle_image": string,
-  "technical_sheet": string
+  "bottle": string,                // winery + cuvée + vintage if present
+  "country": string,               // country name
+  "region": string,                // region/appellation
+  "vintage": number,               // 4-digit year; if missing, infer best guess else use current year
+  "style": string,                 // One of: Red, White, Rosé, Sparkling, Sweet, Fortified
+  "grapes": string,                // comma-separated varieties
+  "drinkingWindow": string,        // e.g., "2025-2035"; infer from structure/quality; be realistic
+  "peakYear": number,              // your best estimate of the maturity peak
+  "foodPairingNotes": string,      // Describe wine's characteristics and food pairing suggestions
+  "mealToHaveWithThisWine": string,// ONE creative dish (method + key sides/sauce)
+  "notes": string,                 // omit
+  "price": number,                 // omit
+  "bottle_image": string          // a public https URL to the bottle or label image; prefer official winery/retailer, avoid pinterest
+  "technical_sheet": string       // a public https URL to the technical sheet of the wine if available. If not available, omit.
 }`;
 
     const userPrompt = `${locale === 'pt' ? 'Extraia as informações do rótulo do vinho nesta imagem e retorne apenas JSON.' : 'Extract wine label information from this image and return JSON only.'}`;
