@@ -25,10 +25,12 @@ export default function CellarJournal() {
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
   const [isAddExternalWineModalOpen, setIsAddExternalWineModalOpen] = useState(false);
   const [isAIWineModalOpen, setIsAIWineModalOpen] = useState(false);
+  const [dataSource, setDataSource] = useState<'1' | '2'>('1');
+  const [isPortugueseMode, setIsPortugueseMode] = useState(false);
 
   useEffect(() => {
     fetchWines();
-  }, []);
+  }, [dataSource]);
 
   useEffect(() => {
     applyFilters();
@@ -40,7 +42,7 @@ export default function CellarJournal() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
       
-      const response = await fetch('/api/wines', {
+      const response = await fetch(`/api/wines?dataSource=${dataSource}` , {
         signal: controller.signal
       });
       
@@ -62,6 +64,7 @@ export default function CellarJournal() {
       }
     } finally {
       setLoading(false);
+      setIsPortugueseMode(dataSource === '2');
     }
   };
 
@@ -219,6 +222,7 @@ export default function CellarJournal() {
           status: 'consumed',
           consumedDate: new Date().toISOString().split('T')[0],
           fromCellar: false,
+          dataSource,
         }),
       });
 
@@ -232,6 +236,12 @@ export default function CellarJournal() {
       console.error('Error adding external wine:', error);
       throw error;
     }
+  };
+
+  const toggleDataSource = () => {
+    const next = dataSource === '1' ? '2' : '1';
+    setDataSource(next);
+    setIsPortugueseMode(next === '2');
   };
 
   const handleRegionClick = (region: string) => {
@@ -288,7 +298,7 @@ export default function CellarJournal() {
       <div className="min-h-screen bg-red-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-wine-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your cellar journal...</p>
+          <p className="mt-4 text-gray-600">{isPortugueseMode ? 'Carregando seu diário da adega...' : 'Loading your cellar journal...'}</p>
         </div>
       </div>
     );
@@ -306,12 +316,12 @@ export default function CellarJournal() {
                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
               >
                 <ArrowLeft className="h-5 w-5" />
-                <span>Back to Cellar</span>
+                <span>{isPortugueseMode ? 'Voltar para a Adega' : 'Back to Cellar'}</span>
               </button>
               <div className="h-px bg-gray-300 w-8"></div>
               <div className="flex items-center">
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent tracking-tight">
-                  Cellar Journal
+                  {isPortugueseMode ? 'Diário da Adega' : 'Cellar Journal'}
                 </h1>
               </div>
             </div>
@@ -324,7 +334,7 @@ export default function CellarJournal() {
                 </div>
                 <input
                   type="text"
-                  placeholder="Search consumed wines, grapes, food pairings..."
+                  placeholder={isPortugueseMode ? 'Buscar vinhos consumidos, uvas, harmonizações...' : 'Search consumed wines, grapes, food pairings...'}
                   value={filters.search}
                   onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                   className="w-full input-field pl-12 py-3 text-base"
@@ -354,8 +364,22 @@ export default function CellarJournal() {
                   className="flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-medium rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md hover:shadow-lg"
                 >
                   <Plus className="h-5 w-5" />
-                  <span>Add External Wine</span>
+                  <span>{isPortugueseMode ? 'Adicionar Vinho Externo' : 'Add External Wine'}</span>
                 </button>
+                <div className="flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
+                  <span className={`text-2xl ${dataSource === '1' ? 'opacity-100' : 'opacity-50'}`}>🇨🇦</span>
+                  <button
+                    onClick={toggleDataSource}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                      dataSource === '2' ? 'bg-green-600' : 'bg-gray-300'
+                    }`}
+                  >
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      dataSource === '2' ? 'translate-x-6' : 'translate-x-1'
+                    }`} />
+                  </button>
+                  <span className={`text-2xl ${dataSource === '2' ? 'opacity-100' : 'opacity-50'}`}>🇧🇷</span>
+                </div>
               </div>
             </div>
           </div>
@@ -586,6 +610,7 @@ export default function CellarJournal() {
         isOpen={isAIWineModalOpen}
         onClose={() => setIsAIWineModalOpen(false)}
         onAddWine={handleAddExternalWine}
+        locale={isPortugueseMode ? 'pt' : 'en'}
       />
 
       {/* Add External Wine Modal */}
