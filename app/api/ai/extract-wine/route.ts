@@ -20,6 +20,7 @@ type ExtractedWine = {
   mealToHaveWithThisWine: string;
   notes: string;
   price?: number;
+  bottle_image?: string;
 };
 
 function normalizeStyle(input: string): string {
@@ -66,7 +67,8 @@ Return exactly this JSON schema with keys:
   "foodPairingNotes": string,      // short suggestions
   "mealToHaveWithThisWine": string,// one concrete meal idea
   "notes": string,                 // short tasting/label notes
-  "price": number                  // numeric estimate if visible; else omit or null
+  "price": number,                 // numeric estimate if visible; else omit or null
+  "bottle_image": string          // a public https URL to the bottle or label image; prefer official winery/retailer, avoid pinterest
 }`;
 
     const userPrompt = `${locale === 'pt' ? 'Extraia as informações do rótulo do vinho nesta imagem e retorne apenas JSON.' : 'Extract wine label information from this image and return JSON only.'}`;
@@ -131,7 +133,40 @@ Return exactly this JSON schema with keys:
       mealToHaveWithThisWine: parsed.mealToHaveWithThisWine || '',
       notes: parsed.notes || '',
       price: parsed.price != null ? Number(parsed.price) : undefined,
+      bottle_image: typeof parsed.bottle_image === 'string' ? parsed.bottle_image : undefined,
     };
+
+    // Try to enrich bottle_image with an actual web URL via Bing Image Search if configured
+    const bingKey = process.env.BING_IMAGE_SEARCH_KEY || process.env.AZURE_BING_SEARCH_KEY;
+    const needsImage = !extracted.bottle_image || !/^https?:\/\//i.test(extracted.bottle_image);
+    if (bingKey && needsImage) {
+      try {
+        const qParts = [extracted.bottle, String(extracted.vintage || ''), extracted.region, 'bottle']
+          .filter(Boolean)
+          .join(' ');
+        const bingUrl = `https://api.bing.microsoft.com/v7.0/images/search?q=${encodeURIComponent(qParts)}&safeSearch=Strict&count=10`; 
+        const bingRes = await fetch(bingUrl, {
+          headers: { 'Ocp-Apim-Subscription-Key': bingKey },
+        });
+        if (bingRes.ok) {
+          const b = await bingRes.json();
+          const blacklist = ['pinterest', 'aliexpress', 'ebay', 'shopee'];
+          const pick = (b.value || []).find((item: any) => {
+            const url: string = item?.contentUrl || '';
+            const host = (() => { try { return new URL(url).hostname; } catch { return ''; } })();
+            const okExt = /(\.jpg|\.jpeg|\.png|\.webp)(\?|$)/i.test(url);
+            const notBlacklisted = host && !blacklist.some(bad => host.includes(bad));
+            return url.startsWith('http') && okExt && notBlacklisted;
+          });
+          if (pick?.contentUrl) {
+            extracted.bottle_image = pick.contentUrl;
+          }
+        }
+      } catch (e) {
+        // Ignore search errors; keep whatever we have
+        console.warn('Bing image search failed', e);
+      }
+    }
 
     return NextResponse.json({ extracted });
   } catch (error: any) {
@@ -139,4 +174,3 @@ Return exactly this JSON schema with keys:
     return NextResponse.json({ error: 'Failed to extract wine data' }, { status: 500 });
   }
 }
-
