@@ -1880,9 +1880,10 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Adega A",
+    "location": "Adega B - L8",
     "quantity": 1,
     "bottle_image": "https://www.wine.com.br/cdn-cgi/image/f=png/assets-images/produtos/30074-01.png",
-    "technical_sheet": ""
+    "technical_sheet": "",
+    "dataSource": "2"
   }
 ]
