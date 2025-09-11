@@ -923,5 +923,28 @@
     "quantity": 2,
     "bottle_image": "https://cache1.voyageursduvin.com/products/Two-Hands-Bellas-Garden-zoom.jpg",
     "technical_sheet": "https://twohandswines.com/pages/bellas-garden"
+  },
+  {
+    "id": "1757559721167",
+    "bottle": "Casanova di Neri Giovanni Neri Rosso di Montalcino",
+    "country": "Italy",
+    "region": "Tuscany",
+    "vintage": 2023,
+    "drinkingWindow": "2024-2030",
+    "peakYear": 2026,
+    "foodPairingNotes": "This wine typically exhibits bright acidity, soft tannins, and red fruit flavors, making it versatile for pairing with a variety of dishes. Ideal pairings include roasted meats, pasta with tomato sauce, or mushroom risotto.",
+    "mealToHaveWithThisWine": "Braised lamb shanks with rosemary and garlic, served with creamy polenta and sautéed seasonal vegetables.",
+    "style": "Red",
+    "grapes": "Sangiovese",
+    "location": "",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "bottle_image": "https://www.casanovadineri.com/wp-content/uploads/2020/07/Giovanni-Neri-Rosso-di-Montalcino.jpg",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "1",
+    "rating": null
   }
 ]
