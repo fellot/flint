@@ -20,6 +20,10 @@ export interface Wine {
   technical_sheet?: string;
   bottle_image?: string;
   fromCellar?: boolean; // true if wine was originally in cellar, false if consumed from outside
+  // Optional enrichments
+  decanting?: string;           // e.g., "60–90 min", "Not necessary"
+  criticScore?: number | null;  // e.g., 94
+  criticCode?: string;          // e.g., "RP", "WS", "JS"
 }
 
 export interface WineFilters {
@@ -52,4 +56,8 @@ export interface WineFormData {
   status?: 'in_cellar' | 'consumed' | 'sold' | 'gifted';
   consumedDate?: string | null;
   dataSource?: string;
+  // Optional enrichments prior to save
+  decanting?: string;
+  criticScore?: number;
+  criticCode?: string;
 }
