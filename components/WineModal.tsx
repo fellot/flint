@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Wine } from '@/types/wine';
-import { X, Wine as WineIcon, Star, Calendar, MapPin } from 'lucide-react';
+import { X, Wine as WineIcon, Star, Calendar, MapPin, Loader2, Sparkles, RefreshCw } from 'lucide-react';
 
 interface WineModalProps {
   wine: Wine;
@@ -10,12 +10,15 @@ interface WineModalProps {
   onClose: () => void;
   onSave: (wine: Wine) => void;
   mode: 'edit' | 'view';
+  locale?: 'en' | 'pt';
 }
 
-export default function WineModal({ wine, isOpen, onClose, onSave, mode }: WineModalProps) {
+export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale = 'en' }: WineModalProps) {
   const [formData, setFormData] = useState<Wine>(wine);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [originalLocation, setOriginalLocation] = useState<string>(wine.location);
+  const [isEnrichingPairing, setIsEnrichingPairing] = useState(false);
+  const [isSuggestingMeal, setIsSuggestingMeal] = useState(false);
 
   useEffect(() => {
     setFormData(wine);
@@ -65,6 +68,58 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode }: WineM
     if (validateForm()) {
       onSave(formData);
       onClose();
+    }
+  };
+
+  // Call AI to enrich pairing notes / suggest meal
+  const callEnrichAPI = async (modeSel: 'pairing' | 'meal' | 'both') => {
+    const payload = {
+      wine: {
+        bottle: formData.bottle,
+        country: formData.country,
+        region: formData.region,
+        vintage: formData.vintage,
+        style: formData.style,
+        grapes: formData.grapes,
+      },
+      currentPairing: formData.foodPairingNotes,
+      currentMeal: formData.mealToHaveWithThisWine,
+      mode: modeSel,
+      locale,
+    };
+    const res = await fetch('/api/ai/enrich-pairing', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error || 'AI enrichment failed');
+    }
+    return res.json() as Promise<{ foodPairingNotes: string; mealToHaveWithThisWine: string }>;
+  };
+
+  const handleEnrichPairing = async () => {
+    try {
+      setIsEnrichingPairing(true);
+      const out = await callEnrichAPI('pairing');
+      setFormData(prev => ({ ...prev, foodPairingNotes: out.foodPairingNotes || prev.foodPairingNotes }));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsEnrichingPairing(false);
+    }
+  };
+
+  const handleSuggestMeal = async () => {
+    try {
+      setIsSuggestingMeal(true);
+      const out = await callEnrichAPI('meal');
+      setFormData(prev => ({ ...prev, mealToHaveWithThisWine: out.mealToHaveWithThisWine || prev.mealToHaveWithThisWine }));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSuggestingMeal(false);
     }
   };
 
@@ -353,8 +408,31 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode }: WineM
           {/* Food Pairing */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="foodPairingNotes" className="block text-sm font-medium text-gray-700 mb-2">
-                Food Pairing Notes
+              <label htmlFor="foodPairingNotes" className="block text-sm font-medium text-gray-700 mb-2 flex items-center justify-between">
+                <span>Food Pairing Notes</span>
+                {mode === 'edit' && (
+                  <button
+                    type="button"
+                    onClick={handleEnrichPairing}
+                    disabled={isEnrichingPairing}
+                    className={`inline-flex items-center px-2 py-1 text-xs rounded-md border transition-colors ${
+                      isEnrichingPairing ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
+                    }`}
+                    title="Enrich pairing with AI"
+                  >
+                    {isEnrichingPairing ? (
+                      <>
+                        <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                        Enriching
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-3.5 w-3.5 mr-1" />
+                        Enrich with AI
+                      </>
+                    )}
+                  </button>
+                )}
               </label>
               <textarea
                 id="foodPairingNotes"
@@ -368,8 +446,31 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode }: WineM
             </div>
 
             <div>
-              <label htmlFor="mealToHaveWithThisWine" className="block text-sm font-medium text-gray-700 mb-2">
-                Suggested Meal
+              <label htmlFor="mealToHaveWithThisWine" className="block text-sm font-medium text-gray-700 mb-2 flex items-center justify-between">
+                <span>Suggested Meal</span>
+                {mode === 'edit' && (
+                  <button
+                    type="button"
+                    onClick={handleSuggestMeal}
+                    disabled={isSuggestingMeal}
+                    className={`inline-flex items-center px-2 py-1 text-xs rounded-md border transition-colors ${
+                      isSuggestingMeal ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'
+                    }`}
+                    title={formData.mealToHaveWithThisWine ? 'Suggest another meal' : 'Suggest a meal with AI'}
+                  >
+                    {isSuggestingMeal ? (
+                      <>
+                        <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                        Thinking
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                        {formData.mealToHaveWithThisWine ? 'Suggest another' : 'AI Suggest'}
+                      </>
+                    )}
+                  </button>
+                )}
               </label>
               <input
                 type="text"

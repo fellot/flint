@@ -443,6 +443,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
           onClose={() => setEditingWine(null)}
           onSave={onWineUpdate}
           mode="edit"
+          locale={isPortuguese ? 'pt' : 'en'}
         />
       )}
 

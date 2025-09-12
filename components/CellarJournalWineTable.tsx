@@ -11,12 +11,13 @@ interface CellarJournalWineTableProps {
   onWineUpdate: (wine: Wine) => void;
   onWineDelete: (wineId: string) => void;
   searchTerm?: string;
+  isPortuguese?: boolean;
 }
 
 type SortColumn = 'bottle' | 'vintage' | 'country' | 'peakYear';
 type SortDirection = 'asc' | 'desc';
 
-export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDelete, searchTerm = '' }: CellarJournalWineTableProps) {
+export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDelete, searchTerm = '', isPortuguese = false }: CellarJournalWineTableProps) {
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string; location: string } | null>(null);
   const [sortColumn, setSortColumn] = useState<SortColumn>('bottle');
@@ -351,13 +352,14 @@ export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDele
 
       {/* Wine Modal */}
       {editingWine && (
-        <WineModal
-          wine={editingWine}
-          isOpen={!!editingWine}
-          onClose={() => setEditingWine(null)}
-          onSave={onWineUpdate}
-          mode="edit"
-        />
+      <WineModal
+        wine={editingWine}
+        isOpen={!!editingWine}
+        onClose={() => setEditingWine(null)}
+        onSave={onWineUpdate}
+        mode="edit"
+        locale={isPortuguese ? 'pt' : 'en'}
+      />
       )}
 
       {/* Image Expansion Modal */}

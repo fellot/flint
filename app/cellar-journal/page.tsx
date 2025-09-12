@@ -618,6 +618,7 @@ export default function CellarJournal() {
           onWineUpdate={() => {}} // Read-only in journal
           onWineDelete={() => {}} // Read-only in journal
           searchTerm={filters.search}
+          isPortuguese={isPortugueseMode}
         />
       </div>
 
