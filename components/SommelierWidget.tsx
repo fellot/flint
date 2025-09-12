@@ -40,9 +40,24 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
         throw new Error(err?.error || 'AI request failed');
       }
       const out = await res.json();
+
+      // Enhance with location and alternate names on the client
+      const picked = wineList.find(w => String(w.id) === String(out.wineId));
+      const location = picked?.location ? String(picked.location) : undefined;
+      const regionYear = picked ? `${picked.region || ''}${picked.region ? ' • ' : ''}${picked.vintage || ''}` : '';
+      const locationLine = location
+        ? (isPT ? `\n\nOnde está: ${location}` : `\n\nWhere to find it: ${location}`)
+        : '';
+
+      const altNames = Array.isArray(out.alternatives)
+        ? out.alternatives
+            .map((id: string) => wineList.find(w => String(w.id) === String(id))?.bottle)
+            .filter(Boolean)
+        : [];
+
       const reply = isPT
-        ? `Eu escolheria: ${out.bottle}.\n\nPor quê: ${out.reason}\n\nPara aproveitar melhor, sirva a ${out.servingTemperature} · Decantação: ${out.decanting}.${out.alternatives?.length ? `\n\nAlternativas (ids): ${out.alternatives.join(', ')}` : ''}`
-        : `I’d go with: ${out.bottle}.\n\nWhy: ${out.reason}\n\nFor best enjoyment, serve at ${out.servingTemperature} · Decanting: ${out.decanting}.${out.alternatives?.length ? `\n\nAlternatives (ids): ${out.alternatives.join(', ')}` : ''}`;
+        ? `Eu escolheria: ${out.bottle}${regionYear ? ` (${regionYear})` : ''}.\n\nPor quê: ${out.reason}\n\nPara aproveitar melhor, sirva a ${out.servingTemperature} · Decantação: ${out.decanting}.${locationLine}${altNames.length ? `\n\nAlternativas: ${altNames.join(', ')}` : ''}`
+        : `I’d go with: ${out.bottle}${regionYear ? ` (${regionYear})` : ''}.\n\nWhy: ${out.reason}\n\nFor best enjoyment, serve at ${out.servingTemperature} · Decanting: ${out.decanting}.${locationLine}${altNames.length ? `\n\nAlternatives: ${altNames.join(', ')}` : ''}`;
       setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
     } catch (e) {
       setMessages(prev => [...prev, { role: 'assistant', content: isPT ? 'Desculpe, algo deu errado.' : 'Sorry, something went wrong.' }]);
@@ -103,4 +118,3 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
     </div>
   );
 }
-
