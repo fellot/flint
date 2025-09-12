@@ -235,7 +235,6 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
                 <th className="table-header">{isPortuguese ? 'Estilo' : 'Style'}</th>
                 <th className="table-header">{isPortuguese ? 'Harmonização' : 'Food Pairing'}</th>
                 <th className="table-header">{isPortuguese ? 'Prato Sugerido' : 'Suggested Meal'}</th>
-                <th className="table-header">{isPortuguese ? 'Localização' : 'Location'}</th>
                 <th className="table-header">{isPortuguese ? 'Ações' : 'Actions'}</th>
               </tr>
             </thead>
@@ -354,7 +353,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
                     </span>
                   </td>
                   <td className="table-cell">
-                    <div className="max-w-44">
+                    <div className="max-w-full">
                       <div className="text-xs text-gray-900 whitespace-pre-wrap leading-tight">
                         {highlightSearchTerm(wine.foodPairingNotes, searchTerm).map((part, index) => 
                           typeof part === 'string' ? part : (
@@ -388,17 +387,6 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
                     </div>
                   </td>
 
-                  <td className="table-cell">
-                                          <div className="flex items-center text-xs text-gray-500">
-                        <MapPin className="table-icon mr-1" />
-                        {wine.location}
-                      </div>
-                    {wine.quantity > 1 && (
-                      <div className="text-xs text-gray-400 mt-1">
-                        Qty: {wine.quantity}
-                      </div>
-                    )}
-                  </td>
                   <td className="table-cell">
                     <div className="flex items-center space-x-1 action-buttons">
                       <button
