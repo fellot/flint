@@ -341,7 +341,6 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-3">
             <div className="flex items-center">
-              <img src="/flint-cellar-logo.svg" alt="Flint Cellar logo" className="h-10 w-10 mr-3 select-none" />
               <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent tracking-tight">
                 Flint Cellar
               </h1>
