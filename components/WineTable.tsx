@@ -354,7 +354,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
                     </span>
                   </td>
                   <td className="table-cell">
-                    <div className="max-w-40">
+                    <div className="max-w-44">
                       <div className="text-xs text-gray-900 whitespace-pre-wrap leading-tight">
                         {highlightSearchTerm(wine.foodPairingNotes, searchTerm).map((part, index) => 
                           typeof part === 'string' ? part : (
