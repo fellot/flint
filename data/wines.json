@@ -629,7 +629,7 @@
     "vintage": 2019,
     "drinkingWindow": "2027–2042",
     "peakYear": 2031,
-    "foodPairingNotes": "Elegant Tempranillo/Cabernet blend; ideal with roast lamb and Ibérico pork.",
+    "foodPairingNotes": "The Arzuaga Reserva Especial is an elegant blend of Tempranillo and Cabernet Sauvignon, showcasing rich dark fruit flavors, balanced acidity, and subtle oak. This wine pairs beautifully with roast lamb, particularly when seasoned with rosemary and garlic, as well as with Ibérico pork, which complements its depth. For optimal enjoyment, decant for at least 1 hour to allow the wine to breathe. Critic score: RP 94.",
     "mealToHaveWithThisWine": "Roast suckling lamb",
     "style": "Red",
     "grapes": "Tempranillo & Cabernet Sauvignon",
@@ -641,7 +641,8 @@
     "location": "Wine fridge A - L4",
     "quantity": 1,
     "bottle_image": "https://www.waudwines.com/wp-content/uploads/2024/07/10541833_square.jpg",
-    "technical_sheet": "https://arzuaganavarro.com/images/ARZUAGA/Fichas-PDF/Reserva_especial/Reserva_Especial_19.pdf"
+    "technical_sheet": "https://arzuaganavarro.com/images/ARZUAGA/Fichas-PDF/Reserva_especial/Reserva_Especial_19.pdf",
+    "dataSource": "1"
   },
   {
     "id": "32",
