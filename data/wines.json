@@ -501,7 +501,7 @@
     "vintage": 2019,
     "drinkingWindow": "2024–2034",
     "peakYear": 2028,
-    "foodPairingNotes": "Rich Douro blend; pairs with grilled beef, game and hearty stews.",
+    "foodPairingNotes": "The Casa Ferreirinha Castas Escondidas Douro 2019 is a rich, full-bodied red blend featuring Touriga Franca and Tinta Barroca, offering dark fruit flavors and a hint of spice. It pairs excellently with grilled beef, game meats, and hearty stews. For optimal enjoyment, decant for 1-2 hours to allow the wine to breathe and reveal its complexity. Critics have noted its quality, with a score of RP 94.",
     "mealToHaveWithThisWine": "Portuguese churrasco",
     "style": "Red",
     "grapes": "Touriga Franca, Tinta Barroca & others",
@@ -512,7 +512,8 @@
     "price": null,
     "location": "Wine fridge A - L5",
     "quantity": 2,
-    "bottle_image": "https://www.theoldbarracks.ie/cdn/shop/files/Screenshot2025-02-25at14.56.31.png?v=1740495461"
+    "bottle_image": "https://www.theoldbarracks.ie/cdn/shop/files/Screenshot2025-02-25at14.56.31.png?v=1740495461",
+    "dataSource": "1"
   },
   {
     "id": "25",
