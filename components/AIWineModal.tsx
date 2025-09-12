@@ -670,9 +670,7 @@ export default function AIWineModal({ isOpen, onClose, onAddWine, locale = 'en' 
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
                     {t.saving}
                   </>
-                ) : (
-                  {t.saveWine}
-                )}
+                ) : t.saveWine}
               </button>
             </div>
           </div>
