@@ -192,19 +192,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
     <>
       <div className="card">
         <div className="overflow-x-auto relative">
-          <table className="w-full table-fixed divide-y divide-gray-200 text-xs">
-            <colgroup>
-              <col className="w-[18%]" />  {/* Wine */}
-              <col className="w-[7%]" />   {/* Vintage */}
-              <col className="w-[9%]" />   {/* Drinking Window */}
-              <col className="w-[6%]" />   {/* Peak */}
-              <col className="w-[14%]" />  {/* Country & Region */}
-              <col className="w-[6%]" />   {/* Style */}
-              <col className="w-[24%]" />  {/* Food Pairing (wider) */}
-              <col className="w-[9%]" />   {/* Suggested Meal (slightly narrower) */}
-              <col className="w-[4%]" />   {/* Location */}
-              <col className="w-[3%]" />   {/* Actions */}
-            </colgroup>
+          <table className="w-full divide-y divide-gray-200 text-xs">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
                 <th 
@@ -366,7 +354,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
                     </span>
                   </td>
                   <td className="table-cell">
-                    <div className="max-w-full">
+                    <div className="max-w-44">
                       <div className="text-xs text-gray-900 whitespace-pre-wrap leading-tight">
                         {highlightSearchTerm(wine.foodPairingNotes, searchTerm).map((part, index) => 
                           typeof part === 'string' ? part : (
