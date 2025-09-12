@@ -67,6 +67,13 @@ export default function SommelierPage() {
         throw new Error(err?.error || 'AI request failed');
       }
       const out = await res.json();
+
+      // Clarifying question path
+      if (out?.type === 'question' && out?.question) {
+        setMessages(prev => [...prev, { role: 'assistant', content: String(out.question) }]);
+        return;
+      }
+
       const picked = wines.find(w => String(w.id) === String(out.wineId));
       const location = picked?.location ? String(picked.location) : undefined;
       const regionYear = picked ? `${picked.region || ''}${picked.region ? ' • ' : ''}${picked.vintage || ''}` : '';
