@@ -330,7 +330,7 @@
     "vintage": 2015,
     "drinkingWindow": "2020–2030",
     "peakYear": 2025,
-    "foodPairingNotes": "Extra‑Brut vintage Blanc de Blancs; crisp citrus and brioche; pairs with seafood and sushi.",
+    "foodPairingNotes": "The Bernard Lonclas Blanc de Blancs Extra Brut Vintage 2015 showcases a crisp profile with vibrant citrus notes and a hint of brioche. This elegant Champagne pairs exceptionally well with seafood dishes, particularly shellfish and sushi, enhancing the freshness of the ingredients. For optimal enjoyment, decant for 30 minutes to allow the flavors to open up. Critic score: WS 96.",
     "mealToHaveWithThisWine": "Pan‑seared scallops with lemon butter or seafood risotto",
     "style": "Sparkling",
     "grapes": "Chardonnay",
@@ -342,7 +342,8 @@
     "location": "Fridge Bsmt",
     "quantity": 1,
     "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/0/4/4/9/044901.jpg.thumb.1280.1280.jpg",
-    "technical_sheet": "https://www.champagne-lonclas.com/fr/vintage.php"
+    "technical_sheet": "https://www.champagne-lonclas.com/fr/vintage.php",
+    "dataSource": "1"
   },
   {
     "id": "17",
