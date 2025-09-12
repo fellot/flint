@@ -334,6 +334,7 @@ export default function Home() {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-red-900">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
@@ -699,5 +700,6 @@ export default function Home() {
       wines={wines}
       locale={isPortugueseMode ? 'pt' : 'en'}
     />
+    </>
   );
 }
