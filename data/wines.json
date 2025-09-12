@@ -923,5 +923,27 @@
     "quantity": 2,
     "bottle_image": "https://cache1.voyageursduvin.com/products/Two-Hands-Bellas-Garden-zoom.jpg",
     "technical_sheet": "https://twohandswines.com/pages/bellas-garden"
+  },
+  {
+    "id": "1757649591893",
+    "bottle": "La Rioja Alta S.A. Gran Reserva 904 2015",
+    "country": "Spain",
+    "region": "Rioja",
+    "vintage": 2015,
+    "drinkingWindow": "",
+    "peakYear": 2030,
+    "foodPairingNotes": "",
+    "mealToHaveWithThisWine": "",
+    "style": "Red",
+    "grapes": "Tempranillo, Graciano, Mazuelo",
+    "location": "",
+    "quantity": 1,
+    "notes": "Great wine paired with an amazing braised beef shank with runny polenta and an amazing sauce",
+    "fromCellar": false,
+    "status": "consumed",
+    "consumedDate": "2025-09-11",
+    "dataSource": "1",
+    "rating": null,
+    "price": null
   }
 ]
