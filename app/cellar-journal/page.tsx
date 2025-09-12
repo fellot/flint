@@ -5,7 +5,7 @@ import { Wine, WineFilters } from '@/types/wine';
 import CellarJournalWineTable from '@/components/CellarJournalWineTable';
 import CellarJournalFilters from '@/components/CellarJournalFilters';
 import { Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, ArrowLeft, Plus, Filter } from 'lucide-react';
-import AddExternalWineModal from '@/components/AddExternalWineModal';
+import AIExternalWineModal from '@/components/AIExternalWineModal';
 import AIWineModal from '@/components/AIWineModal';
 
 export default function CellarJournal() {
@@ -236,7 +236,7 @@ export default function CellarJournal() {
         body: JSON.stringify({
           ...wineData,
           status: 'consumed',
-          consumedDate: new Date().toISOString().split('T')[0],
+          consumedDate: wineData.consumedDate || new Date().toISOString().split('T')[0],
           fromCellar: false,
           dataSource,
         }),
@@ -630,10 +630,11 @@ export default function CellarJournal() {
       />
 
       {/* Add External Wine Modal */}
-      <AddExternalWineModal
+      <AIExternalWineModal
         isOpen={isAddExternalWineModalOpen}
         onClose={() => setIsAddExternalWineModalOpen(false)}
         onAddWine={handleAddExternalWine}
+        locale={isPortugueseMode ? 'pt' : 'en'}
       />
 
       {/* Footer */}
