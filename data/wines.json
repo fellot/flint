@@ -330,7 +330,7 @@
     "vintage": 2015,
     "drinkingWindow": "2020–2030",
     "peakYear": 2025,
-    "foodPairingNotes": "Extra‑Brut vintage Blanc de Blancs; crisp citrus and brioche; pairs with seafood and sushi.",
+    "foodPairingNotes": "The Bernard Lonclas Blanc de Blancs Extra Brut Vintage 2015 showcases a crisp profile with vibrant citrus notes and a hint of brioche. This elegant Champagne pairs exceptionally well with seafood dishes, particularly shellfish and sushi, enhancing the freshness of the ingredients. For optimal enjoyment, decant for 30 minutes to allow the flavors to open up. Critic score: WS 96.",
     "mealToHaveWithThisWine": "Pan‑seared scallops with lemon butter or seafood risotto",
     "style": "Sparkling",
     "grapes": "Chardonnay",
@@ -342,7 +342,8 @@
     "location": "Fridge Bsmt",
     "quantity": 1,
     "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/0/4/4/9/044901.jpg.thumb.1280.1280.jpg",
-    "technical_sheet": "https://www.champagne-lonclas.com/fr/vintage.php"
+    "technical_sheet": "https://www.champagne-lonclas.com/fr/vintage.php",
+    "dataSource": "1"
   },
   {
     "id": "17",
@@ -629,8 +630,8 @@
     "vintage": 2019,
     "drinkingWindow": "2027–2042",
     "peakYear": 2031,
-    "foodPairingNotes": "The Arzuaga Reserva Especial is an elegant blend of Tempranillo and Cabernet Sauvignon, showcasing rich dark fruit flavors, balanced acidity, and subtle oak. This wine pairs beautifully with roast lamb, particularly when seasoned with rosemary and garlic, as well as with Ibérico pork, which complements its depth. For optimal enjoyment, decant for at least 1 hour to allow the wine to breathe. Critic score: RP 94.",
-    "mealToHaveWithThisWine": "Slow-roasted lamb shank with a red wine reduction, served with creamy polenta and braised root vegetables.",
+    "foodPairingNotes": "Elegant blend of Tempranillo and Cabernet Sauvignon, showcasing rich dark fruit flavors, balanced acidity, and subtle oak. This wine pairs beautifully with roast lamb, particularly when seasoned with rosemary and garlic, as well as with Ibérico pork, which complements its depth. For optimal enjoyment, decant for at least 1 hour to allow the wine to breathe. Critic score: RP 94.",
+    "mealToHaveWithThisWine": "Grilled ribeye steak with chimichurri sauce, served with roasted asparagus and garlic mashed potatoes.",
     "style": "Red",
     "grapes": "Tempranillo & Cabernet Sauvignon",
     "status": "in_cellar",
