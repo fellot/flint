@@ -5,6 +5,7 @@ import { Wine, WineFilters } from '@/types/wine';
 import WineTable from '@/components/WineTable';
 import WineFiltersComponent from '@/components/WineFilters';
 import AIWineModal from '@/components/AIWineModal';
+import SommelierWidget from '@/components/SommelierWidget';
 import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, Filter, Globe } from 'lucide-react';
 
 export default function Home() {
@@ -25,6 +26,7 @@ export default function Home() {
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
   const [dataSource, setDataSource] = useState<'1' | '2'>('1');
   const [isPortugueseMode, setIsPortugueseMode] = useState(false);
+  const [isSommelierOpen, setIsSommelierOpen] = useState(false);
 
   useEffect(() => {
     fetchWines();
@@ -627,8 +629,8 @@ export default function Home() {
               <Calendar className="h-5 w-5" />
               <span>{isPortugueseMode ? 'Diário da Adega' : 'Cellar Journal'}</span>
             </button>
-            <button
-              onClick={() => window.location.href = '/sommelier'}
+              <button
+              onClick={() => setIsSommelierOpen(true)}
               className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-medium rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md hover:shadow-lg"
             >
               <WineIcon className="h-5 w-5" />
@@ -678,5 +680,24 @@ export default function Home() {
         </div>
       </footer>
     </div>
+
+    {/* Floating Sommelier Button */}
+    {!isSommelierOpen && (
+      <button
+        onClick={() => setIsSommelierOpen(true)}
+        className="fixed bottom-6 right-6 z-40 h-12 w-12 rounded-full shadow-lg bg-gradient-to-r from-green-600 to-green-700 text-white flex items-center justify-center hover:from-green-700 hover:to-green-800"
+        title={isPortugueseMode ? 'Abrir Sommelier' : 'Open Sommelier'}
+      >
+        <WineIcon className="h-6 w-6" />
+      </button>
+    )}
+
+    {/* Sommelier Chat Widget */}
+    <SommelierWidget
+      isOpen={isSommelierOpen}
+      onClose={() => setIsSommelierOpen(false)}
+      wines={wines}
+      locale={isPortugueseMode ? 'pt' : 'en'}
+    />
   );
 }
