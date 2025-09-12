@@ -437,7 +437,7 @@
     "vintage": 2016,
     "drinkingWindow": "2026–2046",
     "peakYear": 2032,
-    "foodPairingNotes": "Powerful Sangiovese; great with steak, game and rich pasta dishes.",
+    "foodPairingNotes": "The Castello Banfi Poggio all'Oro Brunello di Montalcino Riserva 2016 is a powerful Sangiovese that showcases rich cherry and plum flavors, complemented by earthy undertones and firm tannins. Ideal pairings include grilled ribeye steak or roasted game, alongside rich pasta dishes like pappardelle with wild boar ragu. Decant for at least 1 hour to enhance its complexity. Critic initials: RP 95.",
     "mealToHaveWithThisWine": "Bistecca alla Fiorentina",
     "style": "Red",
     "grapes": "Sangiovese",
@@ -449,7 +449,8 @@
     "location": "Wine fridge A - L4",
     "quantity": 1,
     "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/4/4/3/2/443267.jpg.thumb.1280.1280.jpg",
-    "technical_sheet": "https://www.datocms-assets.com/76721/1701177094-pao2016_eng.pdf"
+    "technical_sheet": "https://www.datocms-assets.com/76721/1701177094-pao2016_eng.pdf",
+    "dataSource": "1"
   },
   {
     "id": "22",
