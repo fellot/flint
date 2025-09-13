@@ -76,14 +76,15 @@
     "mealToHaveWithThisWine": "Wiener Schnitzel",
     "style": "White",
     "grapes": "Grüner Veltliner",
-    "status": "in_cellar",
-    "consumedDate": null,
-    "notes": "",
+    "status": "consumed",
+    "consumedDate": "2025-09-13",
+    "notes": "Had it with a primo pasta caccio e pepe followed by a chicken schnitzel with asparagus. Crisp, honeydew and green appple. Nose sweet.",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L2",
+    "location": "N/A",
     "quantity": 1,
-    "bottle_image": "https://www.vinvm.co.uk/image/cache/catalog/new-chapter-gruner-veltliner-popup.jpg?v1636446885"
+    "bottle_image": "https://www.vinvm.co.uk/image/cache/catalog/new-chapter-gruner-veltliner-popup.jpg?v1636446885",
+    "dataSource": "1"
   },
   {
     "id": "5",
