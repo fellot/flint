@@ -41,7 +41,7 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
       }
     }
 
-    return Array.from(uniqueOptions.values()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+    return Array.from(uniqueOptions.values()).sort((a, b) => a.localeCompare(b));
   }, [locationOptions, formData.location]);
 
   useEffect(() => {
