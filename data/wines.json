@@ -882,10 +882,11 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "on the way",
+    "location": "Wine fridge A - L6",
     "quantity": 1,
     "bottle_image": "https://cdn11.bigcommerce.com/s-oyi93ews/images/stencil/1280w/products/19330/15584/2025-01-16_14.24.41__53478.1737137892.png?c=2",
-    "technical_sheet": "https://admin.sanfelice.com/app/uploads/2023/04/SF-CampogiovanniBrunMontDocg-2015-IT.pdf?_gl=1*6552eb*_up*MQ..*_ga*MjA5OTc1ODk3OC4xNzU2OTk0OTA4*_ga_YJ8Q1ZCK2E*czE3NTY5OTQ5MDgkbzEkZzAkdDE3NTY5OTQ5MDgkajYwJGwwJGgw"
+    "technical_sheet": "https://admin.sanfelice.com/app/uploads/2023/04/SF-CampogiovanniBrunMontDocg-2015-IT.pdf?_gl=1*6552eb*_up*MQ..*_ga*MjA5OTc1ODk3OC4xNzU2OTk0OTA4*_ga_YJ8Q1ZCK2E*czE3NTY5OTQ5MDgkbzEkZzAkdDE3NTY5OTQ5MDgkajYwJGwwJGgw",
+    "dataSource": "1"
   },
   {
     "id": "43",
