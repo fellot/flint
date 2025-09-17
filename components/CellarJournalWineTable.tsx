@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Wine } from '@/types/wine';
 import { Edit, Trash2, Wine as WineIcon, Calendar, Star, ChevronUp, ChevronDown, ExternalLink, X, MapPin } from 'lucide-react';
 import WineModal from './WineModal';
@@ -23,7 +23,6 @@ export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDele
   const [sortColumn, setSortColumn] = useState<SortColumn>('bottle');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
-<<<<<<< ours
   const locationOptions = useMemo(() => {
     const uniqueLocations = new Map<string, string>();
 
@@ -38,11 +37,9 @@ export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDele
       }
     });
 
-    return Array.from(uniqueLocations.values()).sort((a, b) => a.localeCompare(b));
+    return Array.from(uniqueLocations.values()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
   }, [wines]);
 
-=======
->>>>>>> theirs
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -379,6 +376,7 @@ export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDele
         onSave={onWineUpdate}
         mode="edit"
         locale={isPortuguese ? 'pt' : 'en'}
+        locationOptions={locationOptions}
       />
       )}
 

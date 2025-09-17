@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Wine } from '@/types/wine';
 import { X, Wine as WineIcon, Star, Calendar, MapPin, Loader2, Sparkles, RefreshCw } from 'lucide-react';
 
@@ -11,16 +11,16 @@ interface WineModalProps {
   onSave: (wine: Wine) => void;
   mode: 'edit' | 'view';
   locale?: 'en' | 'pt';
+  locationOptions?: string[];
 }
 
-export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale = 'en' }: WineModalProps) {
+export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale = 'en', locationOptions = [] }: WineModalProps) {
   const [formData, setFormData] = useState<Wine>(wine);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [originalLocation, setOriginalLocation] = useState<string>(wine.location);
   const [isEnrichingPairing, setIsEnrichingPairing] = useState(false);
   const [isSuggestingMeal, setIsSuggestingMeal] = useState(false);
 
-<<<<<<< ours
   const normalizedLocationOptions = useMemo(() => {
     const uniqueOptions = new Map<string, string>();
 
@@ -41,11 +41,9 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
       }
     }
 
-    return Array.from(uniqueOptions.values()).sort((a, b) => a.localeCompare(b));
+    return Array.from(uniqueOptions.values()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
   }, [locationOptions, formData.location]);
 
-=======
->>>>>>> theirs
   useEffect(() => {
     setFormData(wine);
     setOriginalLocation(wine.location);
@@ -413,16 +411,36 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
               </label>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  className={`input-field ${errors.location ? 'border-red-500' : ''}`}
-                  disabled={mode === 'view' || formData.status === 'consumed'}
-                  placeholder={formData.status === 'consumed' ? 'N/A - Wine has been consumed' : 'Enter storage location'}
-                />
+                {formData.status === 'consumed' || normalizedLocationOptions.length === 0 ? (
+                  <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    className={`input-field ${errors.location ? 'border-red-500' : ''}`}
+                    disabled={mode === 'view' || formData.status === 'consumed'}
+                    placeholder={formData.status === 'consumed' ? 'N/A - Wine has been consumed' : 'Enter storage location'}
+                  />
+                ) : (
+                  <select
+                    id="location"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    className={`select-field ${errors.location ? 'border-red-500' : ''}`}
+                    disabled={mode === 'view'}
+                  >
+                    <option value="" disabled>
+                      Select storage location
+                    </option>
+                    {normalizedLocationOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
               {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
               {formData.status === 'consumed' && (
