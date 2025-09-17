@@ -926,9 +926,10 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "on the way",
+    "location": "Wine fridge A - L6",
     "quantity": 2,
     "bottle_image": "https://cache1.voyageursduvin.com/products/Two-Hands-Bellas-Garden-zoom.jpg",
-    "technical_sheet": "https://twohandswines.com/pages/bellas-garden"
+    "technical_sheet": "https://twohandswines.com/pages/bellas-garden",
+    "dataSource": "1"
   }
 ]
