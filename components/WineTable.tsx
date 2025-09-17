@@ -39,7 +39,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
       }
     });
 
-    return Array.from(uniqueLocations.values()).sort((a, b) => a.localeCompare(b));
+    return Array.from(uniqueLocations.values()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
   }, [wines]);
 
   const handleSort = (column: SortColumn) => {

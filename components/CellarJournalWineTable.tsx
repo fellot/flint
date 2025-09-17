@@ -37,7 +37,7 @@ export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDele
       }
     });
 
-    return Array.from(uniqueLocations.values()).sort((a, b) => a.localeCompare(b));
+    return Array.from(uniqueLocations.values()).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
   }, [wines]);
 
   const handleSort = (column: SortColumn) => {
