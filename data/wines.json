@@ -363,7 +363,7 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Fridge Bsmt.",
+    "location": "Fridge Bsmt",
     "quantity": 1,
     "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/0/4/4/4/044471.jpg.thumb.1280.1280.jpg"
   },
@@ -751,7 +751,7 @@
     "notes": null,
     "rating": null,
     "price": null,
-    "location": "Fridge Bsmt.",
+    "location": "Fridge Bsmt",
     "quantity": 1,
     "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/0/3/0/9/030971.jpg.thumb.1280.1280.jpg",
     "technical_sheet": "https://www.champagne-thienot.com/wp-content/uploads/2025/07/Fiche-Produit_CUVEE-ALAIN-THIENOT_2008_FR.pdf",
