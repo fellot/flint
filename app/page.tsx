@@ -28,6 +28,27 @@ export default function Home() {
   const [isPortugueseMode, setIsPortugueseMode] = useState(false);
   const [isSommelierOpen, setIsSommelierOpen] = useState(false);
 
+  // Initialize data source from URL query (?ds=2 or ?dataSource=2 or ?language=pt)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const dsParam = params.get('ds') || params.get('dataSource');
+      const lang = params.get('language');
+      console.log('URL params:', { dsParam, lang });
+      if (dsParam === '2' || lang === 'pt') {
+        console.log('Setting dataSource to 2 (Portuguese)');
+        setDataSource('2');
+        setIsPortugueseMode(true);
+      } else if (dsParam === '1') {
+        console.log('Setting dataSource to 1 (English)');
+        setDataSource('1');
+        setIsPortugueseMode(false);
+      }
+    } catch (error) {
+      console.error('Error parsing URL params:', error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchWines();
   }, [dataSource]);
@@ -56,6 +77,7 @@ export default function Home() {
       
       const data = await response.json();
       console.log('Wines fetched:', data.length, 'from dataSource:', dataSource);
+      console.log('First wine sample:', data[0]?.bottle, data[0]?.country);
       setWines(data);
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
@@ -285,6 +307,7 @@ export default function Home() {
     console.log('Toggling dataSource from', dataSource, 'to', newDataSource);
     setDataSource(newDataSource);
     setIsPortugueseMode(newDataSource === '2');
+    console.log('DataSource updated to:', newDataSource, 'Portuguese mode:', newDataSource === '2');
   };
 
   const getDynamicWineLabel = () => {
