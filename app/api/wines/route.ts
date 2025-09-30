@@ -4,6 +4,10 @@ import path from 'path';
 
 import { Wine, WineFormData } from '@/types/wine';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const owner = process.env.GITHUB_OWNER;
 const repo = process.env.GITHUB_REPO;
 const branch = process.env.GITHUB_BRANCH ?? 'main';
