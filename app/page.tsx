@@ -34,14 +34,19 @@ export default function Home() {
       const params = new URLSearchParams(window.location.search);
       const dsParam = params.get('ds') || params.get('dataSource');
       const lang = params.get('language');
+      console.log('URL params:', { dsParam, lang });
       if (dsParam === '2' || lang === 'pt') {
+        console.log('Setting dataSource to 2 (Portuguese)');
         setDataSource('2');
         setIsPortugueseMode(true);
       } else if (dsParam === '1') {
+        console.log('Setting dataSource to 1 (English)');
         setDataSource('1');
         setIsPortugueseMode(false);
       }
-    } catch {}
+    } catch (error) {
+      console.error('Error parsing URL params:', error);
+    }
   }, []);
 
   useEffect(() => {
@@ -301,6 +306,7 @@ export default function Home() {
     console.log('Toggling dataSource from', dataSource, 'to', newDataSource);
     setDataSource(newDataSource);
     setIsPortugueseMode(newDataSource === '2');
+    console.log('DataSource updated to:', newDataSource, 'Portuguese mode:', newDataSource === '2');
   };
 
   const getDynamicWineLabel = () => {
