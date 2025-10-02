@@ -77,6 +77,7 @@ export default function Home() {
       
       const data = await response.json();
       console.log('Wines fetched:', data.length, 'from dataSource:', dataSource);
+      console.log('First wine sample:', data[0]?.bottle, data[0]?.country);
       setWines(data);
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
