@@ -28,6 +28,22 @@ export default function Home() {
   const [isPortugueseMode, setIsPortugueseMode] = useState(false);
   const [isSommelierOpen, setIsSommelierOpen] = useState(false);
 
+  // Initialize data source from URL query (?ds=2 or ?dataSource=2 or ?language=pt)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const dsParam = params.get('ds') || params.get('dataSource');
+      const lang = params.get('language');
+      if (dsParam === '2' || lang === 'pt') {
+        setDataSource('2');
+        setIsPortugueseMode(true);
+      } else if (dsParam === '1') {
+        setDataSource('1');
+        setIsPortugueseMode(false);
+      }
+    } catch {}
+  }, []);
+
   useEffect(() => {
     fetchWines();
   }, [dataSource]);
