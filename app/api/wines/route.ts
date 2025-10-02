@@ -20,9 +20,18 @@ const apiBase = useGitHub
 
 const readLocalWineData = async (file: string) => {
   const filePath = path.join(process.cwd(), file);
-  const content = await fs.readFile(filePath, 'utf8');
-  const wines: Wine[] = JSON.parse(content);
-  return { wines, sha: null as string | null };
+  console.log('Reading local wine data from:', filePath);
+  try {
+    const content = await fs.readFile(filePath, 'utf8');
+    const wines: Wine[] = JSON.parse(content);
+    console.log('Successfully read', wines.length, 'wines from', file);
+    return { wines, sha: null as string | null };
+  } catch (error) {
+    console.error('Error reading local wine data:', error);
+    console.error('File path:', filePath);
+    console.error('Current working directory:', process.cwd());
+    throw error;
+  }
 };
 
 async function getWineData(file: string) {
@@ -104,6 +113,8 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search');
     const dataSource = searchParams.get('dataSource') || '1'; // Default to wines.json
     const file = dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
+    
+    console.log('API request - dataSource:', dataSource, 'file:', file);
 
     const { wines: allWines } = await getWineData(file);
     let wines = [...allWines];
