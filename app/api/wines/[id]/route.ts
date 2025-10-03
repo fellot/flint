@@ -5,6 +5,7 @@ const branch = process.env.GITHUB_BRANCH ?? 'main';
 const token = process.env.GITHUB_TOKEN!;
 
 import { Wine } from '@/types/wine';
+import { sanitizeBottleImage } from '@/utils/sanitizeWine';
 
 const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents`;
 
@@ -97,10 +98,19 @@ export async function PUT(
       return NextResponse.json({ error: 'Wine not found' }, { status: 404 });
     }
 
-    wines[wineIndex] = { ...wines[wineIndex], ...body };
-    await commitWineData(file, wines, sha, `Update wine ${wines[wineIndex].bottle}`);
+    const updatedWine: Wine = { ...wines[wineIndex], ...body };
+    const safeBottleImage = sanitizeBottleImage(updatedWine.bottle_image);
 
-    return NextResponse.json(wines[wineIndex]);
+    if (safeBottleImage) {
+      updatedWine.bottle_image = safeBottleImage;
+    } else {
+      delete updatedWine.bottle_image;
+    }
+
+    wines[wineIndex] = updatedWine;
+    await commitWineData(file, wines, sha, `Update wine ${updatedWine.bottle}`);
+
+    return NextResponse.json(updatedWine);
   } catch (error) {
     console.error('Error updating wine:', error);
     return NextResponse.json({ error: 'Failed to update wine' }, { status: 500 });

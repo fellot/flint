@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Wine, WineFilters } from '@/types/wine';
+import { sanitizeWinePayload } from '@/utils/sanitizeWine';
 import CellarJournalWineTable from '@/components/CellarJournalWineTable';
 import CellarJournalFilters from '@/components/CellarJournalFilters';
 import { Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, ArrowLeft, Plus, Filter } from 'lucide-react';
@@ -228,15 +229,16 @@ export default function CellarJournal() {
 
   const handleAddExternalWine = async (wineData: any) => {
     try {
+      const sanitizedWineData = sanitizeWinePayload(wineData);
       const response = await fetch('/api/wines', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...wineData,
+          ...sanitizedWineData,
           status: 'consumed',
-          consumedDate: wineData.consumedDate || new Date().toISOString().split('T')[0],
+          consumedDate: sanitizedWineData.consumedDate || new Date().toISOString().split('T')[0],
           fromCellar: false,
           dataSource,
         }),

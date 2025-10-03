@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Wine, WineFilters } from '@/types/wine';
+import { sanitizeWinePayload } from '@/utils/sanitizeWine';
 import WineTable from '@/components/WineTable';
 import WineFiltersComponent from '@/components/WineFilters';
 import AIWineModal from '@/components/AIWineModal';
@@ -107,14 +108,16 @@ export default function Home() {
 
   const handleWineUpdate = async (updatedWine: Wine) => {
     try {
+      const sanitizedWine = sanitizeWinePayload(updatedWine);
       const response = await fetch(`/api/wines/${updatedWine.id}?dataSource=${dataSource}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...updatedWine, dataSource }),
+        body: JSON.stringify({ ...sanitizedWine, dataSource }),
       });
 
       if (response.ok) {
-        setWines(prev => prev.map(w => w.id === updatedWine.id ? updatedWine : w));
+        const savedWine: Wine = await response.json();
+        setWines(prev => prev.map(w => w.id === savedWine.id ? savedWine : w));
       }
     } catch (error) {
       console.error('Error updating wine:', error);
@@ -142,10 +145,11 @@ export default function Home() {
 
   const handleAddWine = async (wineData: any) => {
     try {
+      const sanitizedWineData = sanitizeWinePayload(wineData);
       const response = await fetch('/api/wines', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...wineData, dataSource }),
+        body: JSON.stringify({ ...sanitizedWineData, dataSource }),
       });
 
       if (response.ok) {

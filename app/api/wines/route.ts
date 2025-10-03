@@ -5,6 +5,7 @@ const branch = process.env.GITHUB_BRANCH ?? "main";
 const token = process.env.GITHUB_TOKEN!;
 
 import { Wine, WineFormData } from '@/types/wine';
+import { sanitizeBottleImage } from '@/utils/sanitizeWine';
 
 const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents`;
 
@@ -126,6 +127,8 @@ export async function POST(request: NextRequest) {
     const file = dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
     const { wines, sha } = await getWineData(file);
 
+    const sanitizedBottleImage = sanitizeBottleImage(body.bottle_image);
+
     const newWine: Wine = {
       id: Date.now().toString(),
       ...body,
@@ -136,9 +139,13 @@ export async function POST(request: NextRequest) {
       price: body.price || null,
       quantity: body.quantity || 1,
       technical_sheet: body.technical_sheet || undefined,
-      bottle_image: body.bottle_image || undefined,
+      bottle_image: sanitizedBottleImage,
       fromCellar: body.fromCellar !== undefined ? body.fromCellar : true,
     };
+
+    if (!sanitizedBottleImage) {
+      delete newWine.bottle_image;
+    }
 
     wines.push(newWine);
     await commitWineData(file, wines, sha, `Add wine ${newWine.bottle}`);
