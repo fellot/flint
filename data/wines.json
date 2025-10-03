@@ -933,5 +933,27 @@
     "bottle_image": "https://cache1.voyageursduvin.com/products/Two-Hands-Bellas-Garden-zoom.jpg",
     "technical_sheet": "https://twohandswines.com/pages/bellas-garden",
     "dataSource": "1"
+  },
+  {
+    "id": "1759460914335",
+    "bottle": "Casanova di Neri Rosso di Montalcino 2023",
+    "country": "Italy",
+    "region": "Montalcino",
+    "vintage": 2023,
+    "drinkingWindow": "2025-2030",
+    "peakYear": 2028,
+    "foodPairingNotes": "This wine typically exhibits bright acidity, moderate tannins, and red fruit flavors, making it versatile for food pairings. It pairs well with tomato-based dishes, grilled meats, and aged cheeses.",
+    "mealToHaveWithThisWine": "Grilled lamb chops with rosemary, served with a side of roasted garlic mashed potatoes and sautéed green beans.",
+    "style": "Red",
+    "grapes": "Sangiovese",
+    "location": "",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "1",
+    "rating": null
   }
 ]
