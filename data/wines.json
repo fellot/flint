@@ -933,5 +933,28 @@
     "bottle_image": "https://cache1.voyageursduvin.com/products/Two-Hands-Bellas-Garden-zoom.jpg",
     "technical_sheet": "https://twohandswines.com/pages/bellas-garden",
     "dataSource": "1"
+  },
+  {
+    "id": "1759493766986",
+    "bottle": "Château Suduiraut",
+    "country": "France",
+    "region": "Sauternes",
+    "vintage": 2023,
+    "drinkingWindow": "2025-2040",
+    "peakYear": 2030,
+    "foodPairingNotes": "This sweet wine typically exhibits rich flavors of honey, apricot, and citrus with balanced acidity. It pairs well with desserts, foie gras, and blue cheese.",
+    "mealToHaveWithThisWine": "Foie gras torchon with a fig compote and toasted brioche",
+    "style": "Sweet",
+    "grapes": "Sémillon, Sauvignon Blanc",
+    "location": "on the way",
+    "quantity": 1,
+    "notes": "",
+    "bottle_image": "https://www.wineinvestment.com/assets/Uploads/Chateau_Suduiraut_-_Chateau_Suduiraut__ScaleMaxWidthWzQwMF0.png",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "1",
+    "rating": null,
+    "price": null
   }
 ]
