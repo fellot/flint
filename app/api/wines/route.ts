@@ -1,84 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
+const owner = process.env.GITHUB_OWNER!;
+const repo = process.env.GITHUB_REPO!;
+const branch = process.env.GITHUB_BRANCH ?? "main";
+const token = process.env.GITHUB_TOKEN!;
 
 import { Wine, WineFormData } from '@/types/wine';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
-const owner = process.env.GITHUB_OWNER;
-const repo = process.env.GITHUB_REPO;
-const branch = process.env.GITHUB_BRANCH ?? 'main';
-const token = process.env.GITHUB_TOKEN;
-
-const useGitHub = Boolean(owner && repo && token);
-const apiBase = useGitHub
-  ? `https://api.github.com/repos/${owner}/${repo}/contents`
-  : null;
-
-const readLocalWineData = async (file: string) => {
-  const filePath = path.join(process.cwd(), file);
-  console.log('Reading local wine data from:', filePath);
-  try {
-    const content = await fs.readFile(filePath, 'utf8');
-    const wines: Wine[] = JSON.parse(content);
-    console.log('Successfully read', wines.length, 'wines from', file);
-    return { wines, sha: null as string | null };
-  } catch (error) {
-    console.error('Error reading local wine data:', error);
-    console.error('File path:', filePath);
-    console.error('Current working directory:', process.cwd());
-    throw error;
-  }
-};
+const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents`;
 
 async function getWineData(file: string) {
-  if (!useGitHub || !apiBase) {
-    return readLocalWineData(file);
+  const res = await fetch(`${apiBase}/${file}?ref=${branch}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/vnd.github.v3+json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch wines');
   }
 
-  try {
-    const res = await fetch(`${apiBase}/${file}?ref=${branch}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/vnd.github.v3+json',
-      },
-      cache: 'no-store',
-    });
-
-    if (!res.ok) {
-      throw new Error(`GitHub fetch failed with status ${res.status}`);
-    }
-
-    const json = await res.json();
-    const content = Buffer.from(json.content, 'base64').toString('utf8');
-    const wines: Wine[] = JSON.parse(content);
-    return { wines, sha: json.sha as string | null };
-  } catch (error) {
-    console.warn(`Falling back to local wine data for ${file}:`, error);
-    return readLocalWineData(file);
-  }
+  const json = await res.json();
+  const content = Buffer.from(json.content, 'base64').toString('utf8');
+  const wines: Wine[] = JSON.parse(content);
+  return { wines, sha: json.sha };
 }
 
 async function commitWineData(
   file: string,
   wines: Wine[],
-  sha: string | null,
+  sha: string,
   message: string
 ) {
-  if (!useGitHub || !apiBase) {
-    const filePath = path.join(process.cwd(), file);
-    await fs.writeFile(filePath, JSON.stringify(wines, null, 2), 'utf8');
-    return { committed: true, via: 'local' };
-  }
-
-  if (!sha) {
-    throw new Error('Missing file SHA for GitHub commit');
-  }
-
   const content = Buffer.from(JSON.stringify(wines, null, 2)).toString('base64');
   const res = await fetch(`${apiBase}/${file}`, {
     method: 'PUT',
@@ -113,8 +67,6 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search');
     const dataSource = searchParams.get('dataSource') || '1'; // Default to wines.json
     const file = dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
-    
-    console.log('API request - dataSource:', dataSource, 'file:', file);
 
     const { wines: allWines } = await getWineData(file);
     let wines = [...allWines];
