@@ -482,7 +482,7 @@
     "vintage": 2017,
     "drinkingWindow": "2025–2038",
     "peakYear": 2030,
-    "foodPairingNotes": "Dried‑grape Nebbiolo (Sfursat); suits braised meats and aged cheeses.",
+    "foodPairingNotes": "The Triacca San Domenico Sforzato di Valtellina is a rich, dried-grape Nebbiolo that displays deep flavors and a full-bodied profile. It pairs beautifully with braised meats like osso buco and hearty aged cheeses such as Parmigiano-Reggiano. For optimal enjoyment, decant for at least 1 hour to allow the complex aromas to develop. Critics have noted this vintage with a score of RP 96.",
     "mealToHaveWithThisWine": "Braised beef cheeks with polenta",
     "style": "Red",
     "grapes": "Nebbiolo (Chiavennasca)",
@@ -493,7 +493,8 @@
     "price": null,
     "location": "Wine fridge A - L3",
     "quantity": 1,
-    "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf3-FMGbpaHQQIj1Qy27U3ql1zfpGOV9rMjQ&s"
+    "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf3-FMGbpaHQQIj1Qy27U3ql1zfpGOV9rMjQ&s",
+    "dataSource": "1"
   },
   {
     "id": "24",
