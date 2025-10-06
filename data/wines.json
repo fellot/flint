@@ -461,7 +461,7 @@
     "vintage": 2019,
     "drinkingWindow": "2025–2040",
     "peakYear": 2032,
-    "foodPairingNotes": "Gran Selezione Chianti; pairs beautifully with Tuscan ragù and roasts.",
+    "foodPairingNotes": "Volpaia Coltassala 2019 is a refined Gran Selezione Chianti that showcases the vibrant acidity and ripe red fruit profile typical of Sangiovese, complemented by the floral notes of Mammolo. This wine pairs beautifully with hearty Tuscan dishes, such as a rich Tuscan ragù or a succulent roast lamb with rosemary. For optimal enjoyment, decant for 1-2 hours to allow the flavors to open up. Critic: RP 93.",
     "mealToHaveWithThisWine": "Pappardelle al ragù di cinghiale",
     "style": "Red",
     "grapes": "Sangiovese & Mammolo",
@@ -472,7 +472,8 @@
     "price": null,
     "location": "Wine fridge A - L3",
     "quantity": 1,
-    "bottle_image": "https://volpaia.com/wp-content/uploads/2020/05/Coltassala.png"
+    "bottle_image": "https://volpaia.com/wp-content/uploads/2020/05/Coltassala.png",
+    "dataSource": "1"
   },
   {
     "id": "23",
