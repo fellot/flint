@@ -121,15 +121,18 @@ export async function GET(request: NextRequest) {
 
     if (search) {
       const searchLower = search.toLowerCase();
-      wines = wines.filter(wine =>
-        wine.bottle.toLowerCase().includes(searchLower) ||
-        wine.country.toLowerCase().includes(searchLower) ||
-        wine.region.toLowerCase().includes(searchLower) ||
-        wine.grapes.toLowerCase().includes(searchLower) ||
-        wine.foodPairingNotes.toLowerCase().includes(searchLower) ||
-        wine.mealToHaveWithThisWine.toLowerCase().includes(searchLower) ||
-        wine.notes.toLowerCase().includes(searchLower)
-      );
+      const matchesSearch = (value: unknown) =>
+        typeof value === 'string' && value.toLowerCase().includes(searchLower);
+
+      wines = wines.filter(wine => (
+        matchesSearch(wine.bottle) ||
+        matchesSearch(wine.country) ||
+        matchesSearch(wine.region) ||
+        matchesSearch(wine.grapes) ||
+        matchesSearch(wine.foodPairingNotes) ||
+        matchesSearch(wine.mealToHaveWithThisWine) ||
+        matchesSearch(wine.notes)
+      ));
     }
 
     return NextResponse.json(wines);
