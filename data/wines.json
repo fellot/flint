@@ -952,7 +952,6 @@
     "quantity": 1,
     "notes": "",
     "bottle_image": "https://www.wineinvestment.com/assets/Uploads/Chateau_Suduiraut_-_Chateau_Suduiraut__ScaleMaxWidthWzQwMF0.png",
-    "fromCellar": true,
     "status": "in_cellar",
     "consumedDate": null,
     "dataSource": "1",
