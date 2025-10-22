@@ -7,7 +7,7 @@ import WineTable from '@/components/WineTable';
 import WineFiltersComponent from '@/components/WineFilters';
 import AIWineModal from '@/components/AIWineModal';
 import SommelierWidget from '@/components/SommelierWidget';
-import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, Filter, Globe } from 'lucide-react';
+import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, Filter, Globe, ExternalLink } from 'lucide-react';
 
 export default function Home() {
   const [wines, setWines] = useState<Wine[]>([]);
@@ -367,6 +367,15 @@ export default function Home() {
             </div>
             
             <div className="flex items-center space-x-4">
+              <a
+                href="https://www.lcbo.com/content/lcbo/en/vintages/classics-collection.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary flex items-center space-x-2"
+              >
+                <ExternalLink className="h-5 w-5" />
+                <span>LCBO Classics</span>
+              </a>
               <div className="text-right">
                 <div className="text-xs text-gray-500 font-medium leading-tight">{getDynamicWineLabel()}</div>
                 <div className="text-lg font-bold text-red-500 leading-tight">
