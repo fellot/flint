@@ -379,14 +379,15 @@
     "mealToHaveWithThisWine": "Thai red curry with pork",
     "style": "Sweet",
     "grapes": "Riesling",
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2025-10-26",
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L1",
+    "location": "N/A",
     "quantity": 1,
-    "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/5/3/2/7/532721.jpg.thumb.1280.1280.jpg"
+    "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/5/3/2/7/532721.jpg.thumb.1280.1280.jpg",
+    "dataSource": "1"
   },
   {
     "id": "19",
