@@ -371,10 +371,11 @@ export default function Home() {
                 href="https://www.lcbo.com/content/lcbo/en/vintages/classics-collection.html"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-secondary flex items-center space-x-2"
+                className="p-2 text-gray-500 hover:text-red-600 transition-colors"
+                aria-label="LCBO Classics Collection"
+                title="LCBO Classics Collection"
               >
                 <ExternalLink className="h-5 w-5" />
-                <span>LCBO Classics</span>
               </a>
               <div className="text-right">
                 <div className="text-xs text-gray-500 font-medium leading-tight">{getDynamicWineLabel()}</div>
