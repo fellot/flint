@@ -373,9 +373,13 @@ export default function CellarJournal() {
               <div className="flex space-x-2">
                 <button
                   onClick={() => setIsAIWineModalOpen(true)}
-                  className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
+                  className="flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
+                  aria-label={isPortugueseMode ? 'Adicionar vinho com IA' : 'Add wine with AI'}
                 >
                   <Plus className="h-5 w-5" />
+                  <span className="text-sm font-semibold">
+                    {isPortugueseMode ? 'Adicionar com IA' : 'Add with AI'}
+                  </span>
                 </button>
                 <button
                   onClick={() => setIsAddExternalWineModalOpen(true)}

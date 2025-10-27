@@ -388,9 +388,13 @@ export default function Home() {
               </div>
               <button
                 onClick={() => setIsAIWineModalOpen(true)}
-                className="btn-primary flex items-center justify-center"
+                className="btn-primary flex items-center justify-center space-x-2"
+                aria-label={isPortugueseMode ? 'Adicionar vinho com IA' : 'Add wine with AI'}
               >
                 <Plus className="h-5 w-5" />
+                <span className="text-sm font-semibold">
+                  {isPortugueseMode ? 'Adicionar com IA' : 'Add with AI'}
+                </span>
               </button>
             </div>
           </div>
