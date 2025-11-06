@@ -522,7 +522,7 @@
   },
   {
     "id": "25",
-    "bottle": "Quinta da Leda (Casa Ferreirinha)",
+    "bottle": " Casa Ferreirinha Quinta da Leda",
     "country": "Portugal",
     "region": "Douro",
     "vintage": 2018,
@@ -539,7 +539,8 @@
     "price": null,
     "location": "Wine fridge A - L5",
     "quantity": 1,
-    "bottle_image": "https://www.datocms-assets.com/33016/1634141398-quinta-da-leda-2018-75cl-packshot.jpg?auto=format&fit=max&w=1200"
+    "bottle_image": "https://www.datocms-assets.com/33016/1634141398-quinta-da-leda-2018-75cl-packshot.jpg?auto=format&fit=max&w=1200",
+    "dataSource": "1"
   },
   {
     "id": "26",
