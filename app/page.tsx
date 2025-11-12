@@ -7,19 +7,23 @@ import WineTable from '@/components/WineTable';
 import WineFiltersComponent from '@/components/WineFilters';
 import AIWineModal from '@/components/AIWineModal';
 import SommelierWidget from '@/components/SommelierWidget';
+import WineModal from '@/components/WineModal';
+import MobileCellarExperience from '@/components/MobileCellarExperience';
 import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, Filter, Globe, ExternalLink } from 'lucide-react';
+
+const DEFAULT_FILTERS: WineFilters = {
+  country: 'all',
+  region: 'all',
+  style: 'all',
+  vintage: 'all',
+  status: 'all',
+  search: '',
+};
 
 export default function Home() {
   const [wines, setWines] = useState<Wine[]>([]);
   const [filteredWines, setFilteredWines] = useState<Wine[]>([]);
-  const [filters, setFilters] = useState<WineFilters>({
-    country: 'all',
-    region: 'all',
-    style: 'all',
-    vintage: 'all',
-    status: 'all',
-    search: '',
-  });
+  const [filters, setFilters] = useState<WineFilters>({ ...DEFAULT_FILTERS });
   const [isAIWineModalOpen, setIsAIWineModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [expandedCountries, setExpandedCountries] = useState<Set<string>>(new Set());
@@ -28,6 +32,7 @@ export default function Home() {
   const [dataSource, setDataSource] = useState<'1' | '2'>('1');
   const [isPortugueseMode, setIsPortugueseMode] = useState(false);
   const [isSommelierOpen, setIsSommelierOpen] = useState(false);
+  const [mobileModalState, setMobileModalState] = useState<{ wine: Wine; mode: 'edit' | 'view' } | null>(null);
 
   useEffect(() => {
     fetchWines();
@@ -106,6 +111,14 @@ export default function Home() {
     setFilteredWines(filtered);
   };
 
+  const setFilterValue = (key: keyof WineFilters, value: string) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  const resetFilters = () => {
+    setFilters({ ...DEFAULT_FILTERS });
+  };
+
   const handleWineUpdate = async (updatedWine: Wine) => {
     try {
       const sanitizedWine = sanitizeWinePayload(updatedWine);
@@ -143,6 +156,21 @@ export default function Home() {
     }
   };
 
+  const handleQuickConsume = (wine: Wine) => {
+    const message = isPortugueseMode
+      ? `Marcar ${wine.bottle} como consumido agora?`
+      : `Mark ${wine.bottle} as consumed now?`;
+    if (!confirm(message)) return;
+
+    const consumedWine: Wine = {
+      ...wine,
+      status: 'consumed',
+      consumedDate: new Date().toISOString().split('T')[0],
+      location: 'N/A',
+    };
+    handleWineUpdate(consumedWine);
+  };
+
   const handleAddWine = async (wineData: any) => {
     try {
       const sanitizedWineData = sanitizeWinePayload(wineData);
@@ -160,6 +188,11 @@ export default function Home() {
     } catch (error) {
       console.error('Error adding wine:', error);
     }
+  };
+
+  const handleMobileModalClose = () => setMobileModalState(null);
+  const handleMobileWineSelect = (wine: Wine, mode: 'edit' | 'view') => {
+    setMobileModalState({ wine, mode });
   };
 
   const getStats = () => {
@@ -323,6 +356,7 @@ export default function Home() {
   };
 
   const stats = getStats();
+  const totalInCellarCount = wines.filter(w => w.status === 'in_cellar').length;
 
   if (loading) {
     return (
@@ -339,7 +373,26 @@ export default function Home() {
 
   return (
     <>
-    <div className="min-h-screen bg-red-900">
+      <div className="md:hidden">
+        <MobileCellarExperience
+          filteredWines={filteredWines}
+          filters={filters}
+          stats={stats}
+          totalInCellar={totalInCellarCount}
+          dataSource={dataSource}
+          isPortuguese={isPortugueseMode}
+          onSetFilter={setFilterValue}
+          onClearFilters={resetFilters}
+          onOpenAIWineModal={() => setIsAIWineModalOpen(true)}
+          onOpenSommelier={() => setIsSommelierOpen(true)}
+          onToggleDataSource={toggleDataSource}
+          onSelectWine={handleMobileWineSelect}
+          onQuickConsume={handleQuickConsume}
+        />
+      </div>
+
+      <div className="hidden md:block">
+        <div className="min-h-screen bg-red-900">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -360,7 +413,7 @@ export default function Home() {
                   type="text"
                   placeholder={isPortugueseMode ? "Buscar vinhos, uvas, harmonizações..." : "Search wines, grapes, food pairings..."}
                   value={filters.search}
-                  onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                  onChange={(e) => setFilterValue('search', e.target.value)}
                   className="w-full input-field pl-12 py-3 text-base"
                 />
               </div>
@@ -381,8 +434,8 @@ export default function Home() {
                 <div className="text-xs text-gray-500 font-medium leading-tight">{getDynamicWineLabel()}</div>
                 <div className="text-lg font-bold text-red-500 leading-tight">
                   {filteredWines.length}
-                  {filteredWines.length !== wines.filter(w => w.status === 'in_cellar').length && (
-                    <span className="text-sm text-gray-400 ml-1">/ {wines.filter(w => w.status === 'in_cellar').length}</span>
+                  {filteredWines.length !== totalInCellarCount && (
+                    <span className="text-sm text-gray-400 ml-1">/ {totalInCellarCount}</span>
                   )}
                 </div>
               </div>
@@ -629,14 +682,6 @@ export default function Home() {
         />
       </div>
 
-      {/* AI Wine Modal */}
-      <AIWineModal
-        isOpen={isAIWineModalOpen}
-        onClose={() => setIsAIWineModalOpen(false)}
-        onAddWine={handleAddWine}
-        locale={isPortugueseMode ? 'pt' : 'en'}
-      />
-
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -692,13 +737,32 @@ export default function Home() {
           </p>
         </div>
       </footer>
-    </div>
+        </div>
+      </div>
+
+      <AIWineModal
+        isOpen={isAIWineModalOpen}
+        onClose={() => setIsAIWineModalOpen(false)}
+        onAddWine={handleAddWine}
+        locale={isPortugueseMode ? 'pt' : 'en'}
+      />
+
+      {mobileModalState && (
+        <WineModal
+          wine={mobileModalState.wine}
+          isOpen={true}
+          onClose={handleMobileModalClose}
+          onSave={handleWineUpdate}
+          mode={mobileModalState.mode}
+          locale={isPortugueseMode ? 'pt' : 'en'}
+        />
+      )}
 
     {/* Floating Sommelier Button */}
     {!isSommelierOpen && (
       <button
         onClick={() => setIsSommelierOpen(true)}
-        className="fixed bottom-6 right-6 z-40 h-12 w-12 rounded-full shadow-lg bg-gradient-to-r from-green-600 to-green-700 text-white flex items-center justify-center hover:from-green-700 hover:to-green-800"
+        className="fixed bottom-24 right-6 z-40 hidden h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg hover:from-green-700 hover:to-green-800 md:bottom-6 md:flex"
         title={isPortugueseMode ? 'Abrir Sommelier' : 'Open Sommelier'}
       >
         <WineIcon className="h-6 w-6" />
