@@ -860,15 +860,16 @@
     "mealToHaveWithThisWine": "Duck breast with cherry reduction",
     "style": "Red",
     "grapes": "Pinot Noir",
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2025-11-17",
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L4",
+    "location": "N/A",
     "quantity": 1,
     "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTECAsU9jwXBMc7lHotRYEt52X9_n0SiuWkw&s",
-    "technical_sheet": "https://static1.squarespace.com/static/5cfe6c2a8dc2800001ee4011/t/666f90602afbb055e7bda3ac/1718587489262/2021_THE+FARM_EOTR_retail.pdf"
+    "technical_sheet": "https://static1.squarespace.com/static/5cfe6c2a8dc2800001ee4011/t/666f90602afbb055e7bda3ac/1718587489262/2021_THE+FARM_EOTR_retail.pdf",
+    "dataSource": "1"
   },
   {
     "id": "42",
