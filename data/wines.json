@@ -961,5 +961,27 @@
     "dataSource": "1",
     "rating": null,
     "price": null
+  },
+  {
+    "id": "1764117328696",
+    "bottle": "Pauly Helden 2023 Riesling - Alte Reben",
+    "country": "Germany",
+    "region": "Mosel",
+    "vintage": 2023,
+    "drinkingWindow": "2024-2030",
+    "peakYear": 2026,
+    "foodPairingNotes": "This Riesling is likely to have bright acidity, floral notes, and stone fruit flavors, making it a great match for dishes that complement its freshness and minerality.",
+    "mealToHaveWithThisWine": "Grilled lemon-herb chicken with a side of asparagus and a light garlic butter sauce.",
+    "style": "White",
+    "grapes": "Riesling",
+    "location": "",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "1",
+    "rating": null
   }
 ]
