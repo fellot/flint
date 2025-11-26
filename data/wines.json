@@ -1049,5 +1049,27 @@
     "consumedDate": null,
     "dataSource": "1",
     "rating": null
+  },
+  {
+    "id": "1764117687338",
+    "bottle": "Chateau La Tour Blanche 2016",
+    "country": "France",
+    "region": "Sauternes",
+    "vintage": 2016,
+    "drinkingWindow": "2023-2040",
+    "peakYear": 2028,
+    "foodPairingNotes": "This Sauternes is rich and sweet with notes of honey, apricot, and citrus, making it a perfect match for desserts, foie gras, or blue cheese.",
+    "mealToHaveWithThisWine": "Seared foie gras with a fig compote and toasted brioche.",
+    "style": "Sweet",
+    "grapes": "Sémillon, Sauvignon Blanc",
+    "location": "Wine Fridge A - L6",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "1",
+    "rating": null
   }
 ]
