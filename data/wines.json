@@ -1027,5 +1027,27 @@
     "consumedDate": null,
     "dataSource": "1",
     "rating": null
+  },
+  {
+    "id": "1764117626016",
+    "bottle": "Stratus Cabernet Sauvignon 2019",
+    "country": "Canada",
+    "region": "Niagara-on-the-Lake",
+    "vintage": 2019,
+    "drinkingWindow": "2023-2030",
+    "peakYear": 2025,
+    "foodPairingNotes": "This Cabernet Sauvignon likely has rich tannins and dark fruit flavors, making it a great match for hearty dishes. Ideal pairings include grilled meats or rich sauces.",
+    "mealToHaveWithThisWine": "Grilled ribeye steak with a red wine reduction sauce, served with roasted garlic mashed potatoes and sautéed green beans.",
+    "style": "Red",
+    "grapes": "Cabernet Sauvignon",
+    "location": "Wine Fridge A - L5",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "1",
+    "rating": null
   }
 ]
