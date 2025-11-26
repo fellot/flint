@@ -983,5 +983,27 @@
     "consumedDate": null,
     "dataSource": "1",
     "rating": null
+  },
+  {
+    "id": "1764117502289",
+    "bottle": "Chateau Clerc Milon 2020",
+    "country": "France",
+    "region": "Bordeaux Pauillac",
+    "vintage": 2020,
+    "drinkingWindow": "2025-2035",
+    "peakYear": 2028,
+    "foodPairingNotes": "This wine typically exhibits rich dark fruit flavors, balanced acidity, and firm tannins, making it a great match for hearty dishes. Pair with grilled meats or rich sauces to complement its structure.",
+    "mealToHaveWithThisWine": "Braised beef short ribs with a red wine reduction, served with creamy mashed potatoes and sautéed green beans.",
+    "style": "Red",
+    "grapes": "Cabernet Sauvignon, Merlot, Cabernet Franc, Petit Verdot",
+    "location": "Wine Fridge A - L4",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "1",
+    "rating": null
   }
 ]
