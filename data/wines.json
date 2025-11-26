@@ -1005,5 +1005,27 @@
     "consumedDate": null,
     "dataSource": "1",
     "rating": null
+  },
+  {
+    "id": "1764117575388",
+    "bottle": "The Standish Wine Company The Schubert Theorem 2022",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "vintage": 2022,
+    "drinkingWindow": "2024-2032",
+    "peakYear": 2026,
+    "foodPairingNotes": "This wine likely has rich fruit flavors and moderate tannins, making it suitable for pairing with hearty dishes. Ideal pairings include grilled meats or rich pasta dishes.",
+    "mealToHaveWithThisWine": "Grilled lamb chops with rosemary, served with a side of creamy polenta and roasted seasonal vegetables.",
+    "style": "Red",
+    "grapes": "",
+    "location": "Wine Fridge A - L2",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "1",
+    "rating": null
   }
 ]
