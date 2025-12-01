@@ -48,18 +48,18 @@ export default function Home() {
       console.log('Fetching wines from dataSource:', dataSource);
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-      
+
       const response = await fetch(`/api/wines?dataSource=${dataSource}`, {
         signal: controller.signal
       });
-      
+
       clearTimeout(timeoutId);
       console.log('Response status:', response.status);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log('Wines fetched:', data.length, 'from dataSource:', dataSource);
       setWines(data);
@@ -138,8 +138,8 @@ export default function Home() {
   };
 
   const handleWineDelete = async (wineId: string) => {
-    const confirmMessage = isPortugueseMode 
-      ? 'Tem certeza de que deseja excluir este vinho?' 
+    const confirmMessage = isPortugueseMode
+      ? 'Tem certeza de que deseja excluir este vinho?'
       : 'Are you sure you want to delete this wine?';
     if (!confirm(confirmMessage)) return;
 
@@ -198,27 +198,27 @@ export default function Home() {
   const getStats = () => {
     // Only include in_cellar wines for statistics
     const cellarWines = wines.filter(wine => wine.status === 'in_cellar');
-    
+
     // Get detailed breakdowns for countries, styles, and vintages
     const countryBreakdown = cellarWines.reduce((acc, wine) => {
       if (!acc[wine.country]) {
         acc[wine.country] = { count: 0, regions: {} as Record<string, number> };
       }
       acc[wine.country].count += 1;
-      
+
       if (!acc[wine.country].regions[wine.region]) {
         acc[wine.country].regions[wine.region] = 0;
       }
       acc[wine.country].regions[wine.region] += 1;
-      
+
       return acc;
     }, {} as Record<string, { count: number; regions: Record<string, number> }>);
-    
+
     const styleBreakdown = cellarWines.reduce((acc, wine) => {
       acc[wine.style] = (acc[wine.style] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-    
+
     const vintageBreakdown = cellarWines.reduce((acc, wine) => {
       acc[wine.vintage] = (acc[wine.vintage] || 0) + 1;
       return acc;
@@ -229,7 +229,7 @@ export default function Home() {
 
   const getStyleBadgeClasses = (style: string) => {
     const baseClasses = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium';
-    
+
     switch (style.toLowerCase()) {
       case 'red':
         return `${baseClasses} bg-red-100 text-red-800 border border-red-200`;
@@ -289,31 +289,31 @@ export default function Home() {
   };
 
   const handleCountryClick = (country: string) => {
-    setFilters(prev => ({ 
-      ...prev, 
+    setFilters(prev => ({
+      ...prev,
       country: prev.country === country ? 'all' : country,
       region: 'all' // Reset region when country changes
     }));
   };
 
   const handleRegionClick = (region: string) => {
-    setFilters(prev => ({ 
-      ...prev, 
-      region: prev.region === region ? 'all' : region 
+    setFilters(prev => ({
+      ...prev,
+      region: prev.region === region ? 'all' : region
     }));
   };
 
   const handleStyleClick = (style: string) => {
-    setFilters(prev => ({ 
-      ...prev, 
-      style: prev.style === style ? 'all' : style 
+    setFilters(prev => ({
+      ...prev,
+      style: prev.style === style ? 'all' : style
     }));
   };
 
   const handleVintageClick = (vintage: string) => {
-    setFilters(prev => ({ 
-      ...prev, 
-      vintage: prev.vintage === vintage ? 'all' : vintage 
+    setFilters(prev => ({
+      ...prev,
+      vintage: prev.vintage === vintage ? 'all' : vintage
     }));
   };
 
@@ -326,7 +326,7 @@ export default function Home() {
 
   const getDynamicWineLabel = () => {
     const activeFilters = [];
-    
+
     if (filters.country !== 'all') {
       activeFilters.push(filters.country);
     }
@@ -345,12 +345,12 @@ export default function Home() {
     if (filters.search) {
       activeFilters.push(`"${filters.search}"`);
     }
-    
+
     if (activeFilters.length === 0) {
       return isPortugueseMode ? 'Total de Vinhos' : 'Total Wines';
     }
-    
-    return isPortugueseMode 
+
+    return isPortugueseMode
       ? `Vinhos - ${activeFilters.join(' - ')}`
       : `Wines - ${activeFilters.join(' - ')}`;
   };
@@ -393,350 +393,343 @@ export default function Home() {
 
       <div className="hidden md:block">
         <div className="min-h-screen bg-red-900">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-3">
-            <div className="flex items-center">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent tracking-tight">
-                Flint Cellar
-              </h1>
-            </div>
-            
-            {/* Search Box - Centered */}
-            <div className="flex-1 max-w-xl mx-8">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400" />
+          {/* Header */}
+          <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center py-3">
+                <div className="flex items-center">
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent tracking-tight">
+                    Flint Cellar
+                  </h1>
                 </div>
-                <input
-                  type="text"
-                  placeholder={isPortugueseMode ? "Buscar vinhos, uvas, harmonizações..." : "Search wines, grapes, food pairings..."}
-                  value={filters.search}
-                  onChange={(e) => setFilterValue('search', e.target.value)}
-                  className="w-full input-field pl-12 py-3 text-base"
-                />
+
+                {/* Search Box - Centered */}
+                <div className="flex-1 max-w-xl mx-8">
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Search className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder={isPortugueseMode ? "Buscar vinhos, uvas, harmonizações..." : "Search wines, grapes, food pairings..."}
+                      value={filters.search}
+                      onChange={(e) => setFilterValue('search', e.target.value)}
+                      className="w-full input-field pl-12 py-3 text-base"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <a
+                    href="https://www.lcbo.com/content/lcbo/en/vintages/classics-collection.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 text-gray-500 hover:text-red-600 transition-colors"
+                    aria-label="LCBO Classics Collection"
+                    title="LCBO Classics Collection"
+                  >
+                    <ExternalLink className="h-5 w-5" />
+                  </a>
+                  <div className="text-right">
+                    <div className="text-xs text-gray-500 font-medium leading-tight">{getDynamicWineLabel()}</div>
+                    <div className="text-lg font-bold text-red-500 leading-tight">
+                      {filteredWines.length}
+                      {filteredWines.length !== totalInCellarCount && (
+                        <span className="text-sm text-gray-400 ml-1">/ {totalInCellarCount}</span>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setIsAIWineModalOpen(true)}
+                    className="btn-primary flex items-center justify-center space-x-2"
+                    aria-label={isPortugueseMode ? 'Adicionar vinho com IA' : 'Add wine with AI'}
+                  >
+                    <Plus className="h-5 w-5" />
+                    <span className="text-sm font-semibold">
+                      {isPortugueseMode ? 'Adicionar com IA' : 'Add with AI'}
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              <a
-                href="https://www.lcbo.com/content/lcbo/en/vintages/classics-collection.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 text-gray-500 hover:text-red-600 transition-colors"
-                aria-label="LCBO Classics Collection"
-                title="LCBO Classics Collection"
-              >
-                <ExternalLink className="h-5 w-5" />
-              </a>
-              <div className="text-right">
-                <div className="text-xs text-gray-500 font-medium leading-tight">{getDynamicWineLabel()}</div>
-                <div className="text-lg font-bold text-red-500 leading-tight">
-                  {filteredWines.length}
-                  {filteredWines.length !== totalInCellarCount && (
-                    <span className="text-sm text-gray-400 ml-1">/ {totalInCellarCount}</span>
+          </header>
+
+          {/* Collapsible Sections Container */}
+          <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out ${isStatsExpanded || isFiltersExpanded ? 'pt-6 pb-4' : 'pt-4 pb-1'
+            }`}>
+            {/* Statistics and Filters Header */}
+            <div className={`transition-all duration-300 ease-in-out ${isStatsExpanded || isFiltersExpanded ? 'mb-4' : 'mb-0'
+              }`}>
+              <div className="flex justify-between items-center">
+                {/* Statistics Button */}
+                <button
+                  onClick={() => setIsStatsExpanded(!isStatsExpanded)}
+                  className="flex items-center space-x-3 text-lg font-semibold text-white hover:text-red-100 transition-colors cursor-pointer bg-gradient-to-r from-red-800 to-red-900 px-4 py-3 rounded-lg shadow-md hover:shadow-lg"
+                >
+                  <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="h-4 w-4 text-white" />
+                  </div>
+                  <span>{isPortugueseMode ? 'Estatísticas' : 'Statistics'}</span>
+                  {isStatsExpanded ? (
+                    <ChevronUp className="h-5 w-5 text-white ml-auto" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5 text-white ml-auto" />
                   )}
-                </div>
+                </button>
+
+                {/* Filters Button */}
+                <button
+                  onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
+                  className="flex items-center space-x-3 text-lg font-semibold text-white hover:text-red-100 transition-colors cursor-pointer bg-gradient-to-r from-red-800 to-red-900 px-4 py-3 rounded-lg shadow-md hover:shadow-lg"
+                >
+                  <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                    <Filter className="h-4 w-4 text-white" />
+                  </div>
+                  <span>{isPortugueseMode ? 'Filtros' : 'Filters'}</span>
+                  {isFiltersExpanded ? (
+                    <ChevronUp className="h-5 w-5 text-white ml-auto" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5 text-white ml-auto" />
+                  )}
+                </button>
               </div>
-              <button
-                onClick={() => setIsAIWineModalOpen(true)}
-                className="btn-primary flex items-center justify-center space-x-2"
-                aria-label={isPortugueseMode ? 'Adicionar vinho com IA' : 'Add wine with AI'}
-              >
-                <Plus className="h-5 w-5" />
-                <span className="text-sm font-semibold">
-                  {isPortugueseMode ? 'Adicionar com IA' : 'Add with AI'}
-                </span>
-              </button>
             </div>
-          </div>
-        </div>
-      </header>
 
-      {/* Collapsible Sections Container */}
-      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out ${
-        isStatsExpanded || isFiltersExpanded ? 'pt-6 pb-4' : 'pt-4 pb-1'
-      }`}>
-        {/* Statistics and Filters Header */}
-        <div className={`transition-all duration-300 ease-in-out ${
-          isStatsExpanded || isFiltersExpanded ? 'mb-4' : 'mb-0'
-        }`}>
-          <div className="flex justify-between items-center">
-            {/* Statistics Button */}
-            <button
-              onClick={() => setIsStatsExpanded(!isStatsExpanded)}
-              className="flex items-center space-x-3 text-lg font-semibold text-white hover:text-red-100 transition-colors cursor-pointer bg-gradient-to-r from-red-800 to-red-900 px-4 py-3 rounded-lg shadow-md hover:shadow-lg"
-            >
-              <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-                <BarChart3 className="h-4 w-4 text-white" />
-              </div>
-              <span>{isPortugueseMode ? 'Estatísticas' : 'Statistics'}</span>
-              {isStatsExpanded ? (
-                <ChevronUp className="h-5 w-5 text-white ml-auto" />
-              ) : (
-                <ChevronDown className="h-5 w-5 text-white ml-auto" />
-              )}
-            </button>
-
-            {/* Filters Button */}
-            <button
-              onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
-              className="flex items-center space-x-3 text-lg font-semibold text-white hover:text-red-100 transition-colors cursor-pointer bg-gradient-to-r from-red-800 to-red-900 px-4 py-3 rounded-lg shadow-md hover:shadow-lg"
-            >
-              <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-                <Filter className="h-4 w-4 text-white" />
-              </div>
-              <span>{isPortugueseMode ? 'Filtros' : 'Filters'}</span>
-              {isFiltersExpanded ? (
-                <ChevronUp className="h-5 w-5 text-white ml-auto" />
-              ) : (
-                <ChevronDown className="h-5 w-5 text-white ml-auto" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Collapsible Stats Grid */}
-        <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 transition-all duration-300 ease-in-out ${
-          isStatsExpanded ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden'
-        }`}>
-          <div className={`card hover:shadow-md transition-all ${
-            filters.country !== 'all' || filters.region !== 'all' ? 'ring-2 ring-red-200 bg-red-50' : ''
-          }`}>
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                <div className="h-8 w-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <MapPin className="h-5 w-5 text-purple-600" />
+            {/* Collapsible Stats Grid */}
+            <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 transition-all duration-300 ease-in-out ${isStatsExpanded ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden'
+              }`}>
+              <div className={`card hover:shadow-md transition-all ${filters.country !== 'all' || filters.region !== 'all' ? 'ring-2 ring-red-200 bg-red-50' : ''
+                }`}>
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="h-8 w-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <MapPin className="h-5 w-5 text-purple-600" />
+                    </div>
+                  </div>
+                  <div className="ml-4 flex-1">
+                    <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
+                      {isPortugueseMode ? 'Países' : 'Countries'}
+                      <span className="ml-2 text-xs text-gray-400">
+                        {isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}
+                      </span>
+                    </p>
+                    <div className="space-y-1">
+                      {Object.entries(stats.countryBreakdown)
+                        .sort(([a], [b]) => a.localeCompare(b))
+                        .map(([country, data]) => (
+                          <div key={country}>
+                            <div className="flex items-center justify-between text-sm">
+                              <div className="flex items-center space-x-1">
+                                <button
+                                  onClick={() => toggleCountryExpansion(country)}
+                                  className="text-gray-500 hover:text-gray-700 transition-colors"
+                                >
+                                  {expandedCountries.has(country) ? (
+                                    <span className="text-xs">−</span>
+                                  ) : (
+                                    <span className="text-xs">+</span>
+                                  )}
+                                </button>
+                                <button
+                                  onClick={() => handleCountryClick(country)}
+                                  className={`transition-colors cursor-pointer ${filters.country === country
+                                      ? 'text-wine-600 font-medium'
+                                      : 'text-gray-700 hover:text-wine-600 hover:font-medium'
+                                    }`}
+                                >
+                                  {country}
+                                </button>
+                              </div>
+                              <span className="font-medium text-gray-900">{data.count}</span>
+                            </div>
+                            {expandedCountries.has(country) && (
+                              <div className="ml-4 mt-1 space-y-1">
+                                {Object.entries(data.regions)
+                                  .sort(([, a], [, b]) => b - a)
+                                  .map(([region, count]) => (
+                                    <div key={region} className="flex justify-between text-xs text-gray-600">
+                                      <button
+                                        onClick={() => handleRegionClick(region)}
+                                        className={`ml-2 text-left transition-colors cursor-pointer hover:text-red-600 ${filters.region === region
+                                            ? 'text-red-600 font-medium'
+                                            : 'text-gray-600'
+                                          }`}
+                                        title={`Filter by ${region} region`}
+                                      >
+                                        {region}
+                                      </button>
+                                      <span className={filters.region === region ? 'text-red-600 font-medium' : ''}>
+                                        {count}
+                                      </span>
+                                    </div>
+                                  ))}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="ml-4 flex-1">
-                <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
-                  {isPortugueseMode ? 'Países' : 'Countries'}
-                  <span className="ml-2 text-xs text-gray-400">
-                    {isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}
-                  </span>
-                </p>
-                <div className="space-y-1">
-                  {Object.entries(stats.countryBreakdown)
-                    .sort(([a], [b]) => a.localeCompare(b))
-                    .map(([country, data]) => (
-                      <div key={country}>
-                        <div className="flex items-center justify-between text-sm">
-                          <div className="flex items-center space-x-1">
+
+              <div className={`card hover:shadow-md transition-all ${filters.style !== 'all' ? 'ring-2 ring-red-200 bg-red-50' : ''
+                }`}>
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="h-8 w-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                      <Palette className="h-5 w-5 text-orange-600" />
+                    </div>
+                  </div>
+                  <div className="ml-4 flex-1">
+                    <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
+                      {isPortugueseMode ? 'Estilos' : 'Styles'}
+                      <span className="ml-2 text-xs text-gray-400">
+                        {isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}
+                      </span>
+                    </p>
+                    <div className="space-y-1">
+                      {Object.entries(stats.styleBreakdown)
+                        .sort(([, a], [, b]) => b - a)
+                        .map(([style, count]) => (
+                          <div key={style} className="flex justify-between text-sm">
                             <button
-                              onClick={() => toggleCountryExpansion(country)}
-                              className="text-gray-500 hover:text-gray-700 transition-colors"
-                            >
-                              {expandedCountries.has(country) ? (
-                                <span className="text-xs">−</span>
-                              ) : (
-                                <span className="text-xs">+</span>
-                              )}
-                            </button>
-                            <button
-                              onClick={() => handleCountryClick(country)}
-                              className={`transition-colors cursor-pointer ${
-                                filters.country === country
+                              onClick={() => handleStyleClick(style)}
+                              className={`transition-colors cursor-pointer text-left ${filters.style === style
                                   ? 'text-wine-600 font-medium'
                                   : 'text-gray-700 hover:text-wine-600 hover:font-medium'
-                              }`}
+                                }`}
                             >
-                              {country}
+                              {style}
                             </button>
+                            <span className="font-medium text-gray-900">{count}</span>
                           </div>
-                          <span className="font-medium text-gray-900">{data.count}</span>
-                        </div>
-                        {expandedCountries.has(country) && (
-                          <div className="ml-4 mt-1 space-y-1">
-                            {Object.entries(data.regions)
-                              .sort(([,a], [,b]) => b - a)
-                              .map(([region, count]) => (
-                                <div key={region} className="flex justify-between text-xs text-gray-600">
-                                  <button
-                                    onClick={() => handleRegionClick(region)}
-                                    className={`ml-2 text-left transition-colors cursor-pointer hover:text-red-600 ${
-                                      filters.region === region
-                                        ? 'text-red-600 font-medium'
-                                        : 'text-gray-600'
-                                    }`}
-                                    title={`Filter by ${region} region`}
-                                  >
-                                    {region}
-                                  </button>
-                                  <span className={filters.region === region ? 'text-red-600 font-medium' : ''}>
-                                    {count}
-                                  </span>
-                                </div>
-                              ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                        ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          
-          <div className={`card hover:shadow-md transition-all ${
-            filters.style !== 'all' ? 'ring-2 ring-red-200 bg-red-50' : ''
-          }`}>
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                <div className="h-8 w-8 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <Palette className="h-5 w-5 text-orange-600" />
-                </div>
-              </div>
-              <div className="ml-4 flex-1">
-                <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
-                  {isPortugueseMode ? 'Estilos' : 'Styles'}
-                  <span className="ml-2 text-xs text-gray-400">
-                    {isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}
-                  </span>
-                </p>
-                <div className="space-y-1">
-                  {Object.entries(stats.styleBreakdown)
-                    .sort(([,a], [,b]) => b - a)
-                    .map(([style, count]) => (
-                      <div key={style} className="flex justify-between text-sm">
-                        <button
-                          onClick={() => handleStyleClick(style)}
-                          className={`transition-colors cursor-pointer text-left ${
-                            filters.style === style
-                              ? 'text-wine-600 font-medium'
-                              : 'text-gray-700 hover:text-wine-600 hover:font-medium'
-                          }`}
-                        >
-                          {style}
-                        </button>
-                        <span className="font-medium text-gray-900">{count}</span>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className={`card hover:shadow-md transition-all ${
-            filters.vintage !== 'all' ? 'ring-2 ring-red-200 bg-red-50' : ''
-          }`}>
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                <div className="h-8 w-8 bg-teal-100 rounded-lg flex items-center justify-center">
-                  <Calendar className="h-5 w-5 text-teal-600" />
-                </div>
-              </div>
-              <div className="ml-4 flex-1">
-                <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
-                  {isPortugueseMode ? 'Safras' : 'Vintages'}
-                  <span className="ml-2 text-xs text-gray-400">
-                    {isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}
-                  </span>
-                </p>
-                <div className="space-y-1">
-                  {Object.entries(stats.vintageBreakdown)
-                    .sort(([a], [b]) => parseInt(a) - parseInt(b))
-                    .map(([vintage, count]) => (
-                      <div key={vintage} className="flex justify-between text-sm">
-                        <button
-                          onClick={() => handleVintageClick(vintage)}
-                          className={`transition-colors cursor-pointer text-left ${
-                            filters.vintage === vintage
-                              ? 'text-wine-600 font-medium'
-                              : 'text-gray-700 hover:text-wine-600 hover:font-medium'
-                          }`}
-                        >
-                          {vintage}
-                        </button>
-                        <span className="font-medium text-gray-900">{count}</span>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Collapsible Filters Content */}
-        <div className={`transition-all duration-300 ease-in-out ${
-          isFiltersExpanded ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden'
-        }`}>
-          <WineFiltersComponent
-            key={`wine-filters-${dataSource}`}
-            filters={filters}
-            onFiltersChange={setFilters}
-            wines={wines}
-          />
-        </div>
-      </div>
-
-      {/* Wine Table */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <WineTable
-          key={`wine-table-${dataSource}`}
-          wines={filteredWines}
-          onWineUpdate={handleWineUpdate}
-          onWineDelete={handleWineDelete}
-          searchTerm={filters.search}
-          isPortuguese={isPortugueseMode}
-        />
-      </div>
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-center space-x-4">
-            <button
-              onClick={() => window.location.href = `/cellar-journal?ds=${dataSource}`}
-              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
-            >
-              <Calendar className="h-5 w-5" />
-              <span>{isPortugueseMode ? 'Diário da Adega' : 'Cellar Journal'}</span>
-            </button>
-            
-            <button
-              onClick={() => window.location.href = `/wine-trivia?language=${isPortugueseMode ? 'pt' : 'en'}`}
-              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md hover:shadow-lg"
-            >
-              <WineIcon className="h-5 w-5" />
-              <span>{isPortugueseMode ? 'Quiz de Vinhos' : 'Wine Trivia'}</span>
-            </button>
-            <div className="flex items-center space-x-3 px-6 py-3 bg-gray-100 rounded-lg">
-              <Globe className="h-5 w-5 text-gray-600" />
-              <div className="flex items-center space-x-2">
-                <span className={`text-2xl transition-colors ${
-                  dataSource === '1' ? 'opacity-100' : 'opacity-50'
+              <div className={`card hover:shadow-md transition-all ${filters.vintage !== 'all' ? 'ring-2 ring-red-200 bg-red-50' : ''
                 }`}>
-                  🇨🇦
-                </span>
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="h-8 w-8 bg-teal-100 rounded-lg flex items-center justify-center">
+                      <Calendar className="h-5 w-5 text-teal-600" />
+                    </div>
+                  </div>
+                  <div className="ml-4 flex-1">
+                    <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
+                      {isPortugueseMode ? 'Safras' : 'Vintages'}
+                      <span className="ml-2 text-xs text-gray-400">
+                        {isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}
+                      </span>
+                    </p>
+                    <div className="space-y-1">
+                      {Object.entries(stats.vintageBreakdown)
+                        .sort(([a], [b]) => parseInt(a) - parseInt(b))
+                        .map(([vintage, count]) => (
+                          <div key={vintage} className="flex justify-between text-sm">
+                            <button
+                              onClick={() => handleVintageClick(vintage)}
+                              className={`transition-colors cursor-pointer text-left ${filters.vintage === vintage
+                                  ? 'text-wine-600 font-medium'
+                                  : 'text-gray-700 hover:text-wine-600 hover:font-medium'
+                                }`}
+                            >
+                              {vintage}
+                            </button>
+                            <span className="font-medium text-gray-900">{count}</span>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Collapsible Filters Content */}
+            <div className={`transition-all duration-300 ease-in-out ${isFiltersExpanded ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden'
+              }`}>
+              <WineFiltersComponent
+                key={`wine-filters-${dataSource}`}
+                filters={filters}
+                onFiltersChange={setFilters}
+                wines={wines}
+              />
+            </div>
+          </div>
+
+          {/* Wine Table */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <WineTable
+              key={`wine-table-${dataSource}`}
+              wines={filteredWines}
+              onWineUpdate={handleWineUpdate}
+              onWineDelete={handleWineDelete}
+              searchTerm={filters.search}
+              isPortuguese={isPortugueseMode}
+            />
+          </div>
+
+          {/* Footer */}
+          <footer className="bg-white border-t border-gray-200 mt-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="flex justify-center space-x-4">
                 <button
-                  onClick={toggleDataSource}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                    dataSource === '2' ? 'bg-green-600' : 'bg-gray-300'
-                  }`}
+                  onClick={() => window.location.href = `/cellar-journal?ds=${dataSource}`}
+                  className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
                 >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      dataSource === '2' ? 'translate-x-6' : 'translate-x-1'
-                    }`}
-                  />
+                  <Calendar className="h-5 w-5" />
+                  <span>{isPortugueseMode ? 'Diário da Adega' : 'Cellar Journal'}</span>
                 </button>
-                <span className={`text-2xl transition-colors ${
-                  dataSource === '2' ? 'opacity-100' : 'opacity-50'
-                }`}>
-                  🇧🇷
-                </span>
+
+                <button
+                  onClick={() => window.location.href = `/wine-trivia?language=${isPortugueseMode ? 'pt' : 'en'}`}
+                  className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md hover:shadow-lg"
+                >
+                  <WineIcon className="h-5 w-5" />
+                  <span>{isPortugueseMode ? 'Quiz de Vinhos' : 'Wine Trivia'}</span>
+                </button>
+
+                <button
+                  onClick={() => window.location.href = '/december-features'}
+                  className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white font-medium rounded-lg hover:from-orange-700 hover:to-orange-800 transition-all duration-200 shadow-md hover:shadow-lg"
+                >
+                  <BarChart3 className="h-5 w-5" />
+                  <span>{isPortugueseMode ? 'Destaques de Dezembro' : 'December Features'}</span>
+                </button>
+                <div className="flex items-center space-x-3 px-6 py-3 bg-gray-100 rounded-lg">
+                  <Globe className="h-5 w-5 text-gray-600" />
+                  <div className="flex items-center space-x-2">
+                    <span className={`text-2xl transition-colors ${dataSource === '1' ? 'opacity-100' : 'opacity-50'
+                      }`}>
+                      🇨🇦
+                    </span>
+                    <button
+                      onClick={toggleDataSource}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${dataSource === '2' ? 'bg-green-600' : 'bg-gray-300'
+                        }`}
+                    >
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${dataSource === '2' ? 'translate-x-6' : 'translate-x-1'
+                          }`}
+                      />
+                    </button>
+                    <span className={`text-2xl transition-colors ${dataSource === '2' ? 'opacity-100' : 'opacity-50'
+                      }`}>
+                      🇧🇷
+                    </span>
+                  </div>
+                </div>
               </div>
+              <p className="text-center text-sm text-gray-500 mt-3">
+                {isPortugueseMode
+                  ? 'Explore sua coleção de vinhos e teste seus conhecimentos'
+                  : 'Explore your wine collection and test your knowledge'
+                }
+              </p>
             </div>
-          </div>
-          <p className="text-center text-sm text-gray-500 mt-3">
-            {isPortugueseMode 
-              ? 'Explore sua coleção de vinhos e teste seus conhecimentos'
-              : 'Explore your wine collection and test your knowledge'
-            }
-          </p>
-        </div>
-      </footer>
+          </footer>
         </div>
       </div>
 
@@ -758,24 +751,24 @@ export default function Home() {
         />
       )}
 
-    {/* Floating Sommelier Button */}
-    {!isSommelierOpen && (
-      <button
-        onClick={() => setIsSommelierOpen(true)}
-        className="fixed bottom-24 right-6 z-40 hidden h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg hover:from-green-700 hover:to-green-800 md:bottom-6 md:flex"
-        title={isPortugueseMode ? 'Abrir Sommelier' : 'Open Sommelier'}
-      >
-        <WineIcon className="h-6 w-6" />
-      </button>
-    )}
+      {/* Floating Sommelier Button */}
+      {!isSommelierOpen && (
+        <button
+          onClick={() => setIsSommelierOpen(true)}
+          className="fixed bottom-24 right-6 z-40 hidden h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg hover:from-green-700 hover:to-green-800 md:bottom-6 md:flex"
+          title={isPortugueseMode ? 'Abrir Sommelier' : 'Open Sommelier'}
+        >
+          <WineIcon className="h-6 w-6" />
+        </button>
+      )}
 
-    {/* Sommelier Chat Widget */}
-    <SommelierWidget
-      isOpen={isSommelierOpen}
-      onClose={() => setIsSommelierOpen(false)}
-      wines={wines}
-      locale={isPortugueseMode ? 'pt' : 'en'}
-    />
+      {/* Sommelier Chat Widget */}
+      <SommelierWidget
+        isOpen={isSommelierOpen}
+        onClose={() => setIsSommelierOpen(false)}
+        wines={wines}
+        locale={isPortugueseMode ? 'pt' : 'en'}
+      />
     </>
   );
 }
