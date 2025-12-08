@@ -1018,7 +1018,7 @@
     "foodPairingNotes": "This wine likely has rich fruit flavors and moderate tannins, making it suitable for pairing with hearty dishes. Ideal pairings include grilled meats or rich pasta dishes.",
     "mealToHaveWithThisWine": "Grilled lamb chops with rosemary, served with a side of creamy polenta and roasted seasonal vegetables.",
     "style": "Red",
-    "grapes": "",
+    "grapes": "Shiraz",
     "location": "Wine Fridge A - L2",
     "quantity": 1,
     "price": null,
@@ -1027,7 +1027,8 @@
     "status": "in_cellar",
     "consumedDate": null,
     "dataSource": "1",
-    "rating": null
+    "rating": null,
+    "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/0/2/2/5/022535.jpg.thumb.1280.1280.jpg"
   },
   {
     "id": "1764117626016",
