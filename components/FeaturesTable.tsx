@@ -134,133 +134,153 @@ export default function FeaturesTable({ wines }: FeaturesTableProps) {
                         onChange={(e) => setFilter(e.target.value)}
                     />
                 </div>
-
-                <div className="flex items-center space-x-2 w-full md:w-auto overflow-x-auto">
-                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Sort by:</span>
-                    {sortOptions.map((option) => (
-                        <button
-                            key={option.key}
-                            onClick={() => handleSort(option.key)}
-                            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap flex items-center space-x-1 ${sortConfig?.key === option.key
-                                    ? 'bg-red-100 text-red-800 ring-1 ring-red-200'
-                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                }`}
-                        >
-                            <span>{option.label}</span>
-                            {sortConfig?.key === option.key && (
-                                sortConfig.direction === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
-                            )}
-                        </button>
-                    ))}
-                </div>
             </div>
 
-            {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {processedWines.map((wine, idx) => {
-                    const wineId = getWineId(wine);
-                    const quantity = orders[wineId] || 0;
+            {/* Table */}
+            <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th
+                                    scope="col"
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort('Wine Name')}
+                                >
+                                    <div className="flex items-center space-x-1">
+                                        <span>Wine Name</span>
+                                        {sortConfig?.key === 'Wine Name' && (
+                                            sortConfig.direction === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                        )}
+                                    </div>
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort('Country Name')}
+                                >
+                                    <div className="flex items-center space-x-1">
+                                        <span>Region</span>
+                                        {sortConfig?.key === 'Country Name' && (
+                                            sortConfig.direction === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                        )}
+                                    </div>
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort('Score')}
+                                >
+                                    <div className="flex items-center space-x-1">
+                                        <span>Score</span>
+                                        {sortConfig?.key === 'Score' && (
+                                            sortConfig.direction === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                        )}
+                                    </div>
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort('$BTL')}
+                                >
+                                    <div className="flex items-center space-x-1">
+                                        <span>Price</span>
+                                        {sortConfig?.key === '$BTL' && (
+                                            sortConfig.direction === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                        )}
+                                    </div>
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Details
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Order
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {processedWines.map((wine, idx) => {
+                                const wineId = getWineId(wine);
+                                const quantity = orders[wineId] || 0;
+                                const isExpanded = expandedNotes.has(idx);
 
-                    return (
-                        <div
-                            key={idx}
-                            className={`bg-white rounded-xl shadow-lg overflow-hidden border transition-all duration-300 flex flex-col ${quantity > 0 ? 'ring-2 ring-red-500 border-red-500 transform scale-[1.02]' : 'border-gray-100 hover:shadow-xl'
-                                }`}
-                        >
-                            {/* Card Header */}
-                            <div className="p-5 border-b border-gray-100 bg-gradient-to-br from-white to-red-50/30">
-                                <div className="flex justify-between items-start gap-2">
-                                    <h3 className="text-lg font-bold text-gray-900 leading-tight">
-                                        {wine['Wine Name']}
-                                    </h3>
-                                    {wine['Score'] && (
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200 shadow-sm whitespace-nowrap">
-                                            <Award className="w-3 h-3 mr-1" />
-                                            {wine['Score']}
-                                        </span>
-                                    )}
-                                </div>
-                                <div className="mt-2 flex items-center text-sm text-gray-600">
-                                    <MapPin className="w-4 h-4 mr-1 text-red-400" />
-                                    <span>{wine['Country Name']} • {wine['Region']}</span>
-                                </div>
-                            </div>
-
-                            {/* Card Body */}
-                            <div className="p-5 flex-grow space-y-4">
-                                {/* Details Grid */}
-                                <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div className="flex items-center text-gray-700 bg-gray-50 p-2 rounded-lg">
-                                        <DollarSign className="w-4 h-4 mr-2 text-green-600" />
-                                        <span className="font-semibold">${wine['$BTL']}</span>
-                                    </div>
-                                    <div className="flex items-center text-gray-700 bg-gray-50 p-2 rounded-lg">
-                                        <Droplet className="w-4 h-4 mr-2 text-blue-500" />
-                                        <span>{wine['ML']} ml</span>
-                                    </div>
-                                    <div className="col-span-2 flex items-center text-gray-500 text-xs">
-                                        <span className="font-medium mr-1">LCBO#:</span> {wine['LCBO#']}
-                                    </div>
-                                </div>
-
-                                {/* Tasting Notes */}
-                                <div className="relative">
-                                    <div className="flex items-center mb-2">
-                                        <FileText className="w-4 h-4 mr-2 text-red-500" />
-                                        <h4 className="text-sm font-bold text-gray-900">Tasting Notes</h4>
-                                    </div>
-                                    <div
-                                        className={`text-sm text-gray-600 leading-relaxed ${expandedNotes.has(idx) ? '' : 'line-clamp-4'
-                                            }`}
-                                    >
-                                        {wine['Tasting Notes']}
-                                    </div>
-                                    {wine['Tasting Notes'].length > 150 && (
-                                        <button
-                                            onClick={() => toggleNote(idx)}
-                                            className="mt-1 text-xs font-medium text-red-600 hover:text-red-800 focus:outline-none flex items-center"
-                                        >
-                                            {expandedNotes.has(idx) ? (
-                                                <>Show less <ChevronUp className="w-3 h-3 ml-1" /></>
-                                            ) : (
-                                                <>Read more <ChevronDown className="w-3 h-3 ml-1" /></>
+                                return (
+                                    <tr key={idx} className={quantity > 0 ? 'bg-red-50' : 'hover:bg-gray-50'}>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-col">
+                                                <span className="text-sm font-medium text-gray-900">{wine['Wine Name']}</span>
+                                                <button
+                                                    onClick={() => toggleNote(idx)}
+                                                    className="text-xs text-red-600 hover:text-red-800 flex items-center mt-1"
+                                                >
+                                                    {isExpanded ? 'Hide Notes' : 'Show Notes'}
+                                                    {isExpanded ? <ChevronUp className="h-3 w-3 ml-1" /> : <ChevronDown className="h-3 w-3 ml-1" />}
+                                                </button>
+                                                {isExpanded && (
+                                                    <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                                        <div className="flex items-start">
+                                                            <FileText className="w-4 h-4 mr-2 text-red-500 mt-0.5 flex-shrink-0" />
+                                                            <span>{wine['Tasting Notes']}</span>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-900">{wine['Country Name']}</div>
+                                            <div className="text-xs text-gray-500">{wine['Region']}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            {wine['Score'] && (
+                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200">
+                                                    <Award className="w-3 h-3 mr-1" />
+                                                    {wine['Score']}
+                                                </span>
                                             )}
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Card Footer - Order Controls */}
-                            <div className="p-4 bg-gray-50 border-t border-gray-100">
-                                {quantity === 0 ? (
-                                    <button
-                                        onClick={() => updateOrder(wine, 1)}
-                                        className="w-full flex items-center justify-center space-x-2 bg-white border-2 border-red-600 text-red-600 py-2 px-4 rounded-lg font-bold hover:bg-red-50 transition-colors"
-                                    >
-                                        <ShoppingCart className="w-5 h-5" />
-                                        <span>Add to Order</span>
-                                    </button>
-                                ) : (
-                                    <div className="flex items-center justify-between bg-red-600 text-white rounded-lg p-1">
-                                        <button
-                                            onClick={() => updateOrder(wine, -1)}
-                                            className="p-2 hover:bg-red-700 rounded-md transition-colors"
-                                        >
-                                            <Minus className="w-5 h-5" />
-                                        </button>
-                                        <span className="font-bold text-lg w-8 text-center">{quantity}</span>
-                                        <button
-                                            onClick={() => updateOrder(wine, 1)}
-                                            className="p-2 hover:bg-red-700 rounded-md transition-colors"
-                                        >
-                                            <Plus className="w-5 h-5" />
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    );
-                })}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                                            ${wine['$BTL']}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <div className="flex flex-col space-y-1">
+                                                <span className="flex items-center">
+                                                    <Droplet className="w-3 h-3 mr-1" /> {wine['ML']} ml
+                                                </span>
+                                                <span className="text-xs">LCBO#: {wine['LCBO#']}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            {quantity === 0 ? (
+                                                <button
+                                                    onClick={() => updateOrder(wine, 1)}
+                                                    className="text-red-600 hover:text-red-900 font-bold flex items-center justify-end w-full"
+                                                >
+                                                    <ShoppingCart className="w-4 h-4 mr-1" /> Add
+                                                </button>
+                                            ) : (
+                                                <div className="flex items-center justify-end space-x-2">
+                                                    <button
+                                                        onClick={() => updateOrder(wine, -1)}
+                                                        className="p-1 text-red-600 hover:bg-red-100 rounded"
+                                                    >
+                                                        <Minus className="w-4 h-4" />
+                                                    </button>
+                                                    <span className="font-bold w-4 text-center">{quantity}</span>
+                                                    <button
+                                                        onClick={() => updateOrder(wine, 1)}
+                                                        className="p-1 text-red-600 hover:bg-red-100 rounded"
+                                                    >
+                                                        <Plus className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {processedWines.length === 0 && (
