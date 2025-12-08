@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { FeatureWine } from '@/utils/excel';
 import { Search, ChevronDown, ChevronUp, Wine, MapPin, DollarSign, Award, Droplet, FileText, ShoppingCart, Plus, Minus, X, Copy, Check } from 'lucide-react';
+import { addToCellar } from '@/app/actions';
 
 interface FeaturesTableProps {
     wines: FeatureWine[];
@@ -20,6 +21,34 @@ export default function FeaturesTable({ wines }: FeaturesTableProps) {
     const [orders, setOrders] = useState<Record<string, number>>({});
     const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
     const [copied, setCopied] = useState(false);
+
+    const [addingToCellar, setAddingToCellar] = useState<Set<number>>(new Set());
+    const [cellarSuccess, setCellarSuccess] = useState<Set<number>>(new Set());
+
+    const handleAddToCellar = async (wine: FeatureWine, index: number) => {
+        setAddingToCellar(prev => new Set(prev).add(index));
+        try {
+            const result = await addToCellar(wine);
+            if (result.success) {
+                setCellarSuccess(prev => new Set(prev).add(index));
+                setTimeout(() => {
+                    setCellarSuccess(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(index);
+                        return newSet;
+                    });
+                }, 3000);
+            }
+        } catch (error) {
+            console.error('Failed to add to cellar', error);
+        } finally {
+            setAddingToCellar(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(index);
+                return newSet;
+            });
+        }
+    };
 
     const handleSort = (key: keyof FeatureWine) => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -134,6 +163,25 @@ export default function FeaturesTable({ wines }: FeaturesTableProps) {
                         onChange={(e) => setFilter(e.target.value)}
                     />
                 </div>
+
+                <div className="flex items-center space-x-2 w-full md:w-auto overflow-x-auto">
+                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Sort by:</span>
+                    {sortOptions.map((option) => (
+                        <button
+                            key={option.key}
+                            onClick={() => handleSort(option.key)}
+                            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap flex items-center space-x-1 ${sortConfig?.key === option.key
+                                ? 'bg-red-100 text-red-800 ring-1 ring-red-200'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                }`}
+                        >
+                            <span>{option.label}</span>
+                            {sortConfig?.key === option.key && (
+                                sortConfig.direction === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                            )}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* Table */}
@@ -194,7 +242,7 @@ export default function FeaturesTable({ wines }: FeaturesTableProps) {
                                     Details
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Order
+                                    Actions
                                 </th>
                             </tr>
                         </thead>
@@ -203,6 +251,8 @@ export default function FeaturesTable({ wines }: FeaturesTableProps) {
                                 const wineId = getWineId(wine);
                                 const quantity = orders[wineId] || 0;
                                 const isExpanded = expandedNotes.has(idx);
+                                const isAdding = addingToCellar.has(idx);
+                                const isSuccess = cellarSuccess.has(idx);
 
                                 return (
                                     <tr key={idx} className={quantity > 0 ? 'bg-red-50' : 'hover:bg-gray-50'}>
@@ -250,30 +300,55 @@ export default function FeaturesTable({ wines }: FeaturesTableProps) {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            {quantity === 0 ? (
-                                                <button
-                                                    onClick={() => updateOrder(wine, 1)}
-                                                    className="text-red-600 hover:text-red-900 font-bold flex items-center justify-end w-full"
-                                                >
-                                                    <ShoppingCart className="w-4 h-4 mr-1" /> Add
-                                                </button>
-                                            ) : (
-                                                <div className="flex items-center justify-end space-x-2">
-                                                    <button
-                                                        onClick={() => updateOrder(wine, -1)}
-                                                        className="p-1 text-red-600 hover:bg-red-100 rounded"
-                                                    >
-                                                        <Minus className="w-4 h-4" />
-                                                    </button>
-                                                    <span className="font-bold w-4 text-center">{quantity}</span>
+                                            <div className="flex flex-col items-end space-y-2">
+                                                {/* Order Controls */}
+                                                {quantity === 0 ? (
                                                     <button
                                                         onClick={() => updateOrder(wine, 1)}
-                                                        className="p-1 text-red-600 hover:bg-red-100 rounded"
+                                                        className="text-red-600 hover:text-red-900 font-bold flex items-center justify-end w-full"
                                                     >
-                                                        <Plus className="w-4 h-4" />
+                                                        <ShoppingCart className="w-4 h-4 mr-1" /> Add Order
                                                     </button>
-                                                </div>
-                                            )}
+                                                ) : (
+                                                    <div className="flex items-center justify-end space-x-2">
+                                                        <button
+                                                            onClick={() => updateOrder(wine, -1)}
+                                                            className="p-1 text-red-600 hover:bg-red-100 rounded"
+                                                        >
+                                                            <Minus className="w-4 h-4" />
+                                                        </button>
+                                                        <span className="font-bold w-4 text-center">{quantity}</span>
+                                                        <button
+                                                            onClick={() => updateOrder(wine, 1)}
+                                                            className="p-1 text-red-600 hover:bg-red-100 rounded"
+                                                        >
+                                                            <Plus className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                )}
+
+                                                {/* Add to Cellar */}
+                                                <button
+                                                    onClick={() => handleAddToCellar(wine, idx)}
+                                                    disabled={isAdding || isSuccess}
+                                                    className={`text-xs flex items-center px-2 py-1 rounded border transition-colors ${isSuccess
+                                                        ? 'bg-green-100 text-green-800 border-green-200'
+                                                        : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                                                        }`}
+                                                >
+                                                    {isAdding ? (
+                                                        <span className="animate-pulse">Adding...</span>
+                                                    ) : isSuccess ? (
+                                                        <>
+                                                            <Check className="w-3 h-3 mr-1" /> Added
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Wine className="w-3 h-3 mr-1" /> To Cellar
+                                                        </>
+                                                    )}
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 );
