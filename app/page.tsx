@@ -718,7 +718,7 @@ export default function Home() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
               <div className="flex justify-center space-x-4">
                 <button
-                  onClick={() => window.location.href = `/cellar-journal?ds=${dataSource}`}
+                  onClick={() => window.location.href = '/cellar-journal'}
                   className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
                 >
                   <Calendar className="h-5 w-5" />

@@ -26,28 +26,24 @@ export default function CellarJournal() {
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
   const [isAddExternalWineModalOpen, setIsAddExternalWineModalOpen] = useState(false);
   const [isAIWineModalOpen, setIsAIWineModalOpen] = useState(false);
-  const [dataSource, setDataSource] = useState<'1' | '2'>('1');
-  const [isPortugueseMode, setIsPortugueseMode] = useState(false);
+  const [dataSource, setDataSource] = useState<'1' | '2' | '3'>(() => {
+    if (typeof document !== 'undefined') {
+      const match = document.cookie.match(/(?:^|;\s*)data_source=([123])/);
+      return (match?.[1] as '1' | '2' | '3') || '1';
+    }
+    return '1';
+  });
+  const [isPortugueseMode, setIsPortugueseMode] = useState(() => {
+    if (typeof document !== 'undefined') {
+      const match = document.cookie.match(/(?:^|;\s*)data_source=([123])/);
+      return match?.[1] === '2' || match?.[1] === '3';
+    }
+    return false;
+  });
 
   useEffect(() => {
     fetchWines();
   }, [dataSource]);
-
-  // Initialize data source from URL query (?ds=2 or ?dataSource=2 or ?language=pt)
-  useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const dsParam = params.get('ds') || params.get('dataSource');
-      const lang = params.get('language');
-      if (dsParam === '2' || lang === 'pt') {
-        setDataSource('2');
-        setIsPortugueseMode(true);
-      } else if (dsParam === '1') {
-        setDataSource('1');
-        setIsPortugueseMode(false);
-      }
-    } catch {}
-  }, []);
 
   useEffect(() => {
     applyFilters();
@@ -81,7 +77,6 @@ export default function CellarJournal() {
       }
     } finally {
       setLoading(false);
-      setIsPortugueseMode(dataSource === '2');
     }
   };
 
@@ -256,12 +251,6 @@ export default function CellarJournal() {
     }
   };
 
-  const toggleDataSource = () => {
-    const next = dataSource === '1' ? '2' : '1';
-    setDataSource(next);
-    setIsPortugueseMode(next === '2');
-  };
-
   const handleRegionClick = (region: string) => {
     setFilters(prev => ({ 
       ...prev, 
@@ -303,10 +292,12 @@ export default function CellarJournal() {
     }
     
     if (activeFilters.length === 0) {
-      return 'Consumed Wines';
+      return isPortugueseMode ? 'Vinhos Consumidos' : 'Consumed Wines';
     }
-    
-    return `Consumed Wines - ${activeFilters.join(' - ')}`;
+
+    return isPortugueseMode
+      ? `Vinhos Consumidos - ${activeFilters.join(' - ')}`
+      : `Consumed Wines - ${activeFilters.join(' - ')}`;
   };
 
   const stats = getStats();
@@ -388,20 +379,6 @@ export default function CellarJournal() {
                   <Plus className="h-5 w-5" />
                   <span>{isPortugueseMode ? 'Adicionar Vinho Externo' : 'Add External Wine'}</span>
                 </button>
-                <div className="flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
-                  <span className={`text-2xl ${dataSource === '1' ? 'opacity-100' : 'opacity-50'}`}>🇨🇦</span>
-                  <button
-                    onClick={toggleDataSource}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                      dataSource === '2' ? 'bg-green-600' : 'bg-gray-300'
-                    }`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      dataSource === '2' ? 'translate-x-6' : 'translate-x-1'
-                    }`} />
-                  </button>
-                  <span className={`text-2xl ${dataSource === '2' ? 'opacity-100' : 'opacity-50'}`}>🇧🇷</span>
-                </div>
               </div>
             </div>
           </div>
@@ -425,7 +402,7 @@ export default function CellarJournal() {
               <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
                 <BarChart3 className="h-4 w-4 text-white" />
               </div>
-              <span>Journal Statistics</span>
+              <span>{isPortugueseMode ? 'Estatísticas do Diário' : 'Journal Statistics'}</span>
               {isStatsExpanded ? (
                 <ChevronUp className="h-5 w-5 text-white ml-auto" />
               ) : (
@@ -441,7 +418,7 @@ export default function CellarJournal() {
               <div className="h-6 w-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
                 <Filter className="h-4 w-4 text-white" />
               </div>
-              <span>Filters</span>
+              <span>{isPortugueseMode ? 'Filtros' : 'Filters'}</span>
               {isFiltersExpanded ? (
                 <ChevronUp className="h-5 w-5 text-white ml-auto" />
               ) : (
@@ -466,8 +443,8 @@ export default function CellarJournal() {
               </div>
               <div className="ml-4 flex-1">
                 <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
-                  Countries
-                  <span className="ml-2 text-xs text-gray-400">(click to filter/clear)</span>
+                  {isPortugueseMode ? 'Países' : 'Countries'}
+                  <span className="ml-2 text-xs text-gray-400">{isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}</span>
                 </p>
                 <div className="space-y-1">
                   {Object.entries(stats.countryBreakdown)
@@ -541,8 +518,8 @@ export default function CellarJournal() {
               </div>
               <div className="ml-4 flex-1">
                 <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
-                  Styles
-                  <span className="ml-2 text-xs text-gray-400">(click to filter/clear)</span>
+                  {isPortugueseMode ? 'Estilos' : 'Styles'}
+                  <span className="ml-2 text-xs text-gray-400">{isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}</span>
                 </p>
                 <div className="space-y-1">
                   {Object.entries(stats.styleBreakdown)
@@ -578,8 +555,8 @@ export default function CellarJournal() {
               </div>
               <div className="ml-4 flex-1">
                 <p className="text-sm font-medium text-gray-500 mb-2 flex items-center">
-                  Vintages
-                  <span className="ml-2 text-xs text-gray-400">(click to filter/clear)</span>
+                  {isPortugueseMode ? 'Safras' : 'Vintages'}
+                  <span className="ml-2 text-xs text-gray-400">{isPortugueseMode ? '(clique para filtrar/limpar)' : '(click to filter/clear)'}</span>
                 </p>
                 <div className="space-y-1">
                   {Object.entries(stats.vintageBreakdown)
@@ -653,18 +630,18 @@ export default function CellarJournal() {
               className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-md hover:shadow-lg"
             >
               <WineIcon className="h-5 w-5" />
-              <span>Main Cellar</span>
+              <span>{isPortugueseMode ? 'Adega Principal' : 'Main Cellar'}</span>
             </button>
             <button
               onClick={() => window.location.href = '/wine-trivia'}
               className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md hover:shadow-lg"
             >
               <WineIcon className="h-5 w-5" />
-              <span>Wine Trivia</span>
+              <span>{isPortugueseMode ? 'Quiz de Vinhos' : 'Wine Trivia'}</span>
             </button>
           </div>
           <p className="text-center text-sm text-gray-500 mt-3">
-            Navigate between your wine collection and test your knowledge
+            {isPortugueseMode ? 'Navegue pela sua coleção de vinhos e teste seus conhecimentos' : 'Navigate between your wine collection and test your knowledge'}
           </p>
         </div>
       </footer>
