@@ -30,6 +30,7 @@ export interface WineFilters {
   style: string;
   vintage: string;
   status: string;
+  coravin: string;
   search: string;
 }
 

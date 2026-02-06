@@ -18,6 +18,7 @@ export default function CellarJournal() {
     style: 'all',
     vintage: 'all',
     status: 'all', // Default to all statuses
+    coravin: 'all',
     search: '',
   });
   const [loading, setLoading] = useState(true);
@@ -104,6 +105,10 @@ export default function CellarJournal() {
 
     if (filters.status !== 'all') {
       filtered = filtered.filter(wine => wine.status === filters.status);
+    }
+
+    if (filters.coravin === 'yes') {
+      filtered = filtered.filter(wine => wine.coravin === true);
     }
 
     if (filters.search) {
@@ -286,6 +291,9 @@ export default function CellarJournal() {
     }
     if (filters.vintage !== 'all') {
       activeFilters.push(filters.vintage);
+    }
+    if (filters.coravin === 'yes') {
+      activeFilters.push('Coravin');
     }
     if (filters.search) {
       activeFilters.push(`"${filters.search}"`);
@@ -580,6 +588,33 @@ export default function CellarJournal() {
               </div>
             </div>
           </div>
+
+          {/* Coravin Filter */}
+          {wines.filter(w => ['consumed', 'gifted', 'sold'].includes(w.status) && w.coravin).length > 0 && (
+            <div className={`card hover:shadow-md transition-all ${filters.coravin === 'yes' ? 'ring-2 ring-red-200 bg-red-50' : ''}`}>
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <div className="h-8 w-8 bg-[#722F37] bg-opacity-20 rounded-lg flex items-center justify-center">
+                    <WineIcon className="h-5 w-5 text-[#722F37]" />
+                  </div>
+                </div>
+                <div className="ml-4 flex-1">
+                  <p className="text-sm font-medium text-gray-500 mb-2">Coravin</p>
+                  <button
+                    onClick={() => setFilters(prev => ({ ...prev, coravin: prev.coravin === 'yes' ? 'all' : 'yes' }))}
+                    className={`flex justify-between w-full text-sm transition-colors cursor-pointer ${
+                      filters.coravin === 'yes'
+                        ? 'text-[#722F37] font-medium'
+                        : 'text-gray-700 hover:text-[#722F37] hover:font-medium'
+                    }`}
+                  >
+                    <span>{isPortugueseMode ? 'Abertos com Coravin' : 'Opened with Coravin'}</span>
+                    <span className="font-medium text-gray-900">{wines.filter(w => ['consumed', 'gifted', 'sold'].includes(w.status) && w.coravin).length}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Collapsible Filters Content */}
