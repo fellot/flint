@@ -22,6 +22,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [consumingWine, setConsumingWine] = useState<Wine | null>(null);
   const [wineNotes, setWineNotes] = useState<string>('');
+  const [consumeQuantity, setConsumeQuantity] = useState<number>(1);
   const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string; location: string } | null>(null);
   const [sortColumn, setSortColumn] = useState<SortColumn>('bottle');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -90,24 +91,25 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
   const handleConsumeWine = (wine: Wine) => {
     const today = new Date().toISOString().split('T')[0];
     const notes = wineNotes.trim() ? wineNotes.trim() : wine.notes;
+    const qty = Math.min(consumeQuantity, wine.quantity);
 
-    if (wine.quantity > 1 && onWineAdd) {
-      // Decrement quantity on the original wine (stays in cellar)
-      onWineUpdate({ ...wine, quantity: wine.quantity - 1 });
-      // Create a new consumed entry with quantity 1
+    if (qty < wine.quantity && onWineAdd) {
+      // Partial consume: decrement original, create consumed copy
+      onWineUpdate({ ...wine, quantity: wine.quantity - qty });
       const { id, ...rest } = wine;
       onWineAdd({
         ...rest,
-        quantity: 1,
+        quantity: qty,
         status: 'consumed',
         consumedDate: today,
         location: 'N/A',
         notes,
       });
     } else {
-      // Single bottle: mark the whole entry as consumed
+      // Consuming all bottles: mark the whole entry as consumed
       onWineUpdate({
         ...wine,
+        quantity: qty,
         status: 'consumed',
         consumedDate: today,
         location: 'N/A',
@@ -117,6 +119,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
 
     setConsumingWine(null);
     setWineNotes('');
+    setConsumeQuantity(1);
   };
 
   const handleImageExpand = (src: string, alt: string, location: string) => {
@@ -431,7 +434,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                       
                       {wine.status === 'in_cellar' && (
                         <button
-                          onClick={() => setConsumingWine(wine)}
+                          onClick={() => { setConsumingWine(wine); setConsumeQuantity(1); }}
                           className="text-blue-600 hover:text-blue-900 p-1 rounded"
                           title="Mark as consumed"
                         >
@@ -490,6 +493,24 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                 </p>
               </div>
 
+              {/* Quantity Selector */}
+              {consumingWine.quantity > 1 && (
+                <div className="mb-4">
+                  <label htmlFor="consume-quantity" className="block text-sm font-medium text-gray-700 mb-2 text-left">
+                    {isPortuguese ? 'Quantidade a consumir' : 'Bottles to consume'} ({consumingWine.quantity} {isPortuguese ? 'disponíveis' : 'available'})
+                  </label>
+                  <input
+                    type="number"
+                    id="consume-quantity"
+                    value={consumeQuantity}
+                    onChange={(e) => setConsumeQuantity(Math.max(1, Math.min(consumingWine.quantity, parseInt(e.target.value) || 1)))}
+                    min={1}
+                    max={consumingWine.quantity}
+                    className="input-field w-24"
+                  />
+                </div>
+              )}
+
               {/* Wine Notes Section */}
               <div className="mb-6">
                 <label htmlFor="wine-notes" className="block text-sm font-medium text-gray-700 mb-2 text-left">
@@ -518,7 +539,8 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                 <button
                   onClick={() => {
                     setConsumingWine(null);
-                    setWineNotes(''); // Reset notes when canceling
+                    setWineNotes('');
+                    setConsumeQuantity(1);
                   }}
                   className="btn-secondary flex-1"
                 >
