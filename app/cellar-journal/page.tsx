@@ -640,15 +640,81 @@ export default function CellarJournal() {
         </div>
       </div>
 
-      {/* Wine Table */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <CellarJournalWineTable
-          wines={filteredWines}
-          onWineUpdate={handleWineUpdate}
-          onWineDelete={handleWineDelete}
-          searchTerm={filters.search}
-          isPortuguese={isPortugueseMode}
-        />
+      {/* Wine Tables - Separated by Heaven/Hell */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        {/* Wine Heaven Section */}
+        {filteredWines.filter(w => w.location === 'Wine Heaven').length > 0 && (
+          <div>
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-lg shadow-md">
+                <span className="text-lg">😇</span>
+                <h2 className="text-lg font-semibold text-white tracking-wide">
+                  {isPortugueseMode ? 'Paraíso dos Vinhos' : 'Wine Heaven'}
+                </h2>
+                <span className="text-lg">😇</span>
+              </div>
+              <span className="text-sm text-gray-400">
+                {filteredWines.filter(w => w.location === 'Wine Heaven').length} {isPortugueseMode ? 'vinhos' : 'wines'}
+              </span>
+            </div>
+            <CellarJournalWineTable
+              wines={filteredWines.filter(w => w.location === 'Wine Heaven')}
+              onWineUpdate={handleWineUpdate}
+              onWineDelete={handleWineDelete}
+              searchTerm={filters.search}
+              isPortuguese={isPortugueseMode}
+            />
+          </div>
+        )}
+
+        {/* Wine Hell Section */}
+        {filteredWines.filter(w => w.location === 'Wine Hell').length > 0 && (
+          <div>
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-700 to-red-900 rounded-lg shadow-md">
+                <span className="text-lg">😈</span>
+                <h2 className="text-lg font-semibold text-white tracking-wide">
+                  {isPortugueseMode ? 'Inferno dos Vinhos' : 'Wine Hell'}
+                </h2>
+                <span className="text-lg">😈</span>
+              </div>
+              <span className="text-sm text-gray-400">
+                {filteredWines.filter(w => w.location === 'Wine Hell').length} {isPortugueseMode ? 'vinhos' : 'wines'}
+              </span>
+            </div>
+            <CellarJournalWineTable
+              wines={filteredWines.filter(w => w.location === 'Wine Hell')}
+              onWineUpdate={handleWineUpdate}
+              onWineDelete={handleWineDelete}
+              searchTerm={filters.search}
+              isPortuguese={isPortugueseMode}
+            />
+          </div>
+        )}
+
+        {/* Other Wines (gifted, sold, or consumed without heaven/hell) */}
+        {filteredWines.filter(w => w.location !== 'Wine Heaven' && w.location !== 'Wine Hell').length > 0 && (
+          <div>
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-gray-500 to-gray-600 rounded-lg shadow-md">
+                <span className="text-lg">🍷</span>
+                <h2 className="text-lg font-semibold text-white tracking-wide">
+                  {isPortugueseMode ? 'Outros Vinhos' : 'Other Wines'}
+                </h2>
+              </div>
+              <span className="text-sm text-gray-400">
+                {filteredWines.filter(w => w.location !== 'Wine Heaven' && w.location !== 'Wine Hell').length} {isPortugueseMode ? 'vinhos' : 'wines'}
+              </span>
+            </div>
+            <CellarJournalWineTable
+              wines={filteredWines.filter(w => w.location !== 'Wine Heaven' && w.location !== 'Wine Hell')}
+              onWineUpdate={handleWineUpdate}
+              onWineDelete={handleWineDelete}
+              searchTerm={filters.search}
+              isPortuguese={isPortugueseMode}
+            />
+          </div>
+        )}
       </div>
 
       {/* AI Wine Modal */}
