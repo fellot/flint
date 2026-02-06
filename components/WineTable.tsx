@@ -180,8 +180,8 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
     return (
       <div className="card text-center py-12">
         <WineIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No wines found</h3>
-        <p className="text-gray-500">Try adjusting your filters or add some wines to your cellar.</p>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">{isPortuguese ? 'Nenhum vinho encontrado' : 'No wines found'}</h3>
+        <p className="text-gray-500">{isPortuguese ? 'Tente ajustar seus filtros ou adicione vinhos à sua adega.' : 'Try adjusting your filters or add some wines to your cellar.'}</p>
       </div>
     );
   }
