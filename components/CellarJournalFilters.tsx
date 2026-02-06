@@ -33,10 +33,11 @@ export default function CellarJournalFilters({ filters, onFiltersChange, wines }
     });
   };
 
-  const hasActiveFilters = filters.country !== 'all' || 
-                          filters.style !== 'all' || 
-                          filters.vintage !== 'all' || 
-                          filters.status !== 'all' || 
+  const hasActiveFilters = filters.country !== 'all' ||
+                          filters.style !== 'all' ||
+                          filters.vintage !== 'all' ||
+                          filters.status !== 'all' ||
+                          filters.coravin !== 'all' ||
                           filters.search !== '';
 
   return (
@@ -55,7 +56,7 @@ export default function CellarJournalFilters({ filters, onFiltersChange, wines }
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
         <div>
           <label htmlFor="country-filter" className="block text-xs font-medium text-gray-700 mb-0.5">
             Country
@@ -132,6 +133,20 @@ export default function CellarJournalFilters({ filters, onFiltersChange, wines }
             ))}
           </select>
         </div>
+
+        {/* Coravin Filter */}
+        <div className="flex items-end">
+          <button
+            onClick={() => handleFilterChange('coravin', filters.coravin === 'yes' ? 'all' : 'yes')}
+            className={`w-full py-1 px-3 rounded-lg text-sm font-medium border transition-colors ${
+              filters.coravin === 'yes'
+                ? 'bg-[#722F37] text-white border-[#5a252c]'
+                : 'bg-white text-gray-700 border-gray-300 hover:border-[#722F37] hover:text-[#722F37]'
+            }`}
+          >
+            Coravin
+          </button>
+        </div>
       </div>
 
       {/* Active Filters Display */}
@@ -180,6 +195,17 @@ export default function CellarJournalFilters({ filters, onFiltersChange, wines }
                 <button
                   onClick={() => handleFilterChange('status', 'all')}
                   className="ml-1 text-wine-600 hover:text-wine-800"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            )}
+            {filters.coravin === 'yes' && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#722F37] text-white">
+                Coravin
+                <button
+                  onClick={() => handleFilterChange('coravin', 'all')}
+                  className="ml-1 text-white hover:text-gray-200"
                 >
                   <X className="h-3 w-3" />
                 </button>

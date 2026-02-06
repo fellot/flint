@@ -38,16 +38,17 @@ export default function WineFiltersComponent({
     });
   };
 
-  const hasActiveFilters = filters.country !== 'all' || 
-                          filters.region !== 'all' || 
-                          filters.style !== 'all' || 
-                          filters.vintage !== 'all' || 
+  const hasActiveFilters = filters.country !== 'all' ||
+                          filters.region !== 'all' ||
+                          filters.style !== 'all' ||
+                          filters.vintage !== 'all' ||
+                          filters.coravin !== 'all' ||
                           filters.search !== '';
 
   return (
     <div className="card p-3">
       {/* Filter Options */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
         {/* Clear Filters Button */}
         <div className="flex items-center space-x-2">
           {hasActiveFilters && (
@@ -117,8 +118,19 @@ export default function WineFiltersComponent({
           </select>
         </div>
 
-        {/* Status Filter */}
-
+        {/* Coravin Filter */}
+        <div className="flex items-end">
+          <button
+            onClick={() => handleFilterChange('coravin', filters.coravin === 'yes' ? 'all' : 'yes')}
+            className={`w-full py-1 px-3 rounded-lg text-sm font-medium border transition-colors ${
+              filters.coravin === 'yes'
+                ? 'bg-[#722F37] text-white border-[#5a252c]'
+                : 'bg-white text-gray-700 border-gray-300 hover:border-[#722F37] hover:text-[#722F37]'
+            }`}
+          >
+            Coravin
+          </button>
+        </div>
       </div>
 
       {/* Active Filters Display */}
@@ -159,7 +171,17 @@ export default function WineFiltersComponent({
                 </button>
               </span>
             )}
-
+            {filters.coravin === 'yes' && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#722F37] text-white">
+                Coravin
+                <button
+                  onClick={() => handleFilterChange('coravin', 'all')}
+                  className="ml-1 text-white hover:text-gray-200"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            )}
           </div>
         </div>
       )}
