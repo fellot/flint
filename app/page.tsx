@@ -9,7 +9,7 @@ import AIWineModal from '@/components/AIWineModal';
 import SommelierWidget from '@/components/SommelierWidget';
 import WineModal from '@/components/WineModal';
 import MobileCellarExperience from '@/components/MobileCellarExperience';
-import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, Filter, ExternalLink } from 'lucide-react';
+import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, Filter } from 'lucide-react';
 
 const DEFAULT_FILTERS: WineFilters = {
   country: 'all',
@@ -432,16 +432,6 @@ export default function Home() {
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <a
-                    href="https://www.lcbo.com/content/lcbo/en/vintages/classics-collection.html"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 text-gray-500 hover:text-red-600 transition-colors"
-                    aria-label="LCBO Classics Collection"
-                    title="LCBO Classics Collection"
-                  >
-                    <ExternalLink className="h-5 w-5" />
-                  </a>
                   <div className="text-right">
                     <div className="text-xs text-gray-500 font-medium leading-tight">{getDynamicWineLabel()}</div>
                     <div className="text-lg font-bold text-red-500 leading-tight">
