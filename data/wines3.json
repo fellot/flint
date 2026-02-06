@@ -11,7 +11,7 @@
     "mealToHaveWithThisWine": "Carne de cordeiro assada com ervas, acompanhada de purê de batata e legumes grelhados.",
     "style": "Red",
     "grapes": "Syrah, Grenache, Cabernet Sauvignon, Cinsault, Viognier",
-    "location": "",
+    "location": "A1",
     "quantity": 1,
     "price": null,
     "notes": "",
@@ -19,7 +19,8 @@
     "status": "in_cellar",
     "consumedDate": null,
     "dataSource": "3",
-    "rating": null
+    "rating": null,
+    "coravin": false
   }
 ]
 
