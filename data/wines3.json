@@ -35,17 +35,17 @@
     "mealToHaveWithThisWine": "Bife ancho grelhado com batatas rústicas",
     "style": "Tinto",
     "grapes": "Cabernet Sauvignon, Merlot",
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2026-02-06",
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Adega B - L0",
+    "location": "Wine Heaven",
     "quantity": 1,
     "technical_sheet": null,
     "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSApT4ATtJAE6DACoiryY0xtQZyamKnj1zNlQ&s",
     "fromCellar": true,
-    "dataSource": "2"
+    "dataSource": "3"
   },
   {
     "id": "3",
