@@ -46,29 +46,5 @@
     "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSApT4ATtJAE6DACoiryY0xtQZyamKnj1zNlQ&s",
     "fromCellar": true,
     "dataSource": "3"
-  },
-  {
-    "id": "3",
-    "bottle": "La Causa Cinsault País Carignan",
-    "country": "Chile",
-    "region": "Itata Valley",
-    "vintage": 2019,
-    "drinkingWindow": "2021–2027",
-    "peakYear": "2025",
-    "foodPairingNotes": "Frescor e taninos finos pedem porco assado, aves, embutidos e pratos com leve picância.",
-    "mealToHaveWithThisWine": "Pernil suíno assado com ervas",
-    "style": "Tinto",
-    "grapes": "Cinsault, País, Carignan",
-    "status": "in_cellar",
-    "consumedDate": null,
-    "notes": "",
-    "rating": null,
-    "price": null,
-    "location": "Wine Hell",
-    "quantity": 1,
-    "technical_sheet": null,
-    "bottle_image": "https://www.nataliemaclean.com/images/winepicks/3308b2bb45444e9a75549a536d2c809a/original_331886-la-causa-cinsault-pa-s-carignan-2019-bottle-1646200960.jpg",
-    "fromCellar": true,
-    "dataSource": "3"
   }
 ]
