@@ -39,7 +39,7 @@ export default function Home() {
   const [isPortugueseMode, setIsPortugueseMode] = useState(() => {
     if (typeof document !== 'undefined') {
       const match = document.cookie.match(/(?:^|;\s*)data_source=([123])/);
-      return match?.[1] === '2';
+      return match?.[1] === '2' || match?.[1] === '3';
     }
     return false;
   });
