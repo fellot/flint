@@ -630,9 +630,10 @@
     "rating": null,
     "price": null,
     "location": "Wine fridge A - L4",
-    "quantity": 1,
+    "quantity": 2,
     "bottle_image": "https://assets.tastingbook.com/assets/full/b4bc086710cd1a28b39957781faaee78.jpg",
-    "technical_sheet": "https://www.bodegasmuga.com/wp-content/uploads/2022/02/muga-torremuga-2019-eng.pdf"
+    "technical_sheet": "https://www.bodegasmuga.com/wp-content/uploads/2022/02/muga-torremuga-2019-eng.pdf",
+    "dataSource": "1"
   },
   {
     "id": "31",
