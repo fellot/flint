@@ -1077,7 +1077,8 @@
     "status": "in_cellar",
     "consumedDate": null,
     "dataSource": "1",
-    "rating": null
+    "rating": null,
+    "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/0/3/7/4/037437.jpg.thumb.1280.1280.jpg"
   },
   {
     "id": "1770385391795",
