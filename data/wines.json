@@ -62,7 +62,8 @@
     "location": "Wine fridge A - L1",
     "quantity": 1,
     "bottle_image": "https://images.vivino.com/thumbs/5SLjVc6QTXq8rtBkA-9FiA_pb_x600.png",
-    "dataSource": "1"
+    "dataSource": "1",
+    "coravin": true
   },
   {
     "id": "4",
@@ -651,7 +652,8 @@
     "quantity": 1,
     "bottle_image": "https://cdn.8wines.com/media/catalog/product/cache/55604a2f1b80c53a58291908f0e5a9e4/a/r/arzuaga-reserva-especial-2019.png",
     "technical_sheet": "https://arzuaganavarro.com/images/ARZUAGA/Fichas-PDF/Reserva_especial/Reserva_Especial_19.pdf",
-    "dataSource": "1"
+    "dataSource": "1",
+    "coravin": true
   },
   {
     "id": "32",
