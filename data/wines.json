@@ -11,15 +11,16 @@
     "mealToHaveWithThisWine": "Argentine asado (steak, chorizo)",
     "style": "Red",
     "grapes": "Cabernet Franc & Malbec",
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2026-02-06",
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L2",
+    "location": "N/A",
     "quantity": 1,
     "technical_sheet": "https://enemigowines.com/wp-content/uploads/2023/08/Gran-Enemigo-Gualtallary-2019.pdf",
-    "bottle_image": "https://www.bswliquor.com/cdn/shop/files/el-enemigo-gran-enemigo-gualtallary-2016_bbe7e547-42b1-409a-a046-324afdb010d9.png?v=1753126784&width=2600"
+    "bottle_image": "https://www.bswliquor.com/cdn/shop/files/el-enemigo-gran-enemigo-gualtallary-2016_bbe7e547-42b1-409a-a046-324afdb010d9.png?v=1753126784&width=2600",
+    "dataSource": "1"
   },
   {
     "id": "2",
