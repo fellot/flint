@@ -63,7 +63,8 @@
     "quantity": 1,
     "bottle_image": "https://images.vivino.com/thumbs/5SLjVc6QTXq8rtBkA-9FiA_pb_x600.png",
     "dataSource": "1",
-    "coravin": false
+    "coravin": true,
+    "coravinDate": "2026-01-15"
   },
   {
     "id": "4",
