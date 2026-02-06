@@ -353,9 +353,14 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
                         {wine.style}
                       </span>
                       {wine.coravin && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#722F37] text-white border border-[#5a252c]">
-                          Coravin
-                        </span>
+                        <div className="flex flex-col items-start">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#722F37] text-white border border-[#5a252c]">
+                            Coravin
+                          </span>
+                          {wine.coravinDate && (
+                            <span className="text-[10px] text-gray-400 mt-0.5 pl-1">{wine.coravinDate}</span>
+                          )}
+                        </div>
                       )}
                     </div>
                   </td>

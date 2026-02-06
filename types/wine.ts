@@ -21,6 +21,7 @@ export interface Wine {
   bottle_image?: string;
   fromCellar?: boolean; // true if wine was originally in cellar, false if consumed from outside
   coravin?: boolean;
+  coravinDate?: string | null;
 }
 
 export interface WineFilters {
@@ -51,6 +52,7 @@ export interface WineFormData {
   bottle_image?: string;
   fromCellar?: boolean;
   coravin?: boolean;
+  coravinDate?: string | null;
   status?: 'in_cellar' | 'consumed' | 'sold' | 'gifted';
   consumedDate?: string | null;
   dataSource?: string;

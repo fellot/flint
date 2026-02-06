@@ -423,6 +423,18 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
               </button>
               <span className="text-sm text-gray-600">{formData.coravin ? 'Yes' : 'No'}</span>
             </div>
+            {formData.coravin && (
+              <div className="mt-2">
+                <label className="block text-xs text-gray-500 mb-1">Date opened</label>
+                <input
+                  type="date"
+                  value={formData.coravinDate || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, coravinDate: e.target.value || null }))}
+                  disabled={mode === 'view'}
+                  className="input-field text-sm"
+                />
+              </div>
+            )}
           </div>
 
           {/* Food Pairing */}
