@@ -27,10 +27,13 @@ export async function middleware(req: NextRequest) {
   const pathname = url.pathname;
 
   // If no PIN is configured, allow all (avoids lockout in dev)
-  const pin1 = process.env.SITE_PIN || '';
-  const pin2 = process.env.SITE_PIN_2 || '';
+  const pins = [
+    process.env.SITE_PIN || '',
+    process.env.SITE_PIN_2 || '',
+    process.env.SITE_PIN_3 || '',
+  ].filter(Boolean);
   const salt = process.env.PIN_SALT || 'flint-static-salt';
-  if (!pin1 && !pin2) {
+  if (pins.length === 0) {
     return NextResponse.next();
   }
 
@@ -40,15 +43,11 @@ export async function middleware(req: NextRequest) {
 
   const cookie = req.cookies.get('pin_auth')?.value || '';
 
-  // Check against both PIN tokens
+  // Check against all configured PIN tokens
   if (cookie) {
-    if (pin1) {
-      const expected1 = await sha256Hex(pin1 + ':' + salt);
-      if (cookie === expected1) return NextResponse.next();
-    }
-    if (pin2) {
-      const expected2 = await sha256Hex(pin2 + ':' + salt);
-      if (cookie === expected2) return NextResponse.next();
+    for (const p of pins) {
+      const expected = await sha256Hex(p + ':' + salt);
+      if (cookie === expected) return NextResponse.next();
     }
   }
 

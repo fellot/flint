@@ -26,7 +26,7 @@ interface MobileCellarExperienceProps {
   filters: WineFilters;
   stats: CellarStats;
   totalInCellar: number;
-  dataSource: '1' | '2';
+  dataSource: '1' | '2' | '3';
   isPortuguese: boolean;
   onSetFilter: (key: keyof WineFilters, value: string) => void;
   onClearFilters: () => void;

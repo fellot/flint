@@ -95,7 +95,7 @@ export async function GET(
   try {
     const { searchParams } = new URL(request.url);
     const dataSource = searchParams.get('dataSource') || '1';
-    const file = dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
+    const file = dataSource === '3' ? 'data/wines3.json' : dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
     const { wines } = await getWineData(file);
     
     const wine = wines.find(w => w.id === params.id);
@@ -119,7 +119,7 @@ export async function PUT(
   try {
     const body = await request.json();
     const dataSource = body.dataSource || '1';
-    const file = dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
+    const file = dataSource === '3' ? 'data/wines3.json' : dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
     const { wines, sha } = await getWineData(file);
     
     const wineIndex = wines.findIndex(w => w.id === params.id);
@@ -155,7 +155,7 @@ export async function DELETE(
   try {
     const { searchParams } = new URL(request.url);
     const dataSource = searchParams.get('dataSource') || '1';
-    const file = dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
+    const file = dataSource === '3' ? 'data/wines3.json' : dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
     const { wines, sha } = await getWineData(file);
     
     const wineIndex = wines.findIndex(w => w.id === params.id);

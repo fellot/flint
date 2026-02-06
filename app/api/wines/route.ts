@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
     const search = searchParams.get('search');
     const dataSource = searchParams.get('dataSource') || '1'; // Default to wines.json
-    const file = dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
+    const file = dataSource === '3' ? 'data/wines3.json' : dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
 
     const { wines: allWines } = await getWineData(file);
     let wines = [...allWines];
@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
 
     // Get data source from request body or default to 1
     const dataSource = body.dataSource || '1';
-    const file = dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
+    const file = dataSource === '3' ? 'data/wines3.json' : dataSource === '2' ? 'data/wines2.json' : 'data/wines.json';
     const { wines, sha } = await getWineData(file);
 
     const sanitizedBottleImage = sanitizeBottleImage(body.bottle_image);
