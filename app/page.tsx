@@ -9,7 +9,7 @@ import AIWineModal from '@/components/AIWineModal';
 import SommelierWidget from '@/components/SommelierWidget';
 import WineModal from '@/components/WineModal';
 import MobileCellarExperience from '@/components/MobileCellarExperience';
-import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, Filter, Globe, ExternalLink } from 'lucide-react';
+import { Plus, Wine as WineIcon, BarChart3, MapPin, Palette, Calendar, Search, ChevronDown, ChevronUp, Filter, ExternalLink } from 'lucide-react';
 
 const DEFAULT_FILTERS: WineFilters = {
   country: 'all',
@@ -710,29 +710,6 @@ export default function Home() {
                   <BarChart3 className="h-5 w-5" />
                   <span>{isPortugueseMode ? 'Destaques de Dezembro' : 'December Features'}</span>
                 </button>
-                <div className="flex items-center space-x-3 px-6 py-3 bg-gray-100 rounded-lg">
-                  <Globe className="h-5 w-5 text-gray-600" />
-                  <div className="flex items-center space-x-2">
-                    <span className={`text-2xl transition-colors ${dataSource === '1' ? 'opacity-100' : 'opacity-50'
-                      }`}>
-                      🇨🇦
-                    </span>
-                    <button
-                      onClick={toggleDataSource}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${dataSource === '2' ? 'bg-green-600' : 'bg-gray-300'
-                        }`}
-                    >
-                      <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${dataSource === '2' ? 'translate-x-6' : 'translate-x-1'
-                          }`}
-                      />
-                    </button>
-                    <span className={`text-2xl transition-colors ${dataSource === '2' ? 'opacity-100' : 'opacity-50'
-                      }`}>
-                      🇧🇷
-                    </span>
-                  </div>
-                </div>
               </div>
               <p className="text-center text-sm text-gray-500 mt-3">
                 {isPortugueseMode
