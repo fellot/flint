@@ -29,8 +29,20 @@ export default function Home() {
   const [expandedCountries, setExpandedCountries] = useState<Set<string>>(new Set());
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
-  const [dataSource, setDataSource] = useState<'1' | '2'>('1');
-  const [isPortugueseMode, setIsPortugueseMode] = useState(false);
+  const [dataSource, setDataSource] = useState<'1' | '2'>(() => {
+    if (typeof document !== 'undefined') {
+      const match = document.cookie.match(/(?:^|;\s*)data_source=([12])/);
+      return (match?.[1] as '1' | '2') || '1';
+    }
+    return '1';
+  });
+  const [isPortugueseMode, setIsPortugueseMode] = useState(() => {
+    if (typeof document !== 'undefined') {
+      const match = document.cookie.match(/(?:^|;\s*)data_source=([12])/);
+      return match?.[1] === '2';
+    }
+    return false;
+  });
   const [isSommelierOpen, setIsSommelierOpen] = useState(false);
   const [mobileModalState, setMobileModalState] = useState<{ wine: Wine; mode: 'edit' | 'view' } | null>(null);
 
