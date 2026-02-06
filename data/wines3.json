@@ -70,29 +70,5 @@
     "bottle_image": "https://www.nataliemaclean.com/images/winepicks/3308b2bb45444e9a75549a536d2c809a/original_331886-la-causa-cinsault-pa-s-carignan-2019-bottle-1646200960.jpg",
     "fromCellar": true,
     "dataSource": "3"
-  },
-  {
-    "id": "4",
-    "bottle": "Cielo y Tierra Cabernet Sauvignon Gran Reserva",
-    "country": "Argentina",
-    "region": "Mendoza",
-    "vintage": 2021,
-    "drinkingWindow": "2023–2032",
-    "peakYear": "2027",
-    "foodPairingNotes": "Corpo cheio e carvalho bem marcado pedem churrasco, embutidos e queijos intensos.",
-    "mealToHaveWithThisWine": "Bife de chorizo na brasa com chimichurri e provoleta.",
-    "style": "Tinto",
-    "grapes": "Cabernet Sauvignon",
-    "status": "in_cellar",
-    "consumedDate": null,
-    "notes": "",
-    "rating": null,
-    "price": null,
-    "location": "Wine Hell",
-    "quantity": 1,
-    "technical_sheet": null,
-    "bottle_image": "https://www.wine.com.br/cdn-cgi/image/f=png/assets-images/produtos/30255-01.png",
-    "fromCellar": true,
-    "dataSource": "3"
   }
 ]
