@@ -125,8 +125,8 @@ export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDele
     return (
       <div className="card p-8 text-center">
         <WineIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No wines found</h3>
-        <p className="text-gray-500">Try adjusting your filters to see more results.</p>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">{isPortuguese ? 'Nenhum vinho encontrado' : 'No wines found'}</h3>
+        <p className="text-gray-500">{isPortuguese ? 'Tente ajustar seus filtros para ver mais resultados.' : 'Try adjusting your filters to see more results.'}</p>
       </div>
     );
   }
