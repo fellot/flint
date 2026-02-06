@@ -83,16 +83,16 @@
     "mealToHaveWithThisWine": "Bife de chorizo na brasa com chimichurri e provoleta.",
     "style": "Tinto",
     "grapes": "Cabernet Sauvignon",
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2026-02-06",
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Adega B - L0",
+    "location": "Wine Hell",
     "quantity": 1,
     "technical_sheet": null,
     "bottle_image": "https://www.wine.com.br/cdn-cgi/image/f=png/assets-images/produtos/30255-01.png",
     "fromCellar": true,
-    "dataSource": "2"
+    "dataSource": "3"
   }
 ]
