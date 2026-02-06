@@ -464,7 +464,7 @@ export default function Home() {
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <div className="text-right">
+                  <div className="text-right relative">
                     <div className="text-xs text-gray-500 font-medium leading-tight">{getDynamicWineLabel()}</div>
                     <div className="text-lg font-bold text-red-500 leading-tight">
                       {filteredWines.length}
@@ -475,7 +475,7 @@ export default function Home() {
                     {filteredWines.length !== totalInCellarCount && (
                       <button
                         onClick={resetFilters}
-                        className="text-[10px] text-gray-400 hover:text-red-500 transition-colors leading-tight"
+                        className="absolute right-0 top-full mt-0.5 text-[10px] text-gray-400 hover:text-red-500 transition-colors whitespace-nowrap"
                       >
                         {isPortugueseMode ? 'limpar filtros' : 'clear filters'}
                       </button>
