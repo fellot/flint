@@ -31,7 +31,9 @@ export default function PinPage() {
         const j = await res.json().catch(() => ({}));
         throw new Error(j?.error || 'Invalid PIN');
       }
-      window.location.href = redirectTo || '/';
+      const target = redirectTo || '/';
+      const separator = target.includes('?') ? '&' : '?';
+      window.location.href = `${target}${separator}welcome=1`;
     } catch (err: any) {
       setError(err?.message || 'Invalid PIN');
     } finally {

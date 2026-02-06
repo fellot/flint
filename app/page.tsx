@@ -45,6 +45,26 @@ export default function Home() {
   });
   const [isSommelierOpen, setIsSommelierOpen] = useState(false);
   const [mobileModalState, setMobileModalState] = useState<{ wine: Wine; mode: 'edit' | 'view' } | null>(null);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('welcome') === '1';
+    }
+    return false;
+  });
+  const [welcomeFading, setWelcomeFading] = useState(false);
+
+  useEffect(() => {
+    if (showWelcome) {
+      // Clean up URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('welcome');
+      window.history.replaceState({}, '', url.pathname + (url.search || ''));
+      // Start fade out after 2s, then hide after animation
+      const fadeTimer = setTimeout(() => setWelcomeFading(true), 2000);
+      const hideTimer = setTimeout(() => setShowWelcome(false), 2800);
+      return () => { clearTimeout(fadeTimer); clearTimeout(hideTimer); };
+    }
+  }, [showWelcome]);
 
   useEffect(() => {
     fetchWines();
@@ -370,6 +390,26 @@ export default function Home() {
   const stats = getStats();
   const totalInCellarCount = wines.filter(w => w.status === 'in_cellar').length;
 
+  const welcomeMessage = dataSource === '1' ? 'Welcome to your cellar, Felipe'
+    : dataSource === '2' ? 'Bem-vindo à sua adega, Gerson'
+    : 'Bem-vindo à sua adega, Lorenzo';
+
+  if (showWelcome) {
+    return (
+      <div className={`min-h-screen bg-red-900 flex items-center justify-center transition-opacity duration-700 ${welcomeFading ? 'opacity-0' : 'opacity-100'}`}>
+        <div className="text-center">
+          <div className="text-6xl mb-6 animate-bounce">
+            🍷
+          </div>
+          <h1 className="text-3xl md:text-4xl font-light text-white tracking-wide animate-[fadeInUp_0.8s_ease-out]">
+            {welcomeMessage}
+          </h1>
+          <div className="mt-4 w-24 h-px bg-white/40 mx-auto animate-[scaleX_1s_ease-out]" />
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-red-900 flex items-center justify-center">
@@ -409,13 +449,10 @@ export default function Home() {
           <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center py-3">
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center">
                   <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent tracking-tight">
                     Flint Cellar
                   </h1>
-                  <span className="text-sm text-gray-400 italic tracking-wide">
-                    {dataSource === '1' ? 'Hi Felipe' : dataSource === '2' ? 'Olá Gerson' : 'Olá Lorenzo'}
-                  </span>
                 </div>
 
                 {/* Search Box - Centered */}
