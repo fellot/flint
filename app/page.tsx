@@ -472,6 +472,14 @@ export default function Home() {
                         <span className="text-sm text-gray-400 ml-1">/ {totalInCellarCount}</span>
                       )}
                     </div>
+                    {filteredWines.length !== totalInCellarCount && (
+                      <button
+                        onClick={resetFilters}
+                        className="text-[10px] text-gray-400 hover:text-red-500 transition-colors leading-tight"
+                      >
+                        {isPortugueseMode ? 'limpar filtros' : 'clear filters'}
+                      </button>
+                    )}
                   </div>
                   <button
                     onClick={() => setIsAIWineModalOpen(true)}
