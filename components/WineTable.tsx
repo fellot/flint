@@ -126,8 +126,8 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
     setConsumeQuantity(1);
 
     // Auto-dismiss animation
-    setTimeout(() => setAnimationFading(true), 2000);
-    setTimeout(() => setAnimatingWine(null), 2800);
+    setTimeout(() => setAnimationFading(true), 3500);
+    setTimeout(() => setAnimatingWine(null), 4500);
   };
 
   const handleImageExpand = (src: string, alt: string, location: string) => {
@@ -573,36 +573,51 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
 
       {/* Wine Heaven/Hell Animation */}
       {animatingWine && (
-        <div className={`fixed inset-0 z-[60] flex items-center justify-center transition-opacity duration-700 ${animationFading ? 'opacity-0' : 'opacity-100'}`}
+        <div className={`fixed inset-0 z-[60] flex items-center justify-center transition-opacity duration-1000 ${animationFading ? 'opacity-0' : 'opacity-100'}`}
           style={{
             background: animatingWine.destination === 'heaven'
-              ? 'radial-gradient(ellipse at center, #fbbf24 0%, #b45309 40%, #1a1a2e 100%)'
-              : 'radial-gradient(ellipse at center, #dc2626 0%, #7f1d1d 40%, #1a1a2e 100%)',
+              ? 'radial-gradient(ellipse at center, rgba(251,191,36,0.4) 0%, rgba(180,83,9,0.6) 30%, #0a0a1a 80%)'
+              : 'radial-gradient(ellipse at center, rgba(220,38,38,0.4) 0%, rgba(127,29,29,0.6) 30%, #0a0a1a 80%)',
           }}
         >
-          <div className="text-center">
+          {/* Ambient glow effect */}
+          <div className={`absolute inset-0 ${
+            animatingWine.destination === 'heaven'
+              ? 'animate-[heavenGlow_2s_ease-in-out_infinite]'
+              : 'animate-[hellFlicker_1.5s_ease-in-out_infinite]'
+          }`} style={{
+            background: animatingWine.destination === 'heaven'
+              ? 'radial-gradient(circle at 50% 30%, rgba(251,191,36,0.3) 0%, transparent 60%)'
+              : 'radial-gradient(circle at 50% 70%, rgba(220,38,38,0.3) 0%, transparent 60%)',
+          }} />
+
+          <div className="text-center relative z-10">
             <div className={`text-8xl mb-8 ${
               animatingWine.destination === 'heaven'
-                ? 'animate-[floatToHeaven_2.5s_ease-in-out_forwards]'
-                : 'animate-[sinkToHell_2.5s_ease-in-out_forwards]'
+                ? 'animate-[floatToHeaven_4s_ease-in-out_forwards]'
+                : 'animate-[sinkToHell_4s_ease-in-out_forwards]'
             }`}>
               {animatingWine.wine.bottle_image ? (
                 <img
                   src={animatingWine.wine.bottle_image}
                   alt={animatingWine.wine.bottle}
-                  className="h-32 w-32 object-contain mx-auto rounded-lg"
+                  className="h-40 w-40 object-contain mx-auto rounded-lg"
                 />
               ) : (
-                <span>🍷</span>
+                <span className="text-9xl">🍷</span>
               )}
             </div>
-            <h2 className="text-4xl font-light text-white tracking-wide animate-[fadeInUp_0.8s_ease-out]">
+            <h2 className="text-5xl font-light text-white tracking-widest animate-[fadeInUp_1s_ease-out]">
               {animatingWine.destination === 'heaven' ? '😇 Wine Heaven 😇' : '😈 Wine Hell 😈'}
             </h2>
-            <p className="text-lg text-white/60 mt-3 animate-[fadeInUp_1s_ease-out]">
+            <p className="text-xl text-white/70 mt-4 animate-[fadeInUp_1.3s_ease-out] font-light italic">
               {animatingWine.wine.bottle}
             </p>
-            <div className="mt-4 w-24 h-px bg-white/40 mx-auto animate-[scaleX_1s_ease-out]" />
+            <div className="mt-6 w-32 h-px mx-auto animate-[scaleX_1.5s_ease-out]" style={{
+              background: animatingWine.destination === 'heaven'
+                ? 'linear-gradient(90deg, transparent, #fbbf24, transparent)'
+                : 'linear-gradient(90deg, transparent, #dc2626, transparent)',
+            }} />
           </div>
         </div>
       )}
