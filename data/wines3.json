@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "1770405305643",
+    "bottle": "The Chocolate Block 2017",
+    "country": "South Africa",
+    "region": "Franschhoek",
+    "vintage": 2017,
+    "drinkingWindow": "2022-2027",
+    "peakYear": 2025,
+    "foodPairingNotes": "The Chocolate Block 2017 apresenta notas de frutas escuras, especiarias e um toque de chocolate, tornando-o ideal para acompanhar pratos ricos e saborosos. Recomenda-se decantar por 30-60 minutos para permitir que os aromas se desenvolvam plenamente. Avaliado em RP 92.",
+    "mealToHaveWithThisWine": "Carne de cordeiro assada com ervas, acompanhada de purê de batata e legumes grelhados.",
+    "style": "Red",
+    "grapes": "Syrah, Grenache, Cabernet Sauvignon, Cinsault, Viognier",
+    "location": "",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "3",
+    "rating": null
+  }
+]
