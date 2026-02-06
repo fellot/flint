@@ -59,17 +59,17 @@
     "mealToHaveWithThisWine": "Pernil suíno assado com ervas",
     "style": "Tinto",
     "grapes": "Cinsault, País, Carignan",
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2026-02-06",
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Adega B - L0",
+    "location": "Wine Hell",
     "quantity": 1,
     "technical_sheet": null,
     "bottle_image": "https://www.nataliemaclean.com/images/winepicks/3308b2bb45444e9a75549a536d2c809a/original_331886-la-causa-cinsault-pa-s-carignan-2019-bottle-1646200960.jpg",
     "fromCellar": true,
-    "dataSource": "2"
+    "dataSource": "3"
   },
   {
     "id": "4",
