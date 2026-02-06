@@ -33,6 +33,7 @@ export default function WineFiltersComponent({
       style: 'all',
       vintage: 'all',
       status: 'all',
+      coravin: 'all',
       search: '',
     });
   };

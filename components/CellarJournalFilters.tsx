@@ -28,6 +28,7 @@ export default function CellarJournalFilters({ filters, onFiltersChange, wines }
       style: 'all',
       vintage: 'all',
       status: 'all',
+      coravin: 'all',
       search: '',
     });
   };
