@@ -20,6 +20,7 @@
     "consumedDate": null,
     "dataSource": "3",
     "rating": null,
-    "coravin": false
+    "coravin": false,
+    "bottle_image": "https://winealign-production.s3.amazonaws.com/wine_bottles/0034/3349/wine_114934_web.jpeg"
   }
 ]
