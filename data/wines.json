@@ -1084,10 +1084,10 @@
     "vintage": 2021,
     "drinkingWindow": "2025-2035",
     "peakYear": 2028,
-    "foodPairingNotes": "This wine likely has rich fruit flavors, balanced acidity, and moderate tannins, making it a great match for grilled meats and hearty dishes.  \"I've never before smelled a wine like this. The captivating aromas are amazing, with lavender, sage, dried potpourri, blackberries, tar, pepper and black licorice. Full-bodied with super tannins that fan out and caress the palate. It's ethereal and endless. A pure syrah from the owners of Clos Apalta, from unique mountain vineyards. Try to give this four or five years of bottle age. Best after 2028. Score - 100. (jamessuckling.com, Feb. 11, 2024)\"",
-    "mealToHaveWithThisWine": "Grilled lamb chops with rosemary, served with a side of roasted root vegetables and a red wine reduction sauce.",
+    "foodPairingNotes": "\"I've never before smelled a wine like this. The captivating aromas are amazing, with lavender, sage, dried potpourri, blackberries, tar, pepper and black licorice. Full-bodied with super tannins that fan out and caress the palate. It's ethereal and endless. A pure syrah from the owners of Clos Apalta, from unique mountain vineyards. Try to give this four or five years of bottle age. Best after 2028. Score - 100. (jamessuckling.com, Feb. 11, 2024)\"",
+    "mealToHaveWithThisWine": "Braised beef cheeks with a red wine reduction, served alongside creamy polenta and sautéed seasonal greens.",
     "style": "Red",
-    "grapes": "Carmenere, Cabernet Sauvignon, Merlot",
+    "grapes": "Syrah",
     "location": "Wine fridge A - L2",
     "quantity": 1,
     "price": null,
@@ -1097,6 +1097,7 @@
     "consumedDate": null,
     "dataSource": "1",
     "rating": null,
-    "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/0/4/7/7/047724.jpg.thumb.1280.1280.jpg"
+    "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/0/4/7/7/047724.jpg.thumb.1280.1280.jpg",
+    "technical_sheet": "https://www.closdulican.com/wp-content/uploads/2025/01/ClosduLican_FT_2021_EN.pdf"
   }
 ]
