@@ -22,5 +22,27 @@
     "rating": null,
     "coravin": false,
     "bottle_image": "https://winealign-production.s3.amazonaws.com/wine_bottles/0034/3349/wine_114934_web.jpeg"
+  },
+  {
+    "id": "1770413441298",
+    "bottle": "Tarapacá Cosecha Chardonnay 2023",
+    "country": "Chile",
+    "region": "Vale Central",
+    "vintage": 2023,
+    "drinkingWindow": "2023-2025",
+    "peakYear": 2024,
+    "foodPairingNotes": "O Tarapacá Cosecha Chardonnay 2023 apresenta notas vibrantes de frutas cítricas e tropicais, com uma acidez refrescante que o torna ideal para pratos leves e frescos. Harmoniza perfeitamente com saladas de folhas verdes com manga e camarões grelhados, ou um ceviche de peixe branco. Recomenda-se decantar por cerca de 30 minutos antes de servir para realçar suas características. Nota do crítico: RP 90.",
+    "mealToHaveWithThisWine": "Peito de frango grelhado com molho de mostarda e mel, acompanhado de purê de batata-doce e aspargos salteados.",
+    "style": "White",
+    "grapes": "Chardonnay",
+    "location": "",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "3",
+    "rating": null
   }
 ]
