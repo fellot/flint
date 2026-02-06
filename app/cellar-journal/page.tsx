@@ -256,6 +256,43 @@ export default function CellarJournal() {
     }
   };
 
+  const handleWineUpdate = async (updatedWine: Wine) => {
+    try {
+      const sanitizedWine = sanitizeWinePayload(updatedWine);
+      const response = await fetch(`/api/wines/${updatedWine.id}?dataSource=${dataSource}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...sanitizedWine, dataSource }),
+      });
+
+      if (response.ok) {
+        const savedWine: Wine = await response.json();
+        setWines(prev => prev.map(w => w.id === savedWine.id ? savedWine : w));
+      }
+    } catch (error) {
+      console.error('Error updating wine:', error);
+    }
+  };
+
+  const handleWineDelete = async (wineId: string) => {
+    const confirmMessage = isPortugueseMode
+      ? 'Tem certeza de que deseja excluir este vinho?'
+      : 'Are you sure you want to delete this wine?';
+    if (!confirm(confirmMessage)) return;
+
+    try {
+      const response = await fetch(`/api/wines/${wineId}?dataSource=${dataSource}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setWines(prev => prev.filter(w => w.id !== wineId));
+      }
+    } catch (error) {
+      console.error('Error deleting wine:', error);
+    }
+  };
+
   const handleRegionClick = (region: string) => {
     setFilters(prev => ({ 
       ...prev, 
@@ -607,8 +644,8 @@ export default function CellarJournal() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <CellarJournalWineTable
           wines={filteredWines}
-          onWineUpdate={() => {}} // Read-only in journal
-          onWineDelete={() => {}} // Read-only in journal
+          onWineUpdate={handleWineUpdate}
+          onWineDelete={handleWineDelete}
           searchTerm={filters.search}
           isPortuguese={isPortugueseMode}
         />
