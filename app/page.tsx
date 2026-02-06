@@ -349,12 +349,6 @@ export default function Home() {
     }));
   };
 
-  const toggleDataSource = () => {
-    const newDataSource = dataSource === '1' ? '2' : '1';
-    console.log('Toggling dataSource from', dataSource, 'to', newDataSource);
-    setDataSource(newDataSource);
-    setIsPortugueseMode(newDataSource === '2');
-  };
 
   const getDynamicWineLabel = () => {
     const activeFilters = [];
@@ -431,13 +425,11 @@ export default function Home() {
           filters={filters}
           stats={stats}
           totalInCellar={totalInCellarCount}
-          dataSource={dataSource}
           isPortuguese={isPortugueseMode}
           onSetFilter={setFilterValue}
           onClearFilters={resetFilters}
           onOpenAIWineModal={() => setIsAIWineModalOpen(true)}
           onOpenSommelier={() => setIsSommelierOpen(true)}
-          onToggleDataSource={toggleDataSource}
           onSelectWine={handleMobileWineSelect}
           onQuickConsume={handleQuickConsume}
         />

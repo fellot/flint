@@ -26,13 +26,11 @@ interface MobileCellarExperienceProps {
   filters: WineFilters;
   stats: CellarStats;
   totalInCellar: number;
-  dataSource: '1' | '2' | '3';
   isPortuguese: boolean;
   onSetFilter: (key: keyof WineFilters, value: string) => void;
   onClearFilters: () => void;
   onOpenAIWineModal: () => void;
   onOpenSommelier: () => void;
-  onToggleDataSource: () => void;
   onSelectWine: (wine: Wine, mode: 'view' | 'edit') => void;
   onQuickConsume: (wine: Wine) => void;
 }
@@ -172,13 +170,11 @@ export default function MobileCellarExperience({
   filters,
   stats,
   totalInCellar,
-  dataSource,
   isPortuguese,
   onSetFilter,
   onClearFilters,
   onOpenAIWineModal,
   onOpenSommelier,
-  onToggleDataSource,
   onSelectWine,
   onQuickConsume,
 }: MobileCellarExperienceProps) {
@@ -234,18 +230,6 @@ export default function MobileCellarExperience({
               <h1 className="mt-1 text-3xl font-semibold">{t.heroTitle}</h1>
               <p className="mt-3 text-sm text-red-100">{t.heroSubtitle}</p>
             </div>
-            <button
-              onClick={onToggleDataSource}
-              className="flex flex-col items-center rounded-2xl border border-white/30 px-3 py-2 text-xs text-white/80"
-            >
-              <span className={`text-2xl ${dataSource === '1' ? 'opacity-100' : 'opacity-40'}`}>
-                🇨🇦
-              </span>
-              <span className="text-[10px] my-1">⇄</span>
-              <span className={`text-2xl ${dataSource === '2' ? 'opacity-100' : 'opacity-40'}`}>
-                🇧🇷
-              </span>
-            </button>
           </div>
 
           <div className="mt-6 grid grid-cols-3 gap-3">
@@ -436,13 +420,6 @@ export default function MobileCellarExperience({
           >
             <WineIcon className="mb-1 h-4 w-4" />
             {t.actions.sommelier}
-          </button>
-          <button
-            onClick={onToggleDataSource}
-            className="flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-gray-50 py-2 text-center text-xs font-semibold uppercase tracking-wide text-gray-700"
-          >
-            <span className="text-base">{dataSource === '1' ? '🇨🇦' : '🇧🇷'}</span>
-            {t.actions.locale}
           </button>
         </div>
       </div>
