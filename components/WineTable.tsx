@@ -10,6 +10,7 @@ interface WineTableProps {
   wines: Wine[];
   onWineUpdate: (wine: Wine) => void;
   onWineDelete: (wineId: string) => void;
+  onWineAdd?: (wine: Omit<Wine, 'id'>) => void;
   searchTerm?: string;
   isPortuguese?: boolean;
 }
@@ -17,7 +18,7 @@ interface WineTableProps {
 type SortColumn = 'bottle' | 'vintage' | 'country' | 'peakYear';
 type SortDirection = 'asc' | 'desc';
 
-export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTerm = '', isPortuguese = false }: WineTableProps) {
+export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd, searchTerm = '', isPortuguese = false }: WineTableProps) {
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [consumingWine, setConsumingWine] = useState<Wine | null>(null);
   const [wineNotes, setWineNotes] = useState<string>('');
@@ -87,16 +88,35 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, searchTer
   };
 
   const handleConsumeWine = (wine: Wine) => {
-    const consumedWine = {
-      ...wine,
-      status: 'consumed' as const,
-      consumedDate: new Date().toISOString().split('T')[0],
-      location: 'N/A',
-      notes: wineNotes.trim() ? wineNotes.trim() : wine.notes,
-    };
-    onWineUpdate(consumedWine);
+    const today = new Date().toISOString().split('T')[0];
+    const notes = wineNotes.trim() ? wineNotes.trim() : wine.notes;
+
+    if (wine.quantity > 1 && onWineAdd) {
+      // Decrement quantity on the original wine (stays in cellar)
+      onWineUpdate({ ...wine, quantity: wine.quantity - 1 });
+      // Create a new consumed entry with quantity 1
+      const { id, ...rest } = wine;
+      onWineAdd({
+        ...rest,
+        quantity: 1,
+        status: 'consumed',
+        consumedDate: today,
+        location: 'N/A',
+        notes,
+      });
+    } else {
+      // Single bottle: mark the whole entry as consumed
+      onWineUpdate({
+        ...wine,
+        status: 'consumed',
+        consumedDate: today,
+        location: 'N/A',
+        notes,
+      });
+    }
+
     setConsumingWine(null);
-    setWineNotes(''); // Reset notes after consuming
+    setWineNotes('');
   };
 
   const handleImageExpand = (src: string, alt: string, location: string) => {

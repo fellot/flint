@@ -193,19 +193,52 @@ export default function Home() {
     }
   };
 
+  const handleCreateConsumedCopy = async (wineData: Omit<Wine, 'id'>) => {
+    try {
+      const sanitizedWineData = sanitizeWinePayload(wineData);
+      const response = await fetch('/api/wines', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...sanitizedWineData, dataSource }),
+      });
+
+      if (response.ok) {
+        const newWine = await response.json();
+        setWines(prev => [...prev, newWine]);
+      }
+    } catch (error) {
+      console.error('Error creating consumed copy:', error);
+    }
+  };
+
   const handleQuickConsume = (wine: Wine) => {
     const message = isPortugueseMode
       ? `Marcar ${wine.bottle} como consumido agora?`
       : `Mark ${wine.bottle} as consumed now?`;
     if (!confirm(message)) return;
 
-    const consumedWine: Wine = {
-      ...wine,
-      status: 'consumed',
-      consumedDate: new Date().toISOString().split('T')[0],
-      location: 'N/A',
-    };
-    handleWineUpdate(consumedWine);
+    const today = new Date().toISOString().split('T')[0];
+
+    if (wine.quantity > 1) {
+      // Decrement quantity on original
+      handleWineUpdate({ ...wine, quantity: wine.quantity - 1 });
+      // Create consumed copy
+      const { id, ...rest } = wine;
+      handleCreateConsumedCopy({
+        ...rest,
+        quantity: 1,
+        status: 'consumed',
+        consumedDate: today,
+        location: 'N/A',
+      });
+    } else {
+      handleWineUpdate({
+        ...wine,
+        status: 'consumed',
+        consumedDate: today,
+        location: 'N/A',
+      });
+    }
   };
 
   const handleAddWine = async (wineData: any) => {
@@ -717,6 +750,7 @@ export default function Home() {
               wines={filteredWines}
               onWineUpdate={handleWineUpdate}
               onWineDelete={handleWineDelete}
+              onWineAdd={handleCreateConsumedCopy}
               searchTerm={filters.search}
               isPortuguese={isPortugueseMode}
             />
