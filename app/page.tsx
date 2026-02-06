@@ -409,10 +409,13 @@ export default function Home() {
           <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center py-3">
-                <div className="flex items-center">
+                <div className="flex items-center space-x-4">
                   <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent tracking-tight">
                     Flint Cellar
                   </h1>
+                  <span className="text-sm text-gray-400 italic tracking-wide">
+                    {dataSource === '1' ? 'Hi Felipe' : dataSource === '2' ? 'Olá Gerson' : 'Olá Lorenzo'}
+                  </span>
                 </div>
 
                 {/* Search Box - Centered */}
