@@ -405,6 +405,26 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
             </div>
           </div>
 
+          {/* Coravin */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Coravin</label>
+            <div className="flex items-center space-x-3">
+              <button
+                type="button"
+                disabled={mode === 'view'}
+                onClick={() => setFormData(prev => ({ ...prev, coravin: !prev.coravin }))}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 ${
+                  formData.coravin ? 'bg-amber-500' : 'bg-gray-300'
+                } ${mode === 'view' ? 'opacity-60 cursor-not-allowed' : ''}`}
+              >
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  formData.coravin ? 'translate-x-6' : 'translate-x-1'
+                }`} />
+              </button>
+              <span className="text-sm text-gray-600">{formData.coravin ? 'Yes' : 'No'}</span>
+            </div>
+          </div>
+
           {/* Food Pairing */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
