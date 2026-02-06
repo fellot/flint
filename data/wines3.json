@@ -1,5 +1,5 @@
 [
-{
+  {
     "id": "1770405305643",
     "bottle": "The Chocolate Block 2017",
     "country": "South Africa",
@@ -11,17 +11,16 @@
     "mealToHaveWithThisWine": "Carne de cordeiro assada com ervas, acompanhada de purê de batata e legumes grelhados.",
     "style": "Red",
     "grapes": "Syrah, Grenache, Cabernet Sauvignon, Cinsault, Viognier",
-    "location": "A1",
+    "location": "Wine Heaven",
     "quantity": 1,
     "price": null,
     "notes": "",
     "fromCellar": true,
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2026-02-06",
     "dataSource": "3",
     "rating": null,
     "coravin": false,
     "bottle_image": "https://winealign-production.s3.amazonaws.com/wine_bottles/0034/3349/wine_114934_web.jpeg"
   }
 ]
-
