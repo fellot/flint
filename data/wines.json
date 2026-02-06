@@ -1107,5 +1107,31 @@
     "rating": null,
     "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/0/4/7/7/047724.jpg.thumb.1280.1280.jpg",
     "technical_sheet": "https://www.closdulican.com/wp-content/uploads/2025/01/ClosduLican_FT_2021_EN.pdf"
+  },
+  {
+    "id": "1770402149911",
+    "bottle": "Two Hands Bella's Garden Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "vintage": 2021,
+    "drinkingWindow": "2023–2034",
+    "peakYear": 2028,
+    "foodPairingNotes": "The 2021 Two Hands Bella's Garden Shiraz is a full-bodied Barossa Valley red, showcasing ripe blackberry and blueberry notes complemented by hints of pepper, licorice, and cocoa. This wine pairs exceptionally well with grilled lamb chops served with rosemary and garlic, as well as beef short ribs in a rich barbecue sauce. Decant for at least 30 minutes to enhance its complexity. Critic score: JS 95.",
+    "mealToHaveWithThisWine": "Grilled beef ribeye steak with a red wine reduction sauce, served with roasted garlic mashed potatoes and sautéed asparagus.",
+    "style": "Red",
+    "grapes": "Syrah",
+    "status": "consumed",
+    "consumedDate": "2026-02-06",
+    "notes": "",
+    "rating": null,
+    "price": null,
+    "location": "N/A",
+    "quantity": 1,
+    "bottle_image": "https://cache1.voyageursduvin.com/products/Two-Hands-Bellas-Garden-zoom.jpg",
+    "technical_sheet": "https://twohandswines.com/pages/bellas-garden",
+    "dataSource": "1",
+    "coravin": true,
+    "coravinDate": "2026-01-17",
+    "fromCellar": true
   }
 ]
