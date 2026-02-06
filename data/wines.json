@@ -943,7 +943,9 @@
     "quantity": 2,
     "bottle_image": "https://cache1.voyageursduvin.com/products/Two-Hands-Bellas-Garden-zoom.jpg",
     "technical_sheet": "https://twohandswines.com/pages/bellas-garden",
-    "dataSource": "1"
+    "dataSource": "1",
+    "coravin": true,
+    "coravinDate": "2026-01-17"
   },
   {
     "id": "45",
