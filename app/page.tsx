@@ -702,14 +702,6 @@ export default function Home() {
                   <WineIcon className="h-5 w-5" />
                   <span>{isPortugueseMode ? 'Quiz de Vinhos' : 'Wine Trivia'}</span>
                 </button>
-
-                <button
-                  onClick={() => window.location.href = '/december-features'}
-                  className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white font-medium rounded-lg hover:from-orange-700 hover:to-orange-800 transition-all duration-200 shadow-md hover:shadow-lg"
-                >
-                  <BarChart3 className="h-5 w-5" />
-                  <span>{isPortugueseMode ? 'Destaques de Dezembro' : 'December Features'}</span>
-                </button>
               </div>
               <p className="text-center text-sm text-gray-500 mt-3">
                 {isPortugueseMode
