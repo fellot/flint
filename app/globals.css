@@ -125,3 +125,33 @@
     transform: scaleX(1);
   }
 }
+
+@keyframes floatToHeaven {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-120px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-300px) scale(0.8);
+  }
+}
+
+@keyframes sinkToHell {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(120px) scale(1.1) rotate(5deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(300px) scale(0.8) rotate(-10deg);
+  }
+}

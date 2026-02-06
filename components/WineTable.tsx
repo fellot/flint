@@ -23,6 +23,8 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
   const [consumingWine, setConsumingWine] = useState<Wine | null>(null);
   const [wineNotes, setWineNotes] = useState<string>('');
   const [consumeQuantity, setConsumeQuantity] = useState<number>(1);
+  const [animatingWine, setAnimatingWine] = useState<{ wine: Wine; destination: 'heaven' | 'hell' } | null>(null);
+  const [animationFading, setAnimationFading] = useState(false);
   const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string; location: string } | null>(null);
   const [sortColumn, setSortColumn] = useState<SortColumn>('bottle');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -88,13 +90,13 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
       <ChevronDown className="h-4 w-4 text-red-600" />;
   };
 
-  const handleConsumeWine = (wine: Wine) => {
+  const handleConsumeWine = (wine: Wine, destination: 'heaven' | 'hell') => {
     const today = new Date().toISOString().split('T')[0];
     const notes = wineNotes.trim() ? wineNotes.trim() : wine.notes;
     const qty = Math.min(consumeQuantity, wine.quantity);
+    const location = destination === 'heaven' ? 'Wine Heaven' : 'Wine Hell';
 
     if (qty < wine.quantity && onWineAdd) {
-      // Partial consume: decrement original, create consumed copy
       onWineUpdate({ ...wine, quantity: wine.quantity - qty });
       const { id, ...rest } = wine;
       onWineAdd({
@@ -102,24 +104,30 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
         quantity: qty,
         status: 'consumed',
         consumedDate: today,
-        location: 'N/A',
+        location,
         notes,
       });
     } else {
-      // Consuming all bottles: mark the whole entry as consumed
       onWineUpdate({
         ...wine,
         quantity: qty,
         status: 'consumed',
         consumedDate: today,
-        location: 'N/A',
+        location,
         notes,
       });
     }
 
+    // Show animation
+    setAnimatingWine({ wine, destination });
+    setAnimationFading(false);
     setConsumingWine(null);
     setWineNotes('');
     setConsumeQuantity(1);
+
+    // Auto-dismiss animation
+    setTimeout(() => setAnimationFading(true), 2000);
+    setTimeout(() => setAnimatingWine(null), 2800);
   };
 
   const handleImageExpand = (src: string, alt: string, location: string) => {
@@ -529,25 +537,72 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                 </p>
               </div>
 
-              <div className="flex space-x-3">
+              <p className="text-xs text-gray-500 text-center mb-3">
+                {isPortuguese ? 'Para onde vai este vinho?' : 'Where does this wine go?'}
+              </p>
+              <div className="flex space-x-3 mb-3">
                 <button
-                  onClick={() => handleConsumeWine(consumingWine)}
-                  className="btn-primary flex-1"
+                  onClick={() => handleConsumeWine(consumingWine, 'heaven')}
+                  className="flex-1 py-3 px-4 rounded-lg font-medium text-white bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-500 hover:to-yellow-600 transition-all shadow-md hover:shadow-lg flex items-center justify-center space-x-2"
                 >
-                  Mark as Consumed
+                  <span className="text-lg">😇</span>
+                  <span>Wine Heaven</span>
                 </button>
                 <button
-                  onClick={() => {
-                    setConsumingWine(null);
-                    setWineNotes('');
-                    setConsumeQuantity(1);
-                  }}
-                  className="btn-secondary flex-1"
+                  onClick={() => handleConsumeWine(consumingWine, 'hell')}
+                  className="flex-1 py-3 px-4 rounded-lg font-medium text-white bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 transition-all shadow-md hover:shadow-lg flex items-center justify-center space-x-2"
                 >
-                  Cancel
+                  <span className="text-lg">😈</span>
+                  <span>Wine Hell</span>
                 </button>
               </div>
+              <button
+                onClick={() => {
+                  setConsumingWine(null);
+                  setWineNotes('');
+                  setConsumeQuantity(1);
+                }}
+                className="btn-secondary w-full"
+              >
+                Cancel
+              </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Wine Heaven/Hell Animation */}
+      {animatingWine && (
+        <div className={`fixed inset-0 z-[60] flex items-center justify-center transition-opacity duration-700 ${animationFading ? 'opacity-0' : 'opacity-100'}`}
+          style={{
+            background: animatingWine.destination === 'heaven'
+              ? 'radial-gradient(ellipse at center, #fbbf24 0%, #b45309 40%, #1a1a2e 100%)'
+              : 'radial-gradient(ellipse at center, #dc2626 0%, #7f1d1d 40%, #1a1a2e 100%)',
+          }}
+        >
+          <div className="text-center">
+            <div className={`text-8xl mb-8 ${
+              animatingWine.destination === 'heaven'
+                ? 'animate-[floatToHeaven_2.5s_ease-in-out_forwards]'
+                : 'animate-[sinkToHell_2.5s_ease-in-out_forwards]'
+            }`}>
+              {animatingWine.wine.bottle_image ? (
+                <img
+                  src={animatingWine.wine.bottle_image}
+                  alt={animatingWine.wine.bottle}
+                  className="h-32 w-32 object-contain mx-auto rounded-lg"
+                />
+              ) : (
+                <span>🍷</span>
+              )}
+            </div>
+            <h2 className="text-4xl font-light text-white tracking-wide animate-[fadeInUp_0.8s_ease-out]">
+              {animatingWine.destination === 'heaven' ? '😇 Wine Heaven 😇' : '😈 Wine Hell 😈'}
+            </h2>
+            <p className="text-lg text-white/60 mt-3 animate-[fadeInUp_1s_ease-out]">
+              {animatingWine.wine.bottle}
+            </p>
+            <div className="mt-4 w-24 h-px bg-white/40 mx-auto animate-[scaleX_1s_ease-out]" />
           </div>
         </div>
       )}
