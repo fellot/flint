@@ -22,29 +22,5 @@
     "rating": null,
     "coravin": false,
     "bottle_image": "https://winealign-production.s3.amazonaws.com/wine_bottles/0034/3349/wine_114934_web.jpeg"
-  },
-  {
-    "id": "2",
-    "bottle": "Orby Cabernet Sauvignon–Merlot",
-    "country": "França",
-    "region": "Bordeaux-style blend",
-    "vintage": 2021,
-    "drinkingWindow": "2023–2028",
-    "peakYear": "2025",
-    "foodPairingNotes": "Fruta negra e toque de carvalho harmonizam com grelhados, hambúrguer e queijos curados.",
-    "mealToHaveWithThisWine": "Bife ancho grelhado com batatas rústicas",
-    "style": "Tinto",
-    "grapes": "Cabernet Sauvignon, Merlot",
-    "status": "in_cellar",
-    "consumedDate": null,
-    "notes": "",
-    "rating": null,
-    "price": null,
-    "location": "Wine Heaven",
-    "quantity": 1,
-    "technical_sheet": null,
-    "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSApT4ATtJAE6DACoiryY0xtQZyamKnj1zNlQ&s",
-    "fromCellar": true,
-    "dataSource": "3"
   }
 ]
