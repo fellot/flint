@@ -744,7 +744,10 @@
     "location": "Wine fridge A - L2",
     "quantity": 1,
     "bottle_image": "https://www.reservebar.com/_next/image?url=https%3A%2F%2Fassets.liquidcommerce.co%2Fcatalog%2Fpartner%2Fimg%2F31c2485f-1201-4317-a83a-9dd35ce3edab.jpg&w=256&q=75",
-    "technical_sheet": "https://assets.jlohr.com/v3/general_files/18-Cuvee-POM.pdf"
+    "technical_sheet": "https://assets.jlohr.com/v3/general_files/18-Cuvee-POM.pdf",
+    "coravin": true,
+    "coravinDate": "2026-01-21",
+    "dataSource": "1"
   },
   {
     "id": "36",
