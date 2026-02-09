@@ -254,8 +254,8 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                     {getSortIcon('peakYear')}
                   </div>
                 </th>
-                <th 
-                  className="table-header cursor-pointer hover:bg-gray-100 select-none"
+                <th
+                  className="table-header cursor-pointer hover:bg-gray-100 select-none max-w-[100px]"
                   onClick={() => handleSort('country')}
                 >
                   <div className="flex items-center justify-between">
@@ -265,7 +265,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                 </th>
                 <th className="table-header">{isPortuguese ? 'Estilo' : 'Style'}</th>
                 <th className="table-header">{isPortuguese ? 'Harmonização' : 'Food Pairing'}</th>
-                <th className="table-header">{isPortuguese ? 'Prato Sugerido' : 'Suggested Meal'}</th>
+                <th className="table-header min-w-[200px]">{isPortuguese ? 'Prato Sugerido' : 'Suggested Meal'}</th>
                 <th className="table-header">{isPortuguese ? 'Ações' : 'Actions'}</th>
               </tr>
             </thead>
@@ -350,9 +350,9 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                   <td className="table-cell">
                     <div className="text-xs text-gray-900">{wine.peakYear}</div>
                   </td>
-                  <td className="table-cell">
-                    <div className="text-xs text-gray-900">
-                      {highlightSearchTerm(wine.country, searchTerm).map((part, index) => 
+                  <td className="table-cell max-w-[100px]">
+                    <div className="text-xs text-gray-900 truncate">
+                      {highlightSearchTerm(wine.country, searchTerm).map((part, index) =>
                         typeof part === 'string' ? part : (
                           part.highlighted ? (
                             <span key={index} className="bg-yellow-200 font-semibold">
@@ -364,8 +364,8 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                         )
                       )}
                     </div>
-                    <div className="text-xs text-gray-500">
-                      {highlightSearchTerm(wine.region, searchTerm).map((part, index) => 
+                    <div className="text-xs text-gray-500 truncate">
+                      {highlightSearchTerm(wine.region, searchTerm).map((part, index) =>
                         typeof part === 'string' ? part : (
                           part.highlighted ? (
                             <span key={index} className="bg-yellow-200 font-semibold">
@@ -412,10 +412,10 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                       </div>
                     </div>
                   </td>
-                  <td className="table-cell">
-                    <div className="max-w-32">
+                  <td className="table-cell min-w-[200px]">
+                    <div>
                       <div className="text-xs text-gray-900 whitespace-pre-wrap leading-tight">
-                        {highlightSearchTerm(wine.mealToHaveWithThisWine, searchTerm).map((part, index) => 
+                        {highlightSearchTerm(wine.mealToHaveWithThisWine, searchTerm).map((part, index) =>
                           typeof part === 'string' ? part : (
                             part.highlighted ? (
                               <span key={index} className="bg-yellow-200 font-semibold">
