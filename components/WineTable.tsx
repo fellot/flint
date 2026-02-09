@@ -223,11 +223,11 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
     <>
       <div className="card">
         <div className="overflow-x-auto relative">
-          <table className="w-full divide-y divide-gray-200 text-xs">
+          <table className="w-full divide-y divide-gray-200 text-xs table-fixed">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
-                <th 
-                  className="table-header cursor-pointer hover:bg-gray-100 select-none"
+                <th
+                  className="table-header cursor-pointer hover:bg-gray-100 select-none w-[180px] min-w-[140px]"
                   onClick={() => handleSort('bottle')}
                 >
                   <div className="flex items-center justify-between">
@@ -235,8 +235,8 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                     {getSortIcon('bottle')}
                   </div>
                 </th>
-                <th 
-                  className="table-header cursor-pointer hover:bg-gray-100 select-none"
+                <th
+                  className="table-header cursor-pointer hover:bg-gray-100 select-none w-[55px]"
                   onClick={() => handleSort('vintage')}
                 >
                   <div className="flex items-center justify-between">
@@ -244,9 +244,9 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                     {getSortIcon('vintage')}
                   </div>
                 </th>
-                <th className="table-header">{isPortuguese ? 'Janela de Consumo' : 'Drinking Window'}</th>
-                <th 
-                  className="table-header cursor-pointer hover:bg-gray-100 select-none"
+                <th className="table-header w-[80px]">{isPortuguese ? 'Janela de Consumo' : 'Drinking Window'}</th>
+                <th
+                  className="table-header cursor-pointer hover:bg-gray-100 select-none w-[50px]"
                   onClick={() => handleSort('peakYear')}
                 >
                   <div className="flex items-center justify-between">
@@ -254,8 +254,8 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                     {getSortIcon('peakYear')}
                   </div>
                 </th>
-                <th 
-                  className="table-header cursor-pointer hover:bg-gray-100 select-none"
+                <th
+                  className="table-header cursor-pointer hover:bg-gray-100 select-none w-[120px]"
                   onClick={() => handleSort('country')}
                 >
                   <div className="flex items-center justify-between">
@@ -263,10 +263,10 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                     {getSortIcon('country')}
                   </div>
                 </th>
-                <th className="table-header">{isPortuguese ? 'Estilo' : 'Style'}</th>
-                <th className="table-header">{isPortuguese ? 'Harmonização' : 'Food Pairing'}</th>
-                <th className="table-header">{isPortuguese ? 'Prato Sugerido' : 'Suggested Meal'}</th>
-                <th className="table-header">{isPortuguese ? 'Ações' : 'Actions'}</th>
+                <th className="table-header w-[75px]">{isPortuguese ? 'Estilo' : 'Style'}</th>
+                <th className="table-header max-w-[280px]">{isPortuguese ? 'Harmonização' : 'Food Pairing'}</th>
+                <th className="table-header w-[180px]">{isPortuguese ? 'Prato Sugerido' : 'Suggested Meal'}</th>
+                <th className="table-header w-[60px]">{isPortuguese ? 'Ações' : 'Actions'}</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -277,7 +277,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                   onClick={(e) => wine.technical_sheet && handleWineClick(wine, e)}
                   title={wine.technical_sheet ? `Click to open technical sheet` : undefined}
                 >
-                  <td className="table-cell wine-column">
+                  <td className="table-cell w-[180px] min-w-[140px]">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
                         {wine.bottle_image ? (
@@ -341,18 +341,18 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                       </div>
                     </div>
                   </td>
-                  <td className="table-cell">
+                  <td className="table-cell w-[55px]">
                     <div className="text-xs text-gray-900 font-medium">{wine.vintage}</div>
                   </td>
-                  <td className="table-cell">
+                  <td className="table-cell w-[80px]">
                     <div className="text-xs text-gray-900">{wine.drinkingWindow}</div>
                   </td>
-                  <td className="table-cell">
+                  <td className="table-cell w-[50px]">
                     <div className="text-xs text-gray-900">{wine.peakYear}</div>
                   </td>
-                  <td className="table-cell">
-                    <div className="text-xs text-gray-900">
-                      {highlightSearchTerm(wine.country, searchTerm).map((part, index) => 
+                  <td className="table-cell w-[120px]">
+                    <div className="text-xs text-gray-900 break-words">
+                      {highlightSearchTerm(wine.country, searchTerm).map((part, index) =>
                         typeof part === 'string' ? part : (
                           part.highlighted ? (
                             <span key={index} className="bg-yellow-200 font-semibold">
@@ -364,8 +364,8 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                         )
                       )}
                     </div>
-                    <div className="text-xs text-gray-500">
-                      {highlightSearchTerm(wine.region, searchTerm).map((part, index) => 
+                    <div className="text-xs text-gray-500 break-words">
+                      {highlightSearchTerm(wine.region, searchTerm).map((part, index) =>
                         typeof part === 'string' ? part : (
                           part.highlighted ? (
                             <span key={index} className="bg-yellow-200 font-semibold">
@@ -378,7 +378,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                       )}
                     </div>
                   </td>
-                  <td className="table-cell">
+                  <td className="table-cell w-[75px]">
                     <div className="flex flex-wrap gap-1">
                       <span className={getStyleBadgeClasses(wine.style)}>
                         {wine.style}
@@ -395,10 +395,10 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                       )}
                     </div>
                   </td>
-                  <td className="table-cell">
-                    <div className="max-w-full">
-                      <div className="text-xs text-gray-900 whitespace-pre-wrap leading-tight">
-                        {highlightSearchTerm(wine.foodPairingNotes, searchTerm).map((part, index) => 
+                  <td className="table-cell max-w-[280px]">
+                    <div>
+                      <div className="text-xs text-gray-900 whitespace-pre-wrap leading-tight break-words">
+                        {highlightSearchTerm(wine.foodPairingNotes, searchTerm).map((part, index) =>
                           typeof part === 'string' ? part : (
                             part.highlighted ? (
                               <span key={index} className="bg-yellow-200 font-semibold">
@@ -412,10 +412,10 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                       </div>
                     </div>
                   </td>
-                  <td className="table-cell">
-                    <div className="max-w-32">
-                      <div className="text-xs text-gray-900 whitespace-pre-wrap leading-tight">
-                        {highlightSearchTerm(wine.mealToHaveWithThisWine, searchTerm).map((part, index) => 
+                  <td className="table-cell w-[180px]">
+                    <div>
+                      <div className="text-xs text-gray-900 whitespace-pre-wrap leading-tight break-words">
+                        {highlightSearchTerm(wine.mealToHaveWithThisWine, searchTerm).map((part, index) =>
                           typeof part === 'string' ? part : (
                             part.highlighted ? (
                               <span key={index} className="bg-yellow-200 font-semibold">
@@ -430,7 +430,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                     </div>
                   </td>
 
-                  <td className="table-cell">
+                  <td className="table-cell w-[60px]">
                     <div className="flex items-center space-x-1 action-buttons">
                       <button
                         onClick={() => setEditingWine(wine)}
