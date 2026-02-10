@@ -54,6 +54,12 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
         return;
       }
 
+      // Handle follow-up answer flow
+      if (out?.type === 'answer' && out?.answer) {
+        setMessages(prev => [...prev, { role: 'assistant', content: String(out.answer) }]);
+        return;
+      }
+
       // Enhance with location and alternate names on the client
       const picked = wineList.find(w => String(w.id) === String(out.wineId));
       const location = picked?.location ? String(picked.location) : undefined;
