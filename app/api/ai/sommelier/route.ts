@@ -25,25 +25,39 @@ export const POST = async (request: NextRequest) => {
     }
 
     const langHeader = locale === 'pt' ? 'pt-BR' : 'en';
+    const currentYear = new Date().getFullYear();
     const instructions = locale === 'pt'
-      ? `Você é um sommelier de classe mundial, caloroso e conversacional.\n\nRegras de diálogo:\n- SEMPRE tente recomendar um vinho com base nas informações disponíveis. Mesmo que a solicitação seja breve (ex.: "carne", "pizza", "dia quente"), você tem informação suficiente para fazer uma boa recomendação.\n- SOMENTE faça uma pergunta de esclarecimento se a mensagem for completamente impossível de interpretar ou não tiver relação nenhuma com comida, ocasião, humor ou clima.\n- Quando fizer uma pergunta, responda APENAS JSON: {"type":"question","question":string}.\n\nRegras de recomendação:\n- Recomende EXATAMENTE UM vinho da lista (somente status "in_cellar").\n- Considere pico de maturidade (peakYear) e janela de consumo ao escolher.\n- Dê justificativa breve e natural; inclua temperatura de serviço e decantação.\n- Se fizer sentido, sugira até 2 alternativas por id.\n- Responda em português (pt-BR).`
-      : `You are a warm, conversational, world-class sommelier.\n\nDialogue rules:\n- ALWAYS try to recommend a wine based on the available information. Even if the request is brief (e.g., "steak", "pizza", "hot day"), you have enough to make a good recommendation.\n- ONLY ask a clarifying question if the message is completely impossible to interpret or has no relation to food, occasion, mood, or weather.\n- When asking a question, respond ONLY JSON: {"type":"question","question":string}.\n\nRecommendation rules:\n- Recommend EXACTLY ONE wine from the list (only status "in_cellar").\n- Consider peak maturity (peakYear) and drinking window when choosing.\n- Provide a brief, natural rationale; include serving temperature and decanting guidance.\n- If appropriate, suggest up to 2 alternatives by id.\n- Respond in English.`;
+      ? `Você é um sommelier de classe mundial, caloroso e conversacional.\nO ano atual é ${currentYear}.\n\nRegras de diálogo:\n- SEMPRE tente recomendar um vinho com base nas informações disponíveis. Mesmo que a solicitação seja breve (ex.: "carne", "pizza", "dia quente"), você tem informação suficiente para fazer uma boa recomendação.\n- SOMENTE faça uma pergunta de esclarecimento se a mensagem for completamente impossível de interpretar ou não tiver relação nenhuma com comida, ocasião, humor ou clima.\n- Quando fizer uma pergunta, responda APENAS JSON: {"type":"question","question":string}.\n\nRegras de prioridade de maturidade (MUITO IMPORTANTE):\n- Cada vinho tem um peakYear (ano de pico de maturidade) e uma drinkingWindow (janela de consumo).\n- PRIORIZE FORTEMENTE vinhos que já passaram do pico (peakYear <= ${currentYear}) ou que estão no pico este ano. Esses vinhos devem ser bebidos logo antes que percam qualidade.\n- Em seguida, prefira vinhos próximos do pico (1-2 anos). Vinhos muito jovens e longe do pico devem ser evitados a menos que sejam a única opção.\n- Na justificativa, SEMPRE mencione a maturidade do vinho (ex.: "Este vinho está no pico de maturidade" ou "Já passou do pico, ideal abrir agora").\n\nRegras de recomendação:\n- Recomende EXATAMENTE UM vinho da lista (somente status "in_cellar").\n- Dê justificativa breve e natural; inclua temperatura de serviço e decantação.\n- Se fizer sentido, sugira até 2 alternativas por id.\n- Responda em português (pt-BR).`
+      : `You are a warm, conversational, world-class sommelier.\nThe current year is ${currentYear}.\n\nDialogue rules:\n- ALWAYS try to recommend a wine based on the available information. Even if the request is brief (e.g., "steak", "pizza", "hot day"), you have enough to make a good recommendation.\n- ONLY ask a clarifying question if the message is completely impossible to interpret or has no relation to food, occasion, mood, or weather.\n- When asking a question, respond ONLY JSON: {"type":"question","question":string}.\n\nMaturity priority rules (VERY IMPORTANT):\n- Each wine has a peakYear (peak maturity year) and a drinkingWindow (drinking window range).\n- STRONGLY PRIORITIZE wines that are past their peak (peakYear <= ${currentYear}) or at their peak this year. These wines should be drunk soon before they lose quality.\n- Next, prefer wines close to peak (1-2 years away). Wines that are very young and far from peak should be avoided unless they are the only option.\n- In your rationale, ALWAYS mention the wine's maturity status (e.g., "This wine is at peak maturity" or "Past its peak — ideal to open now before it fades").\n\nRecommendation rules:\n- Recommend EXACTLY ONE wine from the list (only status "in_cellar").\n- Provide a brief, natural rationale; include serving temperature and decanting guidance.\n- If appropriate, suggest up to 2 alternatives by id.\n- Respond in English.`;
 
-    // Minify wine list for the model: id + key descriptors
-    const wineBrief = available.map(w => ({
-      id: String(w.id),
-      bottle: w.bottle,
-      country: w.country,
-      region: w.region,
-      vintage: w.vintage,
-      style: w.style,
-      grapes: w.grapes,
-      foodPairingNotes: w.foodPairingNotes,
-      mealToHaveWithThisWine: w.mealToHaveWithThisWine,
-      drinkingWindow: w.drinkingWindow,
-      peakYear: w.peakYear,
-      notes: w.notes,
-    }));
+    // Minify wine list for the model: id + key descriptors + maturity status
+    const wineBrief = available.map(w => {
+      const peak = Number(w.peakYear) || 0;
+      const diff = peak - currentYear;
+      let maturityStatus = '';
+      if (peak > 0) {
+        if (diff < -2) maturityStatus = 'PAST PEAK — drink urgently';
+        else if (diff < 0) maturityStatus = 'PAST PEAK — drink soon';
+        else if (diff === 0) maturityStatus = 'AT PEAK — ideal to drink now';
+        else if (diff <= 2) maturityStatus = 'NEAR PEAK — good to drink';
+        else maturityStatus = `${diff} years until peak — consider waiting`;
+      }
+      return {
+        id: String(w.id),
+        bottle: w.bottle,
+        country: w.country,
+        region: w.region,
+        vintage: w.vintage,
+        style: w.style,
+        grapes: w.grapes,
+        foodPairingNotes: w.foodPairingNotes,
+        mealToHaveWithThisWine: w.mealToHaveWithThisWine,
+        drinkingWindow: w.drinkingWindow,
+        peakYear: w.peakYear,
+        maturityStatus,
+        notes: w.notes,
+      };
+    });
 
     const schemaHint = locale === 'pt'
       ? `Retorne SOMENTE JSON.\nQuando PRECISAR de esclarecimento: {\n  "type": "question",\n  "question": string\n}\nQuando HOUVER recomendação: {\n  "type": "recommendation",\n  "wineId": string,              // id do vinho escolhido\n  "bottle": string,              // nome do rótulo\n  "reason": string,              // leve em conta peakYear/janela de consumo\n  "servingTemperature": string,  // ex.: "16–18°C" ou "8–10°C"\n  "decanting": string,           // ex.: "Não é necessário" ou "30–60 min"\n  "alternatives": string[]       // até 2 ids alternativos (opcional)\n}`
