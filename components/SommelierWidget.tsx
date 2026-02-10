@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Wine } from '@/types/wine';
 import { X, Send, Loader2, Wine as WineIcon } from 'lucide-react';
 
@@ -18,6 +18,13 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
   const [input, setInput] = useState('');
   const [pending, setPending] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([{ role: 'assistant', content: isPT ? 'Diga o que vai comer, seu humor, ocasião ou clima e eu sugerirei a garrafa perfeita da sua adega.' : 'Tell me what you are eating, your mood, occasion or weather, and I will suggest the perfect bottle from your cellar.' }]);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [isOpen]);
 
   // Only pass data needed by the model; API will also re-filter by status
   const wineList = useMemo(() => wines, [wines]);
@@ -103,6 +110,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
         </div>
         <div className="p-3 border-t flex items-center space-x-2">
           <input
+            ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
