@@ -86,7 +86,7 @@ Return ONLY strict JSON matching this schema (no commentary):
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-nano',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           {
