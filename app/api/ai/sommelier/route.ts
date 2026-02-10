@@ -56,7 +56,7 @@ export const POST = async (request: NextRequest) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-nano-2025-08-07',
+        model: 'gpt-5-nano',
         messages: [
           { role: 'system', content: instructions },
           { role: 'system', content: `Wine list (JSON):\n${JSON.stringify(wineBrief)}` },
