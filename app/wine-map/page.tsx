@@ -11,18 +11,22 @@ const WineMapView = dynamic(() => import('@/components/WineMapView'), { ssr: fal
 export default function WineMapPage() {
   const [wines, setWines] = useState<Wine[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isPortugueseMode, setIsPortugueseMode] = useState(() => {
+  const [dataSource, setDataSource] = useState('1');
+  const [isPortugueseMode, setIsPortugueseMode] = useState(false);
+
+  useEffect(() => {
     if (typeof document !== 'undefined') {
       const match = document.cookie.match(/(?:^|;\s*)data_source=([123])/);
-      return match?.[1] === '2' || match?.[1] === '3';
+      const source = match?.[1] || '1';
+      setDataSource(source);
+      setIsPortugueseMode(source === '2' || source === '3');
     }
-    return false;
-  });
+  }, []);
 
   useEffect(() => {
     const fetchWines = async () => {
       try {
-        const res = await fetch('/api/wines');
+        const res = await fetch(`/api/wines?dataSource=${dataSource}`);
         if (res.ok) {
           const data = await res.json();
           setWines(data);
@@ -34,7 +38,7 @@ export default function WineMapPage() {
       }
     };
     fetchWines();
-  }, []);
+  }, [dataSource]);
 
   const cellarWines = useMemo(() => wines.filter(w => w.status === 'in_cellar'), [wines]);
 
