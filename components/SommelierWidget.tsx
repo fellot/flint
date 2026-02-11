@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Wine } from '@/types/wine';
 import { X, Send, Loader2, Wine as WineIcon } from 'lucide-react';
 
-type Msg = { role: 'user' | 'assistant'; content: string };
+type Msg = { role: 'user' | 'assistant'; content: string; wineImage?: string; wineName?: string };
 
 interface SommelierWidgetProps {
   isOpen: boolean;
@@ -19,6 +19,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
   const [pending, setPending] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([{ role: 'assistant', content: isPT ? 'Diga o que vai comer, seu humor, ocasião ou clima e eu sugerirei a garrafa perfeita da sua adega.' : 'Tell me what you are eating, your mood, occasion or weather, and I will suggest the perfect bottle from your cellar.' }]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string } | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -76,8 +77,13 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
 
       const reply = isPT
         ? `Eu escolheria: ${out.bottle}${regionYear ? ` (${regionYear})` : ''}.\n\nPor quê: ${out.reason}\n\nPara aproveitar melhor, sirva a ${out.servingTemperature} · Decantação: ${out.decanting}.${locationLine}${altNames.length ? `\n\nAlternativas: ${altNames.join(', ')}` : ''}`
-        : `I’d go with: ${out.bottle}${regionYear ? ` (${regionYear})` : ''}.\n\nWhy: ${out.reason}\n\nFor best enjoyment, serve at ${out.servingTemperature} · Decanting: ${out.decanting}.${locationLine}${altNames.length ? `\n\nAlternatives: ${altNames.join(', ')}` : ''}`;
-      setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
+        : `I'd go with: ${out.bottle}${regionYear ? ` (${regionYear})` : ''}.\n\nWhy: ${out.reason}\n\nFor best enjoyment, serve at ${out.servingTemperature} · Decanting: ${out.decanting}.${locationLine}${altNames.length ? `\n\nAlternatives: ${altNames.join(', ')}` : ''}`;
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: reply,
+        wineName: out.bottle,
+        wineImage: picked?.bottle_image || undefined,
+      }]);
     } catch (e) {
       setMessages(prev => [...prev, { role: 'assistant', content: isPT ? 'Desculpe, algo deu errado.' : 'Sorry, something went wrong.' }]);
     } finally {
@@ -131,7 +137,25 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
                     : 'bg-white text-gray-800 rounded-2xl rounded-bl-md px-4 py-2.5 shadow-sm border border-gray-100'
                 }`}
               >
-                {m.content}
+                {m.wineName && m.wineImage ? (
+                  <>
+                    {m.content.split(m.wineName).map((part, j, arr) => (
+                      <span key={j}>
+                        {part}
+                        {j < arr.length - 1 && (
+                          <button
+                            onClick={() => setExpandedImage({ src: m.wineImage!, alt: m.wineName! })}
+                            className="font-semibold underline decoration-[#722F37]/40 underline-offset-2 hover:decoration-[#722F37] transition-colors cursor-pointer"
+                          >
+                            {m.wineName}
+                          </button>
+                        )}
+                      </span>
+                    ))}
+                  </>
+                ) : (
+                  m.content
+                )}
               </div>
             </div>
           ))}
@@ -176,6 +200,39 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
           </div>
         </div>
       </div>
+      {/* Bottle Image Modal */}
+      {expandedImage && (
+        <div
+          className="fixed inset-0 bg-black/70 z-[60] flex items-center justify-center p-4"
+          onClick={() => setExpandedImage(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden animate-[slideUp_0.2s_ease-out]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+              <h4 className="text-sm font-semibold text-gray-900 truncate pr-2">{expandedImage.alt}</h4>
+              <button
+                onClick={() => setExpandedImage(null)}
+                className="h-7 w-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors flex-shrink-0"
+              >
+                <X className="h-4 w-4 text-gray-500" />
+              </button>
+            </div>
+            <div className="p-4 flex items-center justify-center bg-gray-50">
+              <img
+                src={expandedImage.src}
+                alt={expandedImage.alt}
+                className="max-h-[50vh] w-auto object-contain rounded-lg"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
