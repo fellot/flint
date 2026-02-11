@@ -102,7 +102,7 @@ export default function WineMapView({ wines, isPT }: WineMapViewProps) {
       <MapContainer
         center={[30, 10]}
         zoom={2}
-        style={{ width: '100%', height: '100%', minHeight: '400px', zIndex: 0 }}
+        style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 0 }}
         scrollWheelZoom={true}
       >
         <TileLayer
