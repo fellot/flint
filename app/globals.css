@@ -2,27 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import 'leaflet/dist/leaflet.css';
-
-/* Leaflet overrides — Tailwind preflight breaks tile rendering */
-.leaflet-container {
-  width: 100%;
-  height: 100%;
-}
-.leaflet-tile-pane img,
-.leaflet-container img {
-  max-width: none !important;
-  max-height: none !important;
-}
-.leaflet-control-zoom a {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-}
-.leaflet-popup-content p {
-  margin: 0;
-}
-
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
