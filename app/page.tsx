@@ -769,6 +769,14 @@ export default function Home() {
                 </button>
 
                 <button
+                  onClick={() => window.location.href = '/wine-map'}
+                  className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg"
+                >
+                  <MapPin className="h-5 w-5" />
+                  <span>{isPortugueseMode ? 'Mapa de Vinhos' : 'Wine Map'}</span>
+                </button>
+
+                <button
                   onClick={() => window.location.href = `/wine-trivia?language=${isPortugueseMode ? 'pt' : 'en'}`}
                   className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md hover:shadow-lg"
                 >
