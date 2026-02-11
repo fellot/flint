@@ -112,7 +112,7 @@ export default function WineMapPage() {
       </div>
 
       {/* Map */}
-      <div className="flex-1 relative" style={{ height: 'calc(100vh - 200px)', minHeight: '400px' }}>
+      <div className="flex-1 relative w-full">
         <WineMapView wines={cellarWines} isPT={isPT} />
       </div>
 
