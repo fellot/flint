@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState, useCallback, useRef } from 'react';
-import Map, { Marker, Popup, NavigationControl } from 'react-map-gl';
+import Map, { Marker, Popup, NavigationControl } from 'react-map-gl/mapbox';
 import { Wine } from '@/types/wine';
 import { getCoordinates, normalizeCountry } from '@/utils/regionCoordinates';
 import { X } from 'lucide-react';
