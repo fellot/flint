@@ -65,8 +65,6 @@ export default function WineMapPage() {
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
-      {/* Leaflet CSS */}
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
       {/* Header */}
       <header className="bg-gradient-to-r from-[#722F37] to-[#4a1c22] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
