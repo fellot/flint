@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { Wine } from '@/types/wine';
 import { normalizeCountry } from '@/utils/regionCoordinates';
-import { Wine as WineIcon, MapPin, Calendar, Globe, Grape } from 'lucide-react';
+import { Wine as WineIcon, MapPin, Calendar, Globe } from 'lucide-react';
 
 const WineMapView = dynamic(() => import('@/components/WineMapView'), { ssr: false });
 
@@ -65,6 +65,8 @@ export default function WineMapPage() {
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
+      {/* Leaflet CSS */}
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
       {/* Header */}
       <header className="bg-gradient-to-r from-[#722F37] to-[#4a1c22] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -112,7 +114,7 @@ export default function WineMapPage() {
       </div>
 
       {/* Map */}
-      <div className="flex-1 relative" style={{ minHeight: 'calc(100vh - 200px)' }}>
+      <div className="flex-1 relative" style={{ height: 'calc(100vh - 200px)', minHeight: '400px' }}>
         <WineMapView wines={cellarWines} isPT={isPT} />
       </div>
 

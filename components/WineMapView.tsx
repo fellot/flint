@@ -6,7 +6,6 @@ import L from 'leaflet';
 import { Wine } from '@/types/wine';
 import { getCoordinates, normalizeCountry } from '@/utils/regionCoordinates';
 import { X } from 'lucide-react';
-import 'leaflet/dist/leaflet.css';
 
 // Fix default marker icon issue with webpack/next.js
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -86,9 +85,8 @@ export default function WineMapView({ wines, isPT }: WineMapViewProps) {
       <MapContainer
         center={[30, 10]}
         zoom={3}
-        className="h-full w-full"
         scrollWheelZoom={true}
-        style={{ background: '#1a1a2e' }}
+        style={{ height: '100%', width: '100%', background: '#1a1a2e' }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
