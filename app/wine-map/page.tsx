@@ -68,48 +68,63 @@ export default function WineMapPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="bg-gradient-to-r from-[#722F37] to-[#4a1c22] border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <header className="bg-white shadow-sm border-b border-gray-200 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center ring-2 ring-white/20">
-                <Globe className="h-5 w-5 text-white" />
+            <div className="flex items-center space-x-4">
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent tracking-tight cursor-pointer" onClick={() => window.location.href = '/'}>
+                Flint Cellar
+              </h1>
+              <div className="h-8 w-px bg-gray-200 hidden md:block"></div>
+              <div className="flex items-center space-x-2">
+                <div className="h-8 w-8 rounded-full bg-red-50 flex items-center justify-center">
+                  <Globe className="h-5 w-5 text-red-600" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-semibold text-gray-900">
+                    {isPT ? 'Mapa de Vinhos' : 'Wine Map'}
+                  </h2>
+                  <p className="text-xs text-gray-500 hidden sm:block">
+                    {isPT ? 'Explore sua adega' : 'Explore your cellar'}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-lg font-bold text-white tracking-wide">
-                  {isPT ? 'Mapa de Vinhos' : 'Wine Map'}
-                </h1>
-                <p className="text-xs text-white/60">
-                  {isPT ? 'Explore sua adega pelo mundo' : 'Explore your cellar around the world'}
-                </p>
-              </div>
+            </div>
+
+            <div className="flex items-center">
+              <button
+                onClick={() => window.location.href = '/'}
+                className="text-sm text-gray-500 hover:text-red-600 font-medium transition-colors"
+              >
+                {isPT ? 'Voltar para Adega' : 'Back to Cellar'}
+              </button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Stats Bar */}
-      <div className="bg-gray-800/80 border-b border-white/5">
+      <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
           <div className="flex items-center justify-center space-x-6 text-sm">
             <div className="flex items-center space-x-1.5">
-              <WineIcon className="h-3.5 w-3.5 text-[#d4686e]" />
-              <span className="text-white font-semibold">{stats.total}</span>
-              <span className="text-gray-400">{isPT ? 'vinhos' : 'wines'}</span>
+              <WineIcon className="h-3.5 w-3.5 text-red-500" />
+              <span className="text-gray-900 font-semibold">{stats.total}</span>
+              <span className="text-gray-500">{isPT ? 'vinhos' : 'wines'}</span>
             </div>
-            <div className="h-3 w-px bg-white/10" />
+            <div className="h-3 w-px bg-gray-300" />
             <div className="flex items-center space-x-1.5">
-              <Globe className="h-3.5 w-3.5 text-blue-400" />
-              <span className="text-white font-semibold">{stats.countries}</span>
-              <span className="text-gray-400">{isPT ? 'países' : 'countries'}</span>
+              <Globe className="h-3.5 w-3.5 text-blue-500" />
+              <span className="text-gray-900 font-semibold">{stats.countries}</span>
+              <span className="text-gray-500">{isPT ? 'países' : 'countries'}</span>
             </div>
-            <div className="h-3 w-px bg-white/10" />
+            <div className="h-3 w-px bg-gray-300" />
             <div className="flex items-center space-x-1.5">
-              <MapPin className="h-3.5 w-3.5 text-amber-400" />
-              <span className="text-white font-semibold">{stats.regions}</span>
-              <span className="text-gray-400">{isPT ? 'regiões' : 'regions'}</span>
+              <MapPin className="h-3.5 w-3.5 text-amber-500" />
+              <span className="text-gray-900 font-semibold">{stats.regions}</span>
+              <span className="text-gray-500">{isPT ? 'regiões' : 'regions'}</span>
             </div>
           </div>
         </div>
