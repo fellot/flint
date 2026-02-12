@@ -59,6 +59,7 @@ const copy = {
     },
     actions: {
       add: 'Add with AI',
+      map: 'Wine Map',
       sommelier: 'Ask Sommelier',
       locale: 'Switch origin',
     },
@@ -86,6 +87,7 @@ const copy = {
     },
     actions: {
       add: 'Adicionar com IA',
+      map: 'Mapa de Vinhos',
       sommelier: 'Perguntar ao Sommelier',
       locale: 'Trocar origem',
     },
@@ -150,11 +152,10 @@ const QuickFilterRail = ({
             <button
               key={`${filterKey}-${value}`}
               onClick={() => onToggle(filterKey, isActive ? 'all' : value)}
-              className={`whitespace-nowrap rounded-full border px-3 py-1 text-xs font-semibold ${
-                isActive
-                  ? 'border-red-600 bg-red-600 text-white shadow-sm'
-                  : 'border-transparent bg-gray-100 text-gray-600'
-              }`}
+              className={`whitespace-nowrap rounded-full border px-3 py-1 text-xs font-semibold ${isActive
+                ? 'border-red-600 bg-red-600 text-white shadow-sm'
+                : 'border-transparent bg-gray-100 text-gray-600'
+                }`}
             >
               {formatLabel(value)}
             </button>
@@ -413,6 +414,13 @@ export default function MobileCellarExperience({
           >
             <Sparkles className="mb-1 h-4 w-4" />
             {t.actions.add}
+          </button>
+          <button
+            onClick={() => window.location.href = '/wine-map'}
+            className="flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white py-2 text-center text-xs font-semibold uppercase tracking-wide text-gray-700"
+          >
+            <MapPin className="mb-1 h-4 w-4" />
+            {t.actions.map}
           </button>
           <button
             onClick={onOpenSommelier}
