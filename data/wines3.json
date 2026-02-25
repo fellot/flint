@@ -45,5 +45,27 @@
     "dataSource": "3",
     "rating": null,
     "bottle_image": "https://www.epice.com.br/wp-content/uploads/2020/07/Cosecha-Tarapac%C3%A1-Chardonnay-sc.jpg"
+  },
+  {
+    "id": "1771984783095",
+    "bottle": "Susana Balbo Signature",
+    "country": "Argentina",
+    "region": "Mendoza",
+    "vintage": 2024,
+    "drinkingWindow": "2023-2025",
+    "peakYear": 2024,
+    "foodPairingNotes": "Este vinho apresenta notas florais e frutadas, com boa acidez e frescor, ideal para acompanhar pratos leves e frescos.",
+    "mealToHaveWithThisWine": "Salmão grelhado com molho de maracujá, acompanhado de arroz de limão e salada de rúcula.",
+    "style": "White",
+    "grapes": "Torrontés, Sauvignon Blanc",
+    "location": "",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "3",
+    "rating": null
   }
 ]
