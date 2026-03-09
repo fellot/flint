@@ -58,7 +58,7 @@
     "mealToHaveWithThisWine": "Salmão grelhado com molho de maracujá, acompanhado de arroz de limão e salada de rúcula.",
     "style": "White",
     "grapes": "Torrontés, Sauvignon Blanc",
-    "location": "",
+    "location": "N/A",
     "quantity": 1,
     "price": null,
     "notes": "",
@@ -66,6 +66,7 @@
     "status": "in_cellar",
     "consumedDate": null,
     "dataSource": "3",
-    "rating": null
+    "rating": null,
+    "bottle_image": "https://www.saq.com/media/catalog/product/1/5/15196149-1_1700161983.png?optimize=high&fit=bounds&height=&width=&format=jpeg"
   }
 ]
