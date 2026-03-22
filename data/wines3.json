@@ -68,5 +68,27 @@
     "dataSource": "3",
     "rating": null,
     "bottle_image": "https://www.saq.com/media/catalog/product/1/5/15196149-1_1700161983.png?optimize=high&fit=bounds&height=&width=&format=jpeg"
+  },
+  {
+    "id": "1774142094637",
+    "bottle": "Monte do Gaio Premium 2023",
+    "country": "Portugal",
+    "region": "Alentejo",
+    "vintage": 2023,
+    "drinkingWindow": "2023-2025",
+    "peakYear": 2024,
+    "foodPairingNotes": "Este rosé apresenta frescor e leveza, ideal para acompanhar pratos leves e frescos. Sugestões incluem saladas, frutos do mar e pratos com frango grelhado.",
+    "mealToHaveWithThisWine": "Salada de frango grelhado com molho de limão e ervas, acompanhada de legumes assados.",
+    "style": "Rosé",
+    "grapes": "",
+    "location": "",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "3",
+    "rating": null
   }
 ]
