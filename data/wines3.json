@@ -80,8 +80,8 @@
     "foodPairingNotes": "Este rosé apresenta frescor e leveza, ideal para acompanhar pratos leves e frescos. Sugestões incluem saladas, frutos do mar e pratos com frango grelhado.",
     "mealToHaveWithThisWine": "Salada de frango grelhado com molho de limão e ervas, acompanhada de legumes assados.",
     "style": "Rosé",
-    "grapes": "",
-    "location": "",
+    "grapes": "Syrah, Aragonez",
+    "location": "N/A",
     "quantity": 1,
     "price": null,
     "notes": "",
@@ -89,6 +89,7 @@
     "status": "in_cellar",
     "consumedDate": null,
     "dataSource": "3",
-    "rating": null
+    "rating": null,
+    "bottle_image": "https://images.vivino.com/thumbs/Bq8GJjNRSU67xYCCXM7OSQ_pb_600x600.png"
   }
 ]
