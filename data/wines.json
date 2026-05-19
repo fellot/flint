@@ -1112,5 +1112,28 @@
     "rating": null,
     "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/0/4/7/7/047724.jpg.thumb.1280.1280.jpg",
     "technical_sheet": "https://www.closdulican.com/wp-content/uploads/2025/01/ClosduLican_FT_2021_EN.pdf"
+  },
+  {
+    "id": "1779157110325",
+    "bottle": "Michel Guignier Morgon Canon",
+    "country": "France",
+    "region": "Morgon",
+    "vintage": 2023,
+    "drinkingWindow": "2024-2032",
+    "peakYear": 2028,
+    "foodPairingNotes": "The 2023 Michel Guignier Morgon Canon showcases bright acidity, soft tannins, and vibrant notes of cherry and raspberry. This profile makes it an excellent match for earthy dishes or light meats, such as roasted chicken with herbs and a side of sautéed mushrooms. Decant for 30 minutes to enhance its aromatic complexity. Critic score: RP 92.",
+    "mealToHaveWithThisWine": "Roasted herb-marinated chicken thighs, served with garlic mashed potatoes and roasted seasonal vegetables.",
+    "style": "Red",
+    "grapes": "Gamay",
+    "location": "",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "bottle_image": "https://aem.lcbo.com/content/dam/lcbo/products/0/5/1/1/051164.jpg.thumb.1280.1280.jpg",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "1",
+    "rating": null
   }
 ]
