@@ -207,15 +207,16 @@
     "mealToHaveWithThisWine": "Herb‑crusted rack of lamb",
     "style": "Red",
     "grapes": "Syrah",
-    "status": "in_cellar",
-    "consumedDate": null,
-    "notes": "",
+    "status": "consumed",
+    "consumedDate": "2026-08-29",
+    "notes": "Amazing structured tannin. Loved the balance. Had it with korean marinated short ribs and marinated pork.",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L3",
+    "location": "Wine Heaven",
     "quantity": 1,
     "bottle_image": "https://nlliquor.com/wp-content/uploads/10838-1-640x640.jpg",
-    "technical_sheet": "https://s3-ap-northeast-1.amazonaws.com/orchestracms/eosportal/pdf/tasting-notes/guigal-crozes-hermitage-rouge-2019.pdf"
+    "technical_sheet": "https://s3-ap-northeast-1.amazonaws.com/orchestracms/eosportal/pdf/tasting-notes/guigal-crozes-hermitage-rouge-2019.pdf",
+    "dataSource": "1"
   },
   {
     "id": "11",
