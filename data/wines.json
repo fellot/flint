@@ -697,14 +697,15 @@
     "mealToHaveWithThisWine": "Seafood paella",
     "style": "White",
     "grapes": "Viura",
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2026-08-30",
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L1",
+    "location": "Wine Heaven",
     "quantity": 1,
-    "bottle_image": "https://www.decantalo.com/jp/68408-product_img/placet-valtomelloso.jpg"
+    "bottle_image": "https://www.decantalo.com/jp/68408-product_img/placet-valtomelloso.jpg",
+    "dataSource": "1"
   },
   {
     "id": "34",
