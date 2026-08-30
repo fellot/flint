@@ -273,15 +273,16 @@
     "mealToHaveWithThisWine": "Goat‑cheese and herb salad",
     "style": "White",
     "grapes": "Sauvignon Blanc",
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2026-08-30",
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L0",
+    "location": "Wine Heaven",
     "quantity": 1,
     "bottle_image": "https://josephmellot.com/wp-content/uploads/2022/11/pierre-etienne-sancerre.jpg",
-    "technical_sheet": "https://www.josephmellot.com/wp-content/uploads/2018/04/JM-SANCERRE-BLANC-CUVEE-PIERRE-ETIENNE-2017-En.pdf"
+    "technical_sheet": "https://www.josephmellot.com/wp-content/uploads/2018/04/JM-SANCERRE-BLANC-CUVEE-PIERRE-ETIENNE-2017-En.pdf",
+    "dataSource": "1"
   },
   {
     "id": "14",
