@@ -1179,5 +1179,27 @@
     "consumedDate": null,
     "dataSource": "1",
     "rating": null
+  },
+  {
+    "id": "1788390393560",
+    "bottle": "Westcott Vineyards Estate Chardonnay 2024",
+    "country": "Canada",
+    "region": "Niagara Peninsula",
+    "vintage": 2024,
+    "drinkingWindow": "2025-2030",
+    "peakYear": 2026,
+    "foodPairingNotes": "This Chardonnay is likely to have bright acidity and a creamy texture, making it a great match for dishes with rich flavors. Pair it with seafood, poultry, or creamy pasta dishes.",
+    "mealToHaveWithThisWine": "Grilled lemon herb chicken with a creamy garlic sauce, served with roasted asparagus and a side of wild rice.",
+    "style": "White",
+    "grapes": "Chardonnay",
+    "location": "",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "1",
+    "rating": null
   }
 ]
