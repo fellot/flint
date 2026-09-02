@@ -191,14 +191,15 @@
     "mealToHaveWithThisWine": "Pan‑seared sea bass with beurre blanc",
     "style": "White",
     "grapes": "Chenin Blanc",
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2026-09-02",
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L1",
+    "location": "Wine Heaven",
     "quantity": 1,
-    "bottle_image": "https://buzzwines.com/cdn/shop/files/BaumardCSYNV_ccfab5dd-e766-4490-b31e-d8a89bd73185_2048x.jpg?v=1683589881"
+    "bottle_image": "https://buzzwines.com/cdn/shop/files/BaumardCSYNV_ccfab5dd-e766-4490-b31e-d8a89bd73185_2048x.jpg?v=1683589881",
+    "dataSource": "1"
   },
   {
     "id": "10",
