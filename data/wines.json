@@ -832,7 +832,8 @@
     "price": null,
     "location": "Wine fridge A - L0",
     "quantity": 1,
-    "bottle_image": "https://www.vinhosevinhos.com/media/catalog/product/cache/c8681c74f2ad6e00a87f988c056011ef/p/r/primeira-estrada-chardonnay.jpg"
+    "bottle_image": "https://www.vinhosevinhos.com/media/catalog/product/cache/c8681c74f2ad6e00a87f988c056011ef/p/r/primeira-estrada-chardonnay.jpg",
+    "dataSource": "1"
   },
   {
     "id": "39",
