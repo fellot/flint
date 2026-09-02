@@ -106,9 +106,10 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L2",
+    "location": "Wine fridge A - L1",
     "quantity": 1,
-    "bottle_image": "https://www.santarita.com/wp-content/uploads/2022/11/casa-real-2018.jpg"
+    "bottle_image": "https://www.santarita.com/wp-content/uploads/2022/11/casa-real-2018.jpg",
+    "dataSource": "1"
   },
   {
     "id": "6",
