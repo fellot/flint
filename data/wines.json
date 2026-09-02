@@ -617,9 +617,10 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L5",
+    "location": "Wine fridge A - L2",
     "quantity": 1,
-    "bottle_image": "https://cdn.shoplightspeed.com/shops/640383/files/65057975/image.jpg"
+    "bottle_image": "https://cdn.shoplightspeed.com/shops/640383/files/65057975/image.jpg",
+    "dataSource": "1"
   },
   {
     "id": "30",
