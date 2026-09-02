@@ -957,12 +957,12 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L6",
-    "quantity": 2,
+    "location": "Wine fridge A - L3",
+    "quantity": 1,
     "bottle_image": "https://cache1.voyageursduvin.com/products/Two-Hands-Bellas-Garden-zoom.jpg",
     "technical_sheet": "https://twohandswines.com/pages/bellas-garden",
     "dataSource": "1",
-    "coravin": true,
+    "coravin": false,
     "coravinDate": "2026-01-17"
   },
   {
