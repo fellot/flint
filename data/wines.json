@@ -128,10 +128,11 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L4",
+    "location": "Wine fridge A - L2",
     "quantity": 1,
     "bottle_image": "https://assets.wine.com/winecom/image/upload/w_600,h_600,dpr_2.0,c_fit,q_auto:good,fl_progressive/ys00r4ogl7opoxi8k8zj.jpg",
-    "technical_sheet": "https://garagewine.company/wp-content/uploads/2022/06/Vigno-2019-en.pdf"
+    "technical_sheet": "https://garagewine.company/wp-content/uploads/2022/06/Vigno-2019-en.pdf",
+    "dataSource": "1"
   },
   {
     "id": "7",
