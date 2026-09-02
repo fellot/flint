@@ -1156,5 +1156,28 @@
     "consumedDate": null,
     "dataSource": "1",
     "rating": null
+  },
+  {
+    "id": "1788389989910",
+    "bottle": "Luigi Baudana Barolo",
+    "country": "Italy",
+    "region": "Piedmont",
+    "vintage": 2021,
+    "drinkingWindow": "2028-2040",
+    "peakYear": 2035,
+    "foodPairingNotes": "This Barolo typically exhibits high acidity, firm tannins, and complex aromas of cherry, rose, and earthy notes, making it a great match for rich dishes.",
+    "mealToHaveWithThisWine": "Braised lamb shanks with rosemary and garlic, served with creamy polenta and sautéed seasonal vegetables.",
+    "style": "Red",
+    "grapes": "Nebbiolo",
+    "location": "",
+    "quantity": 1,
+    "price": null,
+    "notes": "",
+    "bottle_image": "https://zyn.ca/cdn/shop/files/Luigi-Baudana-Barolo-Cerretta-2021_1200x.jpg?v=1778594528",
+    "fromCellar": true,
+    "status": "in_cellar",
+    "consumedDate": null,
+    "dataSource": "1",
+    "rating": null
   }
 ]
