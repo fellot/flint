@@ -39,9 +39,10 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L2",
+    "location": "Wine fridge A - L3",
     "quantity": 1,
-    "bottle_image": "https://lorenzowines.com.ar/wp-content/uploads/2021/05/BANNERS-web-19.png"
+    "bottle_image": "https://lorenzowines.com.ar/wp-content/uploads/2021/05/BANNERS-web-19.png",
+    "dataSource": "1"
   },
   {
     "id": "3",
