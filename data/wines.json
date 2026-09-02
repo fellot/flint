@@ -241,9 +241,10 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L1",
+    "location": "Wine Fridge A - L4",
     "quantity": 1,
-    "bottle_image": "https://bbr.co.jp/cdn/shop/files/20218028974-2021-Chateauneuf-du-Pape-Blanc-Clos-de-Beauvenir_Chateau-La-Nerthe-Rhone_01.jpg?v=1722241619"
+    "bottle_image": "https://bbr.co.jp/cdn/shop/files/20218028974-2021-Chateauneuf-du-Pape-Blanc-Clos-de-Beauvenir_Chateau-La-Nerthe-Rhone_01.jpg?v=1722241619",
+    "dataSource": "1"
   },
   {
     "id": "12",
