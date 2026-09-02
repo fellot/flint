@@ -847,9 +847,10 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L0",
+    "location": "Wine fridge A - L4",
     "quantity": 1,
-    "bottle_image": "https://www.vinhosevinhos.com/media/catalog/product/cache/f551083cd20de7ac8cf7d25adc91480d/p/r/primeira-estrada-gran-reserva-syrah.jpg"
+    "bottle_image": "https://www.vinhosevinhos.com/media/catalog/product/cache/f551083cd20de7ac8cf7d25adc91480d/p/r/primeira-estrada-gran-reserva-syrah.jpg",
+    "dataSource": "1"
   },
   {
     "id": "40",
