@@ -590,10 +590,11 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L5",
+    "location": "Wine fridge A - L0",
     "quantity": 1,
     "bottle_image": "https://swaso.ca/cdn/shop/products/iffn_2b8Q1axnKwj4OtXuw_pb_x600_0c46299b-8561-4dc5-a171-8400f4d133c0.png?v=1668372330",
-    "technical_sheet": "https://www.datocms-assets.com/33016/1719027540-porto-ferreira-vintage-2018-en-v0-c-2023072811970739-cff9d65b.pdf"
+    "technical_sheet": "https://www.datocms-assets.com/33016/1719027540-porto-ferreira-vintage-2018-en-v0-c-2023072811970739-cff9d65b.pdf",
+    "dataSource": "1"
   },
   {
     "id": "28",
