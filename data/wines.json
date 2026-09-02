@@ -152,7 +152,8 @@
     "price": null,
     "location": "Wine fridge A - L1",
     "quantity": 1,
-    "bottle_image": "https://rogcowines.com/wp-content/uploads/2022/11/14255098-1_1611841237_clipped_rev_1-800x800.png"
+    "bottle_image": "https://rogcowines.com/wp-content/uploads/2022/11/14255098-1_1611841237_clipped_rev_1-800x800.png",
+    "dataSource": "1"
   },
   {
     "id": "8",
