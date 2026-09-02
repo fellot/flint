@@ -732,9 +732,10 @@
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A -  L2",
+    "location": "Wine fridge A -  L1",
     "quantity": 1,
-    "bottle_image": "https://www.saq.com/media/catalog/product/1/5/15262821-1_1732034884.png?optimize=high&fit=bounds&height=&width=&format=jpeg"
+    "bottle_image": "https://www.saq.com/media/catalog/product/1/5/15262821-1_1732034884.png?optimize=high&fit=bounds&height=&width=&format=jpeg",
+    "dataSource": "1"
   },
   {
     "id": "35",
