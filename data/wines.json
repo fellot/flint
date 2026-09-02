@@ -263,7 +263,8 @@
     "location": "Wine fridge A - L1",
     "quantity": 1,
     "bottle_image": "https://static.millesima.com/s3/attachements/h1000px/F486_2021NM_c.png",
-    "technical_sheet": "https://m.familleperrin.com/1I1MIE/get/print"
+    "technical_sheet": "https://m.familleperrin.com/1I1MIE/get/print",
+    "dataSource": "1"
   },
   {
     "id": "13",
