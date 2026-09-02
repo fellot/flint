@@ -869,9 +869,10 @@
     "notes": "Deep and structured Gamay with aromas of violet, licorice, and pepper; concentrated fruit, fine tannins, and long aging potential (15+ years).",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L3",
+    "location": "Wine Fridge A - L4",
     "quantity": 1,
-    "bottle_image": "https://www.lecarredesvins.com/18599-large_default/domaine-labruyere-moulin-a-vent-champ-de-cour-2016.jpg"
+    "bottle_image": "https://www.lecarredesvins.com/18599-large_default/domaine-labruyere-moulin-a-vent-champ-de-cour-2016.jpg",
+    "dataSource": "1"
   },
   {
     "id": "41",
