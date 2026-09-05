@@ -1192,13 +1192,13 @@
     "mealToHaveWithThisWine": "Grilled lemon herb chicken with a creamy garlic sauce, served with roasted asparagus and a side of wild rice.",
     "style": "White",
     "grapes": "Chardonnay",
-    "location": "",
+    "location": "Wine Heaven",
     "quantity": 1,
     "price": null,
     "notes": "",
     "fromCellar": true,
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2026-09-05",
     "dataSource": "1",
     "rating": null
   }
