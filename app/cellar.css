@@ -1,0 +1,469 @@
+:root { --paper: #f7f6f0; --ink: #293b31; --muted: #73796d; --line: #dedfd4; --olive: #293e33; --burgundy: #783c47; --serif: Georgia, 'Times New Roman', serif; }
+html { scroll-padding-top: 24px; }
+body { color: var(--ink); background: var(--paper); }
+button, a, input, select, textarea, summary { -webkit-tap-highlight-color: transparent; }
+button:disabled { cursor: wait; opacity: .55; }
+:focus-visible { outline: 2px solid #9a654e; outline-offset: 4px; }
+::selection { background: #ded6bf; color: #293b31; }
+.flint-shell { min-height: 100vh; }
+.flint-skip { position: fixed; left: 16px; top: -60px; z-index: 100; padding: 12px 20px; color: white; background: var(--burgundy); border-radius: 6px; }
+.flint-skip:focus { top: 12px; }
+.flint-sidebar { width: 218px; position: fixed; inset: 0 auto 0 0; background: var(--olive); color: #eeeede; padding: 37px 21px 23px; display: flex; flex-direction: column; z-index: 40; }
+.flint-brand { display: flex; align-items: center; gap: 11px; padding-left: 11px; }
+.flint-brand > svg { width: 33px; height: 48px; color: #c6c5a9; }
+.flint-brand > span { font-family: var(--serif); font-size: 42px; line-height: 1; letter-spacing: -2px; }
+.brand-period { color: #b29376; }
+.flint-brand small { font-family: Arial, sans-serif; font-size: 7px; letter-spacing: 2px; display: block; margin-top: 10px; color: #c2c5b2; }
+.sidebar-label { font-size: 9px; letter-spacing: 1.7px; color: #a9b29f; padding: 0 12px; margin: 58px 0 14px; font-weight: 500; }
+.discover-label { margin-top: 34px; }
+.sidebar-link { display: flex; gap: 12px; align-items: center; padding: 13px 12px; border-radius: 7px; margin: 4px 0; font-size: 12px; color: #d3d8c9; transition: background .2s, color .2s; }
+.sidebar-link:hover { color: #fff; background: #ffffff0b; }
+.sidebar-link.active { background: #ffffff12; color: #fcfbef; }
+.sidebar-link svg { flex-shrink: 0; opacity: .9; }
+.nav-active-dot { margin-left: auto; width: 5px; height: 5px; border-radius: 50%; background: #c5be93; }
+.sidebar-note { margin-top: auto; padding: 64px 12px 34px; }
+.sidebar-star { color: #bab795; font-size: 33px; }
+.sidebar-note p { white-space: pre-line; font: 22px/1.35 var(--serif); margin: 16px 0; color: #e4e5d4; }
+.sidebar-note > span:last-child { font-size: 7px; letter-spacing: 1.8px; color: #b9c0aa; }
+.sidebar-bottom { border-top: 1px solid #ffffff17; padding-top: 22px; display: flex; align-items: center; gap: 7px; font-size: 8px; color: #bdc5b0; }
+.live-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #8d9e73; flex-shrink: 0; }
+.flint-main { margin-left: 218px; min-width: 0; }
+.flint-topbar { height: 79px; margin: 0 44px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 18px; font-size: 11px; }
+.topbar-path, .topbar-account { display: flex; align-items: center; gap: 19px; }
+.topbar-brand { font: 20px var(--serif); letter-spacing: -1px; }
+.path-divider { color: #c2c5b7; }
+.cellar-indicator { color: var(--muted); display: flex; gap: 7px; align-items: center; padding-right: 20px; border-right: 1px solid var(--line); font-size: 10px; }
+.account-menu { position: relative; }
+summary { list-style: none; cursor: pointer; }
+summary::-webkit-details-marker { display: none; }
+.account-menu summary { display: flex; align-items: center; gap: 10px; }
+.account-avatar { height: 31px; width: 31px; border: 1px solid #d6d8c6; background: #e8eadf; border-radius: 50%; display: grid; place-items: center; font-size: 11px; }
+.account-name { max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.account-dropdown { position: absolute; z-index: 35; right: 0; top: calc(100% + 14px); background: #fffef9; border: 1px solid var(--line); box-shadow: 0 12px 35px #293b3114; border-radius: 10px; width: 260px; padding: 18px; }
+.account-dropdown p { overflow-wrap: anywhere; font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+.account-dropdown label { display: block; font-size: 11px; }
+.account-dropdown select { width: 100%; margin: 8px 0 14px; padding: 10px; border: 1px solid var(--line); border-radius: 5px; background: var(--paper); }
+.account-dropdown button { display: flex; gap: 8px; align-items: center; padding: 10px 0 0; border-top: 1px solid var(--line); width: 100%; font-size: 12px; }
+.icon-button { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; }
+.icon-button:hover { background: #293b310a; }
+.mobile-menu, .sidebar-backdrop { display: none; }
+.collection-page { max-width: 1530px; margin: auto; padding: 39px 44px 0; }
+.cellar-hero { display: grid; grid-template-columns: 1.08fr 1fr; gap: 32px; align-items: center; }
+.eyebrow { display: flex; align-items: center; gap: 8px; font-size: 8px; font-weight: 500; letter-spacing: 1.8px; line-height: 1.6; text-transform: uppercase; color: #6d7668; }
+.eyebrow > span { width: 5px; height: 5px; background: #849274; border-radius: 50%; }
+.hero-copy { padding: 6px 0 9px; }
+.hero-copy h1 { font: 400 clamp(38px, 4.2vw, 64px)/1.07 var(--serif); letter-spacing: -2.5px; margin: 22px 0 18px; }
+.hero-copy h1 em { font-weight: 400; color: var(--burgundy); }
+.hero-description { color: var(--muted); font-size: 12px; line-height: 1.9; max-width: 325px; }
+.hero-actions { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-top: 26px; }
+.flint-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: var(--olive); color: #f7f7ef; border: 1px solid var(--olive); border-radius: 5px; padding: 12px 17px; font-size: 11px; line-height: 1.4; font-weight: 500; white-space: nowrap; transition: background .2s; }
+.flint-button:hover { background: #3d5444; }
+.flint-button.secondary { color: var(--ink); background: transparent; border-color: var(--line); }
+.flint-button.secondary:hover { background: #eceee4; }
+.text-button { display: inline-flex; gap: 7px; align-items: center; color: var(--ink); font-size: 10px; white-space: nowrap; }
+.text-button:hover { color: var(--burgundy); }
+.hero-photograph { height: 326px; border-radius: 9px; overflow: hidden; position: relative; background: #e2d6c0; }
+.hero-photograph img { width: 100%; height: 100%; object-fit: cover; object-position: 55% 50%; }
+.photo-caption { position: absolute; bottom: 0; inset-inline: 0; padding: 36px 24px 19px; background: linear-gradient(transparent, #1b241940); color: #fffbee; display: flex; justify-content: space-between; align-items: center; }
+.photo-caption span:first-child { font-size: 7px; letter-spacing: 1.9px; }
+.photo-caption span:last-child { font: 25px var(--serif); letter-spacing: -1.3px; }
+.cellar-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 27px 0 29px; border-block: 1px solid var(--line); margin: 35px 0 39px; }
+.cellar-metric { padding: 0 22px; border-left: 1px solid var(--line); }
+.cellar-metric:first-child { padding-left: 0; border: 0; }
+.cellar-metric:last-child { padding-right: 0; }
+.metric-top { display: flex; align-items: center; gap: 9px; color: #626e5d; font-size: 10px; }
+.metric-top svg { flex-shrink: 0; }
+.cellar-metric strong { display: block; font: 39px/1.2 var(--serif); margin-top: 12px; letter-spacing: -1.5px; }
+.cellar-metric p { font-size: 8px; color: var(--muted); margin-top: 6px; }
+.wine-collection { scroll-margin-top: 24px; }
+.collection-heading { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-bottom: 22px; }
+.collection-heading .eyebrow { font-size: 7px; }
+.collection-heading h2 { font: 32px/1.2 var(--serif); letter-spacing: -1px; margin-top: 9px; display: flex; align-items: center; gap: 12px; }
+.collection-heading h2 > span { font: 10px Arial, sans-serif; padding: 4px 7px; border: 1px solid #d9ddcf; border-radius: 4px; background: #eef0e6; letter-spacing: 0; }
+.collection-toolbar { display: flex; gap: 14px; justify-content: space-between; }
+.collection-search { display: flex; align-items: center; gap: 9px; padding: 0 13px; border: 1px solid var(--line); background: #fbfbf6; border-radius: 5px; flex: 1; min-width: 150px; color: #878d7f; }
+.collection-search input { width: 100%; font-size: 11px; color: var(--ink); height: 42px; border: 0; background: transparent; min-width: 0; outline: none; }
+.collection-search:focus-within { border-color: #818d72; box-shadow: 0 0 0 2px #818d7220; }
+.collection-search input::placeholder { color: #858b7d; }
+.toolbar-controls { display: flex; gap: 10px; align-items: stretch; }
+.filter-toggle { padding: 0 12px; display: flex; align-items: center; gap: 8px; font-size: 10px; border: 1px solid var(--line); border-radius: 5px; }
+.filter-toggle.active { background: #e9ece0; border-color: #b6c1a9; }
+.filter-toggle > span { background: var(--olive); color: #fff; border-radius: 50%; padding: 2px 5px; font-size: 8px; }
+.sort-select { display: flex; }
+.sort-select select { border: 1px solid var(--line); border-radius: 5px; background: transparent; padding: 0 9px; font-size: 10px; max-width: 140px; }
+.view-switch { display: flex; gap: 2px; background: #eaece2; padding: 4px; border-radius: 5px; }
+.view-switch button { padding: 6px 8px; border-radius: 3px; color: #858d7e; }
+.view-switch button.active { background: #fffef8; box-shadow: 0 1px 3px #233a2810; color: var(--ink); }
+.expanded-filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto; gap: 14px; align-items: end; padding: 18px; border: 1px solid var(--line); border-radius: 5px; background: #efefe7; margin-top: 12px; }
+.expanded-filters label { font-size: 10px; color: var(--muted); }
+.expanded-filters select { display: block; width: 100%; margin-top: 7px; padding: 8px 6px; border: 1px solid #d5d9cc; border-radius: 4px; background: #fafbf5; color: var(--ink); font-size: 11px; }
+.expanded-filters .text-button { height: 34px; }
+.collection-tabs { display: flex; justify-content: space-between; gap: 18px; margin: 22px 0; align-items: center; border-bottom: 1px solid var(--line); }
+.style-tabs { display: flex; gap: 22px; overflow-x: auto; scrollbar-width: none; align-items: stretch; }
+.style-tabs::-webkit-scrollbar { display: none; }
+.style-tabs button { display: flex; gap: 6px; align-items: center; padding: 0 0 13px; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 10px; color: #78816e; }
+.style-tabs button.active { color: var(--ink); border-bottom-color: var(--olive); }
+.style-dot, .wine-style-badge > span { width: 5px; height: 5px; border-radius: 50%; background: #924c58; display: inline-block; flex-shrink: 0; }
+.dot-white, .badge-white > span { background: #b5a762; }
+.dot-sparkling, .badge-sparkling > span { background: #888969; }
+.dot-rose, .badge-rose > span { background: #c88d7d; }
+.dot-sweet, .badge-sweet > span, .dot-orange, .badge-orange > span { background: #bb884b; }
+.ready-filter { display: flex; gap: 5px; align-items: center; padding: 5px 8px; margin-bottom: 11px; border: 1px solid #dce0d0; border-radius: 4px; background: #ecefe3; color: #657450; font-size: 8px; white-space: nowrap; }
+.ready-filter.active { border-color: #6c805b; background: #dbe3ce; color: #3e552d; }
+.filter-summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: -5px 0 15px; color: var(--muted); font-size: 10px; }
+.filter-summary button { display: flex; gap: 6px; align-items: center; text-decoration: underline; }
+.wine-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.collection-wine-card { border: 1px solid var(--line); border-radius: 8px; background: #fdfcf8; min-width: 0; transition: border-color .2s, box-shadow .2s; }
+.collection-wine-card:hover { border-color: #bfc7b2; box-shadow: 0 5px 18px #293b3106; }
+.wine-image-wrap { height: 222px; margin: 7px 7px 0; background: #eeeee4; border-radius: 5px; position: relative; }
+.wine-image-wrap:has(.bottle-white) { background: #eeeee0; }
+.wine-image-wrap:has(.bottle-rose) { background: #f0e9e0; }
+.wine-image-wrap:has(.bottle-sparkling) { background: #e9ede2; }
+.wine-image-wrap:has(.bottle-sweet), .wine-image-wrap:has(.bottle-orange) { background: #efebe0; }
+.bottle-view-button { width: 100%; height: 100%; padding: 24px 30px 12px; }
+.bottle-portrait { height: 100%; width: 100%; display: flex; justify-content: center; align-items: center; --bottle-dark: #263829; --bottle-light: #4a5b3c; --foil: #703d43; }
+.bottle-white { --bottle-dark: #62653a; --bottle-light: #9c9d61; --foil: #b7ab81; }
+.bottle-rose { --bottle-dark: #967644; --bottle-light: #d4b583; --foil: #d0bea2; }
+.bottle-sparkling { --bottle-dark: #273c2b; --bottle-light: #516a42; --foil: #bbac76; }
+.bottle-sweet, .bottle-orange { --bottle-dark: #58442d; --bottle-light: #a08645; --foil: #9b7245; }
+.bottle-portrait > svg { height: 100%; max-width: 100%; width: auto; filter: drop-shadow(6px 5px 4px #30291712); transition: transform .35s; }
+.bottle-portrait > img { height: 100%; max-width: 90%; object-fit: contain; mix-blend-mode: multiply; transition: transform .35s; }
+.bottle-view-button:hover .bottle-portrait > :is(svg, img) { transform: translateY(-3px) rotate(-2deg); }
+.wine-style-badge { position: absolute; top: 12px; left: 12px; display: flex; align-items: center; gap: 5px; font-size: 7px; border-radius: 4px; padding: 4px 6px; background: #fffef8c9; color: #706354; pointer-events: none; }
+.coravin-badge { position: absolute; bottom: 10px; left: 12px; font-size: 7px; color: #637452; border: 1px solid #b9c4a7; padding: 3px 5px; border-radius: 3px; }
+.wine-expand { position: absolute; bottom: 10px; right: 10px; width: 26px; height: 26px; border-radius: 50%; background: #fffef6b3; display: grid; place-items: center; color: #6f7766; }
+.wine-card-body { padding: 18px 17px 0; display: flex; flex-direction: column; }
+.wine-origin { font-size: 7px; letter-spacing: 1.1px; text-transform: uppercase; color: #6f7866; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wine-origin > span { color: #b4b9a9; padding: 0 3px; }
+.wine-card-body h3 { font: 21px/1.2 var(--serif); letter-spacing: -.45px; margin-top: 8px; min-height: 51px; }
+.wine-card-body h3 button { text-align: left; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.wine-card-body h3 button:hover { color: var(--burgundy); }
+.wine-facts { display: flex; align-items: center; gap: 13px; font-size: 10px; color: #7d8175; margin-top: 11px; }
+.wine-facts > span + span { padding-left: 12px; border-left: 1px solid var(--line); }
+.wine-facts .wine-rating { margin-left: auto; border: 0; color: #8d7751; }
+.wine-rating small { color: #858a7c; font-size: 7px; margin-left: 2px; }
+.wine-window { display: flex; align-items: center; gap: 8px; justify-content: space-between; margin-top: 17px; font-size: 8px; height: 15px; }
+.maturity-label { display: flex; gap: 5px; align-items: center; color: #5e724d; white-space: nowrap; }
+.maturity-label > span { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+.maturity-soon { color: #9b8149; }
+.maturity-rest { color: #7a7565; }
+.maturity-unknown { color: #858778; }
+.wine-location { display: flex; gap: 3px; align-items: center; color: #858a7c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95px; }
+.wine-location svg { flex-shrink: 0; }
+.wine-card-actions { display: flex; border-top: 1px solid #e6e7db; align-items: center; margin-top: 17px; min-height: 46px; }
+.wine-action-primary { display: flex; align-items: center; gap: 7px; flex: 1; padding: 13px 0; font-size: 9px; }
+.wine-action-primary > svg:last-child { margin-left: auto; margin-right: 11px; }
+.wine-action-primary:hover { color: var(--burgundy); }
+.wine-more { position: relative; }
+.wine-more summary { display: grid; place-items: center; height: 26px; width: 30px; border-left: 1px solid var(--line); color: #7d8573; }
+.wine-more-menu { position: absolute; top: 100%; right: -8px; width: 175px; background: #fffef9; border: 1px solid var(--line); border-radius: 6px; padding: 6px; box-shadow: 0 8px 25px #20352419; z-index: 10; }
+.wine-more-menu > :is(button, a) { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px; text-align: left; font-size: 10px; border-radius: 3px; }
+.wine-more-menu > :is(button, a):hover { background: #eeeee4; }
+.wine-more-menu .delete-action { color: #924354; }
+.collection-results { display: flex; justify-content: space-between; color: #7d8375; font-size: 9px; padding: 19px 1px; border-bottom: 1px solid var(--line); }
+.wine-list { display: grid; gap: 12px; }
+.wine-list .collection-wine-card { display: grid; grid-template-columns: 115px 1fr; }
+.wine-list .wine-image-wrap { height: auto; min-height: 163px; margin: 7px; }
+.wine-list .bottle-view-button { padding: 25px 12px 7px; }
+.wine-list .bottle-portrait { max-height: 140px; }
+.wine-list .wine-style-badge { left: 5px; top: 6px; font-size: 6px; }
+.wine-list .wine-expand { display: none; }
+.wine-list .wine-card-body { padding-top: 17px; }
+.wine-list .wine-card-body h3 { min-height: 0; }
+.wine-list .wine-facts { margin-top: 7px; }
+.wine-list .wine-window { margin-top: 10px; }
+.wine-list .wine-card-actions { margin-top: 12px; }
+.wine-list .wine-action-primary { flex: 0 1 210px; margin-right: auto; }
+.wine-list .wine-location { max-width: 200px; }
+.cellar-discovery { display: grid; grid-template-columns: 1.15fr 1fr; gap: 22px; margin: 29px 0 37px; }
+.sommelier-teaser { border: 1px solid #dce2cf; background: #e8ecde; border-radius: 7px; padding: 25px; position: relative; }
+.teaser-icon { position: absolute; right: 22px; top: 23px; color: #7d8e65; }
+.sommelier-teaser h2 { font: 28px/1.2 var(--serif); letter-spacing: -.7px; margin: 14px 0 10px; }
+.sommelier-teaser > div > p:not(.eyebrow) { max-width: 275px; font-size: 11px; line-height: 1.8; color: #657557; }
+.sommelier-teaser > button { margin-top: 19px; background: transparent; color: var(--ink); border: 0; border-bottom: 1px solid #a7b497; border-radius: 0; padding: 0 0 6px; }
+.next-bottle { display: flex; align-items: center; text-align: left; gap: 18px; border: 1px solid var(--line); border-radius: 7px; background: #f0efe6; padding: 24px; }
+.next-bottle > .bottle-portrait { height: 170px; width: 75px; flex-shrink: 0; }
+.next-bottle > span { display: flex; flex-direction: column; gap: 11px; }
+.next-bottle strong { font: 25px/1.2 var(--serif); letter-spacing: -.7px; }
+.next-bottle > span > span:not(.eyebrow):not(.maturity-label) { font-size: 10px; color: var(--muted); }
+.next-bottle .maturity-label { font-size: 9px; }
+.next-bottle > svg { margin-left: auto; flex-shrink: 0; }
+.discovery-pairing { background: #e8ecde; border: 1px solid #dce2cf; border-radius: 7px; padding: 28px; position: relative; overflow: hidden; }
+.discovery-pairing > svg { position: absolute; width: 94px; height: 94px; right: -17px; bottom: 10px; color: #a4b08b; opacity: .25; stroke-width: .6; transform: rotate(14deg); }
+.discovery-pairing h3, .discovery-bottle h3 { font: 27px/1.2 var(--serif); letter-spacing: -.7px; margin-top: 11px; }
+.discovery-pairing > p:not(.eyebrow) { max-width: 270px; font-size: 10px; line-height: 1.8; color: #6e7b60; margin: 11px 0 17px; }
+.discovery-pairing button { display: inline-flex; gap: 13px; align-items: center; font-size: 10px; border-bottom: 1px solid #a7b497; padding-bottom: 4px; }
+.discovery-bottle { border: 1px solid var(--line); background: #f1f0e7; border-radius: 7px; padding: 25px; display: flex; gap: 18px; align-items: center; text-align: left; }
+.discovery-bottle > .bottle-portrait { width: 75px; height: 155px; flex-shrink: 0; }
+.discovery-bottle h3 { font-size: 23px; }
+.discovery-bottle p:not(.eyebrow) { font-size: 9px; margin: 10px 0; color: #737a69; }
+.discovery-bottle .text-button { margin-top: 10px; }
+.journal-hero .hero-photograph { height: 280px; }
+.history-label { display: inline-flex; align-items: center; gap: 5px; color: #6d7860; font-size: 8px; }
+.history-gifted { color: #967866; }
+.journal-card-note { font: italic 13px/1.6 var(--serif); color: #787c6b; margin: 0 0 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 42px; }
+.journal-page .wine-card-body { flex: 1; }
+.journal-page .collection-wine-card { display: flex; flex-direction: column; }
+.journal-page .wine-card-actions { margin-top: auto; }
+.journal-page .wine-window { margin-bottom: 14px; }
+.journal-page .wine-list .collection-wine-card { display: grid; }
+.journal-page .wine-list .wine-card-actions { margin-top: 14px; }
+.flint-footer { display: flex; gap: 15px; align-items: center; margin: 0 44px; padding: 24px 0 30px; border-top: 1px solid var(--line); color: #7e8674; }
+.flint-footer > span { font: 24px var(--serif); color: var(--ink); letter-spacing: -1px; }
+.flint-footer p { font-size: 8px; }
+.flint-footer > a { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 8px; }
+.flint-alert { border: 1px solid #d6b5b2; background: #f5e9e5; color: #793d47; border-radius: 6px; padding: 13px 15px; margin: 12px 0 18px; font-size: 12px; line-height: 1.6; }
+.flint-alert button { margin-left: 12px; text-decoration: underline; }
+.shell-alert { margin: 20px 44px; }
+.flint-toast { position: fixed; bottom: 24px; left: calc(50% + 109px); transform: translateX(-50%); z-index: 65; padding: 15px 18px; display: flex; align-items: center; gap: 12px; background: var(--olive); color: white; border: 1px solid #7c886d; border-radius: 7px; box-shadow: 0 8px 32px #24372226; font-size: 12px; max-width: calc(100vw - 32px); }
+.flint-toast button { margin-left: 12px; }
+.collection-empty { padding: 70px 20px; text-align: center; background: #efefe5; border: 1px dashed #c9cebd; border-radius: 7px; }
+.collection-empty > svg { margin: auto; color: #899778; }
+.collection-empty h3 { font: 28px var(--serif); margin-top: 18px; }
+.collection-empty p { color: #77806c; font-size: 12px; margin: 12px 0 20px; }
+.wine-skeleton { border: 1px solid var(--line); border-radius: 7px; padding: 7px; height: 390px; animation: soft-pulse 1.6s infinite; }
+.wine-skeleton > div { height: 220px; border-radius: 4px; background: #e7e9df; }
+.wine-skeleton > span { display: block; height: 15px; width: 70%; margin: 24px 12px; background: #e7e9df; border-radius: 3px; }
+.wine-skeleton > span:last-child { width: 45%; margin-top: 0; }
+@keyframes soft-pulse { 50% { opacity: .4; } }
+.flint-dialog { padding: 40px; border: 1px solid #d4d7c7; border-radius: 13px; color: var(--ink); background: #faf9f3; width: min(540px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); box-shadow: 0 24px 100px #14241833; }
+.flint-dialog::backdrop { background: #182b23a6; backdrop-filter: blur(5px); }
+.dialog-wide { width: min(810px, calc(100vw - 32px)); }
+.dialog-close { position: absolute; top: 10px; right: 10px; z-index: 2; background: #faf9f3bd; }
+.flint-dialog h2 { font: 36px/1.1 var(--serif); letter-spacing: -1px; margin-top: 15px; }
+.dialog-description { font-size: 12px; color: var(--muted); margin: 16px 0 24px; line-height: 1.7; }
+.drink-form { display: grid; gap: 19px; }
+.drink-form label { font-size: 12px; }
+.drink-form :is(input, select, textarea) { display: block; width: 100%; margin-top: 8px; padding: 12px; background: #fffef9; border: 1px solid #d4d9c7; border-radius: 5px; font-size: 13px; }
+.drink-form small { display: block; font-size: 10px; color: var(--muted); margin-top: 6px; }
+.drink-form textarea { resize: vertical; }
+.drink-form .flint-button { margin-top: 4px; }
+.add-options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.add-options button { position: relative; display: flex; flex-direction: column; align-items: flex-start; padding: 24px 18px; border: 1px solid #d6dcc9; border-radius: 7px; background: #efefe5; text-align: left; }
+.add-options button:hover { background: #e5e9da; border-color: #a9b69a; }
+.add-options strong { font: 20px var(--serif); margin-top: 27px; }
+.add-options span { font-size: 10px; color: #78826b; margin-top: 8px; line-height: 1.6; }
+.add-options svg:last-child { position: absolute; top: 21px; right: 18px; }
+.wine-detail { display: grid; grid-template-columns: 190px 1fr; gap: 30px; }
+.wine-detail > .bottle-portrait { height: 340px; padding: 30px; background: #ecede1; border-radius: 7px; position: sticky; top: 0; }
+.wine-detail h2 { font-size: 32px; }
+.detail-style { display: flex; gap: 12px; align-items: center; font-size: 11px; margin: 15px 0 24px; color: var(--muted); }
+.wine-detail dl { display: grid; grid-template-columns: 1fr 1fr; gap: 17px; border-block: 1px solid var(--line); padding: 20px 0; margin: 20px 0; }
+.wine-detail dt { font-size: 8px; text-transform: uppercase; letter-spacing: 1px; color: #7b846f; margin-bottom: 5px; }
+.wine-detail dd { font-size: 12px; overflow-wrap: anywhere; }
+.detail-note { margin: 20px 0; }
+.detail-note h3 { font-size: 10px; margin-bottom: 7px; font-weight: 600; }
+.detail-note p { color: #77806e; font-size: 12px; line-height: 1.8; white-space: pre-wrap; }
+.detail-actions { display: flex; gap: 10px; margin-top: 25px; flex-wrap: wrap; }
+.session-loading, .session-empty { min-height: 65vh; display: flex; flex-direction: column; gap: 18px; align-items: center; justify-content: center; text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
+.session-loading > svg { width: 35px; color: var(--olive); }
+.session-empty h1 { font: 35px var(--serif); color: var(--ink); }
+.btn-primary { background: var(--olive); color: white; border-radius: 5px; font-size: 13px; }
+.btn-primary:hover { background: #3d5444; }
+.btn-secondary { background: #e7eadd; color: var(--ink); border-radius: 5px; font-size: 13px; }
+.btn-secondary:hover { background: #dbe1cd; }
+.input-field, .select-field { border-color: #d5dac9; background: #fffef9; font-size: 13px; border-radius: 5px; }
+.input-field:focus, .select-field:focus { --tw-ring-color: #728666; }
+.legacy-modal { background: #182b23a6; backdrop-filter: blur(5px); }
+.legacy-modal > div { border-radius: 12px; background: #faf9f3; box-shadow: 0 24px 100px #14241833; }
+.legacy-modal h2 { font-family: var(--serif); font-weight: 400; font-size: 29px; color: var(--ink); }
+.legacy-modal label { font-size: 12px; }
+.auth-layout { min-height: 100dvh; display: grid; grid-template-columns: 1fr 1fr; padding: 18px; gap: 18px; background: var(--paper); }
+.auth-photograph { position: relative; border-radius: 10px; overflow: hidden; min-height: 620px; background: var(--olive); }
+.auth-photograph > img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; }
+.auth-photograph::after { content: ''; position: absolute; inset: 0; background: linear-gradient(#172a2445, transparent 40%, #172a24b3); }
+.auth-brand { position: absolute; top: 42px; left: 38px; z-index: 1; color: #faf7e8; }
+.auth-quote { position: absolute; z-index: 1; bottom: 54px; left: 50px; right: 35px; color: #faf7e8; }
+.auth-quote h2 { font: 52px/1.07 var(--serif); letter-spacing: -2px; }
+.auth-quote p { margin-top: 22px; font-size: 8px; letter-spacing: 2px; }
+.auth-panel { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 50px 35px; }
+.auth-form { width: 100%; max-width: 345px; }
+.auth-form > .eyebrow { margin-bottom: 22px; }
+.auth-form h1 { font: 43px/1.1 var(--serif); letter-spacing: -1.5px; }
+.auth-description { margin: 16px 0 33px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+.auth-form form { display: grid; gap: 20px; }
+.auth-form label { display: block; font-size: 11px; margin-bottom: 8px; }
+.auth-form input { padding: 13px 12px; }
+.auth-form .flint-button { margin-top: 9px; padding: 14px; }
+.auth-reset-link { margin-top: 23px; text-align: center; font-size: 11px; color: #6f765f; }
+.auth-reset-link a:hover { color: var(--burgundy); text-decoration: underline; }
+.auth-access-note { font-size: 10px; color: #7a8370; line-height: 1.8; padding-top: 30px; border-top: 1px solid var(--line); margin-top: 32px; text-align: center; }
+.auth-signature { font: italic 17px var(--serif); color: #92977e; margin-top: 65px; }
+.flint-subpage { padding: 38px 44px; min-height: calc(100vh - 165px); }
+.subpage-heading { margin-bottom: 30px; }
+.subpage-heading h1 { font: 45px/1.1 var(--serif); letter-spacing: -1.5px; margin-top: 15px; }
+.subpage-heading > p:last-child:not(:first-child) { font-size: 12px; line-height: 1.8; color: var(--muted); margin-top: 16px; max-width: 460px; }
+.sommelier-chat { background: #fffef9; border: 1px solid var(--line); border-radius: 10px; padding: 24px; height: 58vh; min-height: 350px; display: flex; flex-direction: column; font-size: 13px; }
+.sommelier-inventory { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 24px; }
+.sommelier-inventory h2 { font: 26px var(--serif); }
+.trivia-page { min-height: calc(100vh - 165px); padding: 30px 10px; background: transparent; }
+.trivia-page h1 { font-family: var(--serif); font-weight: 400; letter-spacing: -.8px; }
+.trivia-page > div > .bg-white { background: #fffef9; border: 1px solid var(--line); box-shadow: 0 4px 24px #293b3106; border-radius: 10px; }
+.map-frame { overflow: hidden; border: 1px solid var(--line); border-radius: 10px; }
+@media (min-width: 1550px) {
+  .hero-copy h1 { font-size: 70px; }
+  .hero-photograph { height: 365px; }
+  .wine-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 1190px) {
+  .flint-sidebar { width: 192px; padding-inline: 15px; }
+  .flint-main { margin-left: 192px; }
+  .flint-topbar, .flint-footer { margin-inline: 30px; }
+  .collection-page, .flint-subpage { padding-inline: 30px; }
+  .cellar-hero { gap: 24px; }
+  .hero-copy h1 { font-size: 45px; letter-spacing: -2px; }
+  .hero-actions { gap: 15px; }
+  .hero-photograph { height: 300px; }
+  .hero-actions .text-button { font-size: 9px; }
+  .cellar-metric { padding-inline: 15px; }
+  .metric-top { font-size: 9px; gap: 7px; }
+  .cellar-metric p { font-size: 7px; }
+  .wine-grid { gap: 15px; }
+  .wine-image-wrap { height: 200px; }
+  .wine-card-body { padding-inline: 13px; }
+  .wine-card-body h3 { font-size: 19px; min-height: 47px; }
+  .wine-window { flex-wrap: wrap; height: auto; min-height: 25px; }
+  .wine-location { max-width: 100%; }
+  .cellar-discovery { gap: 15px; }
+  .discovery-pairing, .discovery-bottle { padding: 22px; }
+  .flint-toast { left: calc(50% + 96px); }
+}
+@media (max-width: 980px) {
+  .hero-copy h1 { font-size: 39px; }
+  .hero-description { font-size: 11px; }
+  .hero-photograph { height: 290px; }
+  .hero-actions { margin-top: 18px; }
+  .wine-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .wine-image-wrap { height: 230px; }
+  .wine-card-body h3 { font-size: 23px; min-height: 56px; }
+  .metric-top { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .cellar-metric strong { font-size: 34px; }
+  .cellar-metric p { display: none; }
+  .collection-toolbar { flex-wrap: wrap; }
+  .collection-search { flex-basis: 100%; }
+  .toolbar-controls { width: 100%; height: 39px; }
+  .view-switch { margin-left: auto; }
+  .expanded-filters { grid-template-columns: 1fr 1fr; }
+  .ready-filter { font-size: 0; gap: 0; padding: 7px; }
+  .ready-filter svg { width: 15px; height: 15px; }
+  .ready-filter svg:last-child:not(:first-child) { margin-left: 5px; width: 11px; }
+  .collection-tabs { gap: 14px; }
+  .style-tabs { gap: 20px; }
+  .cellar-discovery { grid-template-columns: 1fr; }
+  .cellar-indicator { display: none; }
+  .auth-quote { left: 30px; }
+  .auth-quote h2 { font-size: 43px; }
+  .auth-panel { padding-inline: 25px; }
+}
+@media (max-width: 760px) {
+  .flint-sidebar { transform: translateX(-100%); transition: transform .25s ease; width: 235px; padding: 35px 22px 22px; z-index: 60; }
+  .flint-sidebar.is-open { transform: translateX(0); }
+  .sidebar-note { padding-top: 30px; }
+  .sidebar-backdrop { display: block; position: fixed; inset: 0; background: #15282080; backdrop-filter: blur(2px); z-index: 55; }
+  .flint-main { margin-left: 0; }
+  .flint-topbar { height: 68px; margin: 0 24px; }
+  .mobile-menu { display: inline-flex; width: 27px; margin-left: -4px; }
+  .topbar-path { gap: 12px; }
+  .topbar-path > span:last-child { font-size: 10px; }
+  .account-name { max-width: 105px; font-size: 9px; }
+  .account-menu summary { gap: 7px; }
+  .account-avatar { width: 28px; height: 28px; }
+  .collection-page { padding: 30px 24px 0; }
+  .cellar-hero { grid-template-columns: 1fr 1fr; gap: 22px; }
+  .hero-copy h1 { font-size: 40px; }
+  .hero-copy .eyebrow { font-size: 7px; letter-spacing: 1.3px; }
+  .hero-photograph { height: 295px; }
+  .hero-actions .text-button { display: none; }
+  .cellar-metrics { margin: 28px 0 32px; padding: 22px 0; }
+  .metric-top { font-size: 9px; }
+  .collection-heading h2 { font-size: 29px; }
+  .wine-image-wrap { height: 245px; }
+  .wine-card-body { padding-inline: 17px; }
+  .flint-footer { margin-inline: 24px; }
+  .flint-toast { left: 50%; width: max-content; }
+  .flint-subpage { padding: 30px 24px; }
+  .flint-dialog { padding: 36px 26px 26px; }
+  .wine-detail { grid-template-columns: 150px 1fr; gap: 24px; }
+  .wine-detail > .bottle-portrait { height: 285px; padding: 25px; }
+  .auth-layout { padding: 12px; gap: 0; grid-template-columns: 1fr; }
+  .auth-photograph { min-height: 200px; max-height: 240px; }
+  .auth-photograph > img { object-position: center 51%; }
+  .auth-photograph::after { background: linear-gradient(90deg, #182e26aa, transparent); }
+  .auth-brand { top: 24px; left: 20px; }
+  .auth-quote { left: 30px; bottom: 22px; }
+  .auth-quote h2 { font-size: 26px; letter-spacing: -.8px; }
+  .auth-quote p { display: none; }
+  .auth-panel { padding: 38px 25px 20px; }
+  .auth-form h1 { font-size: 37px; }
+  .auth-form > .eyebrow { margin-bottom: 14px; }
+  .auth-signature { margin-top: 30px; }
+  .subpage-heading h1 { font-size: 36px; }
+}
+@media (max-width: 520px) {
+  .flint-topbar { margin-inline: 20px; }
+  .account-name { display: none; }
+  .collection-page { padding: 28px 20px 0; }
+  .cellar-hero { grid-template-columns: 1fr; gap: 27px; }
+  .hero-copy h1 { font-size: 48px; letter-spacing: -2px; margin-top: 18px; margin-bottom: 14px; }
+  .hero-description { font-size: 12px; max-width: 310px; }
+  .hero-actions { margin-top: 21px; gap: 14px; }
+  .hero-actions .text-button { display: inline-flex; font-size: 9px; }
+  .hero-photograph { height: 225px; }
+  .hero-photograph img { object-position: center 56%; }
+  .photo-caption { padding: 35px 18px 15px; }
+  .journal-hero .hero-photograph { height: 180px; }
+  .cellar-metrics { grid-template-columns: 1fr 1fr; row-gap: 24px; padding: 24px 0; }
+  .cellar-metric { padding-inline: 18px; }
+  .cellar-metric:nth-child(3) { padding-left: 0; border: 0; }
+  .metric-top { flex-direction: row; align-items: center; font-size: 9px; }
+  .metric-top svg { width: 15px; height: 15px; }
+  .cellar-metric strong { font-size: 37px; margin-top: 8px; }
+  .cellar-metric p { display: block; font-size: 7px; }
+  .collection-heading { gap: 10px; align-items: flex-end; }
+  .collection-heading h2 { font-size: 27px; max-width: 210px; gap: 8px; flex-wrap: wrap; }
+  .collection-heading .eyebrow { font-size: 6px; letter-spacing: 1.2px; }
+  .collection-heading .flint-button { padding: 10px 11px; font-size: 9px; gap: 5px; }
+  .collection-heading .flint-button svg { width: 14px; }
+  .collection-heading h2 > span { font-size: 8px; }
+  .wine-grid { grid-template-columns: 1fr; gap: 21px; }
+  .wine-image-wrap { height: 260px; }
+  .wine-card-body { padding: 21px 22px 0; }
+  .wine-card-body h3 { font-size: 28px; min-height: auto; margin-top: 10px; }
+  .wine-origin { font-size: 8px; }
+  .wine-facts { font-size: 11px; margin-top: 13px; }
+  .wine-window { flex-wrap: nowrap; min-height: 16px; font-size: 9px; }
+  .wine-action-primary { font-size: 11px; padding-block: 17px; }
+  .wine-style-badge { font-size: 9px; padding: 5px 8px; }
+  .wine-list .collection-wine-card { grid-template-columns: 90px 1fr; }
+  .wine-list .wine-card-body { padding: 16px 13px 0 8px; }
+  .wine-list .wine-card-body h3 { font-size: 21px; }
+  .wine-list .wine-origin { font-size: 6px; letter-spacing: .6px; }
+  .wine-list .wine-facts { font-size: 9px; gap: 8px; }
+  .wine-list .wine-facts > span + span { padding-left: 8px; }
+  .wine-list .wine-window { flex-wrap: wrap; font-size: 8px; min-height: 30px; }
+  .wine-list .wine-action-primary { font-size: 9px; gap: 4px; }
+  .wine-list .wine-action-primary > svg:last-child { display: none; }
+  .wine-list .wine-more summary { width: 24px; }
+  .wine-list .coravin-badge { font-size: 6px; left: 5px; }
+  .wine-detail { grid-template-columns: 1fr; }
+  .wine-detail > .bottle-portrait { position: static; height: 225px; padding: 18px; }
+  .wine-detail h2 { font-size: 31px; }
+  .flint-dialog h2 { font-size: 32px; }
+  .flint-dialog { padding: 35px 22px 24px; }
+  .add-options { gap: 10px; }
+  .add-options button { padding: 21px 13px; }
+  .add-options strong { font-size: 19px; }
+  .add-options span { font-size: 9px; }
+  .discovery-pairing { padding: 25px; }
+  .discovery-bottle { padding: 21px; gap: 15px; }
+  .discovery-bottle h3 { font-size: 25px; }
+  .flint-footer { margin-inline: 20px; flex-wrap: wrap; gap: 10px; }
+  .flint-footer > a { font-size: 7px; }
+  .flint-footer p { font-size: 7px; }
+  .flint-subpage { padding-inline: 20px; }
+  .sommelier-chat { padding: 14px; }
+  .shell-alert { margin-inline: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

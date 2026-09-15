@@ -105,16 +105,15 @@ export default function SommelierPage() {
   const placeholder = isPortugueseMode ? 'O que você vai comer/ocasião/humor/clima?' : 'What are you eating/occasion/mood/weather?';
 
   return (
-    <div className="min-h-screen bg-red-900">
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent">{headerTitle}</h1>
-          <a href="/" className="text-sm text-red-700">{isPortugueseMode ? 'Voltar para Adega' : 'Back to Cellar'}</a>
-        </div>
+    <div className="flint-subpage">
+      <header className="subpage-heading">
+        <p className="eyebrow">{isPortugueseMode ? 'SEU SOMMELIER PESSOAL' : 'YOUR SOMMELIER, ON CALL'}</p>
+        <h1>{isPortugueseMode ? 'O que vai bem com hoje?' : 'What pairs with today?'}</h1>
+        <p>{isPortugueseMode ? 'Conte sobre o prato, a ocasião ou seu humor. Vamos encontrar a garrafa certa na sua adega.' : 'Tell us about the meal, the occasion, or your mood. We’ll find a bottle from your cellar to match.'}</p>
       </header>
 
-      <main className="max-w-4xl mx-auto p-4">
-        <div className="bg-white rounded-lg shadow p-4 h-[70vh] flex flex-col">
+      <main className="max-w-5xl">
+        <div className="sommelier-chat">
           <div className="flex-1 overflow-y-auto space-y-3">
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -136,14 +135,15 @@ export default function SommelierPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); } }}
-              className="flex-1 input-field"
+              className="flex-1 min-w-0 input-field"
+              aria-label={isPortugueseMode ? "Pergunte ao sommelier" : "Ask the sommelier"}
               placeholder={placeholder}
               disabled={loading || pending}
             />
             <button
               onClick={submit}
               disabled={loading || pending || !input.trim()}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors inline-flex items-center"
+              className="flint-button"
               title={isPortugueseMode ? 'Enviar' : 'Send'}
             >
               {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
@@ -151,7 +151,7 @@ export default function SommelierPage() {
           </div>
         </div>
 
-        <div className="mt-4 bg-white rounded-lg shadow p-4">
+        <div className="sommelier-inventory">
           <div className="flex items-center mb-2">
             <WineIcon className="h-5 w-5 text-red-600 mr-2" />
             <h2 className="text-lg font-semibold text-gray-900">{isPortugueseMode ? 'Sua Adega (disponíveis)' : 'Your Cellar (available)'}</h2>

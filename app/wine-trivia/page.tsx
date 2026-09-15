@@ -135,7 +135,7 @@ export default function WineTriviaPage() {
 
   if (showSetSelection) {
     return (
-      <div className="min-h-screen bg-red-900 flex items-center justify-center">
+      <div className="trivia-page flex items-center justify-center">
         <div className="max-w-2xl mx-auto px-4">
           <div className="bg-white rounded-lg shadow-xl p-8">
             <div className="text-center mb-6">
@@ -191,7 +191,7 @@ export default function WineTriviaPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-red-900 flex items-center justify-center">
+      <div className="trivia-page flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
           <p className="mt-4 text-white">Loading trivia questions...</p>
@@ -202,7 +202,7 @@ export default function WineTriviaPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-red-900 flex items-center justify-center">
+      <div className="trivia-page flex items-center justify-center">
         <div className="max-w-md mx-auto px-4">
           <div className="bg-white rounded-lg shadow-xl p-8 text-center">
             <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -232,7 +232,7 @@ export default function WineTriviaPage() {
 
   if (questions.length === 0) {
     return (
-      <div className="min-h-screen bg-red-900 flex items-center justify-center">
+      <div className="trivia-page flex items-center justify-center">
         <div className="max-w-md mx-auto px-4">
           <div className="bg-white rounded-lg shadow-xl p-8 text-center">
             <div className="h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">

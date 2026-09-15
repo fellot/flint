@@ -7,7 +7,7 @@ import { X, Wine as WineIcon } from 'lucide-react';
 interface AddWineModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddWine: (wineData: WineFormData) => void;
+  onAddWine: (wineData: WineFormData) => void | Promise<void>;
 }
 
 export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModalProps) {
@@ -30,6 +30,8 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
     bottle_image: '',
   });
 
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -65,38 +67,20 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (validateForm()) {
-      onAddWine(formData);
-      // Reset form
-      setFormData({
-        bottle: '',
-        country: '',
-        region: '',
-        vintage: new Date().getFullYear(),
-        peakYear: new Date().getFullYear() + 5,
-        drinkingWindow: '',
-        foodPairingNotes: '',
-        mealToHaveWithThisWine: '',
-        style: '',
-        grapes: '',
-        location: '',
-        quantity: 1,
-        price: undefined,
-        notes: '',
-        technical_sheet: '',
-        bottle_image: '',
-      });
-      setErrors({});
-    }
+    if (saving || !validateForm()) return;
+    setSaving(true);
+    setSaveError('');
+    try { await onAddWine(formData); onClose(); }
+    catch (error) { setSaveError(error instanceof Error ? error.message : 'Unable to add wine.'); }
+    finally { setSaving(false); }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div className="legacy-modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-10 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center space-x-3">
@@ -113,6 +97,7 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
           </button>
         </div>
 
+        {saveError && <p role="alert" className="flint-alert">{saveError}</p>}
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -409,7 +394,7 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
               Cancel
             </button>
             <button
-              type="submit"
+              type="submit" disabled={saving}
               className="btn-primary"
             >
               Add Wine

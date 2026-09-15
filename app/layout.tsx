@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
+import './cellar.css';
 import CellarSession from '@/components/CellarSession';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -23,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="min-h-screen bg-red-900">
+        <div className="min-h-screen">
           <CellarSession>{children}</CellarSession>
         </div>
         <Analytics />

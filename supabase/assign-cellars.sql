@@ -10,6 +10,7 @@ begin
   for assignment in
     select * from (values
       ('1', 'felipeloturco@gmail.com'),
+      ('1', 'alicepaik@gmail.com'),
       ('2', 'loturco.pa@uol.com.br'),
       ('3', 'lorenzocecchini@gmail.com')
     ) as assignments(cellar_id, email)

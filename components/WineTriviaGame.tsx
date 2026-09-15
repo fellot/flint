@@ -141,7 +141,7 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
 
   if (!gameStarted) {
     return (
-      <div className="min-h-screen bg-red-900 flex items-center justify-center">
+      <div className="trivia-page flex items-center justify-center">
         <div className="max-w-2xl mx-auto px-4">
           <div className="bg-white rounded-lg shadow-xl p-8 text-center">
             <div className="mb-6">
@@ -212,7 +212,7 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
 
   if (gameCompleted) {
     return (
-      <div className="min-h-screen bg-red-900 flex items-center justify-center">
+      <div className="trivia-page flex items-center justify-center">
         <div className="max-w-2xl mx-auto px-4">
           <div className="bg-white rounded-lg shadow-xl p-8 text-center">
             <div className="mb-6">
@@ -282,7 +282,7 @@ export default function WineTriviaGame({ questions, setInfo, onGameComplete, onS
   }
 
   return (
-    <div className="min-h-screen bg-red-900">
+    <div className="trivia-page">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">

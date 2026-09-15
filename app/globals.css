@@ -8,7 +8,8 @@
   }
 
   body {
-    @apply bg-red-900 text-gray-900;
+    @apply text-gray-900;
+    background: #f7f6f0;
   }
 }
 

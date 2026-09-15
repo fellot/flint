@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import CellarShell from './CellarShell';
+import FlintMark from './FlintMark';
 import type { Cellar } from '@/types/database';
 import { PUBLIC_PAGES } from '@/lib/auth/redirect';
 
@@ -49,18 +51,14 @@ export default function CellarSession({ children }: { children: React.ReactNode 
   }
 
   if (skip) return <>{children}</>;
-  if (!session) return <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-6 text-white"><p role={error ? 'alert' : 'status'}>{error || 'Opening your cellar…'}</p>{error && <button className="underline" onClick={() => window.location.reload()}>Try again</button>}</div>;
-  const pt = session.cellar?.locale === 'pt';
+  if (!session) return <div className="session-loading"><FlintMark /><p role={error ? 'alert' : 'status'}>{error || 'Opening your cellar…'}</p>{error && <button className="flint-button" onClick={() => window.location.reload()}>Try again</button>}</div>;
   return (
     <Context.Provider value={session.cellar}>
-      <div className="border-b border-red-800 bg-red-950 px-4 py-2 text-sm text-white">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
-          {session.cellars.length > 1 ? <label className="flex items-center gap-2"><span>{pt ? 'Adega' : 'Cellar'}</span><select aria-label={pt ? 'Selecionar adega' : 'Select cellar'} disabled={pending} value={session.cellar?.id} onChange={e => accountAction('/api/auth/cellar', { cellarId: e.target.value }, '/')} className="rounded border border-red-700 bg-red-900 px-2 py-1">{session.cellars.map(cellar => <option key={cellar.id} value={cellar.id}>{cellar.name}</option>)}</select></label> : <span>{session.cellar?.name || 'Flint Cellar'}</span>}
-          <div className="flex items-center gap-3"><span className="hidden sm:inline text-red-100">{session.user.email}</span><button disabled={pending} onClick={() => accountAction('/api/auth/logout', {}, '/login')} className="rounded border border-red-700 px-3 py-1 hover:bg-red-900 disabled:opacity-60">{pt ? 'Sair' : 'Sign out'}</button></div>
-        </div>
-        {error && <p role="alert" className="mx-auto mt-2 max-w-7xl text-red-100">{error}</p>}
-      </div>
-      {session.cellar ? children : <main className="mx-auto max-w-lg px-6 py-20 text-center text-white"><h1 className="mb-3 text-2xl font-semibold">Your account is ready</h1><p>Ask your cellar owner to assign your account to a cellar, then refresh this page.</p><button onClick={() => window.location.reload()} className="mt-6 underline">Refresh</button></main>}
+      <CellarShell pathname={pathname} cellar={session.cellar} cellars={session.cellars} email={session.user.email} pending={pending} error={error}
+        onSwitch={id => accountAction('/api/auth/cellar', { cellarId: id }, '/')}
+        onSignOut={() => accountAction('/api/auth/logout', {}, '/login')}>
+        {session.cellar ? children : <main className="session-empty"><p className="eyebrow">WELCOME TO FLINT</p><h1>Your next chapter starts here.</h1><p>Ask your cellar owner to assign your account to a cellar, then refresh this page.</p><button onClick={() => window.location.reload()} className="flint-button">Refresh</button></main>}
+      </CellarShell>
     </Context.Provider>
   );
 }
