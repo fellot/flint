@@ -514,7 +514,7 @@
     "quantity": 1,
     "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf3-FMGbpaHQQIj1Qy27U3ql1zfpGOV9rMjQ&s",
     "dataSource": "1",
-    "coravin": true,
+    "coravin": false,
     "coravinDate": "2026-01-10"
   },
   {
