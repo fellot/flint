@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, BookOpen, ChevronDown, Compass, LayoutGrid, LogOut, Menu, Sparkles, Wine, X } from 'lucide-react';
 import type { Cellar } from '@/types/database';
 import FlintMark from './FlintMark';
@@ -19,6 +19,34 @@ interface Props {
 
 export default function CellarShell({ children, pathname, cellar, cellars, email, pending, error, onSwitch, onSignOut }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const sidebar = useRef<HTMLElement>(null);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const focusable = () => Array.from(sidebar.current?.querySelectorAll<HTMLElement>('a, button') || []);
+    focusable()[0]?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+      if (event.key === 'Tab') {
+        const items = focusable();
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
+    };
+    const onResize = () => { if (window.innerWidth > 760) setMenuOpen(false); };
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('resize', onResize);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('resize', onResize);
+      menuButton.current?.focus();
+    };
+  }, [menuOpen]);
   const pt = cellar?.locale === 'pt';
   const navigation = [
     { href: '/', label: pt ? 'Minha adega' : 'My cellar', icon: LayoutGrid },
@@ -30,7 +58,8 @@ export default function CellarShell({ children, pathname, cellar, cellars, email
   const pageName = navigation.find(item => item.href === pathname)?.label || 'Flint Cellar';
   return <div className="flint-shell">
     <a className="flint-skip" href="#main-content">{pt ? 'Ir para o conteúdo' : 'Skip to content'}</a>
-    <aside className={`flint-sidebar ${menuOpen ? 'is-open' : ''}`}>
+    <aside ref={sidebar} className={`flint-sidebar ${menuOpen ? 'is-open' : ''}`}>
+      <button className="mobile-sidebar-close icon-button" onClick={() => setMenuOpen(false)} aria-label={pt ? 'Fechar navegação' : 'Close navigation'}><X size={18} /></button>
       <a href="/" className="flint-brand" aria-label="Flint Cellar"><FlintMark /><span>flint<span className="brand-period">.</span><small>THE PERSONAL CELLAR</small></span></a>
       <p className="sidebar-label">{pt ? 'SEU ESPAÇO' : 'YOUR SPACE'}</p>
       <nav aria-label={pt ? 'Navegação principal' : 'Main navigation'}>
@@ -45,7 +74,7 @@ export default function CellarShell({ children, pathname, cellar, cellars, email
     {menuOpen && <button className="sidebar-backdrop" aria-label={pt ? 'Fechar menu' : 'Close menu'} onClick={() => setMenuOpen(false)} />}
     <div className="flint-main">
       <header className="flint-topbar">
-        <div className="topbar-path"><button className="mobile-menu icon-button" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={20} /> : <Menu size={20} />}</button><span className="topbar-brand">flint.</span><span className="path-divider">/</span><span>{pageName}</span></div>
+        <div className="topbar-path"><button ref={menuButton} className="mobile-menu icon-button" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={20} /> : <Menu size={20} />}</button><span className="topbar-brand">flint.</span><span className="path-divider">/</span><span>{pageName}</span></div>
         <div className="topbar-account">
           <span className="cellar-indicator"><span className="live-dot" />{pt ? 'Adega pessoal' : 'Personal cellar'}</span>
           <details className="account-menu"><summary><span className="account-avatar">{(email || cellar?.name || 'F').slice(0, 1).toUpperCase()}</span><span className="account-name">{cellar?.name || 'Flint Cellar'}</span><ChevronDown size={14} /></summary>
