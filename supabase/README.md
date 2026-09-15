@@ -28,7 +28,7 @@ Existing PINs do not become passwords. Give each account its own password, or us
 
 ## 3. Import the wines
 
-Use Node.js 22 or newer:
+Use Node.js 22.x:
 
 ```bash
 nvm use
@@ -75,7 +75,7 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-A legacy anon key is supported through `NEXT_PUBLIC_SUPABASE_ANON_KEY` instead of the publishable key. Add the same variables to the hosting environment, using the production origin for `NEXT_PUBLIC_SITE_URL`. These public variables are embedded at build time, so rebuild after changing them. Set the hosting runtime to Node.js 22 or newer. Existing AI features continue to use `OPENAI_API_KEY`.
+A legacy anon key is supported through `NEXT_PUBLIC_SUPABASE_ANON_KEY` instead of the publishable key. Add the same variables to the hosting environment, using the production origin for `NEXT_PUBLIC_SITE_URL`. These public variables are embedded at build time, so rebuild after changing them. Set the hosting runtime to Node.js 22.x, matching `package.json` and `.nvmrc`. Existing AI features continue to use `OPENAI_API_KEY`.
 
 `SITE_PIN`, `SITE_PIN_2`, `SITE_PIN_3`, `PIN_SALT`, and the GitHub storage variables are no longer used. JSON files are retained as migration source data and are never read or written by the wine API. Missing Supabase configuration denies access rather than falling back to local storage.
 

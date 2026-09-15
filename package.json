@@ -50,6 +50,6 @@
   "author": "Wine Enthusiast",
   "license": "MIT",
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   }
 }

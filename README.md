@@ -36,7 +36,7 @@ A modern wine inventory management system backed by Supabase Auth and Postgres b
 
 ## 🚀 Getting Started
 
-Requires **Node.js 22+** and a Supabase project. Follow the complete [Supabase setup and migration guide](supabase/README.md) before starting the app. It includes the SQL schema, account assignment, and import commands for all three existing cellars.
+Requires **Node.js 22.x** and a Supabase project. Follow the complete [Supabase setup and migration guide](supabase/README.md) before starting the app. It includes the SQL schema, account assignment, and import commands for all three existing cellars.
 
 ```bash
 nvm use
