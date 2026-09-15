@@ -5,7 +5,7 @@ export interface Wine {
   region: string;
   vintage: number;
   drinkingWindow: string;
-  peakYear: number;
+  peakYear: number | string;
   foodPairingNotes: string;
   mealToHaveWithThisWine: string;
   style: string;

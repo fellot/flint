@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useCellar } from '@/components/CellarSession';
 import { Wine } from '@/types/wine';
 import { Send, Wine as WineIcon, Loader2, Globe } from 'lucide-react';
 
 type Msg = { role: 'user' | 'assistant'; content: string };
 
 export default function SommelierPage() {
-  const [dataSource, setDataSource] = useState<'1'|'2'>('1');
-  const [isPortugueseMode, setIsPortugueseMode] = useState(false);
+  const { dataSource, isPortugueseMode } = useCellar();
   const [wines, setWines] = useState<Wine[]>([]);
   const [loading, setLoading] = useState(true);
   const [input, setInput] = useState('');
@@ -34,13 +34,13 @@ export default function SommelierPage() {
     try {
       setLoading(true);
       const res = await fetch(`/api/wines?dataSource=${dataSource}`);
+      if (!res.ok) throw new Error('Unable to load wines.');
       const json = await res.json();
       setWines(json);
     } catch (e) {
       console.error('Failed to load wines', e);
     } finally {
       setLoading(false);
-      setIsPortugueseMode(dataSource === '2');
     }
   };
 
@@ -103,27 +103,13 @@ export default function SommelierPage() {
 
   const headerTitle = isPortugueseMode ? 'Sommelier' : 'Sommelier';
   const placeholder = isPortugueseMode ? 'O que você vai comer/ocasião/humor/clima?' : 'What are you eating/occasion/mood/weather?';
-  const toggleLabelLeft = '🇨🇦';
-  const toggleLabelRight = '🇧🇷';
 
   return (
     <div className="min-h-screen bg-red-900">
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 via-red-700 to-red-800 bg-clip-text text-transparent">{headerTitle}</h1>
-          <div className="flex items-center space-x-3 px-4 py-2 bg-gray-100 rounded-lg">
-            <Globe className="h-5 w-5 text-gray-600" />
-            <span className={`text-2xl ${dataSource === '1' ? 'opacity-100' : 'opacity-50'}`}>{toggleLabelLeft}</span>
-            <button
-              onClick={() => setDataSource(prev => prev === '1' ? '2' : '1')}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                dataSource === '2' ? 'bg-green-600' : 'bg-gray-300'
-              }`}
-            >
-              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${dataSource === '2' ? 'translate-x-6' : 'translate-x-1'}`} />
-            </button>
-            <span className={`text-2xl ${dataSource === '2' ? 'opacity-100' : 'opacity-50'}`}>{toggleLabelRight}</span>
-          </div>
+          <a href="/" className="text-sm text-red-700">{isPortugueseMode ? 'Voltar para Adega' : 'Back to Cellar'}</a>
         </div>
       </header>
 

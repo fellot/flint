@@ -1,15 +1,20 @@
 {
   "name": "wine-inventory-manager",
   "version": "1.0.0",
-  "description": "A modern wine inventory management system with Git-based CMS",
+  "description": "Wine inventory management with Supabase Auth and Postgres",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit --incremental false",
+    "migrate:wines": "node --import tsx scripts/migrate-wines.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.116.0",
     "@types/leaflet": "^1.9.21",
     "@vercel/analytics": "^1.5.0",
     "autoprefixer": "^10.4.16",
@@ -20,16 +25,19 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.2.1",
+    "server-only": "^0.0.1",
     "tailwindcss": "^3.3.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "@types/node": "^20.8.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@types/xlsx": "^0.0.36",
     "eslint": "^8.51.0",
     "eslint-config-next": "^14.0.0",
+    "tsx": "^4.23.13",
     "typescript": "^5.2.0"
   },
   "keywords": [
@@ -40,5 +48,8 @@
     "git"
   ],
   "author": "Wine Enthusiast",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  }
 }

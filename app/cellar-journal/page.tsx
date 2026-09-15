@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { readResponse } from '@/lib/client-api';
+import { useCellar } from '@/components/CellarSession';
 import { Wine, WineFilters } from '@/types/wine';
 import { sanitizeWinePayload } from '@/utils/sanitizeWine';
 import CellarJournalWineTable from '@/components/CellarJournalWineTable';
@@ -22,25 +24,13 @@ export default function CellarJournal() {
     search: '',
   });
   const [loading, setLoading] = useState(true);
+  const [requestError, setRequestError] = useState('');
   const [expandedCountries, setExpandedCountries] = useState<Set<string>>(new Set());
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
   const [isAddExternalWineModalOpen, setIsAddExternalWineModalOpen] = useState(false);
   const [isAIWineModalOpen, setIsAIWineModalOpen] = useState(false);
-  const [dataSource, setDataSource] = useState<'1' | '2' | '3'>(() => {
-    if (typeof document !== 'undefined') {
-      const match = document.cookie.match(/(?:^|;\s*)data_source=([123])/);
-      return (match?.[1] as '1' | '2' | '3') || '1';
-    }
-    return '1';
-  });
-  const [isPortugueseMode, setIsPortugueseMode] = useState(() => {
-    if (typeof document !== 'undefined') {
-      const match = document.cookie.match(/(?:^|;\s*)data_source=([123])/);
-      return match?.[1] === '2' || match?.[1] === '3';
-    }
-    return false;
-  });
+  const { dataSource, isPortugueseMode } = useCellar();
 
   useEffect(() => {
     fetchWines();
@@ -63,14 +53,12 @@ export default function CellarJournal() {
       clearTimeout(timeoutId);
       console.log('Response status:', response.status);
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
       
-      const data = await response.json();
+      const data = await readResponse<Wine[]>(response);
       console.log('Wines fetched:', data.length);
       setWines(data);
     } catch (error) {
+      setRequestError(error instanceof Error ? error.message : 'Unable to load wines.');
       if (error instanceof Error && error.name === 'AbortError') {
         console.error('Request was aborted due to timeout');
       } else {
@@ -229,6 +217,7 @@ export default function CellarJournal() {
 
   const handleAddExternalWine = async (wineData: any) => {
     try {
+      setRequestError('');
       const sanitizedWineData = sanitizeWinePayload(wineData);
       const response = await fetch('/api/wines', {
         method: 'POST',
@@ -244,9 +233,7 @@ export default function CellarJournal() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to add external wine');
-      }
+      await readResponse(response);
 
       // Refresh the wines list
       await fetchWines();
@@ -258,6 +245,7 @@ export default function CellarJournal() {
 
   const handleWineUpdate = async (updatedWine: Wine) => {
     try {
+      setRequestError('');
       const sanitizedWine = sanitizeWinePayload(updatedWine);
       const response = await fetch(`/api/wines/${updatedWine.id}?dataSource=${dataSource}`, {
         method: 'PUT',
@@ -265,12 +253,11 @@ export default function CellarJournal() {
         body: JSON.stringify({ ...sanitizedWine, dataSource }),
       });
 
-      if (response.ok) {
-        const savedWine: Wine = await response.json();
-        setWines(prev => prev.map(w => w.id === savedWine.id ? savedWine : w));
-      }
+      const savedWine = await readResponse<Wine>(response);
+      setWines(prev => prev.map(w => w.id === savedWine.id ? savedWine : w));
     } catch (error) {
-      console.error('Error updating wine:', error);
+      setRequestError(error instanceof Error ? error.message : 'Unable to save changes.');
+      throw error;
     }
   };
 
@@ -285,11 +272,10 @@ export default function CellarJournal() {
         method: 'DELETE',
       });
 
-      if (response.ok) {
-        setWines(prev => prev.filter(w => w.id !== wineId));
-      }
+      await readResponse(response);
+      setWines(prev => prev.filter(w => w.id !== wineId));
     } catch (error) {
-      console.error('Error deleting wine:', error);
+      setRequestError(error instanceof Error ? error.message : 'Unable to delete wine.');
     }
   };
 
@@ -360,6 +346,7 @@ export default function CellarJournal() {
 
   return (
     <div className="min-h-screen bg-red-900">
+      {requestError && <p role="alert" className="bg-red-50 p-4 text-center text-sm text-red-800">{requestError}</p>}
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

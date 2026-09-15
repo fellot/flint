@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
+import { useCellar } from '@/components/CellarSession';
 import { Wine } from '@/types/wine';
 import { normalizeCountry } from '@/utils/regionCoordinates';
 import { Wine as WineIcon, MapPin, Calendar, Globe } from 'lucide-react';
@@ -11,17 +12,7 @@ const WineMapView = dynamic(() => import('@/components/WineMapView'), { ssr: fal
 export default function WineMapPage() {
   const [wines, setWines] = useState<Wine[]>([]);
   const [loading, setLoading] = useState(true);
-  const [dataSource, setDataSource] = useState('1');
-  const [isPortugueseMode, setIsPortugueseMode] = useState(false);
-
-  useEffect(() => {
-    if (typeof document !== 'undefined') {
-      const match = document.cookie.match(/(?:^|;\s*)data_source=([123])/);
-      const source = match?.[1] || '1';
-      setDataSource(source);
-      setIsPortugueseMode(source === '2' || source === '3');
-    }
-  }, []);
+  const { dataSource, isPortugueseMode } = useCellar();
 
   useEffect(() => {
     const fetchWines = async () => {

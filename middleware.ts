@@ -1,63 +1,46 @@
+import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
+import { getSupabaseConfig } from '@/lib/supabase/config';
+import { requestOrigin } from '@/lib/auth/request';
+import { PUBLIC_PAGES } from '@/lib/auth/redirect';
 
-// Paths that should bypass the PIN gate
-const PUBLIC_PATHS = [
-  '/pin',
-  '/api/pin',
-  '/favicon.ico',
-];
+const publicRoutes = [...PUBLIC_PAGES, '/auth/callback', '/api/auth/login', '/api/auth/forgot-password', '/api/auth/logout', '/api/pin'];
 
-function isBypassedPath(pathname: string) {
-  if (PUBLIC_PATHS.includes(pathname)) return true;
-  if (pathname.startsWith('/_next')) return true; // Next.js assets
-  if (pathname.startsWith('/public')) return true; // static assets
-  if (/\.(?:png|jpg|jpeg|svg|webp|gif|ico|txt|json|map|css|js)$/i.test(pathname)) return true;
-  return false;
-}
-
-async function sha256Hex(input: string): Promise<string> {
-  const data = new TextEncoder().encode(input);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const bytes = new Uint8Array(hashBuffer);
-  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-export async function middleware(req: NextRequest) {
-  const url = req.nextUrl;
-  const pathname = url.pathname;
-
-  // If no PIN is configured, allow all (avoids lockout in dev)
-  const pins = [
-    process.env.SITE_PIN || '',
-    process.env.SITE_PIN_2 || '',
-    process.env.SITE_PIN_3 || '',
-  ].filter(Boolean);
-  const salt = process.env.PIN_SALT || 'flint-static-salt';
-  if (pins.length === 0) {
-    return NextResponse.next();
+export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  const isPublic = publicRoutes.includes(pathname);
+  let response = NextResponse.next({ request });
+  let configuration;
+  try { configuration = getSupabaseConfig(); } catch {
+    if (isPublic) return response;
+    if (pathname.startsWith('/api/')) return NextResponse.json({ error: 'Supabase is not configured yet.' }, { status: 503 });
+    return NextResponse.redirect(new URL('/login', requestOrigin(request)));
   }
-
-  if (isBypassedPath(pathname)) {
-    return NextResponse.next();
+  const supabase = createServerClient(configuration.url, configuration.key, {
+    cookies: {
+      getAll: () => request.cookies.getAll(),
+      setAll: values => {
+        values.forEach(({ name, value }) => request.cookies.set(name, value));
+        response = NextResponse.next({ request });
+        values.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+      },
+    },
+  });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user && !isPublic) {
+    const target = new URL('/login', requestOrigin(request));
+    target.searchParams.set('redirect', pathname + request.nextUrl.search);
+    const denied = pathname.startsWith('/api/')
+      ? NextResponse.json({ error: 'Please sign in to continue.' }, { status: 401 })
+      : NextResponse.redirect(target);
+    // Preserve refreshed/cleared session cookies on redirects and API errors.
+    response.cookies.getAll().forEach(cookie => denied.cookies.set(cookie));
+    response = denied;
   }
-
-  const cookie = req.cookies.get('pin_auth')?.value || '';
-
-  // Check against all configured PIN tokens
-  if (cookie) {
-    for (const p of pins) {
-      const expected = await sha256Hex(p + ':' + salt);
-      if (cookie === expected) return NextResponse.next();
-    }
-  }
-
-  // Not authenticated: redirect to /pin with redirect target
-  const redirectUrl = new URL('/pin', req.url);
-  redirectUrl.searchParams.set('redirect', pathname + (url.search || ''));
-  return NextResponse.redirect(redirectUrl);
+  response.headers.set('Cache-Control', 'private, no-store');
+  return response;
 }
 
 export const config = {
-  matcher: ['/((?!_next|public|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|favicon.svg|images/).*)'],
 };
-

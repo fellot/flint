@@ -1,0 +1,52 @@
+// Kept in sync with supabase/migrations/20260915000000_cellars_and_wines.sql.
+export type Cellar = { id: string; name: string; locale: 'en' | 'pt'; created_at: string };
+export type WineRow = {
+  id: string;
+  cellar_id: string;
+  bottle: string;
+  country: string;
+  region: string;
+  vintage: number;
+  drinking_window: string;
+  peak_year: string;
+  food_pairing_notes: string;
+  meal_suggestion: string;
+  style: string;
+  grapes: string;
+  status: 'in_cellar' | 'consumed' | 'sold' | 'gifted';
+  consumed_date: string | null;
+  notes: string;
+  rating: number | null;
+  price: number | null;
+  location: string;
+  quantity: number;
+  technical_sheet_url: string | null;
+  bottle_image_url: string | null;
+  from_cellar: boolean;
+  coravin: boolean;
+  coravin_date: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type WineWrite = Omit<WineRow, 'id' | 'cellar_id' | 'created_at' | 'updated_at'>;
+type Table<Row, Insert, Update> = { Row: Row; Insert: Insert; Update: Update; Relationships: [] };
+type Membership = { cellar_id: string; user_id: string; created_at: string };
+export type Database = {
+  public: {
+    Tables: {
+      cellars: Table<Cellar, Omit<Cellar, 'created_at'>, Partial<Omit<Cellar, 'created_at'>>>;
+      cellar_members: Table<Membership, Omit<Membership, 'created_at'>, never>;
+      wines: Table<WineRow, WineWrite & { id?: string; cellar_id: string }, Partial<WineWrite>>;
+    };
+    Views: { [_ in never]: never };
+    Functions: {
+      consume_wine: {
+        Args: { p_cellar_id: string; p_wine_id: string; p_quantity: number; p_consumed_date: string; p_notes?: string; p_location?: string };
+        Returns: WineRow[];
+      };
+    };
+    Enums: { [_ in never]: never };
+    CompositeTypes: { [_ in never]: never };
+  };
+};

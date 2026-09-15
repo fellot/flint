@@ -1,5 +1,7 @@
 'use client';
 
+import { useCellar } from '@/components/CellarSession';
+
 import { useState, useEffect } from 'react';
 import WineTriviaGame from '@/components/WineTriviaGame';
 
@@ -30,6 +32,7 @@ interface TriviaResponse {
 }
 
 export default function WineTriviaPage() {
+  const { isPortugueseMode } = useCellar();
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
   const [setInfo, setSetInfo] = useState<SetInfo | null>(null);
   const [allSets, setAllSets] = useState<SetOption[]>([]);
@@ -81,11 +84,10 @@ export default function WineTriviaPage() {
     try {
       const completedSets = getCompletedSets();
       
-      // Detect language from URL or localStorage
+      // Use the assigned cellar locale unless the link specifies a language.
       const urlParams = new URLSearchParams(window.location.search);
       const languageParam = urlParams.get('language');
-      const storedLanguage = localStorage.getItem('wine-data-source');
-      const detectedPortuguese = languageParam === 'pt' || storedLanguage === '2';
+      const detectedPortuguese = languageParam ? languageParam === 'pt' : isPortugueseMode;
       setIsPortuguese(detectedPortuguese);
       
       let queryParams = completedSets.length > 0 

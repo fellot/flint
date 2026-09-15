@@ -8,12 +8,14 @@ interface WineModalProps {
   wine: Wine;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (wine: Wine) => void;
+  onSave: (wine: Wine) => void | Promise<void>;
   mode: 'edit' | 'view';
   locale?: 'en' | 'pt';
 }
 
 export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale = 'en' }: WineModalProps) {
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [formData, setFormData] = useState<Wine>(wine);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [originalLocation, setOriginalLocation] = useState<string>(wine.location);
@@ -29,7 +31,7 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'vintage' || name === 'peakYear' || name === 'quantity' || name === 'rating' ? 
+      [name]: name === 'vintage' || name === 'quantity' || name === 'rating' ?
         (value === '' ? null : parseInt(value)) : 
         name === 'price' ? 
         (value === '' ? null : parseFloat(value)) : 
@@ -54,7 +56,7 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
     if (formData.vintage && (formData.vintage < 1900 || formData.vintage > new Date().getFullYear() + 1)) {
       newErrors.vintage = 'Vintage must be between 1900 and next year';
     }
-    if (formData.peakYear && formData.vintage && formData.peakYear < formData.vintage) {
+    if (formData.peakYear && formData.vintage && Number(formData.peakYear) < formData.vintage) {
       newErrors.peakYear = 'Peak year must be after vintage';
     }
 
@@ -62,13 +64,17 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (validateForm()) {
-      onSave(formData);
+    if (saving || !validateForm()) return;
+    setSaving(true);
+    setSaveError('');
+    try {
+      await onSave(formData);
       onClose();
-    }
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'Unable to save changes.');
+    } finally { setSaving(false); }
   };
 
   // Call AI to enrich pairing notes / suggest meal
@@ -177,6 +183,7 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
           </button>
         </div>
 
+        {saveError && <p role="alert" className="mb-4 rounded bg-red-50 p-3 text-sm text-red-800">{saveError}</p>}
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Status and Actions */}
           <div className="bg-gray-50 p-4 rounded-lg">
@@ -333,13 +340,12 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
                 Peak Year
               </label>
               <input
-                type="number"
+                type="text"
                 id="peakYear"
                 name="peakYear"
                 value={formData.peakYear || ''}
                 onChange={handleInputChange}
                 className={`input-field ${errors.peakYear ? 'border-red-500' : ''}`}
-                min={formData.vintage || 1900}
                 disabled={mode === 'view'}
               />
               {errors.peakYear && <p className="mt-1 text-sm text-red-600">{errors.peakYear}</p>}
@@ -620,9 +626,10 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
               </button>
               <button
                 type="submit"
+                disabled={saving}
                 className="btn-primary"
               >
-                Save Changes
+                {saving ? 'Saving…' : 'Save Changes'}
               </button>
             </div>
           )}

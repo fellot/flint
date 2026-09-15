@@ -10,7 +10,7 @@ interface WineTableProps {
   wines: Wine[];
   onWineUpdate: (wine: Wine) => void;
   onWineDelete: (wineId: string) => void;
-  onWineAdd?: (wine: Omit<Wine, 'id'>) => void;
+  onWineConsume: (wine: Wine, quantity: number, notes: string, location: string) => Promise<void>;
   searchTerm?: string;
   isPortuguese?: boolean;
 }
@@ -18,7 +18,9 @@ interface WineTableProps {
 type SortColumn = 'bottle' | 'vintage' | 'country' | 'peakYear';
 type SortDirection = 'asc' | 'desc';
 
-export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd, searchTerm = '', isPortuguese = false }: WineTableProps) {
+export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineConsume, searchTerm = '', isPortuguese = false }: WineTableProps) {
+  const [consumptionError, setConsumptionError] = useState('');
+  const [isConsuming, setIsConsuming] = useState(false);
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [consumingWine, setConsumingWine] = useState<Wine | null>(null);
   const [wineNotes, setWineNotes] = useState<string>('');
@@ -90,33 +92,16 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
       <ChevronDown className="h-4 w-4 text-red-600" />;
   };
 
-  const handleConsumeWine = (wine: Wine, destination: 'heaven' | 'hell') => {
-    const today = new Date().toISOString().split('T')[0];
-    const notes = wineNotes.trim() ? wineNotes.trim() : wine.notes;
-    const qty = Math.min(consumeQuantity, wine.quantity);
-    const location = destination === 'heaven' ? 'Wine Heaven' : 'Wine Hell';
-
-    if (qty < wine.quantity && onWineAdd) {
-      onWineUpdate({ ...wine, quantity: wine.quantity - qty });
-      const { id, ...rest } = wine;
-      onWineAdd({
-        ...rest,
-        quantity: qty,
-        status: 'consumed',
-        consumedDate: today,
-        location,
-        notes,
-      });
-    } else {
-      onWineUpdate({
-        ...wine,
-        quantity: qty,
-        status: 'consumed',
-        consumedDate: today,
-        location,
-        notes,
-      });
-    }
+  const handleConsumeWine = async (wine: Wine, destination: 'heaven' | 'hell') => {
+    if (isConsuming) return;
+    setIsConsuming(true);
+    setConsumptionError('');
+    try {
+      await onWineConsume(wine, consumeQuantity, wineNotes.trim() || wine.notes, destination === 'heaven' ? 'Wine Heaven' : 'Wine Hell');
+    } catch (error) {
+      setConsumptionError(error instanceof Error ? error.message : 'Unable to record consumption.');
+      return;
+    } finally { setIsConsuming(false); }
 
     // Show animation
     setAnimatingWine({ wine, destination });
@@ -501,6 +486,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                 </p>
               </div>
 
+              {consumptionError && <p role="alert" className="mb-4 rounded bg-red-50 p-3 text-red-800">{consumptionError}</p>}
               {/* Quantity Selector */}
               {consumingWine.quantity > 1 && (
                 <div className="mb-4">
@@ -542,6 +528,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
               </p>
               <div className="flex space-x-3 mb-3">
                 <button
+                  disabled={isConsuming}
                   onClick={() => handleConsumeWine(consumingWine, 'heaven')}
                   className="flex-1 py-3 px-4 rounded-lg font-medium text-white bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-500 hover:to-yellow-600 transition-all shadow-md hover:shadow-lg flex items-center justify-center space-x-2"
                 >
@@ -549,6 +536,7 @@ export default function WineTable({ wines, onWineUpdate, onWineDelete, onWineAdd
                   <span>Wine Heaven</span>
                 </button>
                 <button
+                  disabled={isConsuming}
                   onClick={() => handleConsumeWine(consumingWine, 'hell')}
                   className="flex-1 py-3 px-4 rounded-lg font-medium text-white bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 transition-all shadow-md hover:shadow-lg flex items-center justify-center space-x-2"
                 >

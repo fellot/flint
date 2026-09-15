@@ -1,6 +1,6 @@
 # 🍷 Wine Cellar Manager
 
-A modern, Git-based wine inventory management system built with Next.js, TypeScript, and Tailwind CSS. Perfect for wine enthusiasts who want to track their collection, manage inventory, and keep detailed notes about their wines.
+A modern wine inventory management system backed by Supabase Auth and Postgres built with Next.js, TypeScript, and Tailwind CSS. Perfect for wine enthusiasts who want to track their collection, manage inventory, and keep detailed notes about their wines.
 
 ## ✨ Features
 
@@ -36,39 +36,21 @@ A modern, Git-based wine inventory management system built with Next.js, TypeScr
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- Git
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd wine-cellar-manager
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-3. **Run the development server**
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
-
-4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-### Building for Production
+Requires **Node.js 22+** and a Supabase project. Follow the complete [Supabase setup and migration guide](supabase/README.md) before starting the app. It includes the SQL schema, account assignment, and import commands for all three existing cellars.
 
 ```bash
+nvm use
+npm ci
+cp .env.example .env.local
+# Fill in the project URL, publishable key, and site URL.
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) and sign in with an assigned email/password account. PIN login and GitHub/JSON wine storage have been retired.
+
+```bash
+npm test
+npm run typecheck
 npm run build
 npm start
 ```
@@ -88,7 +70,7 @@ wine-cellar-manager/
 │   ├── WineFilters.tsx    # Filtering and search
 │   ├── WineModal.tsx      # Edit wine form
 │   └── WineTable.tsx      # Wine display table
-├── data/                   # Data storage
+├── data/                   # Legacy import source files
 │   └── wines.json         # Wine inventory data
 ├── types/                  # TypeScript definitions
 │   └── wine.ts            # Wine interface types
@@ -99,12 +81,9 @@ wine-cellar-manager/
 
 ## 🗄️ Data Management
 
-### Git-based CMS
-This system uses a Git-based approach to manage wine data:
-- **JSON Storage**: Wine data is stored in `data/wines.json`
-- **Version Control**: All changes are tracked through Git commits
-- **Collaboration**: Multiple users can manage the same wine cellar
-- **Backup**: Easy backup and restoration through Git history
+### Supabase Auth and Postgres
+
+Wine records are stored in Postgres. `cellar_members` assigns email/password accounts to one or more cellars, and row level security enforces access. See the [SQL schema and migration instructions](supabase/README.md). The existing JSON files remain available as migration sources.
 
 ### Data Structure
 Each wine entry includes:
@@ -124,7 +103,7 @@ interface Wine {
   status: 'in_cellar' | 'consumed' | 'sold' | 'gifted';
   consumedDate: string | null;   // When consumed
   notes: string;                 // Personal notes
-  rating: number | null;         // Personal rating (1-5)
+  rating: number | null;         // Personal rating (0-100)
   price: number | null;          // Purchase price
   location: string;              // Storage location
   quantity: number;              // Number of bottles
@@ -132,6 +111,8 @@ interface Wine {
 ```
 
 ## 🔧 API Endpoints
+
+All wine endpoints require a Supabase session. The optional `dataSource` selects an assigned cellar; unauthorized selections return 403. Without it, the server selects the saved authorized cellar or the first membership.
 
 ### GET `/api/wines`
 - **Query Parameters**: `country`, `style`, `vintage`, `status`, `search`
@@ -147,6 +128,10 @@ interface Wine {
 ### PUT `/api/wines/[id]`
 - **Body**: Updated wine data
 - **Response**: Updated wine object
+
+### POST `/api/wines/[id]/consume`
+- **Body**: `quantity`, `consumedDate`, optional `notes` and `location`
+- **Response**: Changed inventory/history records; the operation is atomic
 
 ### DELETE `/api/wines/[id]`
 - **Response**: Success message

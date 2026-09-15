@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { readResponse } from '@/lib/client-api';
+import { useCellar } from '@/components/CellarSession';
 import { Wine, WineFilters } from '@/types/wine';
 import { sanitizeWinePayload } from '@/utils/sanitizeWine';
 import WineTable from '@/components/WineTable';
@@ -27,23 +29,11 @@ export default function Home() {
   const [filters, setFilters] = useState<WineFilters>({ ...DEFAULT_FILTERS });
   const [isAIWineModalOpen, setIsAIWineModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [requestError, setRequestError] = useState('');
   const [expandedCountries, setExpandedCountries] = useState<Set<string>>(new Set());
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
-  const [dataSource, setDataSource] = useState<'1' | '2' | '3'>(() => {
-    if (typeof document !== 'undefined') {
-      const match = document.cookie.match(/(?:^|;\s*)data_source=([123])/);
-      return (match?.[1] as '1' | '2' | '3') || '1';
-    }
-    return '1';
-  });
-  const [isPortugueseMode, setIsPortugueseMode] = useState(() => {
-    if (typeof document !== 'undefined') {
-      const match = document.cookie.match(/(?:^|;\s*)data_source=([123])/);
-      return match?.[1] === '2' || match?.[1] === '3';
-    }
-    return false;
-  });
+  const { dataSource, isPortugueseMode } = useCellar();
   const [isSommelierOpen, setIsSommelierOpen] = useState(false);
   const [mobileModalState, setMobileModalState] = useState<{ wine: Wine; mode: 'edit' | 'view' } | null>(null);
   const [showWelcome, setShowWelcome] = useState(() => {
@@ -89,14 +79,12 @@ export default function Home() {
       clearTimeout(timeoutId);
       console.log('Response status:', response.status);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
 
-      const data = await response.json();
+      const data = await readResponse<Wine[]>(response);
       console.log('Wines fetched:', data.length, 'from dataSource:', dataSource);
       setWines(data);
     } catch (error) {
+      setRequestError(error instanceof Error ? error.message : 'Unable to load wines.');
       if (error instanceof Error && error.name === 'AbortError') {
         console.error('Request was aborted due to timeout');
       } else {
@@ -158,6 +146,7 @@ export default function Home() {
 
   const handleWineUpdate = async (updatedWine: Wine) => {
     try {
+      setRequestError('');
       const sanitizedWine = sanitizeWinePayload(updatedWine);
       const response = await fetch(`/api/wines/${updatedWine.id}?dataSource=${dataSource}`, {
         method: 'PUT',
@@ -165,12 +154,11 @@ export default function Home() {
         body: JSON.stringify({ ...sanitizedWine, dataSource }),
       });
 
-      if (response.ok) {
-        const savedWine: Wine = await response.json();
-        setWines(prev => prev.map(w => w.id === savedWine.id ? savedWine : w));
-      }
+      const savedWine = await readResponse<Wine>(response);
+      setWines(prev => prev.map(w => w.id === savedWine.id ? savedWine : w));
     } catch (error) {
-      console.error('Error updating wine:', error);
+      setRequestError(error instanceof Error ? error.message : 'Unable to save changes.');
+      throw error;
     }
   };
 
@@ -185,64 +173,41 @@ export default function Home() {
         method: 'DELETE',
       });
 
-      if (response.ok) {
-        setWines(prev => prev.filter(w => w.id !== wineId));
-      }
+      await readResponse(response);
+      setWines(prev => prev.filter(w => w.id !== wineId));
     } catch (error) {
-      console.error('Error deleting wine:', error);
+      setRequestError(error instanceof Error ? error.message : 'Unable to delete wine.');
     }
   };
 
-  const handleCreateConsumedCopy = async (wineData: Omit<Wine, 'id'>) => {
-    try {
-      const sanitizedWineData = sanitizeWinePayload(wineData);
-      const response = await fetch('/api/wines', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...sanitizedWineData, dataSource }),
-      });
-
-      if (response.ok) {
-        const newWine = await response.json();
-        setWines(prev => [...prev, newWine]);
-      }
-    } catch (error) {
-      console.error('Error creating consumed copy:', error);
-    }
+  const handleWineConsume = async (wine: Wine, quantity: number, notes: string, location: string) => {
+    setRequestError('');
+    const response = await fetch(`/api/wines/${wine.id}/consume?dataSource=${dataSource}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ quantity, notes, location, consumedDate: new Date().toISOString().split('T')[0] }),
+    });
+    const changed = await readResponse<Wine[]>(response);
+    setWines(previous => {
+      const byId = new Map(previous.map(item => [item.id, item]));
+      changed.forEach(item => byId.set(item.id, item));
+      return Array.from(byId.values());
+    });
   };
 
-  const handleQuickConsume = (wine: Wine) => {
-    const message = isPortugueseMode
-      ? `Marcar ${wine.bottle} como consumido agora?`
-      : `Mark ${wine.bottle} as consumed now?`;
+  const consumingIds = useRef(new Set<string>());
+  const handleQuickConsume = async (wine: Wine) => {
+    if (consumingIds.current.has(wine.id)) return;
+    const message = isPortugueseMode ? `Marcar uma garrafa de ${wine.bottle} como consumida agora?` : `Mark one bottle of ${wine.bottle} as consumed now?`;
     if (!confirm(message)) return;
-
-    const today = new Date().toISOString().split('T')[0];
-
-    if (wine.quantity > 1) {
-      // Decrement quantity on original
-      handleWineUpdate({ ...wine, quantity: wine.quantity - 1 });
-      // Create consumed copy
-      const { id, ...rest } = wine;
-      handleCreateConsumedCopy({
-        ...rest,
-        quantity: 1,
-        status: 'consumed',
-        consumedDate: today,
-        location: 'N/A',
-      });
-    } else {
-      handleWineUpdate({
-        ...wine,
-        status: 'consumed',
-        consumedDate: today,
-        location: 'N/A',
-      });
-    }
+    consumingIds.current.add(wine.id);
+    try { await handleWineConsume(wine, 1, wine.notes, 'N/A'); }
+    catch (error) { setRequestError(error instanceof Error ? error.message : 'Unable to record consumption.'); }
+    finally { consumingIds.current.delete(wine.id); }
   };
 
   const handleAddWine = async (wineData: any) => {
     try {
+      setRequestError('');
       const sanitizedWineData = sanitizeWinePayload(wineData);
       const response = await fetch('/api/wines', {
         method: 'POST',
@@ -250,13 +215,12 @@ export default function Home() {
         body: JSON.stringify({ ...sanitizedWineData, dataSource }),
       });
 
-      if (response.ok) {
-        const newWine = await response.json();
-        setWines(prev => [...prev, newWine]);
-        setIsAIWineModalOpen(false);
-      }
+      const newWine = await readResponse<Wine>(response);
+      setWines(prev => [...prev, newWine]);
+      setIsAIWineModalOpen(false);
     } catch (error) {
-      console.error('Error adding wine:', error);
+      setRequestError(error instanceof Error ? error.message : 'Unable to add wine.');
+      throw error;
     }
   };
 
@@ -425,9 +389,7 @@ export default function Home() {
   const stats = getStats();
   const totalInCellarCount = wines.filter(w => w.status === 'in_cellar').length;
 
-  const welcomeMessage = dataSource === '1' ? 'Welcome to your cellar, Felipe'
-    : dataSource === '2' ? 'Bem-vindo à sua adega, Gerson'
-    : 'Bem-vindo à sua adega, Lorenzo';
+  const welcomeMessage = isPortugueseMode ? 'Bem-vindo à sua adega' : 'Welcome to your cellar';
 
   if (showWelcome) {
     return (
@@ -460,6 +422,7 @@ export default function Home() {
 
   return (
     <>
+      {requestError && <p role="alert" className="bg-red-50 p-4 text-center text-sm text-red-800">{requestError}</p>}
       <div className="md:hidden">
         <MobileCellarExperience
           filteredWines={filteredWines}
@@ -750,7 +713,7 @@ export default function Home() {
               wines={filteredWines}
               onWineUpdate={handleWineUpdate}
               onWineDelete={handleWineDelete}
-              onWineAdd={handleCreateConsumedCopy}
+              onWineConsume={handleWineConsume}
               searchTerm={filters.search}
               isPortuguese={isPortugueseMode}
             />
