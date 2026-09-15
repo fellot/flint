@@ -306,13 +306,14 @@
     "grapes": "Cabernet Sauvignon & Merlot",
     "status": "consumed",
     "consumedDate": "2025-08-08",
-    "notes": "On August 8, 2025, at Rodrigo’s house in Sao Paulo. Its depth met the richness of a beautifully cooked bacalhau in olive oil with onions and broccoli, in great harmony. A memorable pairing, shared in good company. It is incredible how age improve the texture of the wine and develops leather and light tobacco notes.",
+    "notes": "On August 8, 2025, at Rodrigo’s house in Sao Paulo. Deep and rich body. Bacalhau in olive oil with onions and broccolis",
     "rating": 4,
     "price": null,
     "location": "Wine Heaven",
     "quantity": 1,
     "bottle_image": "https://geisels-weingalerie.de/media/49/41/03/1690809627/450490-removebg-preview.png",
-    "technical_sheet": "https://www.agassac.com/fiche/pdf/millesime_194.pdf"
+    "technical_sheet": "https://www.agassac.com/fiche/pdf/millesime_194.pdf",
+    "dataSource": "1"
   },
   {
     "id": "15",
@@ -513,7 +514,7 @@
     "quantity": 1,
     "bottle_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf3-FMGbpaHQQIj1Qy27U3ql1zfpGOV9rMjQ&s",
     "dataSource": "1",
-    "coravin": true,
+    "coravin": false,
     "coravinDate": "2026-01-10"
   },
   {
@@ -534,7 +535,7 @@
     "rating": null,
     "price": null,
     "location": "Wine fridge A - L2",
-    "quantity": 2,
+    "quantity": 1,
     "bottle_image": "https://www.theoldbarracks.ie/cdn/shop/files/Screenshot2025-02-25at14.56.31.png?v=1740495461",
     "dataSource": "1"
   },
@@ -763,7 +764,7 @@
     "quantity": 1,
     "bottle_image": "https://www.reservebar.com/_next/image?url=https%3A%2F%2Fassets.liquidcommerce.co%2Fcatalog%2Fpartner%2Fimg%2F31c2485f-1201-4317-a83a-9dd35ce3edab.jpg&w=256&q=75",
     "technical_sheet": "https://assets.jlohr.com/v3/general_files/18-Cuvee-POM.pdf",
-    "coravin": true,
+    "coravin": false,
     "coravinDate": "2026-01-21",
     "dataSource": "1"
   },
@@ -960,12 +961,12 @@
     "mealToHaveWithThisWine": "Grilled beef ribeye steak with a red wine reduction sauce, served with roasted garlic mashed potatoes and sautéed asparagus.",
     "style": "Red",
     "grapes": "Syrah",
-    "status": "in_cellar",
-    "consumedDate": null,
+    "status": "consumed",
+    "consumedDate": "2026-09-15",
     "notes": "",
     "rating": null,
     "price": null,
-    "location": "Wine fridge A - L3",
+    "location": "Wine Heaven",
     "quantity": 1,
     "bottle_image": "https://cache1.voyageursduvin.com/products/Two-Hands-Bellas-Garden-zoom.jpg",
     "technical_sheet": "https://twohandswines.com/pages/bellas-garden",
