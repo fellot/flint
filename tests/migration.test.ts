@@ -162,7 +162,12 @@ test('account assignment SQL requires existing accounts and can be rerun safely'
   const db = await database();
   try {
     let sql = await readFile('supabase/assign-cellars.sql', 'utf8');
-    sql = sql.replace('felipe@example.com', 'alice@example.com').replace('gerson@example.com', 'bob@example.com').replace('lorenzo@example.com', 'missing@example.com');
+    // Keep the assignment logic under test while using isolated test accounts.
+    // The SQL file's account list may already be personalized for deployment.
+    sql = sql.replace(/select \* from \(values[\s\S]*?\) as assignments\(cellar_id, email\)/, `select * from (values
+      ('1', 'alice@example.com'), ('2', 'bob@example.com'), ('3', 'missing@example.com')
+    ) as assignments(cellar_id, email)`);
+    assert.ok(sql.includes('missing@example.com'));
     await assert.rejects(db.exec(sql), /Create the Auth account/);
     await db.exec('rollback;');
     assert.equal((await db.query('select * from public.cellar_members')).rows.length, 0);
