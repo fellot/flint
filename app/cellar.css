@@ -318,7 +318,10 @@ summary::-webkit-details-marker { display: none; }
 .compact-wine-table th:last-child { z-index: 4; }
 .table-wine-name { width: 205px; min-width: 205px; max-width: 240px; }
 .table-wine-name > button { display: flex; gap: 10px; align-items: center; text-align: left; width: 100%; }
-.table-wine-name .bottle-portrait { width: 24px; height: 40px; flex-shrink: 0; }
+.table-wine-name .bottle-portrait { width: 32px; height: 40px; flex-shrink: 0; overflow: hidden; }
+/* Size by height: a narrow width cap makes square product photos look tiny.
+   The centered frame clips excess background without stretching the bottle. */
+.table-wine-name .bottle-portrait > :is(img, svg) { display: block; width: auto; height: 32px; max-width: none; flex-shrink: 0; object-fit: contain; }
 .table-wine-name strong { color: var(--ink); font-weight: 500; font-size: 11px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .table-wine-name button:hover strong { color: var(--burgundy); }
 .table-wine-name small { font-size: 8px; color: #718259; }
@@ -348,7 +351,6 @@ summary::-webkit-details-marker { display: none; }
   .table-wine-name { width: 185px; min-width: 185px; max-width: 185px; }
   .table-wine-name > button { gap: 7px; }
   .table-wine-name strong { font-size: 10px; }
-  .table-wine-name .bottle-portrait { width: 18px; height: 34px; }
   .compact-table-scroll { max-height: 620px; }
 }
 @media (max-width: 520px) {
