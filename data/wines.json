@@ -306,13 +306,14 @@
     "grapes": "Cabernet Sauvignon & Merlot",
     "status": "consumed",
     "consumedDate": "2025-08-08",
-    "notes": "On August 8, 2025, at Rodrigo’s house in Sao Paulo. Its depth met the richness of a beautifully cooked bacalhau in olive oil with onions and broccoli, in great harmony. A memorable pairing, shared in good company. It is incredible how age improve the texture of the wine and develops leather and light tobacco notes.",
+    "notes": "On August 8, 2025, at Rodrigo’s house in Sao Paulo. Deep and rich body. Bacalhau in olive oil with onions and broccolis",
     "rating": 4,
     "price": null,
     "location": "Wine Heaven",
     "quantity": 1,
     "bottle_image": "https://geisels-weingalerie.de/media/49/41/03/1690809627/450490-removebg-preview.png",
-    "technical_sheet": "https://www.agassac.com/fiche/pdf/millesime_194.pdf"
+    "technical_sheet": "https://www.agassac.com/fiche/pdf/millesime_194.pdf",
+    "dataSource": "1"
   },
   {
     "id": "15",
