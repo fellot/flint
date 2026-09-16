@@ -19,6 +19,8 @@ A modern wine inventory management system backed by Supabase Auth and Postgres b
 - Owners add existing accounts or invite new people from **People**
 - Choose who shared each bottle when recording consumption
 - Each participant keeps their own 0–100 score and comment
+- Add missing participants to a consumed wine from its journal row or details
+- Filter personal rankings by wine type (red, white, sparkling, etc.)
 - Journals show highest scores first in a compact sortable table
 - Apply the [people and journals migration](supabase/README.md#6-add-people-and-personal-journals-existing-and-new-installations) before deploying
 
@@ -143,6 +145,10 @@ All wine endpoints require a Supabase session. The optional `dataSource` selects
 - **Body**: `quantity`, `consumedDate`, `personIds`, `rating` (integer 0–100 or null), `comment`
 - **Behavior**: Atomically updates inventory and records the selected participants and the caller’s own review
 - **Response**: Changed inventory/history records; the operation is atomic
+
+### POST `/api/wines/[id]/participants`
+- **Body**: `personIds` (additional active people in the same cellar)
+- **Behavior**: Owner or existing participant can add people to a consumed wine; existing reviews and inventory stay unchanged
 
 ### PUT `/api/wines/[id]/review`
 - **Body**: `rating` (integer 0–100 or null), `comment` (up to 5,000 characters)

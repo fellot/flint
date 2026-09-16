@@ -163,7 +163,29 @@ last; every table heading still supports sorting. Wines logged outside the cella
 use the same participant/review step. One partial consumption creates a distinct
 journal record, so later tastings of the remaining bottles can have different people.
 
-## 7. Verify and deploy
+## 7. Add participants later and rank by wine type
+
+For an existing installation, copy the complete contents of
+[`migrations/20260916010000_add_tasting_participants.sql`](migrations/20260916010000_add_tasting_participants.sql)
+into **Supabase → SQL Editor → New query → Run**. Apply it after the people/journals
+migration from section 6, then deploy the updated application. This adds one
+function and can be rerun safely. No new environment variables are needed.
+
+In the journal, click the **Add participants** icon on a wine's row, or open its
+details and choose **Add participants**. Select the additional people and save.
+The wine appears in their journals when they next load or refresh them, initially
+unrated. Existing participants, reviews, consumption dates and bottle quantities
+stay unchanged. Only the cellar owner or an existing participant may add people;
+the added people must have active accounts with access to the same cellar.
+The owner can invite new accounts using **People** first.
+
+Use **Rank by wine type** above the journal table to choose **Red**, **White**, or
+any other style in your journal. Selecting a type starts with your highest scores
+first; column sorting, search, and **Still to rate** work within that type.
+**All types** restores the full ranking. The same type selector is also available
+inside **Filters**.
+
+## 8. Verify and deploy
 
 ```bash
 npm test

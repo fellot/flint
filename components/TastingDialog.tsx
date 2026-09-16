@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import CellarDialog from './CellarDialog';
+import ParticipantPicker from './ParticipantPicker';
 import { ReviewFields } from './PersonalReviewDialog';
 import type { Person, TastingInput } from '@/types/database';
 
@@ -33,7 +34,8 @@ export default function TastingDialog({ bottle, vintage, maxQuantity, people, lo
     <p className="dialog-description">{bottle} · {vintage || 'NV'}</p>
     <form onSubmit={save} className="drink-form"><fieldset disabled={pending}>
       <div className="tasting-basics"><label>{pt ? 'Garrafas' : 'Bottles'}<input type="number" required min={1} max={maxQuantity} value={quantity} onChange={event => setQuantity(Number(event.target.value))} /></label><label>{pt ? 'Consumido em' : 'Enjoyed on'}<input type="date" required value={date} onChange={event => setDate(event.target.value)} /></label></div>
-      <fieldset className="participant-picker"><legend>{pt ? 'Compartilhado com' : 'Shared with'}</legend>{people.map(person => <label key={person.id} className={!person.active ? 'participant-pending' : ''}><input type="checkbox" checked={personIds.includes(person.id)} disabled={!person.active} onChange={event => setPersonIds(previous => event.target.checked ? [...previous, person.id] : previous.filter(id => id !== person.id))} /><span>{person.name}{person.isMe && <small>{pt ? 'Você' : 'You'}</small>}{!person.active && <small>{pt ? 'Convite pendente' : 'Invitation pending'}</small>}</span></label>)}<p>{pt ? 'O vinho aparecerá no diário de cada participante. Cada um adiciona sua própria avaliação.' : 'This wine will appear in each participant’s journal. Everyone adds their own review.'}</p></fieldset>
+      <ParticipantPicker people={people} selectedIds={personIds} onChange={setPersonIds} pt={pt} disabled={pending} />
+      <p className="sharing-note">{pt ? 'O vinho aparecerá no diário de cada participante. Cada um adiciona sua própria avaliação.' : 'One bottle, a memory for everyone. Each person gets their own journal entry to rate and remember.'}</p>
       {reviewing && <ReviewFields rating={rating} comment={comment} onRating={setRating} onComment={setComment} pt={pt} />}
     </fieldset>{error && <p className="flint-alert" role="alert">{error}</p>}<button className="flint-button" disabled={pending || !people.some(person => person.active)}>{pending ? (pt ? 'Salvando…' : 'Saving…') : (pt ? 'Marcar como consumido' : 'Mark as consumed')}</button></form>
   </CellarDialog>;

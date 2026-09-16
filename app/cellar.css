@@ -538,14 +538,36 @@ summary::-webkit-details-marker { display: none; }
 .personal-review-fields .score-input input { width: 108px; margin: 0; font-size: 24px; font-family: Georgia, serif; color: var(--burgundy); }
 .score-input > span { font-size: 13px; color: var(--muted); font-weight: 400; }
 .tasting-basics { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
-.drink-form .participant-picker { border-block: 1px solid var(--line); padding-block: 16px; }
-.participant-picker legend { font-size: 12px; font-weight: 600; padding-right: 8px; }
-.drink-form .participant-picker label { display: flex; align-items: center; gap: 10px; padding: 8px 0; cursor: pointer; }
-.drink-form .participant-picker input { width: 17px; height: 17px; margin: 0; accent-color: var(--burgundy); }
-.participant-picker label > span { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
-.participant-picker small { font-size: 10px; color: var(--muted); font-weight: 400; }
-.participant-picker > p { font-size: 11px; color: var(--muted); line-height: 1.7; margin: 8px 0 0; }
-.participant-pending { opacity: .6; }
+.drink-form .participant-picker { display: block; min-width: 0; border: 0; padding: 0; }
+.participant-picker legend { font: 20px/1.3 var(--serif); letter-spacing: -.3px; padding: 0; margin-bottom: 6px; }
+.participant-intro, .sharing-note { font-size: 11px; color: var(--muted); line-height: 1.7; }
+.participant-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 15px; }
+.participant-card { display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 88px; padding: 14px 12px; text-align: left; border: 1px solid #dedfd4; border-radius: 12px; background: #fffef9; transition: border-color .18s, background .18s, box-shadow .18s, transform .18s; }
+.participant-card:not(:disabled):hover { transform: translateY(-2px); border-color: #a8b59b; box-shadow: 0 5px 12px #293b3109; }
+.participant-card:focus-visible { outline: 2px solid var(--olive); outline-offset: 3px; }
+.participant-card.is-selected { background: #eaf0e2; border-color: #889c76; box-shadow: inset 0 0 0 1px #889c7630; }
+.person-avatar { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; font: 16px var(--serif); letter-spacing: -.5px; background: #e8dcd3; color: #79533f; }
+.person-tone-1 { background: #e8dce3; color: #7a455f; }
+.person-tone-2 { background: #dde5d2; color: #4b6541; }
+.person-tone-3 { background: #eae1c9; color: #79642e; }
+.participant-card-copy { flex: 1; min-width: 0; }
+.participant-card-copy strong { display: block; font-size: 12px; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
+.participant-you { display: inline-block; margin-left: 5px; font-size: 9px; font-weight: 400; color: var(--muted); }
+.drink-form .participant-card-copy small { font-size: 9px; line-height: 1.5; margin-top: 4px; }
+.participant-card.is-selected small { color: #516746; }
+.participant-card-mark { width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; background: #f1f1e9; color: #7b846f; }
+.is-selected .participant-card-mark { background: var(--olive); color: #fffef9; }
+.participant-card:disabled { opacity: .6; cursor: not-allowed; background: #f2f1ea; }
+.participant-summary { display: flex; align-items: center; gap: 8px; margin-top: 14px; color: #617054; font-size: 10px; min-height: 24px; }
+.participant-summary svg { flex-shrink: 0; }
+.sharing-kicker { display: flex; align-items: center; gap: 12px; padding-right: 15px; }
+.sharing-toast { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 51px; height: 40px; border-radius: 13px; background: #efe5dd; color: var(--burgundy); }
+.sharing-toast svg:first-child { transform: rotate(-22deg) translateX(3px); }
+.sharing-toast svg:last-child { transform: rotate(22deg) translateX(-3px); }
+@media (max-width: 440px) {
+  .participant-cards { grid-template-columns: 1fr; }
+  .participant-card { min-height: 72px; padding: 12px 14px; }
+}
 .review-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
 .personal-score { display: inline-flex; align-items: center; gap: 5px; color: var(--burgundy); background: #f4eae6; border: 1px solid #e5d6cf; border-radius: 5px; padding: 5px 7px; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .personal-score:hover { background: #eaddd5; }
@@ -578,9 +600,12 @@ summary::-webkit-details-marker { display: none; }
 .wine-type-buttons button { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border: 1px solid var(--line); border-radius: 5px; font-size: 10px; background: #fcfbf6; color: var(--muted); }
 .wine-type-buttons button:hover { border-color: #aeb9a1; color: var(--ink); }
 .wine-type-buttons button.active { background: #e9ede2; border-color: #aeb9a1; color: var(--ink); }
-.existing-participants { margin-bottom: 20px; padding: 12px 14px; background: #edf0e8; border-radius: 5px; }
-.existing-participants strong { font-size: 10px; font-weight: 500; color: var(--muted); }
-.existing-participants p { margin-top: 5px; font-size: 12px; line-height: 1.6; }
+.existing-participants { margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.existing-participants > strong { display: block; font-size: 10px; line-height: 1.4; font-weight: 500; color: var(--muted); }
+.participant-guests { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.participant-guest { display: inline-flex; align-items: center; gap: 7px; min-width: 0; max-width: 100%; padding: 4px 10px 4px 4px; border: 1px solid var(--line); border-radius: 30px; background: #fffef9; font-size: 11px; }
+.participant-guest > span:last-child { overflow-wrap: anywhere; min-width: 0; }
+.participant-guest .person-avatar { width: 25px; height: 25px; font-size: 11px; }
 @media (max-width: 600px) {
   .journal-type-filters { align-items: flex-start; flex-direction: column; gap: 10px; }
 }
