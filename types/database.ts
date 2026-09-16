@@ -37,9 +37,15 @@ export type Person = CellarPerson & { isMe: boolean; active: boolean };
 export type WineParticipant = { cellar_id: string; wine_id: string; person_id: string };
 export type WineReview = WineParticipant & { rating: number | null; comment: string; created_at: string; updated_at: string };
 export type TastingInput = { quantity: number; consumedDate: string; personIds: string[]; rating: number | null; comment: string };
+export type CellarFridge = { id: string; cellar_id: string; name: string; level_count: number; first_level: number };
+export type StorageLocation = { cellar_id: string; label: string; fridge_id: string | null; level: number | null };
+export type CellarStorage = { fridges: CellarFridge[]; locations: StorageLocation[] };
+export type FridgeInput = { id?: string; name: string; levelCount: number; firstLevel: number };
 export type Database = {
   public: {
     Tables: {
+      cellar_fridges: Table<CellarFridge, never, never>;
+      cellar_storage_locations: Table<StorageLocation, never, never>;
       cellars: Table<Cellar, Omit<Cellar, 'created_at'>, Partial<Omit<Cellar, 'created_at'>>>;
       cellar_members: Table<Membership, Omit<Membership, 'created_at' | 'role'> & { role?: 'owner' | 'member' }, never>;
       wines: Table<WineRow, WineWrite & { id?: string; cellar_id: string }, Partial<WineWrite>>;
@@ -49,6 +55,11 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      save_cellar_fridge: {
+        Args: { p_cellar_id: string; p_name: string; p_level_count: number; p_first_level?: number; p_id?: string };
+        Returns: string;
+      };
+      delete_cellar_fridge: { Args: { p_cellar_id: string; p_id: string }; Returns: undefined };
       add_wine_participants: {
         Args: { p_cellar_id: string; p_wine_id: string; p_person_ids: string[] };
         Returns: undefined;

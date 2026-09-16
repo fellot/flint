@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { Wine } from '@/types/wine';
+import type { CellarStorage } from '@/types/database';
 import { Edit, Trash2, Wine as WineIcon, Calendar, Star, ChevronUp, ChevronDown, ExternalLink, X, MapPin } from 'lucide-react';
 import WineModal from './WineModal';
 import { highlightSearchTerm } from '@/utils/highlight';
 
 interface CellarJournalWineTableProps {
   wines: Wine[];
+  storage: CellarStorage;
   onWineUpdate: (wine: Wine) => void;
   onWineDelete: (wineId: string) => void;
   searchTerm?: string;
@@ -17,7 +19,7 @@ interface CellarJournalWineTableProps {
 type SortColumn = 'bottle' | 'vintage' | 'country' | 'peakYear';
 type SortDirection = 'asc' | 'desc';
 
-export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDelete, searchTerm = '', isPortuguese = false }: CellarJournalWineTableProps) {
+export default function CellarJournalWineTable({ storage, wines, onWineUpdate, onWineDelete, searchTerm = '', isPortuguese = false }: CellarJournalWineTableProps) {
   const [editingWine, setEditingWine] = useState<Wine | null>(null);
   const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string; location: string } | null>(null);
   const [sortColumn, setSortColumn] = useState<SortColumn>('bottle');
@@ -365,6 +367,7 @@ export default function CellarJournalWineTable({ wines, onWineUpdate, onWineDele
       {/* Wine Modal */}
       {editingWine && (
       <WineModal
+        storage={storage}
         wine={editingWine}
         isOpen={!!editingWine}
         onClose={() => setEditingWine(null)}

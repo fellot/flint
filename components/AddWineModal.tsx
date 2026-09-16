@@ -4,13 +4,18 @@ import { useState } from 'react';
 import { WineFormData } from '@/types/wine';
 import { X, Wine as WineIcon } from 'lucide-react';
 
+import type { CellarStorage } from '@/types/database';
+import StorageLocationPicker from './StorageLocationPicker';
+
 interface AddWineModalProps {
+  storage: CellarStorage;
+  onManageStorage?: () => void;
   isOpen: boolean;
   onClose: () => void;
   onAddWine: (wineData: WineFormData) => void | Promise<void>;
 }
 
-export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModalProps) {
+export default function AddWineModal({ storage, onManageStorage, isOpen, onClose, onAddWine }: AddWineModalProps) {
   const [formData, setFormData] = useState<WineFormData>({
     bottle: '',
     country: '',
@@ -55,7 +60,6 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
     if (!formData.region.trim()) newErrors.region = 'Region is required';
     if (!formData.style.trim()) newErrors.style = 'Style is required';
     if (!formData.grapes.trim()) newErrors.grapes = 'Grapes are required';
-    if (!formData.location.trim()) newErrors.location = 'Location is required';
     if (formData.vintage < 1900 || formData.vintage > new Date().getFullYear() + 1) {
       newErrors['vintage'] = 'Vintage must be between 1900 and next year';
     }
@@ -247,17 +251,9 @@ export default function AddWineModal({ isOpen, onClose, onAddWine }: AddWineModa
 
             <div>
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-                Storage Location *
+                Storage Location
               </label>
-              <input
-                type="text"
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={handleInputChange}
-                className={`input-field ${errors.location ? 'border-red-500' : ''}`}
-                placeholder="e.g., Wine Fridge A, Basement"
-              />
+              <StorageLocationPicker storage={storage} value={formData.location} onChange={location => setFormData(previous => ({ ...previous, location }))} onManage={onManageStorage} disabled={saving} />
               {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
             </div>
           </div>

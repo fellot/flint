@@ -40,6 +40,7 @@ export async function addWine(client: Client, cellarId: string, body: unknown) {
   }
   const { data, error } = await client.from('wines').insert({ ...input, cellar_id: cellarId })
     .select('*').single();
+  if (error?.code === '23503') throw new ApiError(400, 'Choose a location from your cellar’s current list.');
   if (error) throw error;
   return rowToWine(data);
 }
@@ -54,6 +55,7 @@ export async function updateWine(client: Client, cellarId: string, id: string, b
   }
   if (!Object.keys(values).length) throw new ApiError(400, 'No wine fields supplied.');
   const { data, error } = await client.from('wines').update(values).eq('cellar_id', cellarId).eq('id', id).select('*').maybeSingle();
+  if (error?.code === '23503') throw new ApiError(400, 'This location has changed. Reload and choose a location from your cellar’s current list.');
   if (error) throw error;
   if (!data) throw new ApiError(404, 'Wine not found.');
   return rowToWine(data);

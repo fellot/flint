@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { Person, TastingInput } from '@/types/database';
+import type { Person, TastingInput, CellarStorage, FridgeInput } from '@/types/database';
 import type { Wine, WineFormData } from '@/types/wine';
 import { readResponse } from '@/lib/client-api';
 import { sanitizeWinePayload } from '@/utils/sanitizeWine';
@@ -9,6 +9,7 @@ import { sanitizeWinePayload } from '@/utils/sanitizeWine';
 export function useWineInventory(dataSource: string) {
   const [wines, setWines] = useState<Wine[]>([]);
   const [people, setPeople] = useState<Person[]>([]);
+  const [storage, setStorage] = useState<CellarStorage>({ fridges: [], locations: [] });
   const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -22,7 +23,8 @@ export function useWineInventory(dataSource: string) {
     Promise.all([
       fetch(`/api/wines?dataSource=${encodeURIComponent(dataSource)}`, { signal: controller.signal, cache: 'no-store' }).then(response => readResponse<Wine[]>(response)),
       fetch(`/api/cellar/people?dataSource=${encodeURIComponent(dataSource)}`, { signal: controller.signal, cache: 'no-store' }).then(response => readResponse<{ people: Person[]; isOwner: boolean }>(response)),
-    ]).then(([data, roster]) => { if (!disposed) { setWines(data); setPeople(roster.people); setIsOwner(roster.isOwner); } })
+      fetch(`/api/cellar/storage?dataSource=${encodeURIComponent(dataSource)}`, { signal: controller.signal, cache: 'no-store' }).then(response => readResponse<CellarStorage>(response)),
+    ]).then(([data, roster, storageData]) => { if (!disposed) { setWines(data); setPeople(roster.people); setIsOwner(roster.isOwner); setStorage(storageData); } })
       .catch(error => { if (!controller.signal.aborted) setError(error.message || 'Unable to load your wines.'); else if (!disposed) setError('Loading took too long. Please try again.'); })
       .finally(() => { clearTimeout(timeout); if (!disposed) setLoading(false); });
     return () => { disposed = true; clearTimeout(timeout); controller.abort(); };
@@ -67,5 +69,11 @@ export function useWineInventory(dataSource: string) {
     setPeople(result.people); setIsOwner(result.isOwner);
     return result;
   };
-  return { wines, people, isOwner, onReview, onAddParticipants, onAddPerson, loading, error, onRetry: () => setRevision(value => value + 1), onAdd, onUpdate, onDelete, onConsume };
+  const mutateFridge = async (method: 'POST' | 'DELETE', input: FridgeInput | { id: string }) => {
+    const response = await fetch(`/api/cellar/storage?dataSource=${encodeURIComponent(dataSource)}`, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) });
+    const result = await readResponse<CellarStorage & { wines: Wine[] }>(response);
+    setStorage({ fridges: result.fridges, locations: result.locations });
+    setWines(result.wines);
+  };
+  return { wines, people, storage, onSaveFridge: (input: FridgeInput) => mutateFridge('POST', input), onDeleteFridge: (id: string) => mutateFridge('DELETE', { id }), isOwner, onReview, onAddParticipants, onAddPerson, loading, error, onRetry: () => setRevision(value => value + 1), onAdd, onUpdate, onDelete, onConsume };
 }

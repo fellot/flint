@@ -12,6 +12,7 @@ A modern wine inventory management system backed by Supabase Auth and Postgres b
 ### 🍇 **Wine Management**
 - **Add New Wines**: Comprehensive form with all essential wine details
 - **Edit Existing Wines**: Modify any wine information at any time
+- **Managed Wine Fridges**: Name fridges, manage levels, and pick bottle locations from a list; see [setup and migration](supabase/README.md#8-managed-wine-fridges-and-selectable-locations)
 - **Mark as Consumed**: Track when you drink wines and add ratings
 - **Delete Wines**: Remove wines from your collection when needed
 
@@ -227,3 +228,10 @@ If you have any questions or need help with the Wine Cellar Manager, please:
 ---
 
 **Happy wine collecting! 🍷✨**
+
+### Cellar storage API
+
+- `GET /api/cellar/storage?dataSource=1`: return fridges and selectable locations for the authenticated cellar member.
+- `POST /api/cellar/storage?dataSource=1`: owner creates or updates a fridge using `{ name, levelCount, firstLevel, id? }`.
+- `DELETE /api/cellar/storage?dataSource=1`: owner removes an empty fridge using `{ id }`.
+- Mutations return the updated storage and wine records, including cascaded location renames.

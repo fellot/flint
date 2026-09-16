@@ -4,7 +4,12 @@ import { useState, useEffect } from 'react';
 import { Wine } from '@/types/wine';
 import { X, Wine as WineIcon, Calendar, MapPin, Loader2, Sparkles, RefreshCw } from 'lucide-react';
 
+import type { CellarStorage } from '@/types/database';
+import StorageLocationPicker from './StorageLocationPicker';
+
 interface WineModalProps {
+  storage: CellarStorage;
+  onManageStorage?: () => void;
   wine: Wine;
   isOpen: boolean;
   onClose: () => void;
@@ -13,7 +18,7 @@ interface WineModalProps {
   locale?: 'en' | 'pt';
 }
 
-export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale = 'en' }: WineModalProps) {
+export default function WineModal({ storage, onManageStorage, wine, isOpen, onClose, onSave, mode, locale = 'en' }: WineModalProps) {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
   const [formData, setFormData] = useState<Wine>(wine);
@@ -52,7 +57,6 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
     if (!formData.region.trim()) newErrors.region = 'Region is required';
     if (!formData.style.trim()) newErrors.style = 'Style is required';
     if (!formData.grapes.trim()) newErrors.grapes = 'Grapes are required';
-    if (!formData.location.trim() && formData.status !== 'consumed') newErrors.location = 'Location is required';
     if (formData.vintage && (formData.vintage < 1900 || formData.vintage > new Date().getFullYear() + 1)) {
       newErrors.vintage = 'Vintage must be between 1900 and next year';
     }
@@ -372,24 +376,15 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
 
             <div>
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-                Storage Location {formData.status !== 'consumed' ? '*' : ''}
+                Storage Location
               </label>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  className={`input-field ${errors.location ? 'border-red-500' : ''}`}
-                  disabled={mode === 'view' || formData.status === 'consumed'}
-                  placeholder={formData.status === 'consumed' ? 'N/A - Wine has been consumed' : 'Enter storage location'}
-                />
+                <StorageLocationPicker storage={storage} value={formData.location} onChange={location => setFormData(previous => ({ ...previous, location }))} onManage={onManageStorage} locale={locale} disabled={mode === 'view' || formData.status === 'consumed' || saving} />
               </div>
               {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
               {formData.status === 'consumed' && (
-                <p className="mt-1 text-sm text-gray-500">Location set to N/A for consumed wines</p>
+                <p className="mt-1 text-sm text-gray-500">Consumed wines do not need a storage location</p>
               )}
             </div>
           </div>

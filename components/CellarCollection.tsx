@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowDown, ArrowRight, ArrowUpRight, BookOpen, CalendarDays, Camera, Check, Clock3, Compass, Edit3, ExternalLink, GlassWater, LayoutGrid, List, MapPin, MoreHorizontal, Plus, Search, SlidersHorizontal, Sparkles, Trash2, Wine as WineIcon, Users, X } from 'lucide-react';
-import type { Person, TastingInput } from '@/types/database';
+import type { Person, TastingInput, CellarStorage, FridgeInput } from '@/types/database';
 import PersonalReviewDialog from './PersonalReviewDialog';
 import AddParticipantsDialog from './AddParticipantsDialog';
 import TastingDialog from './TastingDialog';
 import CellarPeopleDialog from './CellarPeopleDialog';
+import CellarStorageDialog from './CellarStorageDialog';
 import type { Wine, WineFilters, WineFormData } from '@/types/wine';
 import { getMaturity, selectWines, styleFamily, type Maturity, type WineSort, type WineSortKey } from '@/utils/cellar';
 import BottlePortrait from './BottlePortrait';
@@ -21,6 +22,9 @@ import SommelierWidget from './SommelierWidget';
 
 export interface CellarCollectionProps {
   wines: Wine[];
+  storage: CellarStorage;
+  onSaveFridge: (input: FridgeInput) => Promise<void>;
+  onDeleteFridge: (id: string) => Promise<void>;
   mode?: 'cellar' | 'journal';
   locale?: 'en' | 'pt';
   loading?: boolean;
@@ -64,7 +68,7 @@ function WineActions({ wine, locale, onView, onEdit, onDrink, onDelete, onPartic
   </div>;
 }
 
-export default function CellarCollection({ wines, mode = 'cellar', locale = 'en', loading = false, error, onRetry, onAdd, onUpdate, onDelete, onConsume, people, isOwner, onReview, onAddPerson, onAddParticipants }: CellarCollectionProps) {
+export default function CellarCollection({ wines, mode = 'cellar', locale = 'en', loading = false, error, onRetry, onAdd, onUpdate, onDelete, onConsume, people, isOwner, onReview, onAddPerson, onAddParticipants, storage, onSaveFridge, onDeleteFridge }: CellarCollectionProps) {
   const pt = locale === 'pt';
   const journal = mode === 'journal';
   const year = new Date().getFullYear();
@@ -82,6 +86,7 @@ export default function CellarCollection({ wines, mode = 'cellar', locale = 'en'
   const [reviewing, setReviewing] = useState<Wine | null>(null);
   const [sharing, setSharing] = useState<Wine | null>(null);
   const [logging, setLogging] = useState<WineFormData | null>(null);
+  const [storageOpen, setStorageOpen] = useState(false);
   const [peopleOpen, setPeopleOpen] = useState(false);
   const [unratedOnly, setUnratedOnly] = useState(false);
   const [actionError, setActionError] = useState('');
@@ -142,7 +147,7 @@ export default function CellarCollection({ wines, mode = 'cellar', locale = 'en'
 
     <section id="collection" className="wine-collection">
       <div className="collection-heading"><div><p className="eyebrow">{journal ? (pt ? 'MOMENTOS BEM GUARDADOS' : 'MEMORIES, WELL KEPT') : (pt ? 'SEUS VINHOS, BEM GUARDADOS' : 'YOUR BOTTLES, BEAUTIFULLY KEPT')}</p><h2>{journal ? (pt ? 'Meu ranking de vinhos' : 'My wine ranking') : (pt ? 'Dentro da sua adega' : 'Inside your cellar')}<span>{loading ? '' : collection.length}</span></h2></div><button className="flint-button" onClick={() => setAdding('choose')}><Plus size={17} />{journal ? (pt ? 'Registrar vinho' : 'Log a wine') : (pt ? 'Adicionar vinho' : 'Add a wine')}</button></div>
-      <div className="collection-toolbar"><label className="collection-search"><Search size={18} /><span className="sr-only">{pt ? 'Buscar na coleção' : 'Search your collection'}</span><input type="search" value={filters.search} onChange={event => setFilter('search', event.target.value)} placeholder={pt ? 'Busque um vinho, uva, região…' : 'Find a wine, grape, region…'} /></label><div className="toolbar-controls">{isOwner && <button className="filter-toggle" onClick={() => setPeopleOpen(true)}><Users size={16} />{pt ? 'Pessoas' : 'People'}</button>}<button className={`filter-toggle ${filtersOpen ? 'active' : ''}`} aria-expanded={filtersOpen} aria-controls="wine-filters" onClick={() => setFiltersOpen(!filtersOpen)}><SlidersHorizontal size={16} />{pt ? 'Filtros' : 'Filters'}{filterCount > 0 && <span>{filterCount}</span>}</button>{view === 'grid' && <label className="sort-select"><span className="sr-only">{pt ? 'Ordenar vinhos' : 'Sort wines'}</span><select value={`${sort.key}:${sort.direction}`} onChange={event => { const [key, direction] = event.target.value.split(':'); setSort({ key: key as WineSortKey, direction: direction as 'asc' | 'desc' }); }}>{!['name:asc', 'vintage:desc', 'vintage:asc', 'ready:asc', 'myRating:desc', 'myRating:asc'].includes(`${sort.key}:${sort.direction}`) && <option value={`${sort.key}:${sort.direction}`}>{pt ? 'Ordem da tabela' : 'Table column order'}</option>}{journal && <><option value="myRating:desc">{pt ? 'Minha nota: maior primeiro' : 'My score: highest first'}</option><option value="myRating:asc">{pt ? 'Minha nota: menor primeiro' : 'My score: lowest first'}</option></>}<option value="name:asc">{pt ? 'Nome: A–Z' : 'Name: A–Z'}</option><option value="vintage:desc">{pt ? 'Safras recentes' : 'Newest vintage'}</option><option value="vintage:asc">{pt ? 'Safras antigas' : 'Oldest vintage'}</option>{!journal && <option value="ready:asc">{pt ? 'Prontos primeiro' : 'Ready first'}</option>}</select></label>}<div className="view-switch" role="group" aria-label={pt ? 'Visualização' : 'Collection layout'}><button className={view === 'grid' ? 'active' : ''} aria-pressed={view === 'grid'} aria-label={pt ? 'Ver cartões' : 'Grid view'} onClick={() => setView('grid')}><LayoutGrid size={16} /></button><button className={view === 'list' ? 'active' : ''} aria-pressed={view === 'list'} aria-label={pt ? 'Ver lista' : 'List view'} onClick={() => setView('list')}><List size={18} /></button></div></div></div>
+      <div className="collection-toolbar"><label className="collection-search"><Search size={18} /><span className="sr-only">{pt ? 'Buscar na coleção' : 'Search your collection'}</span><input type="search" value={filters.search} onChange={event => setFilter('search', event.target.value)} placeholder={pt ? 'Busque um vinho, uva, região…' : 'Find a wine, grape, region…'} /></label><div className="toolbar-controls">{isOwner && !journal && <button className="filter-toggle" onClick={() => setStorageOpen(true)}><MapPin size={16} />{pt ? 'Adegas' : 'Wine fridges'}</button>}{isOwner && <button className="filter-toggle" onClick={() => setPeopleOpen(true)}><Users size={16} />{pt ? 'Pessoas' : 'People'}</button>}<button className={`filter-toggle ${filtersOpen ? 'active' : ''}`} aria-expanded={filtersOpen} aria-controls="wine-filters" onClick={() => setFiltersOpen(!filtersOpen)}><SlidersHorizontal size={16} />{pt ? 'Filtros' : 'Filters'}{filterCount > 0 && <span>{filterCount}</span>}</button>{view === 'grid' && <label className="sort-select"><span className="sr-only">{pt ? 'Ordenar vinhos' : 'Sort wines'}</span><select value={`${sort.key}:${sort.direction}`} onChange={event => { const [key, direction] = event.target.value.split(':'); setSort({ key: key as WineSortKey, direction: direction as 'asc' | 'desc' }); }}>{!['name:asc', 'vintage:desc', 'vintage:asc', 'ready:asc', 'myRating:desc', 'myRating:asc'].includes(`${sort.key}:${sort.direction}`) && <option value={`${sort.key}:${sort.direction}`}>{pt ? 'Ordem da tabela' : 'Table column order'}</option>}{journal && <><option value="myRating:desc">{pt ? 'Minha nota: maior primeiro' : 'My score: highest first'}</option><option value="myRating:asc">{pt ? 'Minha nota: menor primeiro' : 'My score: lowest first'}</option></>}<option value="name:asc">{pt ? 'Nome: A–Z' : 'Name: A–Z'}</option><option value="vintage:desc">{pt ? 'Safras recentes' : 'Newest vintage'}</option><option value="vintage:asc">{pt ? 'Safras antigas' : 'Oldest vintage'}</option>{!journal && <option value="ready:asc">{pt ? 'Prontos primeiro' : 'Ready first'}</option>}</select></label>}<div className="view-switch" role="group" aria-label={pt ? 'Visualização' : 'Collection layout'}><button className={view === 'grid' ? 'active' : ''} aria-pressed={view === 'grid'} aria-label={pt ? 'Ver cartões' : 'Grid view'} onClick={() => setView('grid')}><LayoutGrid size={16} /></button><button className={view === 'list' ? 'active' : ''} aria-pressed={view === 'list'} aria-label={pt ? 'Ver lista' : 'List view'} onClick={() => setView('list')}><List size={18} /></button></div></div></div>
       {filtersOpen && <div id="wine-filters" className="expanded-filters">{([
         ['style', pt ? 'Tipo de vinho' : 'Wine type', styles], ['country', pt ? 'País' : 'Country', countries], ['region', pt ? 'Região' : 'Region', regions], ['vintage', pt ? 'Safra' : 'Vintage', vintages.map(String)],
       ] as const).map(([key, label, values]) => <label key={key}>{label}<select value={filters[key]} onChange={event => setFilter(key, event.target.value)}><option value="all">{pt ? 'Todos' : 'All'}</option>{values.map(value => <option key={value} value={value}>{value === '0' ? 'NV' : value}</option>)}</select></label>)}<label>Coravin<select value={filters.coravin} onChange={event => setFilter('coravin', event.target.value)}><option value="all">{pt ? 'Todos' : 'All bottles'}</option><option value="yes">{pt ? 'Com Coravin' : 'With Coravin'}</option><option value="no">{pt ? 'Sem Coravin' : 'Without Coravin'}</option></select></label><button className="text-button" onClick={clearFilters}><X size={14} />{pt ? 'Limpar' : 'Reset'}</button></div>}
@@ -170,12 +175,13 @@ export default function CellarCollection({ wines, mode = 'cellar', locale = 'en'
     {logging && <TastingDialog bottle={logging.bottle} vintage={logging.vintage} initialComment={logging.notes} people={people} locale={locale} onSave={async input => { await onAdd({ ...logging, ...input, status: 'consumed', fromCellar: false }); setToast(pt ? 'Vinho registrado.' : 'Wine saved to your journal.'); }} onClose={() => setLogging(null)} />}
     {sharing && <AddParticipantsDialog wine={sharing} people={people} locale={locale} onSave={saveParticipants} onClose={() => setSharing(null)} />}
     {reviewing && <PersonalReviewDialog wine={reviewing} locale={locale} onSave={saveReview} onClose={() => setReviewing(null)} />}
+    {storageOpen && isOwner && <CellarStorageDialog storage={storage} wines={wines} locale={locale} onSave={onSaveFridge} onDelete={onDeleteFridge} onClose={() => setStorageOpen(false)} />}
     {peopleOpen && isOwner && <CellarPeopleDialog people={people} locale={locale} onAdd={onAddPerson} onClose={() => setPeopleOpen(false)} />}
     {adding === 'choose' && <CellarDialog title={pt ? 'Adicione uma nova história' : 'Add a new story'} onClose={() => setAdding(null)}><p className="eyebrow">{pt ? 'ESPAÇO PARA UMA DESCOBERTA' : 'ROOM FOR A NEW DISCOVERY'}</p><h2>{pt ? 'Um vinho para sua coleção.' : 'A bottle for your collection.'}</h2><p className="dialog-description">{journal ? (pt ? 'Registre um vinho que você apreciou fora da adega.' : 'Remember a wine you enjoyed beyond your cellar.') : (pt ? 'Como você gostaria de adicionar seu vinho?' : 'How would you like to add your wine?')}</p><div className="add-options"><button onClick={() => setAdding('scan')}><Camera size={25} /><strong>{pt ? 'Fotografe o rótulo' : 'Scan a label'}</strong><span>{pt ? 'Deixe a IA preencher os detalhes.' : 'Let AI take care of the details.'}</span><ArrowUpRight size={17} /></button><button onClick={() => setAdding('manual')}><Edit3 size={24} /><strong>{pt ? 'Adicione à mão' : 'Add it yourself'}</strong><span>{pt ? 'Preencha os detalhes do seu vinho.' : 'Enter the details of your bottle.'}</span><ArrowUpRight size={17} /></button></div></CellarDialog>}
-    {editing && <WineModal wine={editing} isOpen onClose={() => setEditing(null)} onSave={saveWine} mode="edit" locale={locale} />}
-    {!journal && adding === 'scan' && <AIWineModal isOpen onClose={() => setAdding(null)} onAddWine={addWine} locale={locale} />}
+    {editing && <WineModal storage={storage} onManageStorage={isOwner ? () => setStorageOpen(true) : undefined} wine={editing} isOpen onClose={() => setEditing(null)} onSave={saveWine} mode="edit" locale={locale} />}
+    {!journal && adding === 'scan' && <AIWineModal storage={storage} onManageStorage={isOwner ? () => setStorageOpen(true) : undefined} isOpen onClose={() => setAdding(null)} onAddWine={addWine} locale={locale} />}
     {journal && adding === 'scan' && <AIExternalWineModal isOpen onClose={() => setAdding(null)} onAddWine={addWine} locale={locale} />}
-    {!journal && adding === 'manual' && <AddWineModal isOpen onClose={() => setAdding(null)} onAddWine={addWine} />}
+    {!journal && adding === 'manual' && <AddWineModal storage={storage} onManageStorage={isOwner ? () => setStorageOpen(true) : undefined} isOpen onClose={() => setAdding(null)} onAddWine={addWine} />}
     {journal && adding === 'manual' && <AddExternalWineModal isOpen onClose={() => setAdding(null)} onAddWine={addWine} />}
     <SommelierWidget isOpen={sommelierOpen} onClose={() => setSommelierOpen(false)} wines={wines.filter(wine => wine.status === 'in_cellar')} locale={locale} />
     {toast && <div className="flint-toast" role="status"><Check size={17} />{toast}<button onClick={() => setToast('')} aria-label="Dismiss notification"><X size={15} /></button></div>}

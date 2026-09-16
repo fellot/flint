@@ -4,7 +4,12 @@ import { useState, useRef } from 'react';
 import { WineFormData } from '@/types/wine';
 import { X, Upload, Camera, Loader2, CheckCircle, AlertCircle, Wine as WineIcon, Sparkles, RefreshCw } from 'lucide-react';
 
+import type { CellarStorage } from '@/types/database';
+import StorageLocationPicker from './StorageLocationPicker';
+
 interface AIWineModalProps {
+  storage: CellarStorage;
+  onManageStorage?: () => void;
   isOpen: boolean;
   onClose: () => void;
   onAddWine: (wineData: WineFormData) => void;
@@ -13,7 +18,7 @@ interface AIWineModalProps {
 
 type ProcessingStep = 'upload' | 'processing' | 'review' | 'saving';
 
-export default function AIWineModal({ isOpen, onClose, onAddWine, locale = 'en' }: AIWineModalProps) {
+export default function AIWineModal({ storage, onManageStorage, isOpen, onClose, onAddWine, locale = 'en' }: AIWineModalProps) {
   const t = {
     title: locale === 'pt' ? 'Adicionar Vinho' : 'Add Wine',
     stepUpload: locale === 'pt' ? 'Enviar' : 'Upload',
@@ -550,12 +555,7 @@ export default function AIWineModal({ isOpen, onClose, onAddWine, locale = 'en' 
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelLocation}</label>
-                <input
-                  type="text"
-                  value={formData.location}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
-                  className="input-field"
-                />
+                <StorageLocationPicker storage={storage} value={formData.location} onChange={location => handleInputChange('location', location)} onManage={onManageStorage} locale={locale} disabled={currentStep === 'saving'} />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center justify-between">

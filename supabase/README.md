@@ -185,7 +185,36 @@ first; column sorting, search, and **Still to rate** work within that type.
 **All types** restores the full ranking. The same type selector is also available
 inside **Filters**.
 
-## 8. Verify and deploy
+## 8. Managed wine fridges and selectable locations
+
+Run the complete contents of
+[`migrations/20260916020000_managed_wine_fridges.sql`](migrations/20260916020000_managed_wine_fridges.sql)
+in **Supabase → SQL Editor → New query → Run**, after the preceding migrations.
+Then deploy the updated app to Vercel. No new environment variables are needed.
+For a new installation, import the existing wines before running this migration.
+
+This migration configures Felipe's **Wine Fridge A with seven levels, L1–L7**.
+It shifts existing locations in that fridge exactly once: **L0 → L1, L1 → L2,
+… L6 → L7**, including existing capitalization and spacing variations. It does
+not shift other cellars' levels. Running the script again does not shift wines
+again or overwrite later fridge edits. Bottle quantities and personal reviews
+are preserved.
+
+Owners can open **Wine fridges** above the inventory table, or **Manage wine
+fridges** beside the location picker. Add or rename fridges, set the number of
+levels, choose whether numbering starts at L0 or L1, and remove empty fridges.
+Each level displays its current bottle count. Rename changes cascade to the
+wine records automatically. Occupied levels cannot be removed: first edit those
+wines and select another location (or **Not assigned yet**).
+
+Manual add, AI-assisted add, and wine edit forms now use a location list grouped
+by fridge. Everyone with cellar access can select locations; only the owner can
+manage fridges. Unrecognized existing descriptions remain selectable under
+**Other existing locations**, so combined locations and storage outside a fridge
+are preserved. New arbitrary location text is rejected by the database.
+Consumed wines leave storage and remain in their participants' journals.
+
+## 9. Verify and deploy
 
 ```bash
 npm test

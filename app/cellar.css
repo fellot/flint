@@ -609,3 +609,29 @@ summary::-webkit-details-marker { display: none; }
 @media (max-width: 600px) {
   .journal-type-filters { align-items: flex-start; flex-direction: column; gap: 10px; }
 }
+
+/* Managed wine fridges */
+.storage-picker { width: 100%; min-width: 0; }
+.storage-picker select { width: 100%; }
+.storage-manage-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 9px; color: var(--olive); font-size: 11px; text-decoration: underline; text-underline-offset: 3px; }
+.storage-picker-hint { font-size: 11px; color: var(--muted); line-height: 1.6; margin-top: 8px; }
+.fridge-list { display: grid; gap: 18px; margin: 20px 0; }
+.fridge-card { border: 1px solid #d4dacb; border-radius: 12px; background: #f1f3e9; overflow: hidden; }
+.fridge-card header { display: flex; align-items: center; gap: 12px; padding: 18px; }
+.fridge-card header > div { flex: 1; min-width: 0; }
+.fridge-card h3 { font: 22px var(--serif); overflow-wrap: anywhere; }
+.fridge-card header p { color: var(--muted); font-size: 10px; margin-top: 5px; }
+.fridge-shelves { margin: 0 18px; border: 1px solid #ccd5c1; border-radius: 7px; padding: 0 12px; background: #fcfcf7; }
+.fridge-shelf { display: flex; align-items: center; gap: 12px; min-height: 40px; border-bottom: 2px solid #d9dfcf; }
+.fridge-shelf:last-child { border-bottom: 0; }
+.fridge-shelf strong { font-size: 10px; font-weight: 500; width: 26px; }
+.fridge-shelf > span:last-child { font-size: 10px; color: var(--muted); white-space: nowrap; }
+.shelf-bottles { display: flex; gap: 5px; flex: 1; min-width: 0; overflow: hidden; padding-top: 4px; }
+.shelf-bottles i { position: relative; display: block; width: 10px; height: 22px; flex-shrink: 0; border-radius: 4px 4px 2px 2px; background: linear-gradient(to bottom, #526a4e 40%, #ddd8af 40%, #ddd8af 72%, #526a4e 72%); }
+.shelf-bottles i::before { content: ''; position: absolute; width: 4px; height: 5px; background: #526a4e; left: 3px; top: -3px; border-radius: 1px; }
+.fridge-card footer { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 13px 18px; font-size: 10px; color: var(--muted); }
+.fridge-card footer button { display: inline-flex; align-items: center; gap: 5px; padding: 5px 0; }
+.fridge-card footer button:not(:disabled):hover { color: var(--burgundy); }
+.fridge-card footer button:disabled { opacity: .5; cursor: not-allowed; }
+.fridge-editor { margin-top: 20px; }
+.storage-legacy-note { margin-top: 18px; }
