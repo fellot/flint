@@ -2,10 +2,22 @@ import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 import type { Wine } from '@/types/wine';
-import { attachJournal, reviewInput } from '@/lib/journal-data';
+import { attachJournal, participantInput, reviewInput } from '@/lib/journal-data';
 import { ApiError } from '@/lib/api-error';
+import { getWine } from '@/lib/dal/wines';
 
 type Client = SupabaseClient<Database>;
+
+export async function addParticipants(client: Client, cellarId: string, userId: string, wineId: string, body: unknown) {
+  const { error } = await client.rpc('add_wine_participants', {
+    p_cellar_id: cellarId, p_wine_id: wineId, p_person_ids: participantInput(body),
+  });
+  if (error?.code === '42501') throw new ApiError(403, error.message);
+  if (error?.code === 'P0002') throw new ApiError(404, 'Wine not found.');
+  if (error?.code === '22023') throw new ApiError(400, error.message);
+  if (error) throw error;
+  return (await withJournal(client, cellarId, userId, [await getWine(client, cellarId, wineId)]))[0];
+}
 
 export async function getPeople(client: Client, cellarId: string, userId: string) {
   const [{ data, error }, membership] = await Promise.all([

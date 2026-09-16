@@ -570,3 +570,17 @@ summary::-webkit-details-marker { display: none; }
   .journal-page .collection-tabs > .text-button { font-size: 10px; }
   .tasting-basics { grid-template-columns: 1fr 1.5fr; }
 }
+
+/* Journal type rankings and later participant additions */
+.journal-type-filters { display: flex; align-items: center; gap: 16px; margin: 0 0 22px; }
+.journal-type-filters > span { flex-shrink: 0; font-size: 10px; color: var(--muted); }
+.wine-type-buttons { display: flex; flex-wrap: wrap; gap: 7px; }
+.wine-type-buttons button { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border: 1px solid var(--line); border-radius: 5px; font-size: 10px; background: #fcfbf6; color: var(--muted); }
+.wine-type-buttons button:hover { border-color: #aeb9a1; color: var(--ink); }
+.wine-type-buttons button.active { background: #e9ede2; border-color: #aeb9a1; color: var(--ink); }
+.existing-participants { margin-bottom: 20px; padding: 12px 14px; background: #edf0e8; border-radius: 5px; }
+.existing-participants strong { font-size: 10px; font-weight: 500; color: var(--muted); }
+.existing-participants p { margin-top: 5px; font-size: 12px; line-height: 1.6; }
+@media (max-width: 600px) {
+  .journal-type-filters { align-items: flex-start; flex-direction: column; gap: 10px; }
+}

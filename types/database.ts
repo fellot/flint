@@ -49,6 +49,10 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      add_wine_participants: {
+        Args: { p_cellar_id: string; p_wine_id: string; p_person_ids: string[] };
+        Returns: undefined;
+      };
       consume_wine: {
         Args: { p_cellar_id: string; p_wine_id: string; p_quantity: number; p_consumed_date: string; p_person_ids: string[]; p_rating?: number | null; p_comment?: string };
         Returns: WineRow[];

@@ -42,3 +42,19 @@ test('search and filters combine with drinking windows and column sorting', () =
   assert.equal(getMaturity(bottle({ drinkingWindow: '', peakYear: '2040+' }), 2026), 'rest');
   assert.equal(getMaturity(bottle({ drinkingWindow: '', peakYear: '' }), 2026), 'unknown');
 });
+
+test('wine-type rankings use personal scores and combine with search and unrated wines', () => {
+  const wines = [
+    bottle({ bottle: 'Top red', style: 'Red', myRating: 98, rating: 2 }),
+    bottle({ bottle: 'Top white', style: 'White', myRating: 94, rating: 1 }),
+    bottle({ bottle: 'Unrated white', style: 'White', myRating: null, rating: 100 }),
+    bottle({ bottle: 'Other white', style: 'White', myRating: 0, rating: 99 }),
+    bottle({ bottle: 'Sparkling', style: 'Sparkling', myRating: 99 }),
+  ];
+  const descending = { key: 'myRating' as const, direction: 'desc' as const };
+  assert.deepEqual(names(selectWines(wines, { ...filters, style: 'White' }, false, descending, 2026)), ['Top white', 'Other white', 'Unrated white']);
+  assert.deepEqual(names(selectWines(wines, { ...filters, style: 'Red' }, false, descending, 2026)), ['Top red']);
+  assert.deepEqual(names(selectWines(wines, { ...filters, style: 'White', search: 'top' }, false, descending, 2026)), ['Top white']);
+  assert.deepEqual(names(selectWines(wines.filter(wine => wine.myRating == null), { ...filters, style: 'White' }, false, descending, 2026)), ['Unrated white']);
+  assert.deepEqual(names(selectWines(wines, { ...filters, style: 'White' }, false, { key: 'myRating', direction: 'asc' }, 2026)), ['Other white', 'Top white', 'Unrated white']);
+});

@@ -34,6 +34,7 @@ async function database() {
       ('old', '1', 'Historical bottle', 'Italy', 'Red', 'consumed', 4, 'Original cellar note', 'Wine Heaven');
   `);
   await db.exec(await readFile('supabase/migrations/20260916000000_people_and_journals.sql', 'utf8'));
+  await db.exec(await readFile('supabase/migrations/20260916010000_add_tasting_participants.sql', 'utf8'));
   const people = (await db.query<CellarPerson>('select * from public.cellar_people')).rows;
   const person = (id: string) => people.find(person => person.user_id === id)!.id;
   const as = async (id: string) => db.exec(`set role authenticated; select set_config('request.jwt.claim.sub', '${id}', false)`);
@@ -188,5 +189,76 @@ test('external tastings save participants atomically and direct writes cannot sk
     await db.exec(`delete from public.wines where id = '${saved.id}'`);
     assert.equal((await db.query(`select * from public.wine_participants where wine_id = '${saved.id}'`)).rows.length, 0);
     assert.equal((await db.query('select * from public.wine_reviews')).rows.length, 0);
+  } finally { await db.close(); }
+});
+
+test('later participant additions preserve inventory and reviews and create an independent journal entry', async () => {
+  const { db, person, as } = await database();
+  try {
+    await as(owner);
+    await db.exec(`insert into public.wine_reviews (cellar_id, wine_id, person_id, rating, comment)
+      values ('1', 'old', '${person(owner)}', 94, 'Owner memory')`);
+    const wineBefore = (await db.query<WineRow>("select * from public.wines where id = 'old'")).rows[0];
+    const reviewBefore = (await db.query<WineReview>('select * from public.wine_reviews')).rows[0];
+    await db.exec(`select public.add_wine_participants('1', 'old', array['${person(alice)}', '${person(alice)}', '${person(owner)}']::uuid[])`);
+    await db.exec(`select public.add_wine_participants('1', 'old', array['${person(alice)}']::uuid[])`);
+    assert.equal((await db.query("select * from public.wine_participants where wine_id = 'old'")).rows.length, 2);
+    assert.deepEqual((await db.query<WineRow>("select * from public.wines where id = 'old'")).rows[0], wineBefore);
+    assert.deepEqual((await db.query<WineReview>('select * from public.wine_reviews')).rows[0], reviewBefore);
+
+    await as(alice);
+    const people = (await db.query<CellarPerson>('select * from public.cellar_people')).rows;
+    const participants = (await db.query<WineParticipant>('select * from public.wine_participants')).rows;
+    const reviews = (await db.query<WineReview>('select * from public.wine_reviews')).rows;
+    const journal = attachJournal([rowToWine(wineBefore)], people, participants, reviews, alice)[0];
+    assert.equal(journal.inMyJournal, true); assert.equal(journal.myRating, null); assert.equal(journal.myComment, '');
+    await db.exec(`insert into public.wine_reviews (cellar_id, wine_id, person_id, rating, comment)
+      values ('1', 'old', '${person(alice)}', 82, 'Alice memory')`);
+    await as(owner);
+    assert.deepEqual((await db.query<WineReview>('select * from public.wine_reviews')).rows[0], reviewBefore);
+
+    const added = (await db.query<CellarPerson>("select * from public.save_cellar_person('1', 'Another friend', 'outside@example.com')")).rows[0];
+    await as(alice);
+    await db.exec(`select public.add_wine_participants('1', 'old', array['${added.id}']::uuid[])`);
+    assert.equal((await db.query("select * from public.wine_participants where wine_id = 'old'")).rows.length, 3);
+    // Reapplying this incremental function migration is safe too.
+    await db.exec('reset role');
+    await db.exec(await readFile('supabase/migrations/20260916010000_add_tasting_participants.sql', 'utf8'));
+  } finally { await db.close(); }
+});
+
+test('later additions reject nonparticipants, other cellars, pending accounts and invalid wines atomically', async () => {
+  const { db, person, as } = await database();
+  try {
+    await as(alice);
+    await assert.rejects(db.exec(`select public.add_wine_participants('1', 'old', array['${person(alice)}']::uuid[])`), /owner or a participant/);
+    await as(outside);
+    await assert.rejects(db.exec(`select public.add_wine_participants('1', 'old', array['${person(outside)}']::uuid[])`), /access/);
+    await as(owner);
+    const pending = (await db.query<CellarPerson>("select * from public.save_cellar_person('1', 'Pending', 'pending@example.com', null, true)")).rows[0];
+    const valid = `array['${person(alice)}']::uuid[]`;
+    await assert.rejects(db.exec(`select public.add_wine_participants('1', 'stock', ${valid})`), /consumed wines/);
+    await assert.rejects(db.exec(`select public.add_wine_participants('1', 'missing', ${valid})`), /not found/);
+    for (const ids of [
+      `array['${person(alice)}', '${person(outside)}']::uuid[]`, `array['${pending.id}']::uuid[]`,
+      `array['00000000-0000-0000-0000-000000000099']::uuid[]`, 'array[]::uuid[]', 'null::uuid[]',
+      'array[null]::uuid[]', `array_fill('${person(alice)}'::uuid, array[101])`,
+    ]) await assert.rejects(db.exec(`select public.add_wine_participants('1', 'old', ${ids})`), /active people/);
+    assert.deepEqual((await db.query("select person_id from public.wine_participants where wine_id = 'old'")).rows, [{ person_id: person(owner) }]);
+    await db.exec(`reset role; delete from public.cellar_members where user_id = '${alice}'; set role authenticated`);
+    await assert.rejects(db.exec(`select public.add_wine_participants('1', 'old', ${valid})`), /active people/);
+    await db.exec('set role anon');
+    await assert.rejects(db.exec(`select public.add_wine_participants('1', 'old', ${valid})`), /permission denied/);
+  } finally { await db.close(); }
+});
+
+test('owner can add participants to a consumed wine even when they were not originally selected', async () => {
+  const { db, person, as } = await database();
+  try {
+    await as(owner);
+    await db.exec(`select * from public.consume_wine('1', 'stock', 3, '2026-09-16', array['${person(alice)}']::uuid[])`);
+    await db.exec(`select public.add_wine_participants('1', 'stock', array['${person(owner)}']::uuid[])`);
+    assert.equal((await db.query("select * from public.wine_participants where wine_id = 'stock'")).rows.length, 2);
+    assert.equal((await db.query<WineRow>("select * from public.wines where id = 'stock'")).rows[0].quantity, 3);
   } finally { await db.close(); }
 });

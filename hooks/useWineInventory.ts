@@ -56,11 +56,16 @@ export function useWineInventory(dataSource: string) {
     const saved = await readResponse<{ myRating: number | null; myComment: string }>(response);
     setWines(previous => previous.map(wine => wine.id === id ? { ...wine, ...saved } : wine));
   };
+  const onAddParticipants = async (id: string, personIds: string[]) => {
+    const response = await fetch(endpoint(id, '/participants'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ personIds }) });
+    const saved = await readResponse<Wine>(response);
+    setWines(previous => previous.map(wine => wine.id === id ? saved : wine));
+  };
   const onAddPerson = async (name: string, email: string) => {
     const response = await fetch(`/api/cellar/people?dataSource=${encodeURIComponent(dataSource)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email }) });
     const result = await readResponse<{ people: Person[]; isOwner: boolean; invitationSent: boolean; warning: string }>(response);
     setPeople(result.people); setIsOwner(result.isOwner);
     return result;
   };
-  return { wines, people, isOwner, onReview, onAddPerson, loading, error, onRetry: () => setRevision(value => value + 1), onAdd, onUpdate, onDelete, onConsume };
+  return { wines, people, isOwner, onReview, onAddParticipants, onAddPerson, loading, error, onRetry: () => setRevision(value => value + 1), onAdd, onUpdate, onDelete, onConsume };
 }

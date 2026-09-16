@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowDown, ArrowUp, ArrowUpDown, BookOpen, Edit3, GlassWater, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, BookOpen, Edit3, GlassWater, Trash2, UserPlus } from 'lucide-react';
 import type { Wine } from '@/types/wine';
 import type { WineSort, WineSortKey } from '@/utils/cellar';
 import { styleFamily } from '@/utils/cellar';
@@ -17,9 +17,10 @@ interface Props {
   onDrink: (wine: Wine) => void;
   onDelete: (wine: Wine) => void;
   onReview: (wine: Wine) => void;
+  onParticipants: (wine: Wine) => void;
 }
 
-export default function CellarTable({ wines, locale, journal, sort, onSort, onView, onEdit, onDrink, onDelete, onReview }: Props) {
+export default function CellarTable({ wines, locale, journal, sort, onSort, onView, onEdit, onDrink, onDelete, onReview, onParticipants }: Props) {
   const pt = locale === 'pt';
   const columns: { key: WineSortKey; label: string }[] = [
     { key: 'name', label: pt ? 'Vinho' : 'Wine' },
@@ -56,7 +57,7 @@ export default function CellarTable({ wines, locale, journal, sort, onSort, onVi
           <td className="table-number">{wine.quantity}</td>
           {!journal && <td className="table-number">{wine.rating ?? '—'}</td>}
           {journal ? <><td className="table-comment"><button onClick={() => onReview(wine)} title={wine.myComment || ''}>{wine.myComment || (pt ? 'Adicionar comentário' : 'Add a comment')}</button></td><td className="table-participants" title={wine.participants?.map(person => person.name).join(', ')}>{wine.participants?.map(person => person.name).join(', ') || '—'}</td></> : <td className="table-location">{wine.location || '—'}</td>}
-          <td><div className="table-row-actions"><button onClick={() => wine.status === 'in_cellar' ? onDrink(wine) : onView(wine)} disabled={wine.status === 'in_cellar' && wine.quantity < 1} title={pt ? 'Abrir / ver vinho' : 'Open / view wine'} aria-label={`${wine.status === 'in_cellar' ? (pt ? 'Abrir' : 'Open') : (pt ? 'Ver' : 'Revisit')} ${wine.bottle}`}>{wine.status === 'in_cellar' ? <GlassWater size={14} /> : <BookOpen size={14} />}</button><button onClick={() => onEdit(wine)} title={pt ? 'Editar' : 'Edit'} aria-label={`${pt ? 'Editar' : 'Edit'} ${wine.bottle}`}><Edit3 size={14} /></button><button onClick={() => onDelete(wine)} className="table-delete" title={pt ? 'Excluir' : 'Delete'} aria-label={`${pt ? 'Excluir' : 'Delete'} ${wine.bottle}`}><Trash2 size={13} /></button></div></td>
+          <td><div className="table-row-actions">{journal && <button onClick={() => onParticipants(wine)} title={pt ? 'Adicionar participantes' : 'Add participants'} aria-label={`${pt ? 'Adicionar participantes a' : 'Add participants to'} ${wine.bottle}`}><UserPlus size={14} /></button>}<button onClick={() => wine.status === 'in_cellar' ? onDrink(wine) : onView(wine)} disabled={wine.status === 'in_cellar' && wine.quantity < 1} title={pt ? 'Abrir / ver vinho' : 'Open / view wine'} aria-label={`${wine.status === 'in_cellar' ? (pt ? 'Abrir' : 'Open') : (pt ? 'Ver' : 'Revisit')} ${wine.bottle}`}>{wine.status === 'in_cellar' ? <GlassWater size={14} /> : <BookOpen size={14} />}</button><button onClick={() => onEdit(wine)} title={pt ? 'Editar' : 'Edit'} aria-label={`${pt ? 'Editar' : 'Edit'} ${wine.bottle}`}><Edit3 size={14} /></button><button onClick={() => onDelete(wine)} className="table-delete" title={pt ? 'Excluir' : 'Delete'} aria-label={`${pt ? 'Excluir' : 'Delete'} ${wine.bottle}`}><Trash2 size={13} /></button></div></td>
         </tr>)}</tbody>
       </table>
     </div>
