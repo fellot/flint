@@ -52,7 +52,7 @@ Alternatively, set `SUPABASE_SECRET_KEY` (or legacy `SUPABASE_SERVICE_ROLE_KEY`)
 npm run migrate:wines -- --apply
 ```
 
-The script sends one atomic insert with duplicate IDs ignored. **This admin key is only for the import script.** The running app needs only the publishable key. Remove the admin key after importing.
+The script sends one atomic insert with duplicate IDs ignored. **This key stays on the server.** The app also uses it to send account invitations from the owner’s People dialog. Wine and journal reads/writes continue to use each signed-in user’s session.
 
 The importer preserves IDs, cellar separation, quantities, history, notes, ratings on the existing 0–100 scale, Coravin fields, and maturity text such as `Past peak` and `2040+`. Optional empty fields receive database defaults. Only HTTP(S) URLs are retained for images and technical sheets. A `--data-dir <directory>` option supports a newer export with the same three filenames.
 
@@ -100,7 +100,70 @@ For the **Invite user** template:
 
 These links verify the token on the server and open `/reset-password`. The callback also supports PKCE authorization codes. Configure SMTP for production delivery. Use a separate development project or update the Site URL when testing email links locally. The recovery endpoint generates a callback using `NEXT_PUBLIC_SITE_URL`; the templates above use the project's configured Site URL, so keep them aligned.
 
-## 6. Verify and deploy
+## 6. Add people and personal journals (existing and new installations)
+
+After importing the wines and assigning the initial accounts, run the complete
+[`migrations/20260916000000_people_and_journals.sql`](migrations/20260916000000_people_and_journals.sql)
+in Supabase **SQL Editor → New query → Run**, once. Existing installations need
+only this new migration; do not rerun the original schema or wine import.
+Apply it just before deploying the updated app, since it replaces the consumption function.
+
+The script sets the existing cellar owners from the account emails in
+`assign-cellars.sql`: Felipe for cellar 1, Gerson for 2, Lorenzo for 3. Alice stays
+a regular member of cellar 1. Check those owner emails at the top of the script
+before running it if the accounts have changed. It adds:
+
+- `cellar_members.role`: owner or member. Only owners can add people.
+- `cellar_people`: account identities and pending email invitations.
+- `wine_participants`: who shared each consumed wine record.
+- `wine_reviews`: each participant’s own 0–100 integer score and comment.
+
+Existing consumed wines are assigned to their cellar owner’s journal. Historical
+shared ratings and notes stay on the wine record, labeled as previous cellar
+information; they are not attributed as anyone’s personal review. Historical
+Wine Heaven/Hell locations are cleared. New consumption uses the `consumed` status.
+Scores and comments are protected by RLS: only the participant can read or change
+their own review, and they must retain access to that cellar.
+
+### Enable owner-created accounts
+
+In **Vercel → Project → Settings → Environment Variables**, add:
+
+- `SUPABASE_SECRET_KEY`: your Supabase project's **secret** API key (`sb_secret_…`).
+  The legacy `SUPABASE_SERVICE_ROLE_KEY` is also accepted. Do not prefix this with
+  `NEXT_PUBLIC_` and do not put it in source control.
+- Keep `NEXT_PUBLIC_SITE_URL` set to your deployed website origin.
+
+Use `.env.local` for the same server-only key if you want to send invitations
+from local development. The existing publishable key is still used for all
+regular wine operations. Configure SMTP and the **Invite user** email template
+from section 5; invitations use Supabase’s email delivery. Allow the deployment’s
+`/auth/callback` URL in Supabase Auth URL Configuration.
+
+Commit/push the updated code through your normal workflow. Vercel will build the
+new commit. If environment variables were added after that build, open
+**Deployments → latest deployment → Redeploy**. Check the variables are enabled
+for the environment being deployed (Production, and Preview only if needed).
+
+As owner, open **People** above the wine table and enter a name and email:
+
+- An existing verified account gets access immediately.
+- A new account receives an email invitation to set its password. The person
+  remains **Pending** until they accept; they cannot be selected for a tasting yet.
+- If sending fails, Flint shows the failure and lets the owner retry. No success
+  message is shown for failed delivery. Existing accounts can also use password reset.
+- Without the secret key, existing verified accounts can still be added; new
+  account invitations remain unavailable.
+
+When opening a bottle, choose its participants and optionally enter your own
+score and comment. Inventory, participants and that review are saved atomically.
+Every selected user sees the wine in their personal journal and writes their own
+review. The journal defaults to highest personal score first, with unrated wines
+last; every table heading still supports sorting. Wines logged outside the cellar
+use the same participant/review step. One partial consumption creates a distinct
+journal record, so later tastings of the remaining bottles can have different people.
+
+## 7. Verify and deploy
 
 ```bash
 npm test
@@ -113,10 +176,11 @@ Automated tests execute the schema and imports in PGlite (embedded Postgres), ch
 
 In the real project, sign in with each account and check: cellar and journal records, add/edit/delete, map/sommelier language, sign-out, recovery links, and access denial for another cellar's `dataSource`. Test bottle consumption as well. Live Auth/email delivery requires the configured Supabase project and is not covered by the embedded database tests.
 
-This change does not create a hosted project, apply remote SQL, create real accounts, or deploy the app automatically.
+Development does not apply remote SQL or deploy the app automatically. Account invitation emails are sent only when an owner uses the People action in the configured app.
 
 ## References
 
 - [Supabase server-side clients and session refresh](https://supabase.com/docs/guides/auth/server-side/creating-a-client?framework=nextjs)
+- [Owner account invitations](https://supabase.com/docs/reference/javascript/auth-admin-inviteuserbyemail)
 - [Email/password authentication and recovery](https://supabase.com/docs/guides/auth/passwords)
 - [Postgres row level security](https://supabase.com/docs/guides/database/postgres/row-level-security)

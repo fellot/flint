@@ -15,6 +15,13 @@ A modern wine inventory management system backed by Supabase Auth and Postgres b
 - **Mark as Consumed**: Track when you drink wines and add ratings
 - **Delete Wines**: Remove wines from your collection when needed
 
+### 👥 **Shared Bottles, Personal Journals**
+- Owners add existing accounts or invite new people from **People**
+- Choose who shared each bottle when recording consumption
+- Each participant keeps their own 0–100 score and comment
+- Journals show highest scores first in a compact sortable table
+- Apply the [people and journals migration](supabase/README.md#6-add-people-and-personal-journals-existing-and-new-installations) before deploying
+
 ### 🔍 **Advanced Filtering & Search**
 - **Country Filter**: Filter by wine-producing countries
 - **Style Filter**: Filter by wine style (Red, White, Rosé, Sparkling, Sweet, Fortified)
@@ -69,7 +76,7 @@ wine-cellar-manager/
 │   ├── AddWineModal.tsx   # Add new wine form
 │   ├── WineFilters.tsx    # Filtering and search
 │   ├── WineModal.tsx      # Edit wine form
-│   └── WineTable.tsx      # Wine display table
+│   └── CellarTable.tsx      # Wine display table
 ├── data/                   # Legacy import source files
 │   └── wines.json         # Wine inventory data
 ├── types/                  # TypeScript definitions
@@ -103,7 +110,10 @@ interface Wine {
   status: 'in_cellar' | 'consumed' | 'sold' | 'gifted';
   consumedDate: string | null;   // When consumed
   notes: string;                 // Personal notes
-  rating: number | null;         // Personal rating (0-100)
+  rating: number | null;         // Historical cellar rating
+  myRating?: number | null;      // Your personal score (0-100)
+  myComment?: string;            // Your personal comment
+  inMyJournal?: boolean;         // You participated in this tasting
   price: number | null;          // Purchase price
   location: string;              // Storage location
   quantity: number;              // Number of bottles
@@ -130,8 +140,17 @@ All wine endpoints require a Supabase session. The optional `dataSource` selects
 - **Response**: Updated wine object
 
 ### POST `/api/wines/[id]/consume`
-- **Body**: `quantity`, `consumedDate`, optional `notes` and `location`
+- **Body**: `quantity`, `consumedDate`, `personIds`, `rating` (integer 0–100 or null), `comment`
+- **Behavior**: Atomically updates inventory and records the selected participants and the caller’s own review
 - **Response**: Changed inventory/history records; the operation is atomic
+
+### PUT `/api/wines/[id]/review`
+- **Body**: `rating` (integer 0–100 or null), `comment` (up to 5,000 characters)
+- **Behavior**: Saves only the signed-in participant’s personal review
+
+### GET / POST `/api/cellar/people`
+- **GET**: People in the selected cellar and whether the caller is its owner
+- **POST**: Owner-only name/email access assignment or account invitation
 
 ### DELETE `/api/wines/[id]`
 - **Response**: Success message
@@ -145,9 +164,10 @@ All wine endpoints require a Supabase session. The optional `dataSource` selects
 
 ### Marking a Wine as Consumed
 1. Find the wine in the table
-2. Click the calendar icon (📅) in the Actions column
-3. Confirm the consumption
-4. Add a rating and notes if desired
+2. Click the open-bottle action
+3. Choose the quantity, date, and people who shared the wine
+4. Optionally add your own 0–100 score and comment
+5. Each participant sees it in their own journal, sorted by personal score
 
 ### Filtering Your Collection
 1. Use the filter dropdowns for Country, Style, Vintage, and Status
@@ -169,7 +189,7 @@ All wine endpoints require a Supabase session. The optional `dataSource` selects
 ### Adding New Fields
 1. Update the `Wine` interface in `types/wine.ts`
 2. Modify the forms in `AddWineModal.tsx` and `WineModal.tsx`
-3. Update the table display in `WineTable.tsx`
+3. Update the table display in `CellarTable.tsx`
 4. Add validation in the form components
 
 ## 🤝 Contributing

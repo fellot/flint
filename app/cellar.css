@@ -528,3 +528,45 @@ summary::-webkit-details-marker { display: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Personal journals and shared tastings */
+.drink-form > fieldset, .drink-form > fieldset > .personal-review-fields { display: grid; gap: 20px; min-width: 0; }
+.drink-form fieldset { border: 0; padding: 0; margin: 0; }
+.personal-review-fields { display: grid; gap: 20px; }
+.personal-review-fields small { display: block; margin-top: 7px; font-size: 11px; line-height: 1.6; color: var(--muted); font-weight: 400; }
+.personal-review-fields .score-input { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.personal-review-fields .score-input input { width: 108px; margin: 0; font-size: 24px; font-family: Georgia, serif; color: var(--burgundy); }
+.score-input > span { font-size: 13px; color: var(--muted); font-weight: 400; }
+.tasting-basics { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
+.drink-form .participant-picker { border-block: 1px solid var(--line); padding-block: 16px; }
+.participant-picker legend { font-size: 12px; font-weight: 600; padding-right: 8px; }
+.drink-form .participant-picker label { display: flex; align-items: center; gap: 10px; padding: 8px 0; cursor: pointer; }
+.drink-form .participant-picker input { width: 17px; height: 17px; margin: 0; accent-color: var(--burgundy); }
+.participant-picker label > span { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.participant-picker small { font-size: 10px; color: var(--muted); font-weight: 400; }
+.participant-picker > p { font-size: 11px; color: var(--muted); line-height: 1.7; margin: 8px 0 0; }
+.participant-pending { opacity: .6; }
+.review-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
+.personal-score { display: inline-flex; align-items: center; gap: 5px; color: var(--burgundy); background: #f4eae6; border: 1px solid #e5d6cf; border-radius: 5px; padding: 5px 7px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.personal-score:hover { background: #eaddd5; }
+.personal-score small { font-size: 9px; font-weight: 400; opacity: .75; }
+.personal-score svg { opacity: .55; }
+.table-comment { min-width: 180px; max-width: 220px; }
+.table-comment button { display: block; max-width: 210px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; font-size: 11px; color: var(--muted); }
+.table-comment button:hover { color: var(--burgundy); }
+.table-participants { max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+.journal-shared-with { font-size: 11px; color: var(--muted); margin: 12px 0; }
+.cellar-people-list { list-style: none; padding: 0; margin: 0 0 24px; max-height: 220px; overflow-y: auto; }
+.cellar-people-list li { display: flex; align-items: center; gap: 10px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.cellar-people-list li > div { min-width: 0; flex: 1; }
+.cellar-people-list strong { display: block; font-size: 13px; }
+.cellar-people-list li > div > span { display: block; overflow-wrap: anywhere; margin-top: 4px; font-size: 11px; color: var(--muted); }
+.person-status { font-size: 10px; color: #887545; background: #f5efdf; padding: 4px 7px; border-radius: 4px; }
+.person-status.active { color: #526349; background: #edf0e8; }
+.cellar-people-list .text-button { font-size: 10px; }
+.people-success { padding: 10px 12px; font-size: 12px; background: #edf0e8; color: #526349; border-radius: 5px; }
+@media (max-width: 600px) {
+  .journal-page .collection-tabs { align-items: flex-start; gap: 12px; }
+  .journal-page .collection-tabs > .text-button { font-size: 10px; }
+  .tasting-basics { grid-template-columns: 1fr 1.5fr; }
+}

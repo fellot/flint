@@ -13,7 +13,11 @@ export interface Wine {
   status: 'in_cellar' | 'consumed' | 'sold' | 'gifted';
   consumedDate: string | null;
   notes: string;
-  rating: number | null;
+  rating: number | null; // Historical cellar rating, not a personal review.
+  myRating?: number | null;
+  myComment?: string;
+  inMyJournal?: boolean;
+  participants?: { id: string; name: string }[];
   price: number | null;
   location: string;
   quantity: number;
@@ -35,6 +39,9 @@ export interface WineFilters {
 }
 
 export interface WineFormData {
+  personIds?: string[];
+  rating?: number | null;
+  comment?: string;
   bottle: string;
   country: string;
   region: string;

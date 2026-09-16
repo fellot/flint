@@ -25,7 +25,7 @@ export function styleFamily(style: string) {
   return 'red';
 }
 
-export type WineSortKey = 'name' | 'country' | 'style' | 'vintage' | 'window' | 'peak' | 'quantity' | 'rating' | 'location' | 'status' | 'consumed' | 'ready';
+export type WineSortKey = 'name' | 'country' | 'style' | 'vintage' | 'window' | 'peak' | 'quantity' | 'rating' | 'myRating' | 'myComment' | 'participants' | 'location' | 'status' | 'consumed' | 'ready';
 export type WineSort = { key: WineSortKey; direction: 'asc' | 'desc' };
 
 function sortValue(wine: Wine, key: WineSortKey, year: number): string | number | null {
@@ -38,6 +38,7 @@ function sortValue(wine: Wine, key: WineSortKey, year: number): string | number 
       if (/past peak|passou.*pico/i.test(value)) return 0;
       return Number(value.match(/\b(?:19|20|21)\d{2}\b/)?.[0]) || null;
     }
+    case 'participants': return wine.participants?.map(person => person.name).join(', ') || null;
     case 'consumed': return wine.consumedDate || null;
     case 'ready': return ['ready', 'soon', 'rest', 'unknown'].indexOf(getMaturity(wine, year));
     default: return wine[key] ?? null;
@@ -53,7 +54,7 @@ export function selectWines(wines: Wine[], filters: WineFilters, readyOnly: bool
     }
     if (filters.coravin === 'yes' && !wine.coravin) return false;
     if (filters.coravin === 'no' && wine.coravin) return false;
-    return !query || [wine.bottle, wine.country, wine.region, wine.grapes, wine.foodPairingNotes, wine.mealToHaveWithThisWine, wine.notes, wine.location].some(value => (value || '').toLocaleLowerCase().includes(query));
+    return !query || [wine.bottle, wine.country, wine.region, wine.grapes, wine.foodPairingNotes, wine.mealToHaveWithThisWine, wine.notes, wine.myComment || '', wine.location].some(value => (value || '').toLocaleLowerCase().includes(query));
   }).sort((a, b) => {
     const aValue = sortValue(a, sort.key, year);
     const bValue = sortValue(b, sort.key, year);

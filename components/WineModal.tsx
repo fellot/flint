@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Wine } from '@/types/wine';
-import { X, Wine as WineIcon, Star, Calendar, MapPin, Loader2, Sparkles, RefreshCw } from 'lucide-react';
+import { X, Wine as WineIcon, Calendar, MapPin, Loader2, Sparkles, RefreshCw } from 'lucide-react';
 
 interface WineModalProps {
   wine: Wine;
@@ -195,10 +195,10 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
                   value={formData.status}
                   onChange={(e) => handleStatusChange(e.target.value as Wine['status'])}
                   className="select-field w-auto"
-                  disabled={mode === 'view'}
+                  disabled={mode === 'view' || wine.status === 'consumed'}
                 >
                   <option value="in_cellar">In Cellar</option>
-                  <option value="consumed">Consumed</option>
+                  {wine.status === 'consumed' && <option value="consumed">Consumed</option>}
                   <option value="sold">Sold</option>
                   <option value="gifted">Gifted</option>
                 </select>
@@ -218,24 +218,7 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
                 )}
               </div>
               
-              {formData.status === 'consumed' && (
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium text-gray-700">Rating:</span>
-                  <div className="flex items-center space-x-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
-                        className={`p-1 ${formData.rating && formData.rating >= star ? 'text-yellow-400' : 'text-gray-300'}`}
-                        disabled={mode === 'view'}
-                      >
-                        <Star className="h-5 w-5 fill-current" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {formData.status === 'consumed' && <p className="text-sm text-gray-500">{locale === 'pt' ? 'Sua nota e seu comentário são editados em Minha avaliação no diário.' : 'Edit your personal score and comment through My review in the journal.'}</p>}
             </div>
           </div>
 
@@ -560,7 +543,7 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
           {/* Notes */}
           <div>
             <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
-              Additional Notes
+              {locale === 'pt' ? 'Notas da adega (compartilhadas)' : 'Cellar notes (shared)'}
             </label>
             <textarea
               id="notes"
@@ -569,7 +552,7 @@ export default function WineModal({ wine, isOpen, onClose, onSave, mode, locale 
               onChange={handleInputChange}
               rows={4}
               className="input-field"
-              placeholder="Add your tasting notes, thoughts, or any additional information..."
+              placeholder={locale === 'pt' ? 'Informações sobre o vinho para toda a adega…' : 'Wine information shared with everyone in this cellar…'}
               disabled={mode === 'view'}
             />
           </div>
