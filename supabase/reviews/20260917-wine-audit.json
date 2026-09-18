@@ -1,0 +1,1135 @@
+{
+  "review_date": "2026-09-17",
+  "cellar_id": "1",
+  "inventory_source": "User-provided Supabase JSON export",
+  "field_scope": [
+    "drinking_window",
+    "peak_year",
+    "food_pairing_notes",
+    "meal_suggestion"
+  ],
+  "wines": [
+    {
+      "original": {
+        "id": "31",
+        "style": "Red",
+        "bottle": "Arzuaga Reserva Especial",
+        "grapes": "Tempranillo & Cabernet Sauvignon",
+        "region": "Ribera del Duero",
+        "coravin": false,
+        "country": "Spain",
+        "vintage": 2019,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2031",
+        "coravin_date": null,
+        "drinking_window": "2027–2042",
+        "meal_suggestion": "Grilled ribeye steak with chimichurri sauce, served with roasted asparagus and garlic mashed potatoes.",
+        "food_pairing_notes": "Elegant blend of Tempranillo and Cabernet Sauvignon, showcasing rich dark fruit flavors, balanced acidity, and subtle oak. This wine pairs beautifully with roast lamb, particularly when seasoned with rosemary and garlic, as well as with Ibérico pork, which complements its depth. For optimal enjoyment, decant for at least 1 hour to allow the wine to breathe. Critic score: RP 94.",
+        "technical_sheet_url": "https://arzuaganavarro.com/images/ARZUAGA/Fichas-PDF/Reserva_especial/Reserva_Especial_19.pdf"
+      },
+      "changes": {
+        "food_pairing_notes": "Tempranillo-led Ribera del Duero with dark fruit, spice and substantial oak aging. Its richness suits roast lamb, beef in a savoury sauce, game or roast pork. Taste after opening and allow air if the wine seems closed; serve around 16-18 C."
+      },
+      "reasoning": {
+        "drinking_window": "Retain 2027–2042 provisionally. The producer describes a rich wine aged 29 months in oak and suitable for service on release, but provides no end date. Neither a mandatory wait until 2027 nor longevity to 2042 is independently established; 2042 is an optimistic planning limit.",
+        "peak_year": "Retain 2031 as a plausible mature-style target, not a published or verified peak.",
+        "food_pairing_notes": "The meat pairings are sound. Replace the incomplete blend description (the producer also lists Albillo Mayor), remove the unverified RP 94 attribution, and replace a compulsory one-hour decant with tasting-led aeration.",
+        "meal_suggestion": "Keep the ribeye meal. Beef and fat suit the structure; use a savoury, mildly vinegared chimichurri. Asparagus as a side does not invalidate the whole pairing."
+      },
+      "sources": [
+        {
+          "title": "Arzuaga producer: Reserva Especial 2019 technical sheet",
+          "url": "https://arzuaganavarro.com/images/ARZUAGA/Fichas-PDF/Reserva_especial/Reserva_Especial_19.pdf"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "24",
+        "style": "Red",
+        "bottle": "Casa Ferreirinha Castas Escondidas Douro",
+        "grapes": "Touriga Franca, Tinta Barroca & others",
+        "region": "Douro",
+        "coravin": false,
+        "country": "Portugal",
+        "vintage": 2019,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2028",
+        "coravin_date": null,
+        "drinking_window": "2024–2034",
+        "meal_suggestion": "Grilled lamb chops with rosemary, served with garlic mashed potatoes and a red wine reduction sauce.",
+        "food_pairing_notes": "The Casa Ferreirinha Castas Escondidas Douro 2019 is a rich, full-bodied red blend featuring Touriga Franca and Tinta Barroca, offering dark fruit flavors and a hint of spice. It pairs excellently with grilled beef, game meats, and hearty stews. For optimal enjoyment, decant for 1-2 hours to allow the wine to breathe and reveal its complexity. Critics have noted its quality, with a score of RP 94.",
+        "technical_sheet_url": null
+      },
+      "changes": {
+        "food_pairing_notes": "A fresh, structured Douro blend of lesser-known varieties and old-vine fruit, with red and black fruit and peppery spice. Pair with roast lamb, beef, game or a savoury stew; avoid very sweet barbecue glazes. Taste after opening and aerate if needed."
+      },
+      "reasoning": {
+        "drinking_window": "Retain 2024–2034 as a reasonable planning window. Wine Enthusiast prefers a start in 2025, a small difference that does not justify recasting the entire window; 2034 remains an estimate.",
+        "peak_year": "Retain 2028 as an estimated target within that window.",
+        "food_pairing_notes": "Correct the misleading emphasis on Touriga Franca/Tinta Barroca: the importer lists an old-vine field blend plus Tinto Cão, Tinta Amarela, Touriga Fêmea, Tinta Francisca and other lesser-known varieties. The wine is fresher than the generic full-bodied description suggests. Remove the unverified RP 94 and fixed decanting requirement.",
+        "meal_suggestion": "Keep rosemary lamb chops, potatoes and red-wine sauce: the savoury meat and sauce fit the fruit, freshness and tannins."
+      },
+      "sources": [
+        {
+          "title": "Liberty Wines: Castas Escondidas 2019 technical sheet",
+          "url": "https://media.libertywine.co.uk/Perfion/FactSheet.Report?id=173293"
+        },
+        {
+          "title": "Wine Enthusiast: Castas Escondidas 2019",
+          "url": "https://www.wineenthusiast.com/buying-guide/casa-ferreirinha-2019-castas-escondidas-red-douro/"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "25",
+        "style": "Red",
+        "bottle": "Casa Ferreirinha Quinta da Leda",
+        "grapes": "Touriga Nacional, Tinta Roriz, Tinta Barroca, others",
+        "region": "Douro",
+        "coravin": false,
+        "country": "Portugal",
+        "vintage": 2018,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2027",
+        "coravin_date": null,
+        "drinking_window": "2024–2034",
+        "meal_suggestion": "Portuguese cozido",
+        "food_pairing_notes": "Structured Touriga blend; dark fruit and chocolate; pairs with grilled beef, venison or stews.",
+        "technical_sheet_url": null
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Retain 2024–2034. The producer says the 2018 benefits from four to six years in bottle after its 2021 bottling and remains at its best for years; a merchant reproduces a Wine Spectator horizon to 2038. The existing end date is conservative, not demonstrably wrong.",
+        "peak_year": "Retain 2027: it falls within the producer’s suggested bottle-development period, although the producer does not nominate one peak year.",
+        "food_pairing_notes": "Keep the description and meat pairings. The producer confirms acidity, tannins, fruit and spice. The separate grapes field does contain an error: its 2018 blend has Tinto Cão, not the listed Tinta Barroca; that field is outside this four-field script.",
+        "meal_suggestion": "Keep Portuguese cozido. Its meat, sausage, salt and fat can suit this wine; roast kid would be an alternative, not a necessary correction."
+      },
+      "sources": [
+        {
+          "title": "Sogrape producer sheet: Quinta da Leda 2018",
+          "url": "https://vinhosdeportugal.oglobo.com.br/wp-content/uploads/2022/04/QUINTA-DA-LEDA-2018.pdf"
+        },
+        {
+          "title": "Millesima: Quinta da Leda 2018 critic reviews",
+          "url": "https://www.millesima.pt/casa-ferreirinha-quinta-da-leda-2018.html"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "2c2ebb2e-413f-4157-b432-dfa0553f00c6",
+        "style": "Red",
+        "bottle": "Casa Ferreirinha Quinta da Leda 2021",
+        "grapes": "Tinta Roriz, Touriga Nacional, Touriga Franca",
+        "region": "Douro",
+        "coravin": false,
+        "country": "Portugal",
+        "vintage": 2021,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2025",
+        "coravin_date": null,
+        "drinking_window": "2023-2030",
+        "meal_suggestion": "Grilled lamb chops with rosemary, served with a side of ratatouille and a red wine reduction sauce.",
+        "food_pairing_notes": "This wine likely has a rich, full-bodied profile with good acidity and tannins, making it suitable for pairing with grilled meats, hearty stews, or aged cheeses.",
+        "technical_sheet_url": null
+      },
+      "changes": {
+        "drinking_window": "2025–2041",
+        "peak_year": "2031",
+        "food_pairing_notes": "Structured Douro red with red and black fruit, pepper and cedar, supported by substantial tannins and fresh acidity. Pair with roast or grilled lamb, beef, game and aged cheeses. Rosemary lamb chops and a savoury red-wine sauce are a good match."
+      },
+      "reasoning": {
+        "drinking_window": "Replace 2023–2030 with 2025–2041. The producer sheet dates bottling to June 2024, so 2023 is too early for this bottled wine. It recommends starting about three to four years after harvest. The longer endpoint uses the approximately 20-year potential stated on the 2021 merchant listing; it is an estimate, not a producer-certified expiry date.",
+        "peak_year": "Move 2025 → 2031. The 2021 merchant listing describes an estimated peak at about ten years of age. This fits the producer’s substantial structure and bottle-development potential; 2025 need not mean the wine has already peaked.",
+        "food_pairing_notes": "Replace the speculative “likely” description with the producer-supported fruit, pepper, cedar, acidity and tannin profile. The basic pairings were already appropriate.",
+        "meal_suggestion": "Keep lamb, ratatouille and red-wine sauce; their savoury flavours work with the wine’s fruit and structure."
+      },
+      "sources": [
+        {
+          "title": "Sogrape producer sheet: Quinta da Leda 2021",
+          "url": "https://vinhosdeportugal.com.br/wp-content/uploads/2025/04/Quinta-da-Leda-2021_PT.pdf"
+        },
+        {
+          "title": "Codibebe: 2021 aging guidance",
+          "url": "https://www.codibebe.pt/index.php/pt/component/jshopping/product/view/72/269"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "21",
+        "style": "Red",
+        "bottle": "Castello Banfi Poggio all'Oro Brunello di Montalcino Riserva",
+        "grapes": "Sangiovese",
+        "region": "Tuscany (Brunello)",
+        "coravin": false,
+        "country": "Italy",
+        "vintage": 2016,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2032",
+        "coravin_date": null,
+        "drinking_window": "2026–2046",
+        "meal_suggestion": "Bistecca alla Fiorentina",
+        "food_pairing_notes": "The Castello Banfi Poggio all'Oro Brunello di Montalcino Riserva 2016 is a powerful Sangiovese that showcases rich cherry and plum flavors, complemented by earthy undertones and firm tannins. Ideal pairings include grilled ribeye steak or roasted game, alongside rich pasta dishes like pappardelle with wild boar ragu. Decant for at least 1 hour to enhance its complexity. Critic initials: RP 95.",
+        "technical_sheet_url": "https://www.datocms-assets.com/76721/1701177094-pao2016_eng.pdf"
+      },
+      "changes": {
+        "drinking_window": "2025–2043",
+        "food_pairing_notes": "Structured Sangiovese with cherry fruit, floral and savoury notes, lively acidity and firm tannins. Pair with bistecca alla Fiorentina, roast game or wild-boar ragù. Taste before decanting and give it air if the tannins and aromas remain closed."
+      },
+      "reasoning": {
+        "drinking_window": "Replace 2026–2046 with the exact 2025–2043 Wine Spectator window reproduced by Banfi. This is a sourced planning update, not evidence that the wine fails in 2044.",
+        "peak_year": "Keep 2032 as an estimated target within that window; no source establishes a unique peak.",
+        "food_pairing_notes": "The Sangiovese and meat pairings are right. Banfi lists Wine Advocate 96+ for this vintage, not the stored RP 95. Remove the score from a food field and make aeration conditional rather than mandatory.",
+        "meal_suggestion": "Keep bistecca alla Fiorentina: salt, fat and savoury beef balance the tannin and acidity."
+      },
+      "sources": [
+        {
+          "title": "Banfi: 2016 vintage and awards",
+          "url": "https://www.banfi.it/poggio-all-oro/"
+        },
+        {
+          "title": "Banfi USA: exact 2016 Poggio all’Oro reviews (Wine Spectator, May 2, 2022)",
+          "url": "https://banfiusa.com/reviews/"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "1764117502289",
+        "style": "Red",
+        "bottle": "Chateau Clerc Milon 2020",
+        "grapes": "Cabernet Sauvignon, Merlot, Cabernet Franc, Petit Verdot",
+        "region": "Bordeaux Pauillac",
+        "coravin": false,
+        "country": "France",
+        "vintage": 2020,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2029",
+        "coravin_date": null,
+        "drinking_window": "2025-2035",
+        "meal_suggestion": "Braised beef short ribs with a red wine reduction, served with creamy mashed potatoes and sautéed green beans.",
+        "food_pairing_notes": "This wine typically exhibits rich dark fruit flavors, balanced acidity, and firm tannins, making it a great match for hearty dishes. Pair with grilled meats or rich sauces to complement its structure.",
+        "technical_sheet_url": null
+      },
+      "changes": {
+        "drinking_window": "2027–2055",
+        "peak_year": "2035"
+      },
+      "reasoning": {
+        "drinking_window": "Extend 2025–2035 to 2027–2055 using William Kelley’s Wine Advocate window. The original actually matches Antonio Galloni’s shorter window, so it is not fabricated; the extension better represents the wine’s long aging potential. Jeb Dunnuck independently suggests 2030–2055 for mature drinking.",
+        "peak_year": "Move 2029 → 2035 as an estimated mature-style target, allowing time beyond the suggested 2030 start for fuller development. Earlier enjoyment remains possible.",
+        "food_pairing_notes": "Keep the dark-fruit, firm-tannin description and hearty-meat pairings; the reviewers support that structure.",
+        "meal_suggestion": "Keep braised beef short ribs and mashed potatoes. Their richness and savoury sauce suit the tannin."
+      },
+      "sources": [
+        {
+          "title": "Appellations: Kelley and Galloni reviews of Clerc Milon 2020",
+          "url": "https://appellations.co.uk/product/10082122020-2020-clerc-milon"
+        },
+        {
+          "title": "Laguna Cellar: Dunnuck review of Clerc Milon 2020",
+          "url": "https://www.lagunacellar.com/chateau-clerc-milon-2020"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "11",
+        "style": "White",
+        "bottle": "Château La Nerthe \"Clos de Beauvenir\"",
+        "grapes": "Roussanne (dominant)",
+        "region": "Châteauneuf‑du‑Pape",
+        "coravin": false,
+        "country": "France",
+        "vintage": 2021,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2026",
+        "coravin_date": null,
+        "drinking_window": "2024–2032",
+        "meal_suggestion": "Roast chicken with truffle butter",
+        "food_pairing_notes": "White Rhône blend (Roussanne‑dominant); honeyed stone fruit and floral; suits poultry, rich fish or truffle dishes.",
+        "technical_sheet_url": null
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Retain 2024–2032 as a conservative window. Berry Bros. & Rudd suggests 2023–2032, while Decanter gives 2024–2038. That spread is a reason to avoid pretending the endpoint is exact, not to force a longer hold.",
+        "peak_year": "Keep 2026 as a youthful enjoyment target. Later complexity is possible; there is no proven single peak.",
+        "food_pairing_notes": "Keep: Kobrand confirms a Roussanne-led blend with peach, citrus, integrated oak and cellaring ability. Rich fish, poultry and truffle are reasonable matching inferences.",
+        "meal_suggestion": "Keep roast chicken with truffle butter: the texture and savoury richness fit the wine."
+      },
+      "sources": [
+        {
+          "title": "Kobrand: Clos de Beauvenir 2021",
+          "url": "https://www.kobrandwineandspirits.com/release/chateau-la-nerthe-clos-de-beauvenir-chateauneuf-du-pape-blanc-2021/"
+        },
+        {
+          "title": "Berry Bros. & Rudd: 2021 window",
+          "url": "https://www.bbr.com/products-20218028974-2021-chateauneuf-du-pape-blanc-clos-de-beauvenir-chateau-la-nerthe-rhone"
+        },
+        {
+          "title": "Decanter: Southern Rhône 2021 table",
+          "url": "https://www.decanter.com/southern-rhone-2021-score-table/"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "1764117687338",
+        "style": "Sweet",
+        "bottle": "Chateau La Tour Blanche 2016",
+        "grapes": "Sémillon, Sauvignon Blanc",
+        "region": "Sauternes",
+        "coravin": false,
+        "country": "France",
+        "vintage": 2016,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2028",
+        "coravin_date": null,
+        "drinking_window": "2023-2040",
+        "meal_suggestion": "Seared foie gras with a fig compote and toasted brioche.",
+        "food_pairing_notes": "This Sauternes is rich and sweet with notes of honey, apricot, and citrus, making it a perfect match for desserts, foie gras, or blue cheese.",
+        "technical_sheet_url": null
+      },
+      "changes": {
+        "food_pairing_notes": "Sweet, botrytised Sauternes with honeyed fruit and balancing acidity. Pair with foie gras, blue cheese, or lightly sweet apricot, peach or citrus desserts. Keep the dessert no sweeter than the wine; very sugary or strongly chocolate-flavoured desserts can overwhelm its fruit."
+      },
+      "reasoning": {
+        "drinking_window": "Keep the existing window: published reviews support drinking into roughly 2040, with meaningful disagreement over the ideal starting year and longer horizons. No substantial correction is warranted.",
+        "peak_year": "Keep the existing peak year as an estimated point for developed fruit and honeyed complexity, not a uniquely verified peak.",
+        "food_pairing_notes": "Foie gras and blue cheese are sound. Qualify the blanket “desserts” recommendation: sweetness level matters, and fruit-based desserts are a more reliable match than arbitrary sweets.",
+        "meal_suggestion": "Keep foie gras with fig compote and brioche. Use a modest amount of compote so it does not dominate the wine."
+      },
+      "sources": [
+        {
+          "title": "Farr Vintners: La Tour Blanche 2016 dated critic reviews",
+          "url": "https://www.farrvintners.com/wine.php?wine=46059"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "45",
+        "style": "Sweet",
+        "bottle": "Château Suduiraut",
+        "grapes": "Sémillon, Sauvignon Blanc",
+        "region": "Sauternes",
+        "coravin": false,
+        "country": "France",
+        "vintage": 2014,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2030",
+        "coravin_date": null,
+        "drinking_window": "2025-2040",
+        "meal_suggestion": "Foie gras torchon with a fig compote and toasted brioche",
+        "food_pairing_notes": "This sweet wine typically exhibits rich flavors of honey, apricot, and citrus with balanced acidity. It pairs well with desserts, foie gras, and blue cheese.",
+        "technical_sheet_url": null
+      },
+      "changes": {
+        "food_pairing_notes": "Sweet, botrytised Sauternes with honeyed fruit and balancing acidity. Pair with foie gras, blue cheese, or lightly sweet apricot, peach or citrus desserts. Keep the dessert no sweeter than the wine; very sugary or strongly chocolate-flavoured desserts can overwhelm its fruit."
+      },
+      "reasoning": {
+        "drinking_window": "Keep the existing window: published reviews support drinking into roughly 2040, with meaningful disagreement over the ideal starting year and longer horizons. No substantial correction is warranted.",
+        "peak_year": "Keep the existing peak year as an estimated point for developed fruit and honeyed complexity, not a uniquely verified peak.",
+        "food_pairing_notes": "Foie gras and blue cheese are sound. Qualify the blanket “desserts” recommendation: sweetness level matters, and fruit-based desserts are a more reliable match than arbitrary sweets.",
+        "meal_suggestion": "Keep foie gras with fig compote and brioche. Use a modest amount of compote so it does not dominate the wine."
+      },
+      "sources": [
+        {
+          "title": "Farr Vintners: Suduiraut 2014 dated critic reviews",
+          "url": "https://www.farrvintners.com/wine.php?wine=40446"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "1770385391795",
+        "style": "Red",
+        "bottle": "Clos du Lican",
+        "grapes": "Syrah",
+        "region": "Apalta",
+        "coravin": false,
+        "country": "Chile",
+        "vintage": 2021,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2028",
+        "coravin_date": null,
+        "drinking_window": "2025-2035",
+        "meal_suggestion": "Braised beef cheeks with a red wine reduction, served alongside creamy polenta and sautéed seasonal greens.",
+        "food_pairing_notes": "\"I've never before smelled a wine like this. The captivating aromas are amazing, with lavender, sage, dried potpourri, blackberries, tar, pepper and black licorice. Full-bodied with super tannins that fan out and caress the palate. It's ethereal and endless. A pure syrah from the owners of Clos Apalta, from unique mountain vineyards. Try to give this four or five years of bottle age. Best after 2028. Score - 100. (jamessuckling.com, Feb. 11, 2024)\"",
+        "technical_sheet_url": "https://www.closdulican.com/wp-content/uploads/2025/01/ClosduLican_FT_2021_EN.pdf"
+      },
+      "changes": {
+        "drinking_window": "2029–2035",
+        "peak_year": "2032",
+        "food_pairing_notes": "Full-bodied Apalta Syrah with berry fruit, floral and peppery notes, abundant tannins and freshness. Pair with braised beef cheeks, roast lamb or venison with herbs and a savoury sauce. Its concentration suits slow-cooked meat; keep glazes and sauces low in sweetness."
+      },
+      "reasoning": {
+        "drinking_window": "Move the start from 2025 to 2029 to follow the stored James Suckling recommendation of best after 2028; keep 2035 as a provisional endpoint. Wine Spectator instead prefers 2025–2030, so this is a mature-style choice, not consensus or proof of guaranteed longevity.",
+        "peak_year": "Move 2028 → 2032 as an estimated target after the recommended waiting period. The previous peak contradicted its own “best after 2028” note.",
+        "food_pairing_notes": "Replace the long critic quotation with actual pairing guidance based on the producer’s berry, spice, fresh and tannic profile.",
+        "meal_suggestion": "Keep braised beef cheeks, polenta and greens; the slow-cooked richness fits the substantial tannins."
+      },
+      "sources": [
+        {
+          "title": "Clos du Lican: producer technical sheet 2021",
+          "url": "https://www.closdulican.com/wp-content/uploads/2025/01/ClosduLican_FT_2021_EN.pdf"
+        },
+        {
+          "title": "JJ Buckley: dated 2021 Suckling and Wine Spectator reviews",
+          "url": "https://www.jjbuckley.com/wine/2021-clos-du-lican-syrah/2021-290413-750/"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "8",
+        "style": "Red",
+        "bottle": "Corton \"Le Clos du Roi\" Grand Cru (Domaine d'Ardhuy)",
+        "grapes": "Pinot Noir",
+        "region": "Burgundy (Corton)",
+        "coravin": false,
+        "country": "France",
+        "vintage": 2018,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2030",
+        "coravin_date": null,
+        "drinking_window": "2025–2040",
+        "meal_suggestion": "Beef Bourguignon",
+        "food_pairing_notes": "Grand Cru Pinot Noir; intense cherry and earth; needs time; pairs with duck, beef or mushrooms.",
+        "technical_sheet_url": null
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Retain 2025–2040 provisionally. The producer confirms an ageworthy, structured Grand Cru Pinot Noir, but I did not establish an exact 2018 drinking window. Do not interpret the unchanged end date as verified.",
+        "peak_year": "Keep 2030 as a plausible estimate for developing savoury complexity; no exact peak is published in the source used.",
+        "food_pairing_notes": "Keep duck, beef and mushrooms. The producer explicitly recommends braised meat, game in sauce and morel polenta.",
+        "meal_suggestion": "Keep beef Bourguignon, a direct fit for the producer’s braised-meat recommendation."
+      },
+      "sources": [
+        {
+          "title": "Domaine d’Ardhuy: cuvée technical sheet (not vintage-specific)",
+          "url": "https://www.ardhuy.com/en/wines/corton-grand-cru-le-clos-du-roi?format=pdf"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "7",
+        "style": "Sweet",
+        "bottle": "Domaine Huet – Clos du Bourg Moelleux",
+        "grapes": "Chenin Blanc",
+        "region": "Vouvray (Loire)",
+        "coravin": false,
+        "country": "France",
+        "vintage": 2018,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2030",
+        "coravin_date": null,
+        "drinking_window": "2022–2040+",
+        "meal_suggestion": "Foie gras terrine",
+        "food_pairing_notes": "Sweet Chenin Blanc with honeyed stone fruit; pairs with foie‑gras, blue cheese or spicy Asian food.",
+        "technical_sheet_url": null
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Retain 2022–2040+. Lay & Wheeler suggests 2022–2036 for the regular Moelleux, while a Wine Advocate review reproduced by Comptoir des Millésimes gives 2020–2065. The existing open-ended window is plausible, but the upper horizon is uncertain. No Première Trie review was substituted.",
+        "peak_year": "Keep 2030 as an estimated target for some bottle development; this sweet Chenin can offer several enjoyable stages rather than one peak.",
+        "food_pairing_notes": "Keep foie gras and blue cheese. The sweetness and acidity also suit moderately spicy Asian food; very hot chilli can still dominate.",
+        "meal_suggestion": "Keep foie gras terrine, a coherent richness-and-acidity pairing."
+      },
+      "sources": [
+        {
+          "title": "Lay & Wheeler: regular Clos du Bourg Moelleux 2018",
+          "url": "https://www.laywheeler.com/product-detail?id=1118012A"
+        },
+        {
+          "title": "Comptoir des Millésimes: regular Moelleux 2018 / Wine Advocate",
+          "url": "https://www.comptoirdesmillesimes.com/clos-du-bourg-huet/clos-du-bourg-2018-moelleux-domaine-huet.html"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "40",
+        "style": "Red",
+        "bottle": "Domaine Labruyère Champ de Cour Moulin-à-Vent",
+        "grapes": "Gamay",
+        "region": "Beaujolais (Moulin-à-Vent, Saône-et-Loire)",
+        "coravin": false,
+        "country": "France",
+        "vintage": 2018,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2027",
+        "coravin_date": null,
+        "drinking_window": "2021–2035",
+        "meal_suggestion": "Coq au vin",
+        "food_pairing_notes": "Pairs well with game stews like civet de lièvre, lamb navarin, beef stews, coq au vin, or veal liver.",
+        "technical_sheet_url": null
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Retain 2021–2035 provisionally. The 2021 Revue du vin de France tasting says the 2018 Champ de Cour can be drunk for at least ten years. That supports longevity into the early 2030s; 2035 is a plausible extension, not a specifically verified end date.",
+        "peak_year": "Keep 2027 as an estimated mature-Gamay target.",
+        "food_pairing_notes": "Keep the game, beef, poultry and veal pairings. Both the critic and estate tasting describe enough depth and tannin for savoury meat dishes.",
+        "meal_suggestion": "Keep coq au vin: poultry, mushrooms and a savoury wine sauce are well matched to structured Gamay."
+      },
+      "sources": [
+        {
+          "title": "La Revue du vin de France: Champ de Cour 2018 comparative tasting",
+          "url": "https://www.larvf.com/moulin-a-vent-des-terroirs-du-beaujolais-de-grande-classe,4773400.asp"
+        },
+        {
+          "title": "Burgundy-Report: Labruyère 2018 estate tasting",
+          "url": "https://www.burgundy-report.com/burgundy-report-extra/02-2020/labruyere-2018/"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "12",
+        "style": "White",
+        "bottle": "Famille Perrin Château de Beaucastel Roussanne Vieilles Vignes",
+        "grapes": "Roussanne",
+        "region": "Châteauneuf‑du‑Pape",
+        "coravin": false,
+        "country": "France",
+        "vintage": 2021,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2028",
+        "coravin_date": null,
+        "drinking_window": "2024–2034",
+        "meal_suggestion": "Butter‑poached lobster",
+        "food_pairing_notes": "Complex, oak‑fermented Roussanne; pairs with lobster, scallops or creamy pasta.",
+        "technical_sheet_url": "https://m.familleperrin.com/1I1MIE/get/print"
+      },
+      "changes": {
+        "drinking_window": "2036–2046",
+        "peak_year": "2040",
+        "food_pairing_notes": "Rich, dry old-vine Roussanne with ripe stone fruit, honeyed aromas, brioche and a full texture. Pair with butter-poached lobster, scallops in a cream sauce or poultry with morels. The producer recommends drinking this cuvee very young or after about 15 years; the cellar window shown targets its later mature phase."
+      },
+      "reasoning": {
+        "drinking_window": "Replace 2024–2034 with a later-phase planning window of 2036–2046. The exact-vintage producer sheet recommends drinking within three years or after 15; for 2021 that points to a young phase around 2022–2024 and a later phase from about 2036. Critics/merchants sometimes recommend a continuous window (Berry Bros. & Rudd: 2026–2041). I favour the producer’s distinctive guidance here. The 2046 endpoint is an estimate, not supplied by the producer.",
+        "peak_year": "Move 2028 → 2040 as an estimated target in that later phase. This is a chosen mature-style target, not evidence that every bottle is closed in 2028.",
+        "food_pairing_notes": "Keep the rich-seafood logic, clarify that honeyed aromas do not mean a sweet wine, and include the unusual aging guidance. Avoid a precise oak percentage because the producer sheet’s summary and reproduced critic accounts differ.",
+        "meal_suggestion": "Keep butter-poached lobster; the dish matches the dry wine’s full texture and richness."
+      },
+      "sources": [
+        {
+          "title": "Famille Perrin: exact 2021 producer sheet",
+          "url": "https://m.familleperrin.com/GA15FE/get/print"
+        },
+        {
+          "title": "Berry Bros. & Rudd: 2021 alternative window",
+          "url": "https://www.bbr.com/products-20211314885-2021-chateauneuf-du-pape-roussanne-vieilles-vignes-chateau-de-beaucastel-rhone"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "27",
+        "style": "Fortified",
+        "bottle": "Ferreira Vintage Port",
+        "grapes": "Touriga Nacional, Touriga Franca, Tinta Barroca, Tinta Roriz, others",
+        "region": "Douro",
+        "coravin": false,
+        "country": "Portugal",
+        "vintage": 2018,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2045",
+        "coravin_date": null,
+        "drinking_window": "2030–2075",
+        "meal_suggestion": "Stilton cheese & fig tart",
+        "food_pairing_notes": "Fortified and powerful; matches blue cheeses, dark chocolate or dried fruits.",
+        "technical_sheet_url": "https://www.datocms-assets.com/33016/1719027540-porto-ferreira-vintage-2018-en-v0-c-2023072811970739-cff9d65b.pdf"
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Keep 2030–2075 as a long-term potential window. Wine Enthusiast explicitly says from 2030 and the producer/importer describes very long cellaring. The far endpoint 2075 is unverified and depends heavily on bottle size and storage; it is not a deadline or guarantee.",
+        "peak_year": "Keep 2045 as a plausible mature-port target, not an exact peak. There can be several decades of enjoyable development.",
+        "food_pairing_notes": "Keep blue cheese, dark chocolate and dried fruit; the importer explicitly recommends strong blue cheese and chocolate/berry desserts.",
+        "meal_suggestion": "Keep Stilton and fig tart, keeping pastry sweetness moderate. This is a cheese/dessert course, which is appropriate for Vintage Port."
+      },
+      "sources": [
+        {
+          "title": "Wine Enthusiast: Ferreira Vintage Port 2018",
+          "url": "https://www.wineenthusiast.com/buying-guide/ferreira-2018-vintage-port/"
+        },
+        {
+          "title": "Evaton: Ferreira Vintage Port",
+          "url": "https://evaton.com/product/vintage/"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "6",
+        "style": "Red",
+        "bottle": "Garage Wine Co. \"Truquilemu Vineyard\" Carignan Field Blend Lot 97",
+        "grapes": "Carignan",
+        "region": "Maule Valley",
+        "coravin": false,
+        "country": "Chile",
+        "vintage": 2019,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2028",
+        "coravin_date": null,
+        "drinking_window": "2024–2034",
+        "meal_suggestion": "Slow‑cooked venison stew",
+        "food_pairing_notes": "Concentrated Carignan blend with dark fruit and spice; pairs with game, barbecue and hearty stews.",
+        "technical_sheet_url": "https://garagewine.company/wp-content/uploads/2022/06/Vigno-2019-en.pdf"
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Do not change the dates until the bottle identity is resolved. The producer maps Lot 97 to 2018 and Lot 107 to 2019; the export combines Lot 97 with 2019. The linked Vigno sheet also names another cuvée.",
+        "peak_year": "2028 is not verified; retain it only as existing data pending the label check.",
+        "food_pairing_notes": "The Carignan/game/stew pairing is broadly sensible for either candidate, but the exact cuvée’s profile cannot be certified from this conflicting record.",
+        "meal_suggestion": "Venison stew is a reasonable provisional pairing; do not change it to disguise the identity problem."
+      },
+      "sources": [
+        {
+          "title": "Garage Wine Co: vintage-to-lot mapping",
+          "url": "https://garagewine.company/wines/truquilemu/"
+        }
+      ],
+      "identity_flag": "Check front/back label: 2018 Lot 97 or 2019 Lot 107? The supplied technical sheet is for Vigno. No fields in this row are changed."
+    },
+    {
+      "original": {
+        "id": "1",
+        "style": "Red",
+        "bottle": "Gran Enemigo – Gualtallary",
+        "grapes": "Cabernet Franc & Malbec",
+        "region": "Uco Valley (Mendoza)",
+        "coravin": false,
+        "country": "Argentina",
+        "vintage": 2019,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2029",
+        "coravin_date": null,
+        "drinking_window": "2023–2035",
+        "meal_suggestion": "Argentine asado (steak, chorizo)",
+        "food_pairing_notes": "Structured, mineral Malbec with Cabernet Franc notes; great with grilled red meats and Argentine dishes.",
+        "technical_sheet_url": "https://enemigowines.com/wp-content/uploads/2023/08/Gran-Enemigo-Gualtallary-2019.pdf"
+      },
+      "changes": {
+        "food_pairing_notes": "Cabernet Franc-led blend (85% Cabernet Franc, 15% Malbec), with herbal and peppery notes, dark fruit and fine, chalky tannins. Pair with grilled beef, roast lamb, savoury mushroom dishes or aged cheeses. Argentine asado is a good match; keep sauces savoury rather than sweet."
+      },
+      "reasoning": {
+        "drinking_window": "Keep 2023–2035: it matches the Wine Advocate drinking window reproduced in Dunell’s 2023 offer.",
+        "peak_year": "Keep 2029 as an estimated target within the published window, not a critic-certified peak.",
+        "food_pairing_notes": "Correct the Malbec-led description. The exact-vintage importer sheet confirms 85% Cabernet Franc and 15% Malbec and explicitly recommends grilled meat and cheeses.",
+        "meal_suggestion": "Keep Argentine asado with steak and chorizo. The fat, salt and char suit the wine’s tannins and herbal profile."
+      },
+      "sources": [
+        {
+          "title": "Winebow: Gran Enemigo Gualtallary 2019 sheet",
+          "url": "https://winebow-files.s3.amazonaws.com/public/vintage/techsheets/606119_El-Enemigo_Gran-Enemigo-Gualtallary_2019.pdf?VersionId=vzUjKD.W.qAA0w8dHPfjjufYCMo0gUf9"
+        },
+        {
+          "title": "Dunell’s: 2019 Wine Advocate window",
+          "url": "https://www.dunells.com/media/ie2lwu3l/pre-release-wines-full-list-30-05-23.pdf"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "2",
+        "style": "Red",
+        "bottle": "Lorenzo Lo Sagrado Cabernet Franc",
+        "grapes": "Cabernet Franc",
+        "region": "Agrelo, Luján de Cuyo (Mendoza)",
+        "coravin": false,
+        "country": "Argentina",
+        "vintage": 2019,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2027",
+        "coravin_date": null,
+        "drinking_window": "2024–2032",
+        "meal_suggestion": "Roast duck with plum sauce",
+        "food_pairing_notes": "Bright red‑fruit Cabernet Franc; suits herb‑roasted poultry, pork or lamb, and peppery dishes.",
+        "technical_sheet_url": null
+      },
+      "changes": {
+        "meal_suggestion": "Roast duck with a savoury plum and thyme jus (no added sugar)."
+      },
+      "reasoning": {
+        "drinking_window": "Keep 2024–2032 provisionally. The producer confirms fresh acidity and oak aging but gives no precise 2019 endpoint. There is insufficient evidence to replace one speculative window with another.",
+        "peak_year": "Keep 2027 as a plausible estimate; it is not independently verified.",
+        "food_pairing_notes": "Keep the red-fruit, herb and pepper description and poultry/pork/lamb pairings; these agree with the producer’s Cabernet Franc profile.",
+        "meal_suggestion": "Refine the plum sauce to a savoury jus. A sweet plum sauce could make dry Cabernet Franc taste harsher; duck itself is a sound choice. This is a culinary refinement, not a claim the original meal always fails."
+      },
+      "sources": [
+        {
+          "title": "Lorenzo: Lo Sagrado Cabernet Franc",
+          "url": "https://lorenzowines.com.ar/producto/lorenzo/lorenzo-cabernet-franc/"
+        },
+        {
+          "title": "Lorenzo: exact 2019 cuvée discussed",
+          "url": "https://lorenzowines.com.ar/lorenzo-de-agrelo-un-homenaje-a-la-amistad/"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "1788389989910",
+        "style": "Red",
+        "bottle": "Luigi Baudana Barolo",
+        "grapes": "Nebbiolo",
+        "region": "Piedmont",
+        "coravin": false,
+        "country": "Italy",
+        "vintage": 2021,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2035",
+        "coravin_date": null,
+        "drinking_window": "2028-2040",
+        "meal_suggestion": "Braised lamb shanks with rosemary and garlic, served with creamy polenta and sautéed seasonal vegetables.",
+        "food_pairing_notes": "This Barolo typically exhibits high acidity, firm tannins, and complex aromas of cherry, rose, and earthy notes, making it a great match for rich dishes.",
+        "technical_sheet_url": null
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Hold the current 2028–2040 pending the cuvée name. Luigi Baudana makes Serralunga, Baudana and Cerretta Barolos; the 2021 Baudana cru has a much longer published window than the more approachable Serralunga blend. Producer name alone is not enough to select one.",
+        "peak_year": "2035 is a plausible general Nebbiolo target but cannot be verified for the unspecified cuvée.",
+        "food_pairing_notes": "Keep the high-acid, tannic Nebbiolo description and rich-food pairing as style-based guidance.",
+        "meal_suggestion": "Keep braised lamb and polenta, which provide salt and fat for the tannins."
+      },
+      "sources": [
+        {
+          "title": "Beaune Imports: 2021 Serralunga bottling",
+          "url": "https://www.beauneimports.com/product/2021-barolo-serralunga-docg/"
+        },
+        {
+          "title": "Berry Bros. & Rudd: 2021 Baudana cru",
+          "url": "https://www.bbr.com/products-20218170181-2021-barolo-baudana-luigi-baudana-piedmont-italy"
+        }
+      ],
+      "identity_flag": "Confirm whether the label says Serralunga, Baudana or Cerretta. No fields in this row are changed."
+    },
+    {
+      "original": {
+        "id": "20",
+        "style": "Red",
+        "bottle": "Lungarotti Montefalco Sagrantino DOCG",
+        "grapes": "Sagrantino",
+        "region": "Umbria",
+        "coravin": false,
+        "country": "Italy",
+        "vintage": 2017,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2032",
+        "coravin_date": null,
+        "drinking_window": "2027–2047",
+        "meal_suggestion": "Braised lamb shank with mushrooms",
+        "food_pairing_notes": "Powerful, tannic Sagrantino; traditionally paired with lamb and Umbrian dishes.",
+        "technical_sheet_url": null
+      },
+      "changes": {
+        "drinking_window": "2025–2035",
+        "peak_year": "2029"
+      },
+      "reasoning": {
+        "drinking_window": "Replace 2027–2047 with a conservative estimated 2025–2035 window. Wine Enthusiast says after 2024; the producer’s vintage report describes hot, concentrated 2017 fruit. I found no evidence for treating this specific bottling as a guaranteed 30-year wine. The new 2035 endpoint is my planning estimate, not a published critic date.",
+        "peak_year": "Move 2032 → 2029 as a conservative estimated target to enjoy mature tannins while retaining fruit, rather than relying on very long storage.",
+        "food_pairing_notes": "Keep the powerful Sagrantino description and lamb pairing; the producer also recommends roast meat and game.",
+        "meal_suggestion": "Keep braised lamb shank with mushrooms: salt and the rich braise help with the tannic structure."
+      },
+      "sources": [
+        {
+          "title": "Wine Enthusiast: Lungarotti Sagrantino 2017",
+          "url": "https://www.wineenthusiast.com/buying-guide/lungarotti-2017-montefalco-sagrantino/"
+        },
+        {
+          "title": "Lungarotti: 2017 vintage report",
+          "url": "https://lungarotti.it/eng/vintage-report/"
+        },
+        {
+          "title": "Lungarotti: cuvée and pairings",
+          "url": "https://lungarotti.it/ita/montefalcosagrantino/"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "1779157110325",
+        "style": "Red",
+        "bottle": "Michel Guignier Morgon Canon",
+        "grapes": "Gamay",
+        "region": "Morgon",
+        "coravin": false,
+        "country": "France",
+        "vintage": 2023,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2028",
+        "coravin_date": null,
+        "drinking_window": "2024-2032",
+        "meal_suggestion": "Roasted herb-marinated chicken thighs, served with garlic mashed potatoes and roasted seasonal vegetables.",
+        "food_pairing_notes": "The 2023 Michel Guignier Morgon Canon showcases bright acidity, soft tannins, and vibrant notes of cherry and raspberry. This profile makes it an excellent match for earthy dishes or light meats, such as roasted chicken with herbs and a side of sautéed mushrooms. Decant for 30 minutes to enhance its aromatic complexity. Critic score: RP 92.",
+        "technical_sheet_url": null
+      },
+      "changes": {
+        "food_pairing_notes": "Old-vine Morgon Gamay with freshness, spice and more concentration than a simple light Beaujolais. Pair with roast chicken, duck, pork or savoury mushroom dishes. Taste on opening and aerate only if needed; a fixed decanting time is not essential."
+      },
+      "reasoning": {
+        "drinking_window": "Keep 2024–2032 provisionally. The producer describes old-vine concentration and ten months in oak; an exact 2023 end date was not established.",
+        "peak_year": "Keep 2028 as a reasonable estimated target for a few years of development.",
+        "food_pairing_notes": "The producer describes Canon as dense and full-bodied, so the blanket soft-tannin/light-fruit wording underplays the cuvée. Remove the unverified RP 92 claim and compulsory 30-minute decant. LCBO’s broad style category is lighter, reinforcing the need to avoid overly precise texture claims.",
+        "meal_suggestion": "Keep the roast chicken meal: it remains appropriate for either youthful or more developed Gamay."
+      },
+      "sources": [
+        {
+          "title": "Michel Guignier: Morgon Canon cuvée",
+          "url": "https://morgon-michel-guignier.fr/produit/morgon-canon/"
+        },
+        {
+          "title": "LCBO: exact 2023 bottling",
+          "url": "https://www.lcbo.com/en/michel-guignier-morgon-canon-51164"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "678c0dfe-4b3d-4fb8-80ce-19722210ea93",
+        "style": "Red",
+        "bottle": "Pian Cornello Rosso di Montalcino 2022",
+        "grapes": "Sangiovese",
+        "region": "Montalcino",
+        "coravin": false,
+        "country": "Italy",
+        "vintage": 2022,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2026",
+        "coravin_date": null,
+        "drinking_window": "2024-2030",
+        "meal_suggestion": "Grilled lamb chops marinated in rosemary and garlic, served with roasted root vegetables and a balsamic reduction.",
+        "food_pairing_notes": "This wine likely has bright acidity and moderate tannins, making it versatile for food pairings. It should complement rich dishes like pasta with tomato sauce, grilled meats, or aged cheeses.",
+        "technical_sheet_url": null
+      },
+      "changes": {
+        "food_pairing_notes": "Sangiovese with fresh red fruit, herbs and a firm tannic edge. Pair with tomato-based meat ragù, roast pork, veal or grilled lamb. Keep sauces savoury; the acidity works well with tomato and the tannins with meat and olive oil.",
+        "meal_suggestion": "Rosemary-and-garlic grilled lamb chops with roasted vegetables and a savoury pan jus."
+      },
+      "reasoning": {
+        "drinking_window": "Keep 2024–2030 as a provisional near- to medium-term window. Falstaff found the 2022 already approachable in October 2024. The appellation consortium favours youthful consumption; 2030 is an estimated upper horizon, not a reason to wait.",
+        "peak_year": "Keep 2026 as a sensible near-term estimate for this Rosso, distinct from a long-aging Brunello.",
+        "food_pairing_notes": "Replace the generic “likely” description with the exact-vintage review’s fruit, herbs and firmer tannins. The consortium supports meat-sauce pasta, pork and veal.",
+        "meal_suggestion": "Keep the lamb and vegetables but replace sweet balsamic reduction with pan jus. This reduces a potential sweetness clash with dry Sangiovese; it is a refinement, not an absolute pairing rule."
+      },
+      "sources": [
+        {
+          "title": "Falstaff: Piancornello Rosso 2022",
+          "url": "https://www.falstaff.com/en/wines/piancornello-2022-rosso-di-montalcino-doc"
+        },
+        {
+          "title": "Piancornello: Rosso cuvée",
+          "url": "https://www.piancornello.it/en/rosso-di-montalcino/"
+        },
+        {
+          "title": "Brunello consortium: Rosso pairings and aging",
+          "url": "https://www.consorziobrunellodimontalcino.it/en/587/il-rosso"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "39",
+        "style": "Red",
+        "bottle": "Primeira Estrada Gran Reserva Syrah Colheita de Inverno",
+        "grapes": "Syrah",
+        "region": "Serra da Mantiqueira (Sul de Minas Gerais)",
+        "coravin": false,
+        "country": "Brazil",
+        "vintage": 2021,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2027",
+        "coravin_date": null,
+        "drinking_window": "2023–2032",
+        "meal_suggestion": "Brazilian lamb ribs slow-cooked on charcoal",
+        "food_pairing_notes": "Structured Syrah with dark fruit and spice; pairs well with barbecue, lamb, or feijoada.",
+        "technical_sheet_url": null
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Keep 2023–2032 provisionally. The producer confirms the exact 2021 wine’s concentrated but fresh Syrah profile; no reliable vintage-specific aging range was found. Do not read the unchanged endpoint as certified.",
+        "peak_year": "Keep 2027 as a reasonable medium-term estimate; no unique peak is established.",
+        "food_pairing_notes": "Keep barbecue, lamb and feijoada as style-based matches for peppery, full-bodied Syrah. Keep barbecue sauce low in sugar and chilli moderate with this 15% wine.",
+        "meal_suggestion": "Keep charcoal-cooked lamb ribs; savoury smoke and fat are a good fit."
+      },
+      "sources": [
+        {
+          "title": "Estrada Real: exact Primeira Estrada Gran Reserva 2021 producer page",
+          "url": "https://www.vinicolaestradareal.com/product-page/c%C3%B3pia-de-primeira-estrada-gran-reserva-syrah-2018-frete-gr%C3%A1tis"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "28",
+        "style": "Red",
+        "bottle": "Quinta da Manoella Vinhas Velhas",
+        "grapes": "Field blend (Touriga Nacional, etc.)",
+        "region": "Douro",
+        "coravin": false,
+        "country": "Portugal",
+        "vintage": 2019,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2029",
+        "coravin_date": null,
+        "drinking_window": "2025–2035",
+        "meal_suggestion": "Wild boar ragù with tagliatelle",
+        "food_pairing_notes": "Old‑vine Douro red; concentrated dark fruit and spice; pairs with game, grilled lamb or rich stews.",
+        "technical_sheet_url": null
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Keep 2025–2035. Wine Spectator suggests drinking through 2034; Wine Enthusiast suggests from 2026. Those small differences support the overall planning range rather than a material correction.",
+        "peak_year": "Keep 2029 as a plausible estimated point between youthful fruit and more developed complexity.",
+        "food_pairing_notes": "Keep the concentrated old-vine Douro profile and lamb/game/stew matches. Reviews also emphasise freshness and finesse; “concentrated” need not mean heavy.",
+        "meal_suggestion": "Keep wild-boar ragù and tagliatelle; the dish has suitable depth, salt and richness."
+      },
+      "sources": [
+        {
+          "title": "Winebow: Wine & Soul / exact 2019 Manoella reviews",
+          "url": "https://www.winebow.com/our-brands/wine-soul"
+        },
+        {
+          "title": "Wine.com: Manoella Vinhas Velhas 2019",
+          "url": "https://www.wine.com/product/wine-and-soul-quinta-da-manoella-vinhas-velhas-2019/1228793"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "5",
+        "style": "Red",
+        "bottle": "Santa Rita \"Casa Real\" Cabernet Sauvignon Reserva Especial",
+        "grapes": "Cabernet Sauvignon",
+        "region": "Maipo Valley",
+        "coravin": false,
+        "country": "Chile",
+        "vintage": 2018,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2030",
+        "coravin_date": null,
+        "drinking_window": "2024–2038",
+        "meal_suggestion": "Ribeye steak with rosemary potatoes",
+        "food_pairing_notes": "Classic Chilean Cabernet with cassis, cedar and mint; needs grilled steaks, lamb or aged cheeses.",
+        "technical_sheet_url": null
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Keep 2024–2038 provisionally. Santa Rita describes its flagship Casa Real Cabernet as capable of more than 20 years of aging. That supports the broad scale of the existing window, but is not an exact 2018 start/end recommendation. Do not confuse this wine with the separate Casa Real Escudo de Familia range.",
+        "peak_year": "Keep 2030 as an estimated mature-Cabernet target, not a verified peak.",
+        "food_pairing_notes": "Keep cassis, cedar, mint and steak/lamb/cheese matches as appropriate Cabernet guidance. “Needs” is stylistic language, not a requirement that it must be served with those foods.",
+        "meal_suggestion": "Keep ribeye and rosemary potatoes; salt, fat and herb flavours fit the structure."
+      },
+      "sources": [
+        {
+          "title": "Santa Rita: flagship Casa Real and cellaring potential (general cuvée guidance)",
+          "url": "https://santaritaonline.com/casa-real/"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "1764117575388",
+        "style": "Red",
+        "bottle": "The Standish Wine Company The Schubert Theorem 2022",
+        "grapes": "Shiraz",
+        "region": "Barossa Valley",
+        "coravin": false,
+        "country": "Australia",
+        "vintage": 2022,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2028",
+        "coravin_date": null,
+        "drinking_window": "2024-2032",
+        "meal_suggestion": "Grilled lamb chops with rosemary, served with a side of creamy polenta and roasted seasonal vegetables.",
+        "food_pairing_notes": "This wine likely has rich fruit flavors and moderate tannins, making it suitable for pairing with hearty dishes. Ideal pairings include grilled meats or rich pasta dishes.",
+        "technical_sheet_url": null
+      },
+      "changes": {
+        "drinking_window": "2024–2052",
+        "peak_year": "2036",
+        "food_pairing_notes": "Concentrated Barossa Shiraz with dark fruit and substantial, fine chalky tannins. Pair with roast lamb, braised beef, venison or a savoury mushroom-and-meat dish. Avoid very sweet glazes and fierce chilli; the wine has both concentration and considerable alcohol."
+      },
+      "reasoning": {
+        "drinking_window": "Extend 2024–2032 to 2024–2052, the Wine Advocate window reproduced with Erin Larkin’s exact 2022 review. The Vinorium’s own 2024 tasting independently suggests 2050+. The former end date substantially understated the documented potential.",
+        "peak_year": "Move 2028 → 2036 as an estimated mature-style target, allowing the dense tannins time to develop. Critics also permit youthful enjoyment, so waiting is optional.",
+        "food_pairing_notes": "Replace “likely” and “moderate tannins” with the review-supported concentration and fine but substantial tannins. The wine is not simply a generic easy-drinking Shiraz.",
+        "meal_suggestion": "Keep rosemary lamb chops, polenta and roast vegetables; the meal has enough richness without sweet sauce."
+      },
+      "sources": [
+        {
+          "title": "Fine Wine Library: Erin Larkin’s 2022 review and window",
+          "url": "https://finewinelibrary.nl/en/product/standish-schubert-theorem-2022"
+        },
+        {
+          "title": "The Vinorium: exact 2022 independent tasting",
+          "url": "https://www.thevinorium.co.uk/item/standish-wines/standish-the-schubert-theorem-2022-in-bond/1R1"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "30",
+        "style": "Red",
+        "bottle": "Torre Muga Rioja",
+        "grapes": "Tempranillo, Graciano, Mazuelo",
+        "region": "Rioja",
+        "coravin": false,
+        "country": "Spain",
+        "vintage": 2019,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2032",
+        "coravin_date": null,
+        "drinking_window": "2025–2040",
+        "meal_suggestion": "Slow‑cooked lamb shoulder",
+        "food_pairing_notes": "Tempranillo blend; dark cherry, leather and vanilla; pairs with lamb, Ibérico ham or mushroom dishes.",
+        "technical_sheet_url": "https://www.bodegasmuga.com/wp-content/uploads/2022/02/muga-torremuga-2019-eng.pdf"
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Keep 2025–2040 provisionally. Wine Spectator allows immediate enjoyment; James Suckling prefers from 2027. The existing window is compatible with youthful and later enjoyment, although 2040 remains an estimated endpoint.",
+        "peak_year": "Keep 2032 as an estimated target for oak and tannin integration.",
+        "food_pairing_notes": "Keep the Tempranillo-led blend, dark-fruit/oak profile and lamb/ham/mushroom suggestions. Serve mushrooms as part of a seasoned, rich dish; plain umami-rich mushrooms alone can accentuate tannin.",
+        "meal_suggestion": "Keep slow-cooked lamb shoulder, a strong match for this concentrated red."
+      },
+      "sources": [
+        {
+          "title": "Wine Express: exact Torre Muga 2019 critic reviews",
+          "url": "https://www.wineexpress.com/bodegas-muga-2019-torre-muga-rioja"
+        }
+      ],
+      "identity_flag": null
+    },
+    {
+      "original": {
+        "id": "34",
+        "style": "Red",
+        "bottle": "Vi de Vila Gratallops",
+        "grapes": "Garnacha & Carignan",
+        "region": "Priorat (Catalonia)",
+        "coravin": false,
+        "country": "Spain",
+        "vintage": 2022,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2028",
+        "coravin_date": null,
+        "drinking_window": "2025–2035",
+        "meal_suggestion": "Grilled lamb chops",
+        "food_pairing_notes": "Grenache/Carignan blend; mineral and intense; pairs with lamb, grilled beef or Catalan dishes.",
+        "technical_sheet_url": null
+      },
+      "changes": {},
+      "reasoning": {
+        "drinking_window": "Hold 2025–2035 pending the producer. “Vi de Vila Gratallops” describes village origin and does not uniquely identify a producer. Álvaro Palacios makes a likely matching 2022 wine, but that cannot be assumed from the export.",
+        "peak_year": "2028 is only a provisional style-based estimate until the producer is confirmed.",
+        "food_pairing_notes": "The Grenache/Carignan and savoury meat guidance is broadly plausible, but the exact blend/profile is unverified.",
+        "meal_suggestion": "Keep grilled lamb chops as a sensible provisional Priorat pairing."
+      },
+      "sources": [
+        {
+          "title": "Bodeboca: Álvaro Palacios Gratallops 2022, candidate only",
+          "url": "https://www.bodeboca.com/vino/gratallops-2022"
+        }
+      ],
+      "identity_flag": "Confirm the producer on the label, especially whether it is Álvaro Palacios. No fields in this row are changed."
+    },
+    {
+      "original": {
+        "id": "22",
+        "style": "Red",
+        "bottle": "Volpaia Coltassala",
+        "grapes": "Sangiovese & Mammolo",
+        "region": "Tuscany (Chianti Classico)",
+        "coravin": false,
+        "country": "Italy",
+        "vintage": 2019,
+        "quantity": 1,
+        "cellar_id": "1",
+        "peak_year": "2032",
+        "coravin_date": null,
+        "drinking_window": "2025–2040",
+        "meal_suggestion": "Pappardelle al ragù di cinghiale",
+        "food_pairing_notes": "Volpaia Coltassala 2019 is a refined Gran Selezione Chianti that showcases the vibrant acidity and ripe red fruit profile typical of Sangiovese, complemented by the floral notes of Mammolo. This wine pairs beautifully with hearty Tuscan dishes, such as a rich Tuscan ragù or a succulent roast lamb with rosemary. For optimal enjoyment, decant for 1-2 hours to allow the flavors to open up. Critic: RP 93.",
+        "technical_sheet_url": null
+      },
+      "changes": {
+        "food_pairing_notes": "Sangiovese-led Chianti Classico Gran Selezione with red fruit, floral notes, lively acidity and a firm tannic structure. Pair with Tuscan meat ragù, wild-boar pappardelle, roast lamb or aged Pecorino. Taste after opening and aerate if the wine remains closed."
+      },
+      "reasoning": {
+        "drinking_window": "Keep 2025–2040. Langton’s reproduces that window; Wine Spectator’s 2025–2043 recommendation on the LCBO listing is close enough that no meaningful correction is needed.",
+        "peak_year": "Keep 2032 as an estimated target within the supported window.",
+        "food_pairing_notes": "The acidity, red-fruit and Tuscan-food logic are sound. Remove the unverified RP 93 attribution and fixed decanting time; preserve the useful pairing advice.",
+        "meal_suggestion": "Keep pappardelle with wild-boar ragù: a savoury, regional match with sufficient richness for the tannin."
+      },
+      "sources": [
+        {
+          "title": "LCBO Vintages: Coltassala 2019 / Wine Spectator",
+          "url": "https://www.vintagesshoponline.com/vintages/ProductInfo.aspx?item=0477653"
+        },
+        {
+          "title": "Langton’s: Coltassala 2019",
+          "url": "https://www.langtons.com.au/p/castello-di-volpaia-coltassala-gran-selezione--chianti-classico-docg-2019-bottle/4011-2019-1.html"
+        }
+      ],
+      "identity_flag": null
+    }
+  ]
+}

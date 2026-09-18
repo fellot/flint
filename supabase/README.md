@@ -243,6 +243,14 @@ In the real project, sign in with each account and check: cellar and journal rec
 
 Development does not apply remote SQL or deploy the app automatically. Account invitation emails are sent only when an owner uses the People action in the configured app.
 
+## Wine recommendation review
+
+The [September 2026 review](reviews/20260917-wine-audit.md) covers all 29 in-stock wines in the owner's supplied Supabase export, with sources, reasoning, uncertainty, and three bottle-label checks. It proposes changes to 16 records.
+
+Run the complete [review SQL](reviews/20260917-wine-audit.sql) in Supabase's SQL Editor to apply the four-field corrections. It preserves other cellar data, skips wines no longer in stock, and aborts if a targeted recommendation has been edited since the export. A guarded [rollback script](reviews/20260917-wine-audit.rollback.sql) is provided. These are manual data-review scripts, not automatic schema migrations; no deployment is needed.
+
+The supplied inventory and decisions are retained in the [audit JSON](reviews/20260917-wine-audit.json). Developers can regenerate the report and SQL with `node --import tsx scripts/build-wine-review.ts`; users can run the already-generated SQL directly.
+
 ## References
 
 - [Supabase server-side clients and session refresh](https://supabase.com/docs/guides/auth/server-side/creating-a-client?framework=nextjs)
