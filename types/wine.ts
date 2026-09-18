@@ -1,3 +1,13 @@
+export interface CriticRating {
+  score: number;
+  display_score: string;
+  score_kind: 'point' | 'plus' | 'range';
+  verification: string;
+  source_urls: string[];
+  researched_on?: string;
+}
+export type CriticRatings = Partial<Record<'wine_advocate' | 'james_suckling', CriticRating>>;
+
 export interface Wine {
   id: string;
   bottle: string;
@@ -14,6 +24,8 @@ export interface Wine {
   consumedDate: string | null;
   notes: string;
   rating: number | null; // Historical cellar rating, not a personal review.
+  criticRating?: number | null;
+  criticRatings?: CriticRatings;
   myRating?: number | null;
   myComment?: string;
   inMyJournal?: boolean;

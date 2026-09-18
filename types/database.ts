@@ -17,6 +17,9 @@ export type WineRow = {
   consumed_date: string | null;
   notes: string;
   rating: number | null;
+  // Optional for projects that have not run the critic-rating import yet.
+  critic_rating?: number | null;
+  critic_ratings?: unknown;
   price: number | null;
   location: string;
   quantity: number;

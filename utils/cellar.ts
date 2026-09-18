@@ -1,4 +1,5 @@
 import type { Wine, WineFilters } from '@/types/wine';
+import { highestCriticScore } from './critic-ratings';
 
 export type Maturity = 'ready' | 'soon' | 'rest' | 'unknown';
 export function getMaturity(wine: Wine, year = new Date().getFullYear()): Maturity {
@@ -25,12 +26,13 @@ export function styleFamily(style: string) {
   return 'red';
 }
 
-export type WineSortKey = 'name' | 'country' | 'style' | 'vintage' | 'window' | 'peak' | 'quantity' | 'rating' | 'myRating' | 'myComment' | 'participants' | 'location' | 'status' | 'consumed' | 'ready';
+export type WineSortKey = 'name' | 'country' | 'style' | 'vintage' | 'window' | 'peak' | 'quantity' | 'rating' | 'criticRating' | 'myRating' | 'myComment' | 'participants' | 'location' | 'status' | 'consumed' | 'ready';
 export type WineSort = { key: WineSortKey; direction: 'asc' | 'desc' };
 
 function sortValue(wine: Wine, key: WineSortKey, year: number): string | number | null {
   switch (key) {
     case 'name': return wine.bottle;
+    case 'criticRating': return highestCriticScore(wine);
     case 'vintage': return wine.vintage || null;
     case 'window': return Number(wine.drinkingWindow?.match(/\b(?:19|20|21)\d{2}\b/)?.[0]) || null;
     case 'peak': {

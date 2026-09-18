@@ -142,6 +142,19 @@ summary::-webkit-details-marker { display: none; }
 .wine-facts > span + span { padding-left: 12px; border-left: 1px solid var(--line); }
 .wine-facts .wine-rating { margin-left: auto; border: 0; color: #8d7751; }
 .wine-rating small { color: #91757a; font-size: 7px; margin-left: 2px; }
+.critic-scores { display: flex; flex-wrap: wrap; gap: 4px; }
+.critic-score-badge { display: inline-flex; align-items: baseline; gap: 5px; padding: 3px 6px; border: 1px solid #dfc6cd; border-radius: 4px; background: #f7ebee; color: #68192e; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.critic-score-badge small { font-size: 9px; letter-spacing: .04em; font-weight: 600; }
+.critic-score-badge strong { font-size: 12px; }
+.critic-score-badge sup { font-size: 10px; }
+.wine-facts > .critic-scores { margin-left: auto; }
+.critic-score-details { display: grid; gap: 14px; margin-top: 12px; }
+.critic-score-detail { display: flex; align-items: flex-start; gap: 12px; }
+.critic-score-detail > div > strong { font-size: 12px; color: #68192e; }
+.critic-score-detail p { margin: 4px 0; font-size: 12px; }
+.critic-score-sources { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
+.critic-score-sources a { color: #68192e; text-decoration: underline; font-size: 11px; }
+.critic-scores-empty { color: #91757a; font-size: 12px; }
 .wine-window { display: flex; align-items: center; gap: 8px; justify-content: space-between; margin-top: 17px; font-size: 8px; height: 15px; }
 .maturity-label { display: flex; gap: 5px; align-items: center; color: #5e724d; white-space: nowrap; }
 .maturity-label > span { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }

@@ -1,6 +1,7 @@
 import type { Wine } from '@/types/wine';
 import type { WineRow, WineWrite } from '@/types/database';
 import { sanitizeBottleImage } from '@/utils/sanitizeWine';
+import { parseCriticRatings, highestCriticScore } from '@/utils/critic-ratings';
 
 export class WineValidationError extends Error {}
 
@@ -65,6 +66,8 @@ export function newWineInput(body: unknown): WineWrite {
 }
 
 export function rowToWine(row: WineRow): Wine {
+  const criticRatings = parseCriticRatings(row.critic_ratings);
+  const criticRating = highestCriticScore({ criticRatings, criticRating: row.critic_rating == null ? null : Number(row.critic_rating) });
   return {
     id: row.id, bottle: row.bottle, country: row.country, region: row.region, vintage: row.vintage,
     drinkingWindow: row.drinking_window,
@@ -72,6 +75,7 @@ export function rowToWine(row: WineRow): Wine {
     foodPairingNotes: row.food_pairing_notes, mealToHaveWithThisWine: row.meal_suggestion,
     style: row.style, grapes: row.grapes, status: row.status, consumedDate: row.consumed_date,
     notes: row.notes, rating: row.rating === null ? null : Number(row.rating),
+    criticRating, criticRatings,
     price: row.price === null ? null : Number(row.price), location: row.location, quantity: row.quantity,
     technical_sheet: row.technical_sheet_url ?? undefined, bottle_image: row.bottle_image_url ?? undefined,
     fromCellar: row.from_cellar, coravin: row.coravin, coravinDate: row.coravin_date,
