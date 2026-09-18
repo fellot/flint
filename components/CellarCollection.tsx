@@ -12,6 +12,7 @@ import type { Wine, WineFilters, WineFormData } from '@/types/wine';
 import { getMaturity, selectWines, styleFamily, type Maturity, type WineSort, type WineSortKey } from '@/utils/cellar';
 import BottlePortrait from './BottlePortrait';
 import CellarTable from './CellarTable';
+import ReserveSpotlight from './ReserveSpotlight';
 import CriticScores from './CriticScores';
 import CellarDialog from './CellarDialog';
 import WineModal from './WineModal';
@@ -141,7 +142,8 @@ export default function CellarCollection({ wines, cellarName, mode = 'cellar', l
         <h1>{journal ? (pt ? 'Meu diário de vinhos.' : 'My tasting journal.') : (cellarName || (pt ? 'Minha adega.' : 'My cellar.'))}</h1>
         <p>{journal ? (pt ? 'As garrafas que você abriu. As histórias que ficaram.' : 'The bottles you opened. The ones you won’t forget.') : (pt ? 'Para guardar. Para compartilhar. Para abrir uma boa garrafa.' : 'For keeping. For sharing. For opening something good.')}</p>
       </div>
-      {featured && !loading && <button className="cellar-spotlight" onClick={() => setSelected(featured)} aria-label={`${pt ? 'Ver' : 'View'} ${featured.bottle}: ${journal ? (pt ? 'uma das suas melhores notas' : 'one of your highest scores') : (pt ? 'destaque da adega' : 'cellar pick')}`}>
+      {!journal && !loading && <ReserveSpotlight key={cellarName} wines={collection} locale={locale} year={year} onView={setSelected} onDrink={beginDrink} />}
+      {journal && featured && !loading && <button className="cellar-spotlight" onClick={() => setSelected(featured)} aria-label={`${pt ? 'Ver' : 'View'} ${featured.bottle}: ${pt ? 'uma das suas melhores notas' : 'one of your highest scores'}`}>
         <BottlePortrait wine={featured} /><span><span className="eyebrow">{journal ? (pt ? 'ENTRE OS FAVORITOS' : 'ONE TO REMEMBER') : (pt ? 'DA SUA RESERVA' : 'FROM YOUR RESERVE')}</span><strong>{featured.bottle}</strong><small>{featured.vintage || 'NV'} · {featured.country}{journal && featured.myRating != null ? ` · ${featured.myRating}/100` : ''}</small></span><ArrowUpRight size={18} />
       </button>}
     </section>
