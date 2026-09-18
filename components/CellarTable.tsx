@@ -40,8 +40,8 @@ export default function CellarTable({ wines, locale, journal, sort, onSort, onVi
   ];
   const statuses = { consumed: pt ? 'Consumido' : 'Consumed', gifted: pt ? 'Presenteado' : 'Gifted', sold: pt ? 'Vendido' : 'Sold', in_cellar: pt ? 'Na adega' : 'In cellar' };
   return <>
-    <p className="table-sort-hint">{pt ? 'Clique no título de uma coluna para ordenar. Clique novamente para inverter.' : 'Click a column heading to sort. Click again to reverse.'}<span>{pt ? 'Deslize para ver todas as colunas.' : 'Scroll sideways for all columns.'}</span></p>
-    <div className="compact-table-scroll" role="region" aria-label={pt ? 'Tabela de vinhos' : 'Wine table'} tabIndex={0}>
+    <p className="table-sort-hint">{pt ? 'Clique no título de uma coluna para ordenar. Clique novamente para inverter.' : 'Click a column heading to sort. Click again to reverse.'}</p>
+    <div className="compact-table-frame">
       <table className="compact-wine-table">
         <caption className="sr-only">{pt ? 'Sua coleção de vinhos. Ordene usando os botões nos títulos das colunas.' : 'Your wine collection. Sort with the buttons in each column heading.'}</caption>
         <thead><tr>{columns.map(column => <th key={column.key} scope="col" aria-sort={sort.key === column.key ? (sort.direction === 'asc' ? 'ascending' : 'descending') : 'none'}>
