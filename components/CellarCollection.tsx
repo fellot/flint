@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowDown, ArrowRight, ArrowUpRight, BookOpen, CalendarDays, Camera, Check, Clock3, Compass, Edit3, ExternalLink, GlassWater, LayoutGrid, List, MapPin, MoreHorizontal, Plus, Search, SlidersHorizontal, Sparkles, Trash2, Wine as WineIcon, Users, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, BookOpen, CalendarDays, Camera, Check, Clock3, Compass, Edit3, ExternalLink, GlassWater, LayoutGrid, List, MapPin, MoreHorizontal, Plus, Search, SlidersHorizontal, Sparkles, Trash2, Wine as WineIcon, Users, X } from 'lucide-react';
 import type { Person, TastingInput, CellarStorage, FridgeInput } from '@/types/database';
 import PersonalReviewDialog from './PersonalReviewDialog';
 import AddParticipantsDialog from './AddParticipantsDialog';
@@ -25,6 +25,7 @@ export interface CellarCollectionProps {
   storage: CellarStorage;
   onSaveFridge: (input: FridgeInput) => Promise<void>;
   onDeleteFridge: (id: string) => Promise<void>;
+  cellarName?: string;
   mode?: 'cellar' | 'journal';
   locale?: 'en' | 'pt';
   loading?: boolean;
@@ -68,7 +69,7 @@ function WineActions({ wine, locale, onView, onEdit, onDrink, onDelete, onPartic
   </div>;
 }
 
-export default function CellarCollection({ wines, mode = 'cellar', locale = 'en', loading = false, error, onRetry, onAdd, onUpdate, onDelete, onConsume, people, isOwner, onReview, onAddPerson, onAddParticipants, storage, onSaveFridge, onDeleteFridge }: CellarCollectionProps) {
+export default function CellarCollection({ wines, cellarName, mode = 'cellar', locale = 'en', loading = false, error, onRetry, onAdd, onUpdate, onDelete, onConsume, people, isOwner, onReview, onAddPerson, onAddParticipants, storage, onSaveFridge, onDeleteFridge }: CellarCollectionProps) {
   const pt = locale === 'pt';
   const journal = mode === 'journal';
   const year = new Date().getFullYear();
@@ -103,7 +104,7 @@ export default function CellarCollection({ wines, mode = 'cellar', locale = 'en'
   const regions = Array.from(new Set(collection.filter(wine => filters.country === 'all' || wine.country === filters.country).map(wine => wine.region).filter(Boolean))).sort();
   const vintages = Array.from(new Set(collection.map(wine => wine.vintage))).sort((a, b) => b - a);
   const filterCount = Object.entries(filters).filter(([key, value]) => key !== 'search' && value !== 'all').length + Number(readyOnly) + Number(unratedOnly);
-  const featured = [...ready].sort((a, b) => a.vintage - b.vintage)[0] || collection[0];
+  const featured = journal ? [...collection].filter(wine => wine.myRating != null).sort((a, b) => b.myRating! - a.myRating!)[0] : [...ready].sort((a, b) => a.vintage - b.vintage)[0] || collection[0];
   const setFilter = (key: keyof WineFilters, value: string) => {
     setFilters(previous => ({ ...previous, [key]: value, ...(key === 'country' ? { region: 'all' } : {}) }));
     if (journal && key === 'style') setSort({ key: 'myRating', direction: 'desc' });
@@ -125,28 +126,28 @@ export default function CellarCollection({ wines, mode = 'cellar', locale = 'en'
   const beginReview = (wine: Wine) => { setSelected(null); setReviewing(wine); };
   const saveReview = async (id: string, rating: number | null, comment: string) => { await onReview(id, rating, comment); setToast(pt ? 'Sua avaliação foi salva.' : 'Your review is saved.'); };
   const saveWine = async (wine: Wine) => { await onUpdate(wine); setToast(pt ? 'Vinho atualizado.' : 'Wine details updated.'); };
-  const scrollToCollection = () => { if (ready.length) setReadyOnly(true); document.getElementById('collection')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); };
+
   const stats = [
-    { icon: WineIcon, value: bottles, label: journal ? (pt ? 'Garrafas com história' : 'Bottles with a story') : (pt ? 'Garrafas na adega' : 'Bottles in your cellar'), detail: pt ? 'Cada uma, uma descoberta' : 'A little world of discovery' },
-    { icon: journal ? BookOpen : GlassWater, value: journal ? collection.filter(wine => wine.myRating != null).length : ready.reduce((sum, wine) => sum + wine.quantity, 0), label: journal ? (pt ? 'Vinhos avaliados' : 'Wines rated') : (pt ? 'Prontas para abrir' : 'Ready to enjoy'), detail: journal ? (pt ? 'Suas notas de 0 a 100' : 'Your scores, from 0 to 100') : (pt ? 'Pelas suas janelas de consumo' : 'Based on your drinking windows') },
-    { icon: Compass, value: countries.length, label: pt ? 'Países na coleção' : 'Countries to explore', detail: pt ? 'O mundo, em uma taça' : 'The world, one glass at a time' },
-    { icon: journal ? CalendarDays : BookOpen, value: collection.length, label: pt ? 'Rótulos diferentes' : 'Different labels', detail: journal ? (pt ? 'Seu diário de descobertas' : 'Your journal of discoveries') : (pt ? 'Uma coleção só sua' : 'A collection that is yours alone') },
+    { icon: WineIcon, value: bottles, label: journal ? (pt ? 'Garrafas provadas' : 'Bottles tasted') : (pt ? 'Garrafas' : 'Bottles') },
+    { icon: journal ? BookOpen : GlassWater, value: journal ? collection.filter(wine => wine.myRating != null).length : ready.reduce((sum, wine) => sum + wine.quantity, 0), label: journal ? (pt ? 'Avaliados' : 'Rated') : (pt ? 'Prontas para abrir' : 'Ready to open') },
+    { icon: Compass, value: countries.length, label: pt ? 'Países' : 'Countries' },
+    { icon: journal ? CalendarDays : BookOpen, value: collection.length, label: pt ? 'Rótulos' : 'Labels' },
   ];
 
   return <main className={`collection-page ${journal ? 'journal-page' : ''} ${view === 'list' ? 'compact-collection' : ''}`}>
-    <section className={`cellar-hero ${journal ? 'journal-hero' : ''}`}>
-      <div className="hero-copy"><p className="eyebrow"><span />{journal ? (pt ? 'O DIÁRIO DA SUA ADEGA' : 'THE CELLAR JOURNAL') : (pt ? 'BEM-VINDO À SUA ADEGA' : 'WELCOME TO YOUR CELLAR')}</p>
-        <h1>{journal ? (pt ? <>Cada garrafa,<br /><em>uma memória.</em></> : <>Every bottle,<br /><em>a memory.</em></>) : (pt ? <>Um bom vinho.<br /><em>Um grande momento.</em></> : <>A good bottle.<br /><em>A great moment.</em></>)}</h1>
-        <p className="hero-description">{journal ? (pt ? 'Os vinhos que você compartilhou, em ordem da sua nota. Sua opinião, sua história.' : 'The bottles you shared, ranked by your score. Your taste, your story.') : (pt ? 'Seu gosto, suas descobertas, sua coleção. Encontre a garrafa perfeita para o próximo momento.' : 'Your taste. Your discoveries. Your collection. Find just the bottle for whatever comes next.')}</p>
-        <div className="hero-actions"><button className="flint-button" onClick={journal ? () => setAdding('choose') : scrollToCollection}>{journal ? (pt ? 'Registrar um vinho' : 'Log a wine') : (pt ? 'Encontre sua próxima taça' : 'Find your next pour')}{journal ? <Plus size={16} /> : <ArrowDown size={16} />}</button>{!journal && <button className="text-button" onClick={() => setSommelierOpen(true)}><Sparkles size={15} />{pt ? 'Uma ajudinha?' : 'A little inspiration?'}</button>}</div>
+    <section className="cellar-masthead">
+      <div className="cellar-title"><p className="eyebrow"><span />{journal ? (pt ? 'AS NOTAS DE QUEM PROVOU' : 'TASTED, SHARED & REMEMBERED') : (pt ? 'RESERVA PESSOAL · FLINT' : 'PRIVATE RESERVE · FLINT')}</p>
+        <h1>{journal ? (pt ? 'Meu diário de vinhos.' : 'My tasting journal.') : (cellarName || (pt ? 'Minha adega.' : 'My cellar.'))}</h1>
+        <p>{journal ? (pt ? 'As garrafas que você abriu. As histórias que ficaram.' : 'The bottles you opened. The ones you won’t forget.') : (pt ? 'Para guardar. Para compartilhar. Para abrir uma boa garrafa.' : 'For keeping. For sharing. For opening something good.')}</p>
       </div>
-      <div className="hero-photograph"><img src="/images/flint-still-life.png" alt={pt ? 'Uma garrafa e uma taça de vinho ao sol da tarde' : 'A bottle and a glass of red wine in the afternoon light'} fetchPriority="high" width={1536} height={1024} /><div className="photo-caption"><span>{pt ? 'A ARTE DE APRECIAR' : 'THE ART OF TAKING YOUR TIME'}</span><span>flint.</span></div></div>
+      {featured && !loading && <button className="cellar-spotlight" onClick={() => setSelected(featured)} aria-label={`${pt ? 'Ver' : 'View'} ${featured.bottle}: ${journal ? (pt ? 'uma das suas melhores notas' : 'one of your highest scores') : (pt ? 'destaque da adega' : 'cellar pick')}`}>
+        <BottlePortrait wine={featured} /><span><span className="eyebrow">{journal ? (pt ? 'ENTRE OS FAVORITOS' : 'ONE TO REMEMBER') : (pt ? 'DA SUA RESERVA' : 'FROM YOUR RESERVE')}</span><strong>{featured.bottle}</strong><small>{featured.vintage || 'NV'} · {featured.country}{journal && featured.myRating != null ? ` · ${featured.myRating}/100` : ''}</small></span><ArrowUpRight size={18} />
+      </button>}
     </section>
-
-    <section className="cellar-metrics" aria-label={pt ? 'Resumo da coleção' : 'Collection overview'}>{stats.map(({ icon: Icon, value, label, detail }) => <div className="cellar-metric" key={label}><div className="metric-top"><Icon size={18} strokeWidth={1.4} /><span>{label}</span></div><strong>{loading ? '—' : value.toLocaleString(locale)}</strong><p>{detail}</p></div>)}</section>
+    <section className="reserve-totals" aria-label={pt ? 'Resumo da coleção' : 'Collection overview'}>{stats.map(({ icon: Icon, value, label }) => <div key={label}><Icon size={15} strokeWidth={1.5} /><strong>{loading ? '—' : value.toLocaleString(locale)}</strong><span>{label}</span></div>)}</section>
 
     <section id="collection" className="wine-collection">
-      <div className="collection-heading"><div><p className="eyebrow">{journal ? (pt ? 'MOMENTOS BEM GUARDADOS' : 'MEMORIES, WELL KEPT') : (pt ? 'SEUS VINHOS, BEM GUARDADOS' : 'YOUR BOTTLES, BEAUTIFULLY KEPT')}</p><h2>{journal ? (pt ? 'Meu ranking de vinhos' : 'My wine ranking') : (pt ? 'Dentro da sua adega' : 'Inside your cellar')}<span>{loading ? '' : collection.length}</span></h2></div><button className="flint-button" onClick={() => setAdding('choose')}><Plus size={17} />{journal ? (pt ? 'Registrar vinho' : 'Log a wine') : (pt ? 'Adicionar vinho' : 'Add a wine')}</button></div>
+      <div className="collection-heading"><div><h2>{journal ? (pt ? 'Meu ranking de vinhos' : 'My wine ranking') : (pt ? 'As garrafas' : 'The bottles')}<span>{loading ? '' : collection.length}</span></h2></div><button className="flint-button" onClick={() => setAdding('choose')}><Plus size={17} />{journal ? (pt ? 'Registrar vinho' : 'Log a wine') : (pt ? 'Adicionar vinho' : 'Add a wine')}</button></div>
       <div className="collection-toolbar"><label className="collection-search"><Search size={18} /><span className="sr-only">{pt ? 'Buscar na coleção' : 'Search your collection'}</span><input type="search" value={filters.search} onChange={event => setFilter('search', event.target.value)} placeholder={pt ? 'Busque um vinho, uva, região…' : 'Find a wine, grape, region…'} /></label><div className="toolbar-controls">{isOwner && !journal && <button className="filter-toggle" onClick={() => setStorageOpen(true)}><MapPin size={16} />{pt ? 'Adegas' : 'Wine fridges'}</button>}{isOwner && <button className="filter-toggle" onClick={() => setPeopleOpen(true)}><Users size={16} />{pt ? 'Pessoas' : 'People'}</button>}<button className={`filter-toggle ${filtersOpen ? 'active' : ''}`} aria-expanded={filtersOpen} aria-controls="wine-filters" onClick={() => setFiltersOpen(!filtersOpen)}><SlidersHorizontal size={16} />{pt ? 'Filtros' : 'Filters'}{filterCount > 0 && <span>{filterCount}</span>}</button>{view === 'grid' && <label className="sort-select"><span className="sr-only">{pt ? 'Ordenar vinhos' : 'Sort wines'}</span><select value={`${sort.key}:${sort.direction}`} onChange={event => { const [key, direction] = event.target.value.split(':'); setSort({ key: key as WineSortKey, direction: direction as 'asc' | 'desc' }); }}>{!['name:asc', 'vintage:desc', 'vintage:asc', 'ready:asc', 'myRating:desc', 'myRating:asc'].includes(`${sort.key}:${sort.direction}`) && <option value={`${sort.key}:${sort.direction}`}>{pt ? 'Ordem da tabela' : 'Table column order'}</option>}{journal && <><option value="myRating:desc">{pt ? 'Minha nota: maior primeiro' : 'My score: highest first'}</option><option value="myRating:asc">{pt ? 'Minha nota: menor primeiro' : 'My score: lowest first'}</option></>}<option value="name:asc">{pt ? 'Nome: A–Z' : 'Name: A–Z'}</option><option value="vintage:desc">{pt ? 'Safras recentes' : 'Newest vintage'}</option><option value="vintage:asc">{pt ? 'Safras antigas' : 'Oldest vintage'}</option>{!journal && <option value="ready:asc">{pt ? 'Prontos primeiro' : 'Ready first'}</option>}</select></label>}<div className="view-switch" role="group" aria-label={pt ? 'Visualização' : 'Collection layout'}><button className={view === 'grid' ? 'active' : ''} aria-pressed={view === 'grid'} aria-label={pt ? 'Ver cartões' : 'Grid view'} onClick={() => setView('grid')}><LayoutGrid size={16} /></button><button className={view === 'list' ? 'active' : ''} aria-pressed={view === 'list'} aria-label={pt ? 'Ver lista' : 'List view'} onClick={() => setView('list')}><List size={18} /></button></div></div></div>
       {filtersOpen && <div id="wine-filters" className="expanded-filters">{([
         ['style', pt ? 'Tipo de vinho' : 'Wine type', styles], ['country', pt ? 'País' : 'Country', countries], ['region', pt ? 'Região' : 'Region', regions], ['vintage', pt ? 'Safra' : 'Vintage', vintages.map(String)],
@@ -166,7 +167,7 @@ export default function CellarCollection({ wines, mode = 'cellar', locale = 'en'
       {!loading && filtered.length > 0 && <p className="collection-results">{pt ? `${filtered.length} rótulos · ${filtered.reduce((sum, wine) => sum + wine.quantity, 0)} garrafas` : `${filtered.length} labels · ${filtered.reduce((sum, wine) => sum + wine.quantity, 0)} bottles`}</p>}
     </section>
 
-    {!journal && <section className="cellar-discovery"><div className="sommelier-teaser"><div className="teaser-icon"><Sparkles size={22} strokeWidth={1.2} /></div><div><p className="eyebrow">{pt ? 'SEU SOMMELIER PESSOAL' : 'YOUR SOMMELIER, ON CALL'}</p><h2>{pt ? 'O que vai bem com hoje?' : 'What pairs with today?'}</h2><p>{pt ? 'Um jantar, uma celebração ou uma terça-feira. Vamos encontrar a garrafa.' : 'A dinner, a celebration, or just a Tuesday. Let’s find your bottle.'}</p></div><button className="flint-button" onClick={() => setSommelierOpen(true)}>{pt ? 'Vamos conversar' : 'Let’s talk wine'}<ArrowUpRight size={16} /></button></div>{featured && <button className="next-bottle" onClick={() => setSelected(featured)}><BottlePortrait wine={featured} /><span><span className="eyebrow">{pt ? 'NO SEU RADAR' : 'ON YOUR RADAR'}</span><strong>{featured.bottle}</strong><span>{featured.vintage || 'NV'} · {featured.country}</span><MaturityLabel wine={featured} locale={locale} year={year} /></span><ArrowUpRight size={19} /></button>}</section>}
+    {!journal && <aside className="cellar-sommelier-note"><Sparkles size={18} /><p>{pt ? 'Algo especial no menu?' : 'Something good on the menu?'} <span>{pt ? 'Encontre o vinho para acompanhar.' : 'Find the bottle to go with it.'}</span></p><button className="text-button" onClick={() => setSommelierOpen(true)}>{pt ? 'Pergunte ao sommelier' : 'Ask your sommelier'}<ArrowUpRight size={15} /></button></aside>}
 
     {selected && <CellarDialog title={selected.bottle} onClose={() => setSelected(null)} wide><div className="wine-detail"><BottlePortrait wine={selected} /><div className="wine-detail-content"><p className="eyebrow">{selected.country} / {selected.region}</p><h2>{selected.bottle}</h2><span className="detail-style">{selected.vintage || 'NV'} · {selected.style} · {statusLabels[locale][selected.status]}</span><dl>{[
       [pt ? 'Uvas' : 'Grapes', selected.grapes], [pt ? 'Localização' : 'Location', selected.location], [pt ? 'Garrafas' : 'Bottles', selected.quantity], [pt ? 'Janela de consumo' : 'Drinking window', selected.drinkingWindow], [pt ? 'Apogeu' : 'Peak', selected.peakYear], [pt ? 'Nota anterior da adega' : 'Previous cellar rating', selected.rating != null ? String(selected.rating) : null], [pt ? 'Minha nota' : 'My score', selected.myRating != null ? `${selected.myRating}/100` : null], [pt ? 'Compartilhado com' : 'Shared with', selected.participants?.map(person => person.name).join(', ')], [pt ? 'Preço' : 'Price', selected.price], ['Coravin', selected.coravin ? selected.coravinDate || (pt ? 'Sim' : 'Yes') : null], [pt ? 'Consumido em' : 'Enjoyed on', selected.consumedDate],

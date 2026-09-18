@@ -61,14 +61,14 @@ export default function CellarShell({ children, pathname, cellar, cellars, email
     <aside ref={sidebar} className={`flint-sidebar ${menuOpen ? 'is-open' : ''}`}>
       <button className="mobile-sidebar-close icon-button" onClick={() => setMenuOpen(false)} aria-label={pt ? 'Fechar navegação' : 'Close navigation'}><X size={18} /></button>
       <a href="/" className="flint-brand" aria-label="Flint Cellar"><FlintMark /><span>flint<span className="brand-period">.</span><small>THE PERSONAL CELLAR</small></span></a>
-      <p className="sidebar-label">{pt ? 'SEU ESPAÇO' : 'YOUR SPACE'}</p>
+      <p className="sidebar-label">{pt ? 'SEU ESPAÇO' : 'THE COLLECTION'}</p>
       <nav aria-label={pt ? 'Navegação principal' : 'Main navigation'}>
         {navigation.map(({ href, label, icon: Icon }, index) => <div key={href}>
-          {index === 2 && <p className="sidebar-label discover-label">{pt ? 'DESCUBRA' : 'A LITTLE DISCOVERY'}</p>}
+          {index === 2 && <p className="sidebar-label discover-label">{pt ? 'DESCUBRA' : 'BEYOND THE CELLAR'}</p>}
           <a href={href} onClick={() => setMenuOpen(false)} className={`sidebar-link ${pathname === href ? 'active' : ''}`} aria-current={pathname === href ? 'page' : undefined}><Icon size={18} strokeWidth={1.5} /><span>{label}</span>{pathname === href && <span className="nav-active-dot" />}</a>
         </div>)}
       </nav>
-      <div className="sidebar-note"><span className="sidebar-star">✳</span><p>{pt ? 'Bons vinhos.\nBoas histórias.' : 'Good bottles.\nEven better stories.'}</p><span>{pt ? 'UMA TAÇA DE CADA VEZ' : 'ONE GLASS AT A TIME'}</span></div>
+      <div className="sidebar-note"><span className="sidebar-vintage-mark" aria-hidden="true"><Wine size={29} strokeWidth={1} /></span><p>{pt ? 'A vida é curta.\nAbra o vinho.' : 'Life is short.\nOpen the good one.'}</p><span>{pt ? 'NOTAS DA ADEGA · FLINT' : 'CELLAR NOTES · FLINT'}</span></div>
       <div className="sidebar-bottom"><span className="live-dot" />{pt ? 'Sua coleção, bem guardada.' : 'Your collection, well kept.'}</div>
     </aside>
     {menuOpen && <button className="sidebar-backdrop" aria-label={pt ? 'Fechar menu' : 'Close menu'} onClick={() => setMenuOpen(false)} />}

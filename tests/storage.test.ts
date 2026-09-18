@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { PGlite } from '@electric-sql/pglite';
+import type { WineRow } from '../types/database';
 import { fridgeInput } from '../lib/storage-data';
 
 const owner = '00000000-0000-0000-0000-000000000001';
@@ -48,14 +49,14 @@ test('storage migration shifts Wine Fridge A exactly once, preserves other cella
   const { db, migration } = await setup();
   try {
     assert.deepEqual((await db.query("select name, level_count, first_level from public.cellar_fridges where cellar_id='1'")).rows, [{ name: 'Wine Fridge A', level_count: 7, first_level: 1 }]);
-    const wines = (await db.query('select id, cellar_id, location, quantity from public.wines order by id')).rows;
+    const wines = (await db.query<Pick<WineRow, 'id' | 'cellar_id' | 'location' | 'quantity'>>('select id, cellar_id, location, quantity from public.wines order by id')).rows;
     assert.deepEqual(wines.map(w => [w.id, w.location]), [
       ['five', 'Wine Fridge A - L6'], ['legacy', 'Basement rack'], ['one', 'Wine Fridge A - L2'],
       ['other', 'Adega A - L0'], ['six', 'Wine Fridge A - L7'], ['zero', 'Wine Fridge A - L1'],
     ]);
     assert.equal((await db.query("select * from public.cellar_storage_locations where cellar_id='1' and fridge_id is not null")).rows.length, 7);
     await db.exec(migration);
-    assert.deepEqual((await db.query('select id, cellar_id, location, quantity from public.wines order by id')).rows, wines);
+    assert.deepEqual((await db.query<Pick<WineRow, 'id' | 'cellar_id' | 'location' | 'quantity'>>('select id, cellar_id, location, quantity from public.wines order by id')).rows, wines);
     await db.exec("insert into public.cellars (id, name) values ('new', 'New cellar'); insert into public.wines (cellar_id, bottle, country, style) values ('new', 'New bottle', 'France', 'Red')");
   } finally { await db.close(); }
 });
@@ -65,9 +66,9 @@ test('fridge edits cascade labels, protect occupied levels and stay intact after
   try {
     await as(owner);
     await db.query("select public.save_cellar_fridge('1', 'Kitchen fridge', 7, 1, $1)", [id]);
-    assert.equal((await db.query("select location from public.wines where id='zero'")).rows[0].location, 'Kitchen fridge - L1');
+    assert.equal((await db.query<{ location: string }>("select location from public.wines where id='zero'")).rows[0].location, 'Kitchen fridge - L1');
     await assert.rejects(db.query("select public.save_cellar_fridge('1', 'Failed rename', 6, 1, $1)", [id]), /foreign key/);
-    assert.equal((await db.query("select name from public.cellar_fridges where id=$1", [id])).rows[0].name, 'Kitchen fridge');
+    assert.equal((await db.query<{ name: string }>("select name from public.cellar_fridges where id=$1", [id])).rows[0].name, 'Kitchen fridge');
     await assert.rejects(db.query("select public.delete_cellar_fridge('1', $1)", [id]), /foreign key/);
     await db.exec("update public.wines set location='Kitchen fridge - L3' where id='six'");
     await db.query("select public.save_cellar_fridge('1', 'Kitchen fridge', 6, 1, $1)", [id]);
@@ -118,5 +119,31 @@ test('consumption keeps remaining bottles on their shelf and clears the consumed
     await db.query("select public.consume_wine('1', 'zero', 1, '2026-09-16', array[$1]::uuid[], 93, 'Lovely')", [person]);
     assert.deepEqual((await db.query("select quantity, location from public.wines where id='zero'")).rows, [{ quantity: 2, location: 'Wine Fridge A - L1' }]);
     assert.deepEqual((await db.query("select quantity, location from public.wines where status='consumed'")).rows, [{ quantity: 1, location: '' }]);
+  } finally { await db.close(); }
+});
+
+test('Wine Cellar A merges into Wine Fridge A at current levels without changing other wine data', async () => {
+  const { db, as, id } = await setup();
+  try {
+    await as(owner);
+    await db.exec("select public.save_cellar_fridge('1', 'Wine Cellar A', 8, 1)");
+    await db.exec("update public.wines set location='Wine Cellar A - L3' where id='one'; update public.wines set location='Wine Cellar A - L8' where id='six'");
+    await db.exec('reset role');
+    await db.exec("insert into public.cellar_storage_locations (cellar_id, label) values ('1', 'wine cellar A -  L2'), ('1', 'Wine Cellar A - L2 & L6'), ('2', 'Wine Cellar A - L3'); update public.wines set location='wine cellar A -  L2' where id='legacy'; update public.wines set location='Wine Cellar A - L2 & L6' where id='five'; update public.wines set location='Wine Cellar A - L3' where id='other'");
+    const before = (await db.query<WineRow>('select * from public.wines order by cellar_id, id')).rows;
+    const merge = await readFile('supabase/migrations/20260917000000_merge_wine_fridge_a.sql', 'utf8');
+    await db.exec(merge);
+    const after = (await db.query<WineRow>('select * from public.wines order by cellar_id, id')).rows;
+    assert.deepEqual(after.map(({ location, updated_at, ...wine }) => wine), before.map(({ location, updated_at, ...wine }) => wine));
+    assert.deepEqual(after.map(w => [w.id, w.location]), [
+      ['five', 'Wine Fridge A - L2 & L6'], ['legacy', 'Wine Fridge A - L2'], ['one', 'Wine Fridge A - L3'],
+      ['six', 'Wine Fridge A - L8'], ['zero', 'Wine Fridge A - L1'], ['other', 'Wine Cellar A - L3'],
+    ]);
+    assert.deepEqual((await db.query("select id, name, level_count from public.cellar_fridges where cellar_id='1'")).rows, [{ id, name: 'Wine Fridge A', level_count: 8 }]);
+    assert.equal((await db.query("select * from public.cellar_storage_locations where cellar_id='1' and label ilike 'wine cellar%'")).rows.length, 0);
+    const slots = (await db.query('select * from public.cellar_storage_locations order by cellar_id, label')).rows;
+    await db.exec(merge);
+    assert.deepEqual((await db.query<WineRow>('select * from public.wines order by cellar_id, id')).rows, after);
+    assert.deepEqual((await db.query('select * from public.cellar_storage_locations order by cellar_id, label')).rows, slots);
   } finally { await db.close(); }
 });

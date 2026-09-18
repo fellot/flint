@@ -214,7 +214,21 @@ manage fridges. Unrecognized existing descriptions remain selectable under
 are preserved. New arbitrary location text is rejected by the database.
 Consumed wines leave storage and remain in their participants' journals.
 
-## 9. Verify and deploy
+## 9. Merge Wine Cellar A into Wine Fridge A
+
+Run [`migrations/20260917000000_merge_wine_fridge_a.sql`](migrations/20260917000000_merge_wine_fridge_a.sql)
+in **Supabase → SQL Editor**, after the managed-fridges migration above.
+It combines the two names in Felipe's cellar under **Wine Fridge A**, preserving
+current level numbers: **Wine Cellar A - L3 → Wine Fridge A - L3**. It does not
+repeat the earlier L0 → L1 shift. Existing bottle records, quantities, scores,
+and comments stay intact; the duplicate fridge is removed only after its wines
+have moved. The resulting fridge includes every existing level from either name.
+Other cellars are unaffected, and the script can be rerun safely.
+
+Refresh the app after running the script. The location merge does not require
+new environment variables or a separate application deployment.
+
+## 10. Verify and deploy
 
 ```bash
 npm test
