@@ -28,6 +28,7 @@ export interface CellarCollectionProps {
   onSaveFridge: (input: FridgeInput) => Promise<void>;
   onDeleteFridge: (id: string) => Promise<void>;
   cellarName?: string;
+  cellarId?: string;
   mode?: 'cellar' | 'journal';
   locale?: 'en' | 'pt';
   loading?: boolean;
@@ -71,7 +72,7 @@ function WineActions({ wine, locale, onView, onEdit, onDrink, onDelete, onPartic
   </div>;
 }
 
-export default function CellarCollection({ wines, cellarName, mode = 'cellar', locale = 'en', loading = false, error, onRetry, onAdd, onUpdate, onDelete, onConsume, people, isOwner, onReview, onAddPerson, onAddParticipants, storage, onSaveFridge, onDeleteFridge }: CellarCollectionProps) {
+export default function CellarCollection({ wines, cellarName, cellarId, mode = 'cellar', locale = 'en', loading = false, error, onRetry, onAdd, onUpdate, onDelete, onConsume, people, isOwner, onReview, onAddPerson, onAddParticipants, storage, onSaveFridge, onDeleteFridge }: CellarCollectionProps) {
   const pt = locale === 'pt';
   const journal = mode === 'journal';
   const year = new Date().getFullYear();
@@ -142,11 +143,11 @@ export default function CellarCollection({ wines, cellarName, mode = 'cellar', l
         <h1>{journal ? (pt ? 'Meu diário de vinhos.' : 'My tasting journal.') : (cellarName || (pt ? 'Minha adega.' : 'My cellar.'))}</h1>
         <p>{journal ? (pt ? 'As garrafas que você abriu. As histórias que ficaram.' : 'The bottles you opened. The ones you won’t forget.') : (pt ? 'Para guardar. Para compartilhar. Para abrir uma boa garrafa.' : 'For keeping. For sharing. For opening something good.')}</p>
       </div>
-      {!journal && !loading && <ReserveSpotlight key={cellarName} wines={collection} locale={locale} year={year} onView={setSelected} onDrink={beginDrink} />}
       {journal && featured && !loading && <button className="cellar-spotlight" onClick={() => setSelected(featured)} aria-label={`${pt ? 'Ver' : 'View'} ${featured.bottle}: ${pt ? 'uma das suas melhores notas' : 'one of your highest scores'}`}>
         <BottlePortrait wine={featured} /><span><span className="eyebrow">{journal ? (pt ? 'ENTRE OS FAVORITOS' : 'ONE TO REMEMBER') : (pt ? 'DA SUA RESERVA' : 'FROM YOUR RESERVE')}</span><strong>{featured.bottle}</strong><small>{featured.vintage || 'NV'} · {featured.country}{journal && featured.myRating != null ? ` · ${featured.myRating}/100` : ''}</small></span><ArrowUpRight size={18} />
       </button>}
     </section>
+    {!journal && !loading && <ReserveSpotlight key={cellarId || cellarName} wines={collection} locale={locale} year={year} cellarId={cellarId} onView={setSelected} onDrink={beginDrink} />}
     <section className="reserve-totals" aria-label={pt ? 'Resumo da coleção' : 'Collection overview'}>{stats.map(({ icon: Icon, value, label }) => <div key={label}><Icon size={15} strokeWidth={1.5} /><strong>{loading ? '—' : value.toLocaleString(locale)}</strong><span>{label}</span></div>)}</section>
 
     <section id="collection" className="wine-collection">

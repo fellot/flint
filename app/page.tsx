@@ -7,5 +7,5 @@ import { useWineInventory } from '@/hooks/useWineInventory';
 export default function Home() {
   const { dataSource, cellar } = useCellar();
   const inventory = useWineInventory(dataSource);
-  return <CellarCollection {...inventory} locale={cellar.locale} cellarName={cellar.name} />;
+  return <CellarCollection {...inventory} locale={cellar.locale} cellarName={cellar.name} cellarId={dataSource} />;
 }

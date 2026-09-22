@@ -235,3 +235,30 @@ If you have any questions or need help with the Wine Cellar Manager, please:
 - `POST /api/cellar/storage?dataSource=1`: owner creates or updates a fridge using `{ name, levelCount, firstLevel, id? }`.
 - `DELETE /api/cellar/storage?dataSource=1`: owner removes an empty fridge using `{ id }`.
 - Mutations return the updated storage and wine records, including cascaded location renames.
+
+
+### Tonight’s little ritual
+
+The cellar discovery card now offers five occasions, a mystery-bottle reveal,
+meal suggestions and conversation prompts. It can be tucked away to reach the
+compact wine table. The instant selections only use bottles currently in stock;
+sweet wines have their own occasion. Opening a bottle still uses the normal
+sharing and journal dialog.
+
+**Optional AI plans:** set the server-only `OPENAI_API_KEY` in `.env.local` and in
+Vercel → Project Settings → Environment Variables, then redeploy. “Make a night
+of it” calls `/api/ai/reserve` on demand using the existing `gpt-4o-mini` model.
+No database migration or new package is required. Without the key, the local
+occasion selections and reveal continue working; the AI action reports that
+personalized plans are unavailable.
+
+The endpoint verifies cellar membership and reads inventory from Supabase. It
+sends up to 40 available candidates (basic wine details, pairings and estimated
+windows), the selected occasion and the short scene to OpenAI. It excludes
+prices, account details, journal comments and private wine notes. Structured
+output is checked against the candidate IDs before rendering. There is an
+18-second provider timeout and a best-effort 10-second per-user cooldown per
+server instance, not a distributed rate limit. Inventory is never mutated by
+planning; generated food and conversation ideas are suggestions.
+
+API reference: [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
