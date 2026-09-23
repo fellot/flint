@@ -18,15 +18,42 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
   const [input, setInput] = useState('');
   const [pending, setPending] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([{ role: 'assistant', content: isPT ? 'Diga o que vai comer, seu humor, ocasião ou clima e eu sugerirei a garrafa perfeita da sua adega.' : 'Tell me what you are eating, your mood, occasion or weather, and I will suggest the perfect bottle from your cellar.' }]);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const [viewport, setViewport] = useState<{ height: number; bottom: number } | null>(null);
   const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string } | null>(null);
 
   useEffect(() => {
     if (isOpen) {
-      const timer = setTimeout(() => inputRef.current?.focus(), 100);
+      const timer = setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 100);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const visual = window.visualViewport;
+    const update = () => setViewport({
+      height: visual?.height ?? window.innerHeight,
+      bottom: visual ? Math.max(0, window.innerHeight - visual.height - visual.offsetTop) : 0,
+    });
+    update();
+    visual?.addEventListener('resize', update);
+    visual?.addEventListener('scroll', update);
+    window.addEventListener('resize', update);
+    return () => {
+      visual?.removeEventListener('resize', update);
+      visual?.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    const textarea = inputRef.current;
+    if (!textarea || !isOpen) return;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 112)}px`;
+  }, [input, isOpen, viewport]);
 
   // Only pass data needed by the model; API will also re-filter by status
   const wineList = useMemo(() => wines, [wines]);
@@ -92,19 +119,24 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
     }
   };
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, pending]);
+    const log = messagesRef.current;
+    if (isOpen && log) log.scrollTop = log.scrollHeight;
+  }, [messages, pending, isOpen]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="floating-sommelier-chat fixed bottom-6 right-6 z-50 w-[92vw] max-w-md animate-[slideUp_0.3s_ease-out]" role="dialog" aria-label={isPT ? 'Conversa com o sommelier' : 'Sommelier chat'} onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); if (expandedImage) setExpandedImage(null); else onClose(); } }}>
-      <div className="rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.2)] flex flex-col h-[70vh] overflow-hidden border border-white/20">
+    <div className={`floating-sommelier-chat ${viewport && viewport.height < 500 ? 'sommelier-short-viewport' : ''}`} style={viewport ? { maxHeight: Math.max(0, viewport.height - 32), bottom: `calc(${viewport.bottom}px + max(16px, env(safe-area-inset-bottom)))` } : undefined} role="dialog" aria-label={isPT ? 'Conversa com o sommelier' : 'Sommelier chat'} onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); if (expandedImage) setExpandedImage(null); else onClose(); } }}>
+      <div className="sommelier-chat-companion">
+        <span>{isPT ? 'Uma boa conversa. Um bom vinho.' : 'Good company. Good wine.'}</span>
+        <button type="button" onClick={onClose} aria-label={isPT ? 'Recolher conversa' : 'Minimize chat'} title={isPT ? 'Recolher conversa' : 'Minimize chat'}>
+          <img src="/images/sommelier-cat.png" width={88} height={108} alt="" draggable={false} />
+        </button>
+      </div>
+      <div className="sommelier-chat-frame rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden border border-white/20">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#722F37] to-[#4a1c22] px-4 py-3 flex items-center justify-between">
+        <div className="sommelier-chat-header bg-gradient-to-r from-[#722F37] to-[#4a1c22] px-4 py-3 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="h-9 w-9 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center ring-2 ring-white/20">
               <WineIcon className="h-5 w-5 text-white" />
@@ -124,7 +156,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-stone-50 to-white">
+        <div ref={messagesRef} className="sommelier-chat-messages overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-stone-50 to-white" role="log" aria-label={isPT ? 'Conversa' : 'Conversation'} aria-live="polite" aria-relevant="additions text">
           {messages.map((m, i) => (
             <div key={i} className={`flex items-end gap-2 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               {m.role === 'assistant' && (
@@ -133,7 +165,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
                 </div>
               )}
               <div
-                className={`max-w-[78%] whitespace-pre-wrap text-sm leading-relaxed ${
+                className={`sommelier-message max-w-[78%] whitespace-pre-wrap text-sm leading-relaxed ${
                   m.role === 'user'
                     ? 'bg-gradient-to-br from-[#722F37] to-[#5a252c] text-white rounded-2xl rounded-br-md px-4 py-2.5 shadow-sm'
                     : 'bg-white text-gray-800 rounded-2xl rounded-bl-md px-4 py-2.5 shadow-sm border border-gray-100'
@@ -162,7 +194,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
             </div>
           ))}
           {pending && (
-            <div className="flex items-end gap-2 justify-start">
+            <div className="flex items-end gap-2 justify-start" role="status" aria-label={isPT ? 'O sommelier está pensando' : 'Sommelier is thinking'}>
               <div className="flex-shrink-0 h-7 w-7 rounded-full bg-gradient-to-br from-[#722F37] to-[#4a1c22] flex items-center justify-center shadow-sm">
                 <WineIcon className="h-3.5 w-3.5 text-white" />
               </div>
@@ -175,19 +207,18 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
               </div>
             </div>
           )}
-          <div ref={messagesEndRef} />
         </div>
 
         {/* Input */}
-        <div className="bg-white border-t border-gray-100 px-3 py-3">
+        <div className="sommelier-chat-composer bg-white border-t border-gray-100 px-3 py-3">
           <div className="flex items-center space-x-2 bg-gray-50 rounded-xl px-3 py-1 border border-gray-200 focus-within:border-[#722F37]/40 focus-within:ring-2 focus-within:ring-[#722F37]/10 transition-all">
-            <input
+            <textarea
               ref={inputRef}
               aria-label={isPT ? 'Mensagem para o sommelier' : 'Message your sommelier'}
-              type="text"
+              rows={1}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); } }}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); submit(); } }}
               className="flex-1 bg-transparent text-sm py-2 outline-none placeholder:text-gray-400"
               placeholder={isPT ? 'O que vai comer/ocasião/humor/clima?' : 'What are you eating/occasion/mood/weather?'}
               disabled={pending}
@@ -217,6 +248,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
               <h4 className="text-sm font-semibold text-gray-900 truncate pr-2">{expandedImage.alt}</h4>
               <button
                 onClick={() => setExpandedImage(null)}
+                aria-label={isPT ? 'Fechar imagem' : 'Close image'}
                 className="h-7 w-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors flex-shrink-0"
               >
                 <X className="h-4 w-4 text-gray-500" />

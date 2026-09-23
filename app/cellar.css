@@ -915,13 +915,27 @@ summary::-webkit-details-marker { display: none; }
 .sommelier-pet.is-dragging { cursor: grabbing; }
 .sommelier-pet.is-dragging .sommelier-pet-character { transform: rotate(7deg); }
 .sommelier-pet.is-dragging .sommelier-pet-bubble { opacity: 0; }
-.floating-sommelier-chat { width: min(448px, calc(100% - 32px)); right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); }
-.floating-sommelier-chat > div:first-child { height: min(600px, 75dvh); max-height: calc(100dvh - 32px); }
+.floating-sommelier-chat { position: fixed; z-index: 50; display: flex; flex-direction: column; width: min(448px, calc(100% - 32px)); right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); max-height: calc(100dvh - 32px); }
+.sommelier-chat-companion { position: relative; flex: 0 0 104px; display: flex; align-items: flex-end; padding: 0 116px 13px 20px; }
+.sommelier-chat-companion > span { color: var(--burgundy); background: var(--paper); border: 1px solid var(--line); border-radius: 14px 14px 0 14px; padding: 8px 12px; font: italic 13px/1.35 var(--serif); box-shadow: 0 3px 12px #4812210a; }
+.sommelier-chat-companion > button { position: absolute; right: 22px; bottom: -8px; width: 88px; height: 108px; z-index: 1; border-radius: 12px; }
+.sommelier-chat-companion img { width: 88px; height: 108px; object-fit: contain; pointer-events: none; filter: drop-shadow(0 3px 3px #48122125); transition: transform .2s ease; }
+.sommelier-chat-companion > button:hover img { transform: translateY(-3px); }
+.sommelier-chat-frame { flex: 0 1 auto; min-height: 0; background: #fffdfb; }
+.sommelier-chat-header, .sommelier-chat-composer { flex-shrink: 0; }
+.sommelier-chat-messages { flex: 0 1 auto; min-height: 0; overscroll-behavior: contain; overflow-wrap: anywhere; }
+.sommelier-message { min-width: 0; }
+.floating-sommelier-chat textarea { min-width: 0; resize: none; max-height: 112px; line-height: 20px; overflow-y: auto; }
+.sommelier-short-viewport .sommelier-chat-companion { flex-basis: 58px; padding-bottom: 8px; padding-right: 86px; }
+.sommelier-short-viewport .sommelier-chat-companion > button, .sommelier-short-viewport .sommelier-chat-companion img { width: 58px; height: 70px; }
+.sommelier-short-viewport .sommelier-chat-companion > span { font-size: 11px; padding: 5px 9px; }
+.sommelier-short-viewport .sommelier-chat-header { padding-block: 8px; }
+.sommelier-short-viewport .sommelier-chat-composer { padding-block: 8px; }
+.sommelier-short-viewport textarea { max-height: 64px; }
 @media (prefers-reduced-motion: reduce) {
-  .sommelier-pet *, .floating-sommelier-chat { transition: none !important; animation: none !important; }
+  .sommelier-pet *, .floating-sommelier-chat, .sommelier-chat-companion img { transition: none !important; animation: none !important; }
 }
 
-.floating-sommelier-chat input { min-width: 0; }
 
 .account-management { border-top: 1px solid var(--line); padding: 6px 0; }
 .account-dropdown .account-management button { border: 0; padding: 10px 8px; border-radius: 4px; text-align: left; }
