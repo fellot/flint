@@ -922,3 +922,7 @@ summary::-webkit-details-marker { display: none; }
 }
 
 .floating-sommelier-chat input { min-width: 0; }
+
+.account-management { border-top: 1px solid var(--line); padding: 6px 0; }
+.account-dropdown .account-management button { border: 0; padding: 10px 8px; border-radius: 4px; text-align: left; }
+.account-dropdown .account-management button:hover:not(:disabled) { background: #f4e8e9; color: var(--burgundy); }

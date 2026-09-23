@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, BookOpen, ChevronDown, Compass, LayoutGrid, LogOut, Menu, Sparkles, Wine, X } from 'lucide-react';
+import { ArrowUpRight, BookOpen, ChevronDown, Compass, LayoutGrid, LogOut, MapPin, Menu, Sparkles, Users, Wine, X } from 'lucide-react';
 import type { Cellar } from '@/types/database';
 import FlintMark from './FlintMark';
+import { CellarMenuActionsContext, type CellarMenuActions } from './CellarMenuActions';
 
 interface Props {
   children: React.ReactNode;
@@ -19,6 +20,15 @@ interface Props {
 
 export default function CellarShell({ children, pathname, cellar, cellars, email, pending, error, onSwitch, onSignOut }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cellarActions, setCellarActions] = useState<CellarMenuActions | null>(null);
+  const accountMenu = useRef<HTMLDetailsElement>(null);
+  const openManagement = (action: () => void) => {
+    if (accountMenu.current) {
+      accountMenu.current.open = false;
+      accountMenu.current.querySelector('summary')?.focus();
+    }
+    action();
+  };
   const sidebar = useRef<HTMLElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -56,7 +66,7 @@ export default function CellarShell({ children, pathname, cellar, cellars, email
     { href: '/wine-trivia', label: pt ? 'Quiz de vinhos' : 'Wine trivia', icon: Wine },
   ];
   const pageName = navigation.find(item => item.href === pathname)?.label || 'Flint Cellar';
-  return <div className="flint-shell">
+  return <CellarMenuActionsContext.Provider value={setCellarActions}><div className="flint-shell">
     <a className="flint-skip" href="#main-content">{pt ? 'Ir para o conteúdo' : 'Skip to content'}</a>
     <aside ref={sidebar} className={`flint-sidebar ${menuOpen ? 'is-open' : ''}`}>
       <button className="mobile-sidebar-close icon-button" onClick={() => setMenuOpen(false)} aria-label={pt ? 'Fechar navegação' : 'Close navigation'}><X size={18} /></button>
@@ -77,8 +87,13 @@ export default function CellarShell({ children, pathname, cellar, cellars, email
         <div className="topbar-path"><button ref={menuButton} className="mobile-menu icon-button" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={20} /> : <Menu size={20} />}</button><span className="topbar-brand">flint.</span><span className="path-divider">/</span><span>{pageName}</span></div>
         <div className="topbar-account">
           <span className="cellar-indicator"><span className="live-dot" />{pt ? 'Adega pessoal' : 'Personal cellar'}</span>
-          <details className="account-menu"><summary><span className="account-avatar">{(email || cellar?.name || 'F').slice(0, 1).toUpperCase()}</span><span className="account-name">{cellar?.name || 'Flint Cellar'}</span><ChevronDown size={14} /></summary>
-            <div className="account-dropdown">{email && <p>{email}</p>}{cellars.length > 1 && <label>{pt ? 'Sua adega' : 'Your cellar'}<select value={cellar?.id || ''} disabled={pending} onChange={event => onSwitch(event.target.value)}>{cellars.map(item => <option value={item.id} key={item.id}>{item.name}</option>)}</select></label>}<button disabled={pending} onClick={onSignOut}><LogOut size={15} />{pt ? 'Sair' : 'Sign out'}</button></div>
+          <details ref={accountMenu} className="account-menu"><summary><span className="account-avatar">{(email || cellar?.name || 'F').slice(0, 1).toUpperCase()}</span><span className="account-name">{cellar?.name || 'Flint Cellar'}</span><ChevronDown size={14} /></summary>
+            <div className="account-dropdown">{email && <p>{email}</p>}{cellars.length > 1 && <label>{pt ? 'Sua adega' : 'Your cellar'}<select value={cellar?.id || ''} disabled={pending} onChange={event => onSwitch(event.target.value)}>{cellars.map(item => <option value={item.id} key={item.id}>{item.name}</option>)}</select></label>}
+              {cellarActions && <div className="account-management" aria-label={pt ? 'Gerenciar adega' : 'Manage cellar'}>
+                <button type="button" disabled={pending} onClick={() => openManagement(cellarActions.storage)}><MapPin size={15} />{pt ? 'Adegas' : 'Wine fridges'}</button>
+                <button type="button" disabled={pending} onClick={() => openManagement(cellarActions.people)}><Users size={15} />{pt ? 'Pessoas' : 'People'}</button>
+              </div>}
+              <button disabled={pending} onClick={onSignOut}><LogOut size={15} />{pt ? 'Sair' : 'Sign out'}</button></div>
           </details>
         </div>
       </header>
@@ -86,5 +101,5 @@ export default function CellarShell({ children, pathname, cellar, cellars, email
       <div id="main-content">{children}</div>
       <footer className="flint-footer"><span>flint<span className="brand-period">.</span></span><p>{pt ? 'Colecione momentos. Saboreie histórias.' : 'Collect moments. Savor stories.'}</p><a href="/wine-trivia">{pt ? 'Algo para descobrir' : 'Something to discover'}<ArrowUpRight size={14} /></a></footer>
     </div>
-  </div>;
+  </div></CellarMenuActionsContext.Provider>;
 }
