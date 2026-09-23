@@ -906,11 +906,11 @@ summary::-webkit-details-marker { display: none; }
 }
 
 /* A small cellar companion. Only its own hit area intercepts pointer input. */
-.sommelier-pet { position: fixed; right: 20px; bottom: 20px; z-index: 45; width: 88px; height: 104px; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; isolation: isolate; }
-.sommelier-pet-character { width: 80px; height: 94px; margin: -3px auto 0; overflow: visible; filter: drop-shadow(0 3px 4px #48122116); transition: transform .2s ease; }
-.sommelier-pet-label { display: block; position: absolute; bottom: 0; left: 0; width: 88px; padding: 3px 0; border: 1px solid #d9bcb5; border-radius: 12px; background: #fff8ef; color: #72273d; font: italic 11px/1.2 var(--serif); box-shadow: 0 2px 6px #4812210d; white-space: nowrap; }
+.sommelier-pet { position: fixed; right: 20px; bottom: 20px; z-index: 45; width: 96px; height: 128px; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; isolation: isolate; }
+.sommelier-pet-character { display: block; width: 96px; height: 112px; margin: 0 auto; object-fit: contain; pointer-events: none; filter: drop-shadow(0 3px 3px #48122125); transition: transform .2s ease; }
+.sommelier-pet-label { display: block; position: absolute; bottom: 0; left: 8px; width: 80px; padding: 3px 0; border: 1px solid #d9bcb5; border-radius: 12px; background: #fff8ef; color: #72273d; font: italic 11px/1.2 var(--serif); box-shadow: 0 2px 6px #4812210d; white-space: nowrap; }
 .sommelier-pet-bubble { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translate(-50%, 4px); width: 96px; padding: 7px 4px; border-radius: 8px; border: 1px solid #dfc7bf; background: #fff8ef; color: #72273d; font: italic 12px/1.25 var(--serif); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
-.sommelier-pet:hover .sommelier-pet-character, .sommelier-pet:focus-visible .sommelier-pet-character { transform: translateY(-3px) rotate(-4deg); }
+.sommelier-pet:hover .sommelier-pet-character, .sommelier-pet:focus-visible .sommelier-pet-character { transform: translateY(-3px) rotate(-2deg); }
 .sommelier-pet:hover .sommelier-pet-bubble, .sommelier-pet:focus-visible .sommelier-pet-bubble { opacity: 1; transform: translate(-50%, 0); }
 .sommelier-pet.is-dragging { cursor: grabbing; }
 .sommelier-pet.is-dragging .sommelier-pet-character { transform: rotate(7deg); }

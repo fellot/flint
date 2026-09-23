@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 
 type Position = { x: number; y: number };
-const size = { width: 88, height: 104 };
+const size = { width: 96, height: 128 };
 const margin = 12;
 const storageKey = 'flint.sommelier-pet.position.v1';
 
@@ -91,25 +91,8 @@ export default function SommelierPet({ open, onOpen, locale = 'en' }: { open: bo
         setPosition(next); remember(next);
       }}>
       <span className="sommelier-pet-bubble" aria-hidden="true">{pt ? 'Uma boa garrafa?' : 'Something good?'}</span>
-      <svg className="sommelier-pet-character" viewBox="0 0 88 104" fill="none" aria-hidden="true">
-        <ellipse cx="43" cy="96" rx="27" ry="5" fill="#481221" opacity=".13" />
-        <path d="M33 84l-3 10h-8m31-10 4 10h8" stroke="#481221" strokeWidth="4" strokeLinecap="round" />
-        <path d="M27 59C14 54 15 45 12 43" stroke="#72273d" strokeWidth="4" strokeLinecap="round" />
-        <path d="M59 60c12 0 13-8 14-13" stroke="#72273d" strokeWidth="4" strokeLinecap="round" />
-        <path d="M30 23h26v13c0 9 10 12 10 23v23c0 5-5 9-10 9H30c-6 0-10-4-10-9V59c0-11 10-14 10-23V23Z" fill="#6d2039" stroke="#481221" strokeWidth="2" />
-        <path d="M29 27h28v13c0 7-6 12-14 12s-14-5-14-12V27Z" fill="#f5ddbd" />
-        <rect x="28" y="12" width="30" height="20" rx="6" fill="#c79666" stroke="#69432f" strokeWidth="2" />
-        <path d="M35 17h5m8 9h4m-16 0h2m11-8h3" stroke="#986b46" strokeWidth="2" strokeLinecap="round" />
-        <path d="M35 40q3-4 6 0m6 0q3-4 6 0" stroke="#481221" strokeWidth="2" strokeLinecap="round" />
-        <path d="M40 45q4 4 8 0" stroke="#994f48" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="m33 55 11 5-11 5V55Zm22 0-11 5 11 5V55Z" fill="#e7bc83" /><circle cx="44" cy="60" r="3" fill="#fff0d3" />
-        <path d="M29 71h29v11H29z" fill="#fff0d3" /><text x="43.5" y="79" textAnchor="middle" fontFamily="Georgia, serif" fontSize="8" fill="#72273d">flint.</text>
-        <g className="sommelier-pet-glass" stroke="#9c684f" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M6 27h13l-1 10c-1 6-10 6-11 0L6 27Z" fill="#fff6e8" /><path d="m7 33 1 5q5 5 9 0l1-5H7Z" fill="#8b2746" stroke="none" /><path d="M12.5 42v8m-4 0h8" />
-        </g>
-        <path d="m72 21 1.5 4.5L78 27l-4.5 1.5L72 33l-1.5-4.5L66 27l4.5-1.5L72 21Z" fill="#b68a56" />
-      </svg>
-      <span className="sommelier-pet-label">{pt ? 'Seu sommelier' : 'Your sommelier'}</span>
+      <img className="sommelier-pet-character" src="/images/sommelier-cat.png" width={96} height={112} alt="" draggable={false} aria-hidden="true" />
+      <span className="sommelier-pet-label">Sommelier</span>
     </button>
     <span id={hintId} className="sr-only">{pt ? 'Arraste para mover, ou use as setas quando selecionado. Enter abre a conversa.' : 'Drag to move, or use arrow keys while focused. Press Enter to open the chat.'}</span>
   </>;
