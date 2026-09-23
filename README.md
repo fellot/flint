@@ -239,9 +239,9 @@ If you have any questions or need help with the Wine Cellar Manager, please:
 
 ### Tonight’s little ritual
 
-The cellar discovery card now offers five occasions, a mystery-bottle reveal,
-meal suggestions and conversation prompts. It can be tucked away to reach the
-compact wine table. The instant selections only use bottles currently in stock;
+A compact “Tonight, perhaps…” recommendation sits beside the cellar title.
+“Set the mood” opens a dialog with five occasions, a mystery-bottle reveal,
+meal suggestions and conversation prompts, leaving the wine table in view by default. The instant selections only use bottles currently in stock;
 sweet wines have their own occasion. Opening a bottle still uses the normal
 sharing and journal dialog.
 

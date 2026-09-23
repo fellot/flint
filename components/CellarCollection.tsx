@@ -146,8 +146,8 @@ export default function CellarCollection({ wines, cellarName, cellarId, mode = '
       {journal && featured && !loading && <button className="cellar-spotlight" onClick={() => setSelected(featured)} aria-label={`${pt ? 'Ver' : 'View'} ${featured.bottle}: ${pt ? 'uma das suas melhores notas' : 'one of your highest scores'}`}>
         <BottlePortrait wine={featured} /><span><span className="eyebrow">{journal ? (pt ? 'ENTRE OS FAVORITOS' : 'ONE TO REMEMBER') : (pt ? 'DA SUA RESERVA' : 'FROM YOUR RESERVE')}</span><strong>{featured.bottle}</strong><small>{featured.vintage || 'NV'} · {featured.country}{journal && featured.myRating != null ? ` · ${featured.myRating}/100` : ''}</small></span><ArrowUpRight size={18} />
       </button>}
-    </section>
     {!journal && !loading && <ReserveSpotlight key={cellarId || cellarName} wines={collection} locale={locale} year={year} cellarId={cellarId} onView={setSelected} onDrink={beginDrink} />}
+    </section>
     <section className="reserve-totals" aria-label={pt ? 'Resumo da coleção' : 'Collection overview'}>{stats.map(({ icon: Icon, value, label }) => <div key={label}><Icon size={15} strokeWidth={1.5} /><strong>{loading ? '—' : value.toLocaleString(locale)}</strong><span>{label}</span></div>)}</section>
 
     <section id="collection" className="wine-collection">

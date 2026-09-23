@@ -793,63 +793,71 @@ summary::-webkit-details-marker { display: none; }
 .wine-image-wrap:has(.bottle-sparkling) { background: #f1eadd; }
 .wine-image-wrap:has(.bottle-rose) { background: #f6e7e5; }
 
-/* An invitation to an evening: burgundy cover, cream paper, a bottle to reveal. */
-.reserve-ritual { --ritual-cream: #fff6e8; --ritual-gold: #e1b78e; width: 100%; max-width: min(1180px, calc(100vw - 306px)); margin: 0 0 24px; color: var(--ritual-cream); background: #541a2c; border: 1px solid #682b3b; border-radius: 8px; box-shadow: 0 9px 25px #48122112; overflow: hidden; }
-.ritual-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 13px 24px; border-bottom: 1px solid #fff6e81f; }
-.ritual-wordmark { display: flex; gap: 10px; align-items: center; font-size: 9px; letter-spacing: 2px; color: var(--ritual-gold); }
-.ritual-header-rule { width: 40px; height: 1px; background: #e1b78e65; }
-.ritual-header > button { display: flex; align-items: center; gap: 8px; font-size: 10px; color: #efd6cf; padding: 4px; }
-.ritual-collapsed .ritual-header { border-bottom: 0; }
-.ritual-body { display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.35fr); gap: 22px; padding: 24px; }
-.ritual-invitation { align-self: center; padding: 0 10px 0 2px; }
-.ritual-kicker { font-size: 8px; letter-spacing: 1.7px; color: #e4bca8; }
-.ritual-invitation h2 { font: 35px/1.08 var(--serif); letter-spacing: -1px; margin: 10px 0 12px; color: var(--ritual-cream); }
-.ritual-invitation h2 em { color: #e5b293; font-weight: 400; }
-.ritual-invitation > p { font-size: 11px; line-height: 1.6; color: #e4c9c8; }
-.ritual-occasions { display: flex; flex-wrap: wrap; gap: 7px; margin: 18px 0 20px; }
-.ritual-occasions button { display: flex; align-items: center; gap: 7px; min-height: 34px; padding: 7px 10px; border: 1px solid #c8999952; color: #f4deda; border-radius: 4px; font-size: 10px; transition: background .18s, color .18s, transform .18s; }
-.ritual-occasions button:hover { background: #ffffff12; transform: translateY(-1px); }
-.ritual-occasions button[aria-pressed='true'] { background: #f4dfc6; color: #571d2f; border-color: #f4dfc6; box-shadow: 0 2px 6px #24000f30; }
-.ritual-scene > label { display: block; font: italic 13px var(--serif); margin-bottom: 8px; color: #f2d6c8; }
+/* A margin note in the cellar header; the evening planner opens on demand. */
+.cellar-masthead:has(.reserve-note) { max-width: calc(100vw - 306px); grid-template-columns: minmax(0, 1fr) minmax(280px, 440px); }
+.reserve-note { display: flex; align-items: center; gap: 18px; min-width: 0; border-left: 1px solid #cfb9af; padding: 6px 0 6px 26px; }
+.reserve-note-bottle { display: grid; place-items: center; flex: 0 0 44px; color: var(--burgundy); }
+.reserve-note-bottle .bottle-portrait { width: 44px; height: 92px; }
+.reserve-note .bottle-portrait img { mix-blend-mode: multiply; }
+.reserve-note-copy { min-width: 0; }
+.reserve-note .eyebrow { font-size: 8px; letter-spacing: 1.6px; color: #92624e; }
+.reserve-note-name { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-align: left; color: var(--burgundy); font: 22px/1.18 var(--serif); margin: 7px 0; }
+.reserve-note-name:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.reserve-note-meta { color: var(--muted); font-size: 10px; }
+.reserve-note-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 5px; color: #c3a7a2; }
+.reserve-note-actions button { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; color: var(--burgundy); font-size: 11px; }
+.reserve-note-actions button:last-child { color: var(--muted); }
+.reserve-note-actions button:hover:not(:disabled) { color: #a12647; }
+.reserve-note-actions button:disabled { opacity: .4; cursor: default; }
+.flint-dialog:has(.reserve-ritual) { width: min(960px, calc(100vw - 32px)); padding: 38px 32px 30px; border-radius: 6px; }
+.reserve-ritual { color: var(--ink); min-width: 0; }
+.ritual-body { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.3fr); gap: 30px; }
+.ritual-invitation { padding-top: 10px; }
+.ritual-kicker { font-size: 8px; letter-spacing: 1.7px; color: #92624e; }
+.ritual-invitation h2 { font: 34px/1.12 var(--serif); letter-spacing: -1px; margin: 14px 0 12px; color: var(--burgundy); }
+.ritual-invitation h2 em { color: #a56848; font-weight: 400; }
+.ritual-invitation > p { font-size: 11px; line-height: 1.6; color: var(--muted); }
+.ritual-occasions { display: flex; flex-wrap: wrap; gap: 7px; margin: 20px 0 24px; }
+.ritual-occasions button { display: flex; align-items: center; gap: 7px; min-height: 36px; padding: 8px 10px; border: 1px solid #dfceca; color: #71535c; border-radius: 4px; font-size: 10px; transition: background .18s, color .18s; }
+.ritual-occasions button:hover { background: #f2e5e6; }
+.ritual-occasions button[aria-pressed='true'] { background: var(--burgundy); color: #fff8ee; border-color: var(--burgundy); }
+.ritual-scene > label { display: block; font: italic 14px var(--serif); margin-bottom: 9px; color: #755344; }
 .ritual-scene > div { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
-.ritual-scene input { background: #38122155; color: #fff6e8; border: 1px solid #c8999952; padding: 10px; border-radius: 4px; width: 100%; min-width: 0; font-size: 11px; }
-.ritual-scene input::placeholder { color: #c3a3a6; }
-.ritual-scene button { display: flex; justify-content: center; align-items: center; gap: 7px; font-size: 11px; color: #ffe3b9; min-height: 34px; padding: 4px 0; }
-.ritual-scene button:hover:not(:disabled) { color: white; }
-.ritual-invitation .ritual-ai-note { font-size: 9px; color: #cbaaaf; margin-top: 3px; }
-.ritual-invitation .ritual-error { font-size: 10px; margin-top: 8px; color: #ffe3b9; }
-.reserve-ritual :focus-visible { outline: 2px solid #e8b187; outline-offset: 3px; }
-.ritual-ticket { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 16px 20px 13px; border-radius: 3px; background: #fff8ee; color: #42282e; box-shadow: 3px 5px 0 #300b1b28; }
-.ritual-ticket::before, .ritual-ticket::after { content: ''; position: absolute; width: 14px; height: 14px; background: #541a2c; border-radius: 50%; top: 37px; left: -7px; }
-.ritual-ticket::after { left: auto; right: -7px; }
-.ritual-ticket-top { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed #c9aca0; padding-bottom: 12px; font-size: 8px; letter-spacing: 1.5px; color: #8e6652; }
+.ritual-scene input { background: #fffdfb; color: var(--ink); border: 1px solid #dfceca; padding: 11px; border-radius: 4px; width: 100%; min-width: 0; font-size: 11px; }
+.ritual-scene input::placeholder { color: #967a7f; }
+.ritual-scene button { display: flex; justify-content: center; align-items: center; gap: 7px; font-size: 11px; color: var(--burgundy); min-height: 36px; padding: 4px 0; }
+.ritual-scene button:hover:not(:disabled) { color: #a12647; }
+.ritual-invitation .ritual-ai-note { font-size: 9px; margin-top: 3px; }
+.ritual-invitation .ritual-error { font-size: 11px; margin-top: 8px; color: var(--burgundy); }
+.ritual-ticket { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 16px 0 0 28px; border-left: 1px solid #dfceca; }
+.ritual-ticket-top { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid #dfceca; padding-bottom: 12px; font-size: 8px; letter-spacing: 1.5px; color: #8e6652; }
 .ritual-ticket-top > span:last-child { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.ritual-reveal { animation: ritual-reveal .4s ease-out both; flex: 1; }
-.ritual-wine { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 18px; padding: 16px 0 13px; }
-.ritual-bottle { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 90px; min-height: 150px; }
-.ritual-bottle-halo { position: absolute; inset: 8px 0 22px; border-radius: 50% 50% 3px 3px; border: 1px solid #d9c4ae; background: #f3e5d2; }
-.ritual-bottle .bottle-portrait { width: 65px; height: 123px; position: relative; z-index: 1; transform: rotate(-7deg); transition: transform .3s; }
-.ritual-bottle:hover .bottle-portrait { transform: rotate(0deg) translateY(-3px); }
-.ritual-vintage { position: relative; font: italic 18px var(--serif); color: #895937; margin-top: 9px; }
-.ritual-script { font: italic 15px/1.3 var(--serif); color: #a56848; margin-bottom: 7px; }
+.ritual-reveal { animation: ritual-reveal .25s ease-out both; flex: 1; }
+.ritual-wine { display: grid; grid-template-columns: 65px minmax(0, 1fr); gap: 16px; padding: 20px 0; }
+.ritual-bottle { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; width: 65px; }
+.ritual-bottle-halo { display: none; }
+.ritual-bottle .bottle-portrait { width: 56px; height: 128px; }
+.ritual-bottle .bottle-portrait img { mix-blend-mode: multiply; }
+.ritual-vintage { font: italic 16px var(--serif); color: #895937; margin-top: 9px; }
+.ritual-script { font: italic 14px/1.3 var(--serif); color: #a56848; margin-bottom: 7px; }
 .ritual-wine-name { display: flex; gap: 8px; align-items: baseline; text-align: left; width: 100%; }
-.ritual-wine-name h3 { font: 25px/1.12 var(--serif); letter-spacing: -.6px; color: #642039; overflow-wrap: anywhere; }
+.ritual-wine-name h3 { font: 24px/1.15 var(--serif); letter-spacing: -.6px; color: #642039; overflow-wrap: anywhere; }
 .ritual-wine-name svg { flex-shrink: 0; color: #925c66; }
 .ritual-wine-name:hover h3 { color: #a12647; }
 .ritual-provenance { color: #816971; font-size: 10px; margin-top: 7px; }
 .ritual-wine-copy .critic-scores { margin-top: 7px; }
 .ritual-reason { font-size: 11px; line-height: 1.65; color: #69505a; margin-top: 10px; }
 .ritual-window { display: block; font-size: 9px; color: #7c5a47; margin-top: 6px; }
-.ritual-table-plan { display: flex; gap: 10px; padding: 12px 0 10px; border-top: 1px solid #e6d7c7; }
+.ritual-table-plan { display: flex; gap: 10px; padding: 14px 0 12px; border-top: 1px solid #dfceca; }
 .ritual-table-plan > svg { color: #9a6a4c; flex-shrink: 0; margin-top: 2px; }
 .ritual-table-plan span { font-size: 8px; letter-spacing: 1.3px; color: #8e6652; }
 .ritual-table-plan p { font-size: 11px; line-height: 1.6; margin-top: 3px; overflow-wrap: anywhere; }
-.ritual-conversation { display: flex; gap: 8px; text-align: left; align-items: center; color: #986c57; font: italic 12px/1.5 var(--serif); padding: 2px 0 12px; width: 100%; }
+.ritual-conversation { display: flex; gap: 8px; text-align: left; align-items: center; color: #986c57; font: italic 13px/1.5 var(--serif); padding: 4px 0 16px; width: 100%; }
 .ritual-conversation svg { flex-shrink: 0; }
 .ritual-conversation > span { flex: 1; }
-.ritual-ticket-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 13px; padding-top: 12px; border-top: 1px dashed #c9aca0; margin-top: auto; }
-.ritual-ticket-footer button { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; min-height: 34px; }
-.ritual-open { background: #7d233e; color: #fff6e8; padding: 8px 12px; border-radius: 3px; }
+.ritual-ticket-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 13px; padding-top: 14px; border-top: 1px solid #dfceca; margin-top: auto; }
+.ritual-ticket-footer button { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; min-height: 36px; }
+.ritual-open { background: var(--burgundy); color: #fff6e8; padding: 8px 12px; border-radius: 3px; }
 .ritual-open:hover { background: #521a2c; }
 .ritual-shuffle { color: #7d233e; margin-left: auto; }
 .ritual-ticket-footer .ritual-blind { color: #876753; font: italic 12px var(--serif); text-decoration: underline; text-underline-offset: 3px; }
@@ -863,42 +871,35 @@ summary::-webkit-details-marker { display: none; }
 .ritual-empty > svg { margin-bottom: 15px; color: #a56848; }
 .ritual-pending .ritual-reveal { opacity: .5; }
 .ritual-working { animation: ritual-glow 1s ease-in-out infinite alternate; }
-@keyframes ritual-reveal { from { opacity: 0; transform: translateY(7px) rotate(.5deg); } to { opacity: 1; transform: none; } }
+@keyframes ritual-reveal { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 @keyframes ritual-glow { from { opacity: .4; } to { opacity: 1; } }
-@media (max-width: 1100px) {
-  .ritual-body { gap: 18px; padding: 20px; grid-template-columns: minmax(0, .9fr) minmax(0, 1.2fr); }
-  .ritual-invitation h2 { font-size: 30px; }
-  .ritual-wine { grid-template-columns: 65px minmax(0, 1fr); gap: 12px; }
-  .ritual-bottle { width: 65px; }
-  .ritual-bottle .bottle-portrait { width: 53px; height: 115px; }
-  .ritual-wine-name h3 { font-size: 22px; }
-  .ritual-ticket { padding-inline: 15px; }
+@media (max-width: 1190px) and (min-width: 761px) {
+  .cellar-masthead:has(.reserve-note) { max-width: calc(100vw - 252px); grid-template-columns: minmax(0, 1fr) minmax(260px, .85fr); gap: 20px; }
+  .reserve-note { padding-left: 18px; gap: 12px; }
+  .reserve-note-name { font-size: 20px; }
 }
-@media (max-width: 900px) {
-  .reserve-ritual { max-width: calc(100vw - 266px); }
-  .ritual-body { grid-template-columns: minmax(0, 1fr); }
-  .ritual-invitation h2 br { display: none; }
-  .ritual-invitation h2 em::before { content: ' '; }
-  .ritual-occasions { margin-block: 12px; }
-  .ritual-wine { grid-template-columns: 80px minmax(0, 1fr); }
-  .ritual-bottle { width: 80px; }
+@media (min-width: 761px) and (max-width: 1000px) {
+  .cellar-masthead:has(.reserve-note) { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .reserve-note { padding: 14px 0 0; border-left: 0; border-top: 1px solid var(--line); }
 }
 @media (max-width: 760px) {
-  .reserve-ritual { max-width: calc(100vw - 40px); }
-  .ritual-header { padding: 12px 16px; }
-  .ritual-header-rule { display: none; }
-  .ritual-wordmark { letter-spacing: 1.3px; font-size: 8px; gap: 7px; }
-  .ritual-header > button { font-size: 9px; }
-  .ritual-body { padding: 18px 16px; gap: 18px; }
-  .ritual-invitation { padding: 0; }
-  .ritual-invitation h2 { font-size: 31px; }
-  .ritual-scene > div { flex-wrap: nowrap; }
-  .ritual-scene input { flex: 1; }
-  .ritual-scene button { width: 40px; background: #f4dfc6; color: #571d2f; border-radius: 3px; }
-  .ritual-scene button span { display: none; }
-  .ritual-scene button:hover:not(:disabled) { color: #571d2f; background: #fff6e8; }
-  .ritual-occasions button { min-height: 38px; }
+  /* Keep the header in the viewport even when the table makes the page wider. */
+  .cellar-masthead:has(.reserve-note) { max-width: calc(100vw - 48px); }
+  .reserve-note { margin-top: 20px; padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--line); gap: 16px; }
+  .reserve-note-bottle .bottle-portrait { height: 78px; }
+  .reserve-note-name { font-size: 20px; }
+  .reserve-note-actions button { min-height: 36px; }
+  .flint-dialog:has(.reserve-ritual) { padding: 32px 22px 24px; }
+  .ritual-body { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .ritual-invitation h2 { font-size: 30px; }
+  .ritual-invitation h2 br { display: none; }
+  .ritual-occasions { margin-block: 16px; }
+  .ritual-occasions button { min-height: 40px; }
+  .ritual-ticket { padding: 18px 0 0; border-left: 0; border-top: 1px solid #cfb9af; }
   .ritual-ticket-footer button { min-height: 40px; }
+}
+@media (max-width: 520px) {
+  .cellar-masthead:has(.reserve-note) { max-width: calc(100vw - 40px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .reserve-ritual *, .reserve-ritual *::before, .reserve-ritual *::after { animation: none !important; transition: none !important; }

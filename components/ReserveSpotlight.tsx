@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
-import { ArrowRight, ArrowUpRight, ChevronDown, ChevronUp, Heart, Users, PartyPopper, Moon, Cherry, Shuffle, Sparkles, Utensils, MessageCircle, Wine as WineIcon, MapPin } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Heart, Users, PartyPopper, Moon, Cherry, Shuffle, Sparkles, Utensils, MessageCircle, Wine as WineIcon, MapPin } from 'lucide-react';
 import type { Wine } from '@/types/wine';
 import { occasionPicks, occasionCopy, occasions, localEvening, parseEveningPlan, windowNote, type Occasion, type EveningPlan } from '@/utils/reserve';
 import { highestCriticScore } from '@/utils/critic-ratings';
 import BottlePortrait from './BottlePortrait';
 import CriticScores from './CriticScores';
+import CellarDialog from './CellarDialog';
 
 const icons = { unwind: Moon, dinner: Heart, company: Users, celebrate: PartyPopper, dessert: Cherry };
 
@@ -22,9 +23,14 @@ export default function ReserveSpotlight({ wines, locale, year, cellarId, onView
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [sealed, setSealed] = useState(false);
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [showQuestion, setShowQuestion] = useState(false);
   const request = useRef<AbortController | null>(null);
+  const trigger = useRef<HTMLButtonElement | null>(null);
+  const restoreFocus = useRef(false);
+  useEffect(() => {
+    if (!expanded && restoreFocus.current) { trigger.current?.focus(); restoreFocus.current = false; }
+  }, [expanded]);
   useEffect(() => () => request.current?.abort(), []);
   const picks = occasionPicks(wines, occasion, year);
   const wine = picks.find(w => w.id === pickedId) || picks[0];
@@ -65,15 +71,33 @@ export default function ReserveSpotlight({ wines, locale, year, cellarId, onView
   }
   if (!wines.some(w => w.status === 'in_cellar' && w.quantity > 0)) return null;
 
-  return <section className={`reserve-ritual ${expanded ? '' : 'ritual-collapsed'}`} aria-label={pt ? 'O ritual desta noite' : 'Tonight’s little ritual'}>
-    <header className="ritual-header">
-      <span className="ritual-wordmark"><WineIcon size={16} strokeWidth={1.3} />{pt ? 'O RITUAL DESTA NOITE' : 'TONIGHT’S LITTLE RITUAL'}<span className="ritual-header-rule" /></span>
-      <button type="button" onClick={() => setExpanded(!expanded)} aria-expanded={expanded} aria-controls={sectionId}>{expanded ? (pt ? 'Recolher' : 'Tuck away') : (pt ? 'Escolher uma garrafa' : 'Find tonight’s bottle')}{expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</button>
-    </header>
-    {expanded && <div id={sectionId} className="ritual-body">
+  const open = (event: React.MouseEvent<HTMLButtonElement>) => { trigger.current = event.currentTarget; setExpanded(true); };
+  const close = (returnFocus = true) => { restoreFocus.current = returnFocus; request.current?.abort(); request.current = null; setBusy(false); setExpanded(false); };
+  const viewWine = (selected: Wine) => { close(false); onView(selected); };
+  const drinkWine = (selected: Wine) => { close(false); onDrink(selected); };
+
+  return <>
+    <aside className="reserve-note" aria-label={pt ? 'Uma ideia da sua adega' : 'An idea from your cellar'}>
+      <button type="button" className="reserve-note-bottle" onClick={open} aria-label={pt ? 'Explorar uma garrafa para esta noite' : 'Explore a bottle for tonight'}>
+        {wine && !sealed ? <BottlePortrait wine={wine} /> : <WineIcon size={32} strokeWidth={1} />}
+      </button>
+      <div className="reserve-note-copy">
+        <p className="eyebrow">{pt ? 'PARA ESTA NOITE, TALVEZ…' : 'TONIGHT, PERHAPS…'}</p>
+        <button type="button" className="reserve-note-name" onClick={open}>{sealed ? (pt ? 'Uma surpresa da sua adega.' : 'A surprise from your cellar.') : wine?.bottle || (pt ? 'Vamos escolher uma garrafa.' : 'Let’s find your bottle.')}</button>
+        {wine && !sealed && <p className="reserve-note-meta">{wine.vintage || 'NV'} · {wine.country} · {wine.style}</p>}
+        <div className="reserve-note-actions">
+          <button type="button" onClick={open} aria-haspopup="dialog">{pt ? 'Escolher o clima' : 'Set the mood'}<ArrowRight size={13} /></button>
+          <span aria-hidden="true">·</span>
+          <button type="button" disabled={picks.length < 2} onClick={() => shuffle(false)} aria-label={pt ? 'Sugerir outra garrafa' : 'Suggest another bottle'}><Shuffle size={12} />{pt ? 'Outra garrafa' : 'Another bottle'}</button>
+        </div>
+      </div>
+    </aside>
+    {expanded && <CellarDialog title={pt ? 'O que vamos abrir?' : 'What shall we open?'} onClose={() => close()} wide>
+    <section className="reserve-ritual" aria-label={pt ? 'O ritual desta noite' : 'Tonight’s little ritual'}>
+    <div id={sectionId} className="ritual-body">
       <div className="ritual-invitation">
-        <span className="ritual-kicker">{pt ? 'SUA ADEGA. SUAS HISTÓRIAS.' : 'YOUR CELLAR. YOUR STORIES.'}</span>
-        <h2>{pt ? <>Uma boa garrafa.<br /><em>Um ótimo pretexto.</em></> : <>Good bottles.<br /><em>Better excuses.</em></>}</h2>
+        <span className="ritual-kicker">{pt ? 'DA SUA RESERVA' : 'FROM YOUR RESERVE'}</span>
+        <h2>{pt ? <>O que vamos{' '}<br /><em>abrir esta noite?</em></> : <>What shall{' '}<br /><em>we open tonight?</em></>}</h2>
         <p>{pt ? 'Escolha o clima. A gente encontra a garrafa.' : 'Set the mood. We’ll find the bottle.'}</p>
         <div className="ritual-occasions" role="group" aria-label={pt ? 'Qual é a ocasião?' : 'What’s the occasion?'}>{occasions.map(key => {
           const Icon = icons[key];
@@ -95,14 +119,14 @@ export default function ReserveSpotlight({ wines, locale, year, cellarId, onView
             <button type="button" onClick={() => setSealed(false)}>{pt ? 'Revelar a garrafa' : 'Reveal the bottle'}<ArrowRight size={16} /></button>
           </div> : <div className="ritual-reveal" key={wine.id}>
             <div className="ritual-wine">
-              <button type="button" className="ritual-bottle" onClick={() => onView(wine)} aria-label={`${pt ? 'Ver' : 'View'} ${wine.bottle}`}><span className="ritual-bottle-halo" /><BottlePortrait wine={wine} /><span className="ritual-vintage">{wine.vintage || 'NV'}</span></button>
-              <div className="ritual-wine-copy"><p className="ritual-script">{plan.title}</p><button type="button" className="ritual-wine-name" onClick={() => onView(wine)}><h3>{wine.bottle}</h3><ArrowUpRight size={16} /></button><p className="ritual-provenance">{wine.vintage || 'NV'} · {wine.country} · {wine.style}</p>{highestCriticScore(wine) !== null && <CriticScores wine={wine} locale={locale} />}<p className="ritual-reason">{plan.reason}</p>{aiPlan && <small className="ritual-window">{windowNote(wine, year, locale)}</small>}</div>
+              <button type="button" className="ritual-bottle" onClick={() => viewWine(wine)} aria-label={`${pt ? 'Ver' : 'View'} ${wine.bottle}`}><span className="ritual-bottle-halo" /><BottlePortrait wine={wine} /><span className="ritual-vintage">{wine.vintage || 'NV'}</span></button>
+              <div className="ritual-wine-copy"><p className="ritual-script">{plan.title}</p><button type="button" className="ritual-wine-name" onClick={() => viewWine(wine)}><h3>{wine.bottle}</h3><ArrowUpRight size={16} /></button><p className="ritual-provenance">{wine.vintage || 'NV'} · {wine.country} · {wine.style}</p>{highestCriticScore(wine) !== null && <CriticScores wine={wine} locale={locale} />}<p className="ritual-reason">{plan.reason}</p>{aiPlan && <small className="ritual-window">{windowNote(wine, year, locale)}</small>}</div>
             </div>
             <div className="ritual-table-plan"><Utensils size={15} /><div><span>{pt ? 'À MESA · SUGESTÃO' : 'ON THE TABLE · A SUGGESTION'}</span><p>{plan.meal}</p></div></div>
             <button type="button" className="ritual-conversation" aria-expanded={showQuestion} onClick={() => setShowQuestion(!showQuestion)}><MessageCircle size={14} /><span>{showQuestion ? plan.question : (pt ? 'Puxe uma conversa…' : 'Uncork a conversation…')}</span>{!showQuestion && <ArrowRight size={14} />}</button>
           </div>}
           <footer className="ritual-ticket-footer">
-            {!sealed && <button type="button" className="ritual-open" onClick={() => onDrink(wine)}><WineIcon size={15} />{pt ? 'Vamos abrir' : 'Let’s open this'}<ArrowRight size={15} /></button>}
+            {!sealed && <button type="button" className="ritual-open" onClick={() => drinkWine(wine)}><WineIcon size={15} />{pt ? 'Vamos abrir' : 'Let’s open this'}<ArrowRight size={15} /></button>}
             <button type="button" className="ritual-shuffle" disabled={picks.length < 2} onClick={() => shuffle(false)}><Shuffle size={14} />{pt ? 'Outra opção' : 'Another pour'}</button>
             <button type="button" className="ritual-blind" disabled={picks.length < 2} onClick={() => shuffle(true)}>{pt ? 'Me surpreenda' : 'Surprise me'}</button>
           </footer>
@@ -110,6 +134,8 @@ export default function ReserveSpotlight({ wines, locale, year, cellarId, onView
           <span className="sr-only" role="status">{busy ? (pt ? 'Criando seu plano' : 'Making your evening plan') : sealed ? (pt ? 'Garrafa surpresa pronta' : 'Mystery bottle ready') : wine.bottle}</span>
         </> : <div className="ritual-empty"><WineIcon size={30} strokeWidth={1} /><h3>{pt ? 'Outro clima?' : 'A different mood?'}</h3><p>{pt ? 'Nenhuma garrafa disponível para esta seleção. Experimente outra ocasião.' : 'No bottles in stock for this selection. Try another occasion.'}</p><button type="button" onClick={() => changeOccasion(occasion === 'dessert' ? 'unwind' : 'dessert')}>{pt ? 'Explorar outra seleção' : 'Explore another selection'}<ArrowRight size={15} /></button></div>}
       </div>
-    </div>}
-  </section>;
+    </div>
+    </section>
+    </CellarDialog>}
+  </>;
 }
