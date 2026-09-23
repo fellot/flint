@@ -21,6 +21,7 @@ import AIExternalWineModal from './AIExternalWineModal';
 import AddWineModal from './AddWineModal';
 import AddExternalWineModal from './AddExternalWineModal';
 import SommelierWidget from './SommelierWidget';
+import SommelierPet from './SommelierPet';
 
 export interface CellarCollectionProps {
   wines: Wine[];
@@ -188,6 +189,7 @@ export default function CellarCollection({ wines, cellarName, cellarId, mode = '
     {journal && adding === 'scan' && <AIExternalWineModal isOpen onClose={() => setAdding(null)} onAddWine={addWine} locale={locale} />}
     {!journal && adding === 'manual' && <AddWineModal storage={storage} onManageStorage={isOwner ? () => setStorageOpen(true) : undefined} isOpen onClose={() => setAdding(null)} onAddWine={addWine} />}
     {journal && adding === 'manual' && <AddExternalWineModal isOpen onClose={() => setAdding(null)} onAddWine={addWine} />}
+    {!journal && <SommelierPet open={sommelierOpen} onOpen={() => setSommelierOpen(true)} locale={locale} />}
     <SommelierWidget isOpen={sommelierOpen} onClose={() => setSommelierOpen(false)} wines={wines.filter(wine => wine.status === 'in_cellar')} locale={locale} />
     {toast && <div className="flint-toast" role="status"><Check size={17} />{toast}<button onClick={() => setToast('')} aria-label="Dismiss notification"><X size={15} /></button></div>}
   </main>;

@@ -23,7 +23,8 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 100);
+      const timer = setTimeout(() => inputRef.current?.focus(), 100);
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
@@ -100,7 +101,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-[92vw] max-w-md animate-[slideUp_0.3s_ease-out]">
+    <div className="floating-sommelier-chat fixed bottom-6 right-6 z-50 w-[92vw] max-w-md animate-[slideUp_0.3s_ease-out]" role="dialog" aria-label={isPT ? 'Conversa com o sommelier' : 'Sommelier chat'} onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); if (expandedImage) setExpandedImage(null); else onClose(); } }}>
       <div className="rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.2)] flex flex-col h-[70vh] overflow-hidden border border-white/20">
         {/* Header */}
         <div className="bg-gradient-to-r from-[#722F37] to-[#4a1c22] px-4 py-3 flex items-center justify-between">
@@ -115,6 +116,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
           </div>
           <button
             onClick={onClose}
+            aria-label={isPT ? 'Fechar conversa' : 'Close chat'}
             className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
           >
             <X className="h-4 w-4 text-white/80" />
@@ -181,6 +183,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
           <div className="flex items-center space-x-2 bg-gray-50 rounded-xl px-3 py-1 border border-gray-200 focus-within:border-[#722F37]/40 focus-within:ring-2 focus-within:ring-[#722F37]/10 transition-all">
             <input
               ref={inputRef}
+              aria-label={isPT ? 'Mensagem para o sommelier' : 'Message your sommelier'}
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
