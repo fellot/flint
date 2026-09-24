@@ -96,7 +96,70 @@
 .essentials-closing h2 { font: italic 25px/1.2 var(--serif); color: var(--wine-dark); }
 .essentials-closing p { font-size: 12px; line-height: 1.9; max-width: 670px; color: var(--muted); margin-top: 12px; }
 .essentials-closing small { display: block; font-size: 10px; line-height: 1.8; color: var(--muted); max-width: 670px; margin-top: 15px; }
+.essentials-view-switch { display: flex; gap: 24px; border-bottom: 1px solid var(--line); margin-top: 10px; }
+.essentials-view-switch > button { display: flex; gap: 8px; align-items: center; padding: 17px 0 14px; border-bottom: 2px solid transparent; color: var(--muted); font-size: 12px; }
+.essentials-view-switch > button[aria-pressed=true] { border-color: var(--burgundy); color: var(--burgundy); font-weight: 600; }
+.essentials-view-switch > button > span { font-size: 9px; font-weight: 400; border: 1px solid #dec8cb; border-radius: 3px; padding: 2px 5px; }
+.essentials-view-switch button:focus-visible, .essentials-shopping a:focus-visible, .essentials-shopping summary:focus-visible, .essentials-shopping select:focus-visible { outline: 2px solid var(--copper); outline-offset: 4px; border-radius: 2px; }
+.shopping-heading { display: flex; justify-content: space-between; align-items: center; gap: 28px; padding: 34px 0 26px; }
+.shopping-heading h2 { font: 33px/1.15 var(--serif); color: var(--wine-dark); letter-spacing: -.6px; margin: 10px 0; }
+.shopping-heading > div > p:not(.eyebrow) { font-size: 12px; line-height: 1.85; color: var(--muted); max-width: 620px; }
+.shopping-heading .eyebrow { font-size: 9px; }
+.shopping-edition { display: grid; grid-template-columns: auto auto; justify-content: end; align-items: center; gap: 5px 10px; color: var(--copper); flex-shrink: 0; border-left: 1px solid var(--line); padding-left: 28px; }
+.shopping-edition > strong { font: italic 38px/1 var(--serif); color: var(--burgundy); }
+.shopping-edition > span { grid-column: 1 / -1; font-size: 10px; color: var(--muted); }
+.shopping-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; border-top: 1px solid #c8aaa5; padding: 13px 0 9px; color: var(--muted); font-size: 10px; }
+.shopping-toolbar time { color: var(--ink); }
+.shopping-toolbar label { display: flex; gap: 8px; align-items: center; }
+.shopping-toolbar select { max-width: 240px; border: 1px solid var(--line); padding: 7px 9px; border-radius: 4px; background: #fffdfb; color: var(--ink); font-size: 11px; }
+.shopping-toolbar select:disabled { opacity: .65; }
+.shopping-stock-note { font-size: 10px; line-height: 1.8; color: var(--muted); padding-bottom: 15px; border-bottom: 1px solid var(--line); }
+.shopping-pick { display: grid; grid-template-columns: minmax(180px, .9fr) minmax(260px, 1.7fr) 165px; gap: 26px; padding: 27px 0; border-bottom: 1px solid var(--line); }
+.shopping-style { display: flex; align-items: flex-start; gap: 12px; }
+.shopping-number { font: italic 24px/1 var(--serif); color: #ad8571; padding-top: 2px; }
+.shopping-intent { color: #926e61; font-size: 8px; line-height: 1.5; letter-spacing: 1px; margin-bottom: 7px; }
+.shopping-style h3 { font: 23px/1.15 var(--serif); color: var(--wine-dark); letter-spacing: -.3px; }
+.shopping-coverage { display: grid; gap: 6px; margin-top: 12px; font-size: 10px; line-height: 1.6; color: var(--muted); }
+.shopping-coverage > span { display: flex; align-items: center; gap: 5px; }
+.shopping-coverage svg { flex-shrink: 0; }
+.shopping-in-cellar { color: #526045; }
+.shopping-in-journal { color: var(--burgundy); }
+.shopping-wine { min-width: 0; }
+.shopping-wine-meta { font-size: 9px; color: var(--muted); line-height: 1.6; margin-bottom: 6px; }
+.shopping-wine-meta > span { margin-inline: 4px; color: #b39a93; }
+.shopping-wine h4 { font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--wine-dark); }
+.shopping-wine h4 svg { display: inline; margin-left: 5px; vertical-align: baseline; }
+.shopping-wine h4 a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.shopping-wine > p:not(.shopping-wine-meta) { color: #66545b; font-size: 12px; line-height: 1.8; margin-top: 8px; }
+.shopping-details { margin-top: 13px; }
+.shopping-details > summary { display: inline-flex; align-items: center; gap: 6px; color: var(--burgundy); font-size: 10px; cursor: pointer; list-style: none; }
+.shopping-details > summary::-webkit-details-marker { display: none; }
+.shopping-details[open] > summary > svg { transform: rotate(180deg); }
+.shopping-details > div { border-left: 2px solid #dec7bf; padding: 0 0 0 13px; margin-top: 12px; }
+.shopping-details p { font-size: 11px; line-height: 1.8; color: var(--muted); }
+.shopping-source-link { display: inline-flex; gap: 4px; align-items: center; font-size: 11px; color: var(--burgundy); text-decoration: underline; text-underline-offset: 3px; margin-top: 10px; }
+.shopping-alternative { display: flex; gap: 5px 12px; flex-wrap: wrap; margin-top: 14px; }
+.shopping-alternative:first-child { margin-top: 0; }
+.shopping-alternative > a { font-size: 11px; line-height: 1.6; color: var(--burgundy); text-decoration: underline; text-underline-offset: 3px; }
+.shopping-alternative > a > svg { display: inline; margin-left: 3px; }
+.shopping-alternative > strong { font-size: 11px; line-height: 1.6; font-weight: 500; color: var(--ink); }
+.shopping-alternative > p { flex-basis: 100%; }
+.shopping-buy { display: flex; flex-direction: column; align-items: flex-end; text-align: right; padding-top: 2px; }
+.shopping-price { font: 27px/1.1 var(--serif); color: var(--burgundy); white-space: nowrap; }
+.shopping-buy > small { font-size: 9px; color: var(--muted); margin-top: 5px; }
+.shopping-availability { font-size: 9px; line-height: 1.7; color: var(--muted); margin-top: 9px; }
+.availability-unavailable { color: #895737; }
+.shopping-retailer-link { display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 14px; font-size: 11px; color: var(--burgundy); line-height: 1.6; text-decoration: underline; text-underline-offset: 4px; }
+.shopping-retailer-link:hover { color: var(--copper); }
+.shopping-retailer-link svg { flex-shrink: 0; }
+.shopping-pending .shopping-price { color: var(--muted); }
+.shopping-footnote { font-size: 10px; line-height: 1.8; color: var(--muted); padding-top: 22px; max-width: 760px; }
+.shopping-footnote p + p { margin-top: 7px; }
+.essentials-shopping .essentials-empty h3 { color: var(--wine-dark); font: 29px var(--serif); }
 @media (max-width: 1150px) {
+  .shopping-pick { grid-template-columns: minmax(150px, .85fr) minmax(230px, 1.4fr) 140px; gap: 18px; }
+  .shopping-style { gap: 9px; }
+  .shopping-style h3 { font-size: 21px; }
   .essentials-masthead { grid-template-columns: minmax(0, 1fr) 175px; gap: 25px; }
   .essentials-masthead h1 { font-size: 41px; }
   .essentials-margin-note { padding-left: 20px; }
@@ -110,6 +173,14 @@
   .essential-match svg { width: 15px; height: 15px; }
 }
 @media (max-width: 760px) {
+  .shopping-pick { grid-template-columns: minmax(0, 1fr) 145px; gap: 18px 20px; }
+  .shopping-style { grid-column: 1 / -1; }
+  .shopping-coverage { margin-top: 7px; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+  .shopping-intent { margin-bottom: 4px; }
+  .shopping-style h3 { font-size: 24px; }
+  .shopping-number { width: 25px; }
+  .shopping-heading h2 { font-size: 30px; }
+  .shopping-edition { display: none; }
   .essentials-masthead { padding-top: 4px; }
   .essentials-search-row { flex-wrap: wrap; }
   .essentials-search { flex-basis: 100%; }
@@ -118,6 +189,18 @@
   .essential-your-cellar { padding-left: 20px; }
 }
 @media (max-width: 560px) {
+  .essentials-view-switch { gap: 23px; }
+  .essentials-view-switch > button { gap: 6px; font-size: 11px; }
+  .shopping-heading { padding: 26px 0 23px; }
+  .shopping-pick { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-block: 24px; }
+  .shopping-buy { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; justify-items: start; text-align: left; gap: 5px 12px; padding-top: 8px; }
+  .shopping-price { font-size: 25px; }
+  .shopping-buy > small { margin-top: 0; grid-column: 1; }
+  .shopping-availability { grid-column: 1; margin-top: 0; }
+  .shopping-retailer-link { grid-column: 2; grid-row: 1 / 4; margin-top: 0; }
+  .shopping-toolbar { gap: 12px; }
+  .shopping-toolbar label { width: 100%; }
+  .shopping-toolbar select { flex: 1; min-width: 0; max-width: none; }
   .essentials-masthead { display: block; padding-bottom: 24px; }
   .essentials-masthead h1 { font-size: 39px; max-width: 350px; }
   .essentials-deck { font-size: 12px; }

@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { ArrowUpRight, BookOpen, Check, ChevronDown, Search, Sparkles, Star, Wine as WineIcon, X } from 'lucide-react';
+import { ArrowUpRight, BookOpen, Check, ChevronDown, Search, ShoppingBag, Sparkles, Star, Wine as WineIcon, X } from 'lucide-react';
+import CellarEssentialsShopping from './CellarEssentialsShopping';
 import { CELLAR_ESSENTIALS, type GuideCategory, type GuideTier, type LocalizedText } from '@/data/cellar-essentials';
 import { getEssentialMatches, getEssentialJournalMatches } from '@/lib/cellar-essentials';
 import type { Wine } from '@/types/wine';
@@ -35,6 +36,7 @@ interface Props {
 
 export default function CellarEssentials({ wines, locale = 'en', loading = false, error = false, onRetry }: Props) {
   const pt = locale === 'pt';
+  const [view, setView] = useState<'guide' | 'shopping'>('guide');
   const [category, setCategory] = useState<GuideCategory | 'all'>('all');
   const [tier, setTier] = useState<GuideTier | 'all'>('all');
   const [search, setSearch] = useState('');
@@ -74,6 +76,14 @@ export default function CellarEssentials({ wines, locale = 'en', loading = false
       <div className="essentials-coverage" role="status">{loading ? (pt ? 'Consultando sua adega e diário…' : 'Checking your cellar and journal…') : error ? (pt ? 'Guia disponível · seus vinhos indisponíveis' : 'Guide available · your wines unavailable') : <><span><Check size={14} /><strong>{represented}</strong> {pt ? 'estilos na adega' : 'styles in cellar'}</span><span className="essentials-journal-coverage"><BookOpen size={14} /><strong>{tasted}</strong> {pt ? 'estilos no seu diário' : 'styles in your journal'}</span></>}</div>
     </div>
 
+    <div className="essentials-view-switch" role="group" aria-label={pt ? 'Seção do guia' : 'Guide section'}>
+      <button type="button" aria-pressed={view === 'guide'} onClick={() => setView('guide')}><BookOpen size={16} />{pt ? 'Guia de estilos' : 'Field guide'}</button>
+      <button type="button" aria-pressed={view === 'shopping'} onClick={() => setView('shopping')}><ShoppingBag size={16} />{pt ? 'Lista de compras' : 'Shopping list'}<span>{pt ? 'Tintos' : 'Reds'}</span></button>
+    </div>
+
+    {error && <div className="essentials-error" role="alert"><p>{pt ? 'Você pode explorar o guia e a lista de compras. Não foi possível consultar seus vinhos agora.' : 'You can still explore the guide and shopping list. We couldn’t check your wines right now.'}</p>{onRetry && <button type="button" onClick={onRetry}>{pt ? 'Tentar novamente' : 'Try again'}</button>}</div>}
+
+    {view === 'shopping' ? <CellarEssentialsShopping wines={wines} locale={locale} loading={loading} error={error} /> : <>
     <section className="essentials-controls" aria-label={pt ? 'Explorar o guia' : 'Browse the guide'}>
       <div className="essentials-search-row">
         <label className="essentials-search"><Search size={18} /><span className="sr-only">{pt ? 'Buscar estilos, uvas ou regiões' : 'Search styles, grapes or regions'}</span><input type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder={pt ? 'Uma uva, uma região, algo novo…' : 'A grape, a place, something new…'} />{search && <button type="button" onClick={() => setSearch('')} aria-label={pt ? 'Limpar busca' : 'Clear search'}><X size={16} /></button>}</label>
@@ -95,8 +105,6 @@ export default function CellarEssentials({ wines, locale = 'en', loading = false
         </div>
       </div>
     </section>
-
-    {error && <div className="essentials-error" role="alert"><p>{pt ? 'Você pode explorar o guia. Não foi possível consultar seus vinhos agora.' : 'You can still explore the guide. We couldn’t check your wines right now.'}</p>{onRetry && <button type="button" onClick={onRetry}>{pt ? 'Tentar novamente' : 'Try again'}</button>}</div>}
 
     <div className="essentials-directory">
       {CATEGORIES.map((group, index) => {
@@ -145,5 +153,6 @@ export default function CellarEssentials({ wines, locale = 'en', loading = false
     </div>
 
     <footer className="essentials-closing"><Star size={18} strokeWidth={1.3} /><div><h2>{pt ? 'Colecione com intenção.' : 'Collect with a little intention.'}</h2><p>{pt ? 'Os fundamentais são pontos de partida, não obrigações. Produtor e safra fazem diferença. Para um estilo que você adora, experimente ter uma garrafa pronta para abrir e outra para acompanhar com o tempo.' : 'Foundations are starting points, not obligations. Producer and vintage matter. For a style you love, keep one bottle ready to open and another to follow as it ages.'}</p><small>{pt ? 'As correspondências usam as garrafas em estoque e as degustações do seu diário pessoal, incluindo vinhos de fora da adega. Cadastros incompletos podem não aparecer. Este guia não avalia seu gosto pessoal nem o ponto de maturidade de cada vinho.' : 'Matches use current stock and tastings in your personal journal, including wines from outside the cellar. Incomplete records may not appear. This guide does not assess your personal taste or each bottle’s maturity.'}</small></div></footer>
+    </>}
   </main>;
 }
