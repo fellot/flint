@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import type { Wine } from '../types/wine';
-import { getEssentialMatches } from '../lib/cellar-essentials';
+import { getEssentialMatches, getEssentialJournalMatches } from '../lib/cellar-essentials';
 
 const wine = (props: Partial<Wine> = {}): Wine => ({
   id: 'bottle', bottle: 'Example wine', country: 'France', region: '', vintage: 2020,
@@ -10,6 +10,49 @@ const wine = (props: Partial<Wine> = {}): Wine => ({
   rating: null, price: null, location: '', quantity: 1, ...props,
 });
 const matched = (id: string, props: Partial<Wine>) => getEssentialMatches(id, [wine(props)]).length === 1;
+
+test('journal matches require personal participation, not consumed status or a score alone', () => {
+  const tasting = wine({ id: 'mine', style: 'White', region: 'Chablis', status: 'consumed', inMyJournal: true });
+  const other = { ...tasting, id: 'other', inMyJournal: false, myRating: 95 };
+  const unknown = { ...tasting, id: 'unknown', inMyJournal: undefined, rating: 99 };
+  const notConsumed = (['in_cellar', 'sold', 'gifted'] as const).map(status => ({ ...tasting, id: status, status }));
+  assert.deepEqual(getEssentialJournalMatches('chablis', [other, unknown, ...notConsumed, tasting]), [tasting]);
+  assert.deepEqual(getEssentialJournalMatches('unknown', [tasting]), []);
+});
+
+test('journal includes external and zero-quantity tastings, preserves personal zero and unrated scores', () => {
+  const base = wine({ style: 'White', region: 'Chablis', status: 'consumed', inMyJournal: true });
+  const zero = { ...base, id: 'zero', quantity: 0, myRating: 0, myComment: 'Not for me', rating: 96 };
+  const external = { ...base, id: 'outside', fromCellar: false, myRating: null, rating: 98 };
+  const result = getEssentialJournalMatches('chablis', [zero, external]);
+  assert.deepEqual(result, [zero, external]);
+  assert.equal(result[0].myRating, 0);
+  assert.equal(result[1].myRating, null);
+  assert.equal(result[1].fromCellar, false);
+  assert.equal(result[0], zero);
+});
+
+test('a style can have current stock and repeated journal tastings without merging them', () => {
+  const current = wine({ id: 'stock', style: 'White', region: 'Chablis', quantity: 2 });
+  const older = { ...current, id: 'tasting-1', status: 'consumed' as const, inMyJournal: true, consumedDate: '2026-09-01' };
+  const recent = { ...older, id: 'tasting-2', consumedDate: '2026-09-24', myRating: 91 };
+  const missingDate = { ...older, id: 'undated', consumedDate: null };
+  const badDate = { ...older, id: 'invalid', consumedDate: 'unknown' };
+  const input = [missingDate, older, current, badDate, recent];
+  const original = structuredClone(input);
+  assert.deepEqual(getEssentialMatches('chablis', input), [current]);
+  assert.deepEqual(getEssentialJournalMatches('chablis', input), [recent, older, missingDate, badDate]);
+  assert.deepEqual(input, original);
+});
+
+test('journal matching applies the same origin, grape, style and sweetness rules as active stock', () => {
+  const tasting = wine({ country: 'Germany', style: 'White', region: 'Mosel', grapes: 'Riesling', status: 'consumed', inMyJournal: true });
+  const dry = { ...tasting, id: 'dry', bottle: 'Riesling trocken' };
+  const sweet = { ...tasting, id: 'sweet', bottle: 'Riesling feinherb' };
+  const wrongCountry = { ...dry, id: 'wrong-country', country: 'Austria' };
+  assert.deepEqual(getEssentialJournalMatches('german-riesling', [sweet, wrongCountry, dry]), [dry]);
+  assert.deepEqual(getEssentialJournalMatches('chablis', [dry]), []);
+});
 
 test('recognizes clear examples of each of the 39 guide styles', () => {
   const examples: [string, string, string, string, string][] = [

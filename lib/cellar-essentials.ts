@@ -122,10 +122,10 @@ const rules: Record<string, Rule> = {
   'vin-jaune': from('white', 'france', w => notSweet(w) && origin(w, 'Vin Jaune') && compatibleGrape(w, 'Savagnin')),
 };
 
-export function getEssentialMatches(id: string, wines: Wine[]): Wine[] {
+function getStyleMatches(id: string, wines: Wine[]): Wine[] {
   const match = Object.prototype.hasOwnProperty.call(rules, id) ? rules[id] : undefined;
   if (!match) return [];
-  return wines.filter(wine => wine.status === 'in_cellar' && wine.quantity > 0 && match({
+  return wines.filter(wine => match({
     identity: normalize(`${wine.bottle || ''} ${wine.region || ''}`),
     // A grape explicitly named on the bottle is useful even if its field is empty.
     grape: normalize(`${wine.grapes || ''} ${wine.bottle || ''}`),
@@ -133,4 +133,19 @@ export function getEssentialMatches(id: string, wines: Wine[]): Wine[] {
     style: normalize(wine.style),
     country: normalize(wine.country),
   }));
+}
+
+export function getEssentialMatches(id: string, wines: Wine[]): Wine[] {
+  return getStyleMatches(id, wines.filter(wine => wine.status === 'in_cellar' && wine.quantity > 0));
+}
+
+export function getEssentialJournalMatches(id: string, wines: Wine[]): Wine[] {
+  // Participation is supplied by the authenticated journal API. A score or a
+  // consumed status alone does not establish that this user shared the bottle.
+  const entries = getStyleMatches(id, wines.filter(wine => wine.status === 'consumed' && wine.inMyJournal === true));
+  const date = (wine: Wine) => {
+    const timestamp = wine.consumedDate ? Date.parse(wine.consumedDate) : NaN;
+    return Number.isFinite(timestamp) ? timestamp : -Infinity;
+  };
+  return entries.sort((a, b) => date(a) === date(b) ? 0 : date(a) > date(b) ? -1 : 1);
 }

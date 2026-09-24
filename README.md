@@ -40,8 +40,9 @@ A modern wine inventory management system backed by Supabase Auth and Postgres b
 
 ### 📖 **Cellar Essentials**
 - Browse `/cellar-essentials` from the sidebar: 39 benchmark wine styles across six wine families, in English and Portuguese.
-- Search by grape, region or style; filter foundations, adventurous picks or styles represented in your cellar.
-- Expand each entry for its character, place in a collection, source links and matching bottles in active stock.
+- Search by grape, region or style; filter foundations, adventurous picks or styles matched in your cellar or personal journal.
+- Expand each entry for its character, place in a collection, source links and separate lists of active bottles and your consumed wines, with your score, date and comments.
+- Journal matches require your participation in the tasting and include wines from outside the cellar; repeated tastings remain separate, newest first.
 - Matches use recorded country, region, grape and style conservatively; incomplete or ambiguous records may not match. The guide does not infer personal taste or drinking maturity.
 - Editorial content lives in `data/cellar-essentials.ts`; no database migration or AI API is required.
 
