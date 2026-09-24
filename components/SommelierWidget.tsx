@@ -35,7 +35,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
     const visual = window.visualViewport;
     const update = () => setViewport({
       height: visual?.height ?? window.innerHeight,
-      bottom: visual ? Math.max(0, window.innerHeight - visual.height - visual.offsetTop) : 0,
+      bottom: visual ? Math.max(0, document.documentElement.clientHeight - visual.height - visual.offsetTop) : 0,
     });
     update();
     visual?.addEventListener('resize', update);
@@ -127,7 +127,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
   if (!isOpen) return null;
 
   return (
-    <div className={`floating-sommelier-chat ${viewport && viewport.height < 500 ? 'sommelier-short-viewport' : ''}`} style={viewport ? { maxHeight: Math.max(0, viewport.height - 32), bottom: `calc(${viewport.bottom}px + max(16px, env(safe-area-inset-bottom)))` } : undefined} role="dialog" aria-label={isPT ? 'Conversa com o sommelier' : 'Sommelier chat'} onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); if (expandedImage) setExpandedImage(null); else onClose(); } }}>
+    <div className={`floating-sommelier-chat ${viewport && viewport.height < 500 ? 'sommelier-short-viewport' : ''}`} style={viewport ? { maxHeight: `calc(${viewport.height}px - 16px - max(16px, env(safe-area-inset-bottom)))`, bottom: `calc(${viewport.bottom}px + max(16px, env(safe-area-inset-bottom)))` } : undefined} role="dialog" aria-label={isPT ? 'Conversa com o sommelier' : 'Sommelier chat'} onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); if (expandedImage) setExpandedImage(null); else onClose(); } }}>
       <div className="sommelier-chat-companion">
         <span>{isPT ? 'Uma boa conversa. Um bom vinho.' : 'Good company. Good wine.'}</span>
         <button type="button" onClick={onClose} aria-label={isPT ? 'Recolher conversa' : 'Minimize chat'} title={isPT ? 'Recolher conversa' : 'Minimize chat'}>

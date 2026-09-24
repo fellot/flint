@@ -915,7 +915,7 @@ summary::-webkit-details-marker { display: none; }
 .sommelier-pet.is-dragging { cursor: grabbing; }
 .sommelier-pet.is-dragging .sommelier-pet-character { transform: rotate(7deg); }
 .sommelier-pet.is-dragging .sommelier-pet-bubble { opacity: 0; }
-.floating-sommelier-chat { position: fixed; z-index: 50; display: flex; flex-direction: column; width: min(448px, calc(100% - 32px)); right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); max-height: calc(100dvh - 32px); }
+.floating-sommelier-chat { position: fixed; z-index: 50; display: flex; flex-direction: column; width: min(448px, calc(100% - 32px)); right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); max-height: calc(100dvh - 16px - max(16px, env(safe-area-inset-bottom))); }
 .sommelier-chat-companion { position: relative; flex: 0 0 104px; display: flex; align-items: flex-end; padding: 0 116px 13px 20px; }
 .sommelier-chat-companion > span { color: var(--burgundy); background: var(--paper); border: 1px solid var(--line); border-radius: 14px 14px 0 14px; padding: 8px 12px; font: italic 13px/1.35 var(--serif); box-shadow: 0 3px 12px #4812210a; }
 .sommelier-chat-companion > button { position: absolute; right: 22px; bottom: -8px; width: 88px; height: 108px; z-index: 1; border-radius: 12px; }

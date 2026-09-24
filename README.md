@@ -38,6 +38,13 @@ A modern wine inventory management system backed by Supabase Auth and Postgres b
 - **Inventory Management**: Storage location, quantity, price tracking
 - **Consumption History**: Track when wines were consumed with ratings
 
+### 📖 **Cellar Essentials**
+- Browse `/cellar-essentials` from the sidebar: 39 benchmark wine styles across six wine families, in English and Portuguese.
+- Search by grape, region or style; filter foundations, adventurous picks or styles represented in your cellar.
+- Expand each entry for its character, place in a collection, source links and matching bottles in active stock.
+- Matches use recorded country, region, grape and style conservatively; incomplete or ambiguous records may not match. The guide does not infer personal taste or drinking maturity.
+- Editorial content lives in `data/cellar-essentials.ts`; no database migration or AI API is required.
+
 ### 🎨 **Modern UI/UX**
 - **Clean Interface**: Beautiful, intuitive design with wine-themed styling
 - **Responsive Tables**: Easy-to-read wine information in organized tables

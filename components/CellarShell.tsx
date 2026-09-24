@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, BookOpen, ChevronDown, Compass, LayoutGrid, LogOut, MapPin, Menu, Sparkles, Users, Wine, X } from 'lucide-react';
+import { ArrowUpRight, BookOpen, ChevronDown, Compass, Library, LayoutGrid, LogOut, MapPin, Menu, Sparkles, Users, Wine, X } from 'lucide-react';
 import type { Cellar } from '@/types/database';
 import FlintMark from './FlintMark';
 import { CellarMenuActionsContext, type CellarMenuActions } from './CellarMenuActions';
@@ -61,6 +61,7 @@ export default function CellarShell({ children, pathname, cellar, cellars, email
   const navigation = [
     { href: '/', label: pt ? 'Minha adega' : 'My cellar', icon: LayoutGrid },
     { href: '/cellar-journal', label: pt ? 'Diário da adega' : 'Cellar journal', icon: BookOpen },
+    { href: '/cellar-essentials', label: pt ? 'Essenciais da adega' : 'Cellar essentials', icon: Library },
     { href: '/wine-map', label: pt ? 'Mapa de vinhos' : 'Wine map', icon: Compass },
     { href: '/sommelier', label: 'Sommelier', icon: Sparkles },
     { href: '/wine-trivia', label: pt ? 'Quiz de vinhos' : 'Wine trivia', icon: Wine },
