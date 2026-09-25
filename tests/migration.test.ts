@@ -186,3 +186,15 @@ test('same-origin requests work with Next internal hostnames and cross-origin re
   assert.doesNotThrow(() => checkOrigin(new Request('http://localhost/api/auth/login', { headers: { origin: 'https://cellar.example.com', host: 'cellar.example.com', 'x-forwarded-proto': 'https' } })));
   assert.throws(() => checkOrigin(new Request('https://cellar.example.com/api/wines', { headers: { origin: 'https://evil.example', host: 'cellar.example.com' } })));
 });
+
+test('new wine records receive distinct database UUIDs while imported IDs remain stable', async () => {
+  const db = await database();
+  try {
+    await db.exec("insert into public.wines (cellar_id, id, bottle, country, style) values ('1', '31', 'Legacy wine', 'Spain', 'Red')");
+    const { rows } = await db.query<{ id: string }>("insert into public.wines (cellar_id, bottle, country, style) values ('1', 'Scanned wine', 'Chile', 'Red'), ('1', 'Scanned wine', 'Chile', 'Red') returning id");
+    assert.equal(rows.length, 2);
+    for (const row of rows) assert.match(row.id, /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+    assert.notEqual(rows[0].id, rows[1].id);
+    assert.equal((await db.query<{ id: string }>("select id from public.wines where bottle = 'Legacy wine'")).rows[0].id, '31');
+  } finally { await db.close(); }
+});

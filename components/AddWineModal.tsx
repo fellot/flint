@@ -63,7 +63,7 @@ export default function AddWineModal({ storage, onManageStorage, isOpen, onClose
     if (formData.vintage < 1900 || formData.vintage > new Date().getFullYear() + 1) {
       newErrors['vintage'] = 'Vintage must be between 1900 and next year';
     }
-    if (formData.peakYear < formData.vintage) {
+    if (formData.peakYear && Number(formData.peakYear) < formData.vintage) {
       newErrors['peakYear'] = 'Peak year must be after vintage';
     }
 

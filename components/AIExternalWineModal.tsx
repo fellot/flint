@@ -1,7 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
 import { WineFormData } from '@/types/wine';
+import { useWineScan } from '@/hooks/useWineScan';
+import WineScanReview from './WineScanReview';
 import { X, Upload, Camera, Loader2, CheckCircle, Wine as WineIcon } from 'lucide-react';
 
 interface AIExternalWineModalProps {
@@ -11,7 +12,6 @@ interface AIExternalWineModalProps {
   locale?: 'en' | 'pt';
 }
 
-type ProcessingStep = 'upload' | 'processing' | 'review' | 'saving';
 
 export default function AIExternalWineModal({ isOpen, onClose, onAddWine, locale = 'en' }: AIExternalWineModalProps) {
   const t = {
@@ -23,11 +23,11 @@ export default function AIExternalWineModal({ isOpen, onClose, onAddWine, locale
     uploadSub: locale === 'pt'
       ? 'Tire uma foto nítida do rótulo. A IA preencherá os campos do vinho.'
       : 'Take a clear photo of the label. AI will fill wine fields.',
-    uploadCta: locale === 'pt' ? 'Clique para enviar ou arraste e solte' : 'Click to upload or drag and drop',
-    uploadTypes: locale === 'pt' ? 'PNG, JPG, GIF até 10MB' : 'PNG, JPG, GIF up to 10MB',
+    uploadCta: locale === 'pt' ? 'Clique para enviar uma foto' : 'Click to upload a photo',
+    uploadTypes: locale === 'pt' ? 'PNG, JPG, WebP até 10MB' : 'PNG, JPG, WebP up to 10MB',
     altBottle: locale === 'pt' ? 'Garrafa enviada' : 'Uploaded wine bottle',
     processingHeader: locale === 'pt' ? 'Processando imagem...' : 'Processing Image...',
-    processingSub: locale === 'pt' ? 'Analisando o rótulo para extrair informações.' : 'Analyzing the label to extract information.',
+    processingSub: locale === 'pt' ? 'Lendo o rótulo e pesquisando a garrafa na web. Isso pode levar um minuto.' : 'Reading the label and searching the web for this bottle. This can take a minute.',
     reviewHeader: locale === 'pt' ? 'Revise e conclua' : 'Review and finalize',
     reviewSub: locale === 'pt'
       ? 'Campos focados para o diário: Nome completo, País, Região, Estilo, Uvas, Safra, Imagem; preencha a data de consumo e notas.'
@@ -39,6 +39,7 @@ export default function AIExternalWineModal({ isOpen, onClose, onAddWine, locale
     labelStyle: locale === 'pt' ? 'Estilo' : 'Style',
     labelGrapes: locale === 'pt' ? 'Uvas' : 'Grapes',
     labelBottleImageUrl: locale === 'pt' ? 'URL da imagem da garrafa' : 'Bottle Image URL',
+    labelTechSheetUrl: locale === 'pt' ? 'URL da ficha técnica' : 'Technical Sheet URL',
     labelConsumedDate: locale === 'pt' ? 'Data de consumo' : 'Consumed date',
     labelNotes: locale === 'pt' ? 'Notas' : 'Notes',
     backToUpload: locale === 'pt' ? 'Voltar para Envio' : 'Back to Upload',
@@ -49,195 +50,11 @@ export default function AIExternalWineModal({ isOpen, onClose, onAddWine, locale
     errorSave: locale === 'pt' ? 'Falha ao salvar o vinho.' : 'Failed to save wine.',
   } as const;
 
-  // Downscale helpers (reused from AIWineModal)
-  const MAX_SIDE = 1600;
-  const JPEG_QUALITY = 0.82;
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const fileToDataURL = (file: Blob): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const fr = new FileReader();
-      fr.onerror = () => reject(new Error('Failed to read file'));
-      fr.onload = () => resolve(String(fr.result));
-      fr.readAsDataURL(file);
+  const { currentStep, uploadedImage, processingError, scanResult, formData,
+    fileInputRef, handleImageUpload, handleSave, handleClose, handleInputChange, backToUpload } = useWineScan({
+      isOpen, onClose, onAddWine, locale, external: true,
     });
-
-  const blobToDataURL = (blob: Blob): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const fr = new FileReader();
-      fr.onerror = () => reject(new Error('Failed to read blob'));
-      fr.onload = () => resolve(String(fr.result));
-      fr.readAsDataURL(blob);
-    });
-
-  const downscaleImageToDataURL = async (file: File, maxSide = MAX_SIDE, quality = JPEG_QUALITY): Promise<string> => {
-    try {
-      if (typeof window !== 'undefined' && 'createImageBitmap' in window) {
-        // @ts-ignore: imageOrientation is supported in modern browsers
-        const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
-        const { width, height } = bitmap;
-        const scale = Math.min(1, maxSide / Math.max(width, height));
-        const targetW = Math.max(1, Math.round(width * scale));
-        const targetH = Math.max(1, Math.round(height * scale));
-        const canvas = document.createElement('canvas');
-        canvas.width = targetW;
-        canvas.height = targetH;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) throw new Error('Canvas not supported');
-        ctx.drawImage(bitmap, 0, 0, targetW, targetH);
-        const blob: Blob | null = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
-        if (!blob) throw new Error('Failed to encode image');
-        return await blobToDataURL(blob);
-      }
-    } catch (e) {}
-
-    const dataUrl = await fileToDataURL(file);
-    await new Promise<void>((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve();
-      img.onerror = () => reject(new Error('Failed to load image'));
-      img.src = dataUrl;
-    });
-    const img = document.createElement('img');
-    img.src = dataUrl;
-    const out = await new Promise<string>((resolve, reject) => {
-      img.onload = async () => {
-        const { width, height } = img;
-        const scale = Math.min(1, maxSide / Math.max(width, height));
-        const targetW = Math.max(1, Math.round(width * scale));
-        const targetH = Math.max(1, Math.round(height * scale));
-        const canvas = document.createElement('canvas');
-        canvas.width = targetW;
-        canvas.height = targetH;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return reject(new Error('Canvas not supported'));
-        ctx.drawImage(img, 0, 0, targetW, targetH);
-        const blob: Blob | null = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
-        if (!blob) return reject(new Error('Failed to encode image'));
-        resolve(await blobToDataURL(blob));
-      };
-      img.onerror = () => reject(new Error('Failed to load image'));
-    });
-    return out;
-  };
-
-  const [currentStep, setCurrentStep] = useState<ProcessingStep>('upload');
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-  const [processingError, setProcessingError] = useState<string | null>(null);
-
-  const today = new Date().toISOString().split('T')[0];
-  const [formData, setFormData] = useState<WineFormData>({
-    bottle: '',
-    country: '',
-    region: '',
-    vintage: new Date().getFullYear(),
-    drinkingWindow: '',
-    peakYear: new Date().getFullYear() + 5,
-    foodPairingNotes: '',
-    mealToHaveWithThisWine: '',
-    style: '',
-    grapes: '',
-    location: '',
-    quantity: 1,
-    price: undefined,
-    notes: '',
-    technical_sheet: '',
-    bottle_image: '',
-    fromCellar: false,
-    status: 'consumed',
-    consumedDate: today,
-  });
-
-  const handleInputChange = (field: keyof WineFormData, value: string | number | undefined | null) => {
-    setFormData(prev => ({ ...prev, [field]: value as any }));
-  };
-
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    try {
-      const compressedDataUrl = await downscaleImageToDataURL(file);
-      setUploadedImage(compressedDataUrl);
-      setFormData(prev => ({ ...prev, bottle_image: compressedDataUrl }));
-      await processImageWithAI(compressedDataUrl);
-    } catch (err) {
-      setProcessingError(t.errorRead);
-    }
-  };
-
-  const processImageWithAI = async (imageData: string) => {
-    setCurrentStep('processing');
-    setProcessingError(null);
-    try {
-      const res = await fetch('/api/ai/extract-wine', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: imageData, locale }),
-      });
-      if (!res.ok) throw new Error('extract failed');
-      const data = await res.json();
-      const extracted = data?.extracted as Partial<WineFormData> | undefined;
-      if (!extracted || !extracted.bottle) throw new Error('invalid');
-
-      const normalizedStyle = (() => {
-        const s = (extracted.style || '').toLowerCase();
-        if (s.includes('spark')) return 'Sparkling';
-        if (s.includes('rosé') || s.includes('rose')) return 'Rosé';
-        if (s.includes('sweet') || s.includes('dessert')) return 'Sweet';
-        if (s.includes('fortified') || s.includes('port') || s.includes('sherry')) return 'Fortified';
-        if (s.includes('white')) return 'White';
-        if (s.includes('red')) return 'Red';
-        return extracted.style || '';
-      })();
-
-      const merged: Partial<WineFormData> = {
-        bottle: extracted.bottle || '',
-        country: extracted.country || '',
-        region: extracted.region || '',
-        style: normalizedStyle,
-        grapes: extracted.grapes || '',
-        vintage: extracted.vintage || formData.vintage,
-        bottle_image: extracted.bottle_image || formData.bottle_image,
-      };
-      setFormData(prev => ({ ...prev, ...merged }));
-      if (merged.bottle_image && /^https?:\/\//i.test(String(merged.bottle_image))) setUploadedImage(String(merged.bottle_image));
-      setCurrentStep('review');
-    } catch {
-      setProcessingError(t.errorExtract);
-      setCurrentStep('upload');
-    }
-  };
-
-  const handleSave = async () => {
-    setCurrentStep('saving');
-    try {
-      await onAddWine(formData);
-      handleClose();
-    } catch {
-      setProcessingError(t.errorSave);
-      setCurrentStep('review');
-    }
-  };
-
-  const handleClose = () => {
-    setCurrentStep('upload');
-    setUploadedImage(null);
-    setProcessingError(null);
-    setFormData(prev => ({
-      ...prev,
-      bottle: '',
-      country: '',
-      region: '',
-      vintage: new Date().getFullYear(),
-      style: '',
-      grapes: '',
-      notes: '',
-      bottle_image: '',
-      consumedDate: today,
-    }));
-    onClose();
-  };
-
+  const today = formData.consumedDate || "";
   if (!isOpen) return null;
 
   return (
@@ -248,7 +65,7 @@ export default function AIExternalWineModal({ isOpen, onClose, onAddWine, locale
             <WineIcon className="h-5 w-5 text-red-600 mr-2" />
             {t.title}
           </h3>
-          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+          <button onClick={handleClose} disabled={currentStep === 'saving'} aria-label={locale === 'pt' ? 'Fechar' : 'Close'} className="text-gray-400 hover:text-gray-600 transition-colors">
             <X className="h-6 w-6" />
           </button>
         </div>
@@ -281,7 +98,7 @@ export default function AIExternalWineModal({ isOpen, onClose, onAddWine, locale
 
         {/* Error */}
         {processingError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
+          <div role="alert" className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
             {processingError}
           </div>
         )}
@@ -297,7 +114,7 @@ export default function AIExternalWineModal({ isOpen, onClose, onAddWine, locale
               <p className="text-gray-600 text-sm mb-6">{t.uploadSub}</p>
             </div>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-6">
-              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+              <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageUpload} className="hidden" />
               <button onClick={() => fileInputRef.current?.click()} className="w-full flex flex-col items-center justify-center py-8">
                 <Upload className="h-12 w-12 text-gray-400 mb-4" />
                 <span className="text-lg font-medium text-gray-900 mb-2">{t.uploadCta}</span>
@@ -330,53 +147,53 @@ export default function AIExternalWineModal({ isOpen, onClose, onAddWine, locale
               <p className="text-gray-600 text-sm">{t.reviewSub}</p>
             </div>
 
-            {uploadedImage && (
-              <div className="mb-4 text-center">
-                <img src={uploadedImage} alt={t.altBottle} className="mx-auto max-h-32 rounded-lg shadow-md" />
-              </div>
-            )}
+            <WineScanReview result={scanResult} imageUrl={formData.bottle_image} locale={locale} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelWineName}</label>
-                <input type="text" value={formData.bottle} onChange={(e) => handleInputChange('bottle', e.target.value)} className="input-field" />
+                <input aria-label={t.labelWineName} type="text" value={formData.bottle} onChange={(e) => handleInputChange('bottle', e.target.value)} className="input-field" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelVintage}</label>
-                <input type="number" value={formData.vintage} onChange={(e) => handleInputChange('vintage', parseInt(e.target.value))} className="input-field" />
+                <input aria-label={t.labelVintage} placeholder={locale === 'pt' ? 'Sem safra / desconhecida' : 'Non-vintage / unknown'} type="number" value={formData.vintage || ''} onChange={(e) => handleInputChange('vintage', Number(e.target.value))} className="input-field" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelCountry}</label>
-                <input type="text" value={formData.country} onChange={(e) => handleInputChange('country', e.target.value)} className="input-field" />
+                <input aria-label={t.labelCountry} type="text" value={formData.country} onChange={(e) => handleInputChange('country', e.target.value)} className="input-field" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelRegion}</label>
-                <input type="text" value={formData.region} onChange={(e) => handleInputChange('region', e.target.value)} className="input-field" />
+                <input aria-label={t.labelRegion} type="text" value={formData.region} onChange={(e) => handleInputChange('region', e.target.value)} className="input-field" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelStyle}</label>
-                <input type="text" value={formData.style} onChange={(e) => handleInputChange('style', e.target.value)} className="input-field" />
+                <input aria-label={t.labelStyle} type="text" value={formData.style} onChange={(e) => handleInputChange('style', e.target.value)} className="input-field" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelGrapes}</label>
-                <input type="text" value={formData.grapes} onChange={(e) => handleInputChange('grapes', e.target.value)} className="input-field" />
+                <input aria-label={t.labelGrapes} type="text" value={formData.grapes} onChange={(e) => handleInputChange('grapes', e.target.value)} className="input-field" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelBottleImageUrl}</label>
-                <input type="url" value={formData.bottle_image || ''} onChange={(e) => handleInputChange('bottle_image', e.target.value)} className="input-field" placeholder="https://..." />
+                <input aria-label={t.labelBottleImageUrl} type="url" value={formData.bottle_image || ''} onChange={(e) => handleInputChange('bottle_image', e.target.value)} className="input-field" placeholder="https://..." />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelTechSheetUrl}</label>
+                <input aria-label={t.labelTechSheetUrl} type="url" value={formData.technical_sheet || ''} onChange={(e) => handleInputChange('technical_sheet', e.target.value)} className="input-field" placeholder="https://..." />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelConsumedDate}</label>
-                <input type="date" value={formData.consumedDate || today} onChange={(e) => handleInputChange('consumedDate', e.target.value)} className="input-field" />
+                <input aria-label={t.labelConsumedDate} type="date" value={formData.consumedDate || today} onChange={(e) => handleInputChange('consumedDate', e.target.value)} className="input-field" />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelNotes}</label>
-                <textarea value={formData.notes} onChange={(e) => handleInputChange('notes', e.target.value)} className="input-field" rows={3} />
+                <textarea aria-label={t.labelNotes} value={formData.notes} onChange={(e) => handleInputChange('notes', e.target.value)} className="input-field" rows={3} />
               </div>
             </div>
 
             <div className="flex justify-end space-x-3 pt-4">
-              <button onClick={() => setCurrentStep('upload')} className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+              <button onClick={backToUpload} disabled={currentStep === 'saving'} className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
                 {t.backToUpload}
               </button>
               <button onClick={handleSave} className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center" disabled={currentStep === 'saving'}>

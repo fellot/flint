@@ -270,3 +270,36 @@ server instance, not a distributed rate limit. Inventory is never mutated by
 planning; generated food and conversation ideas are suggestions.
 
 API reference: [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+
+### Wine label scanning
+
+Both **Add wine → Scan label** and the journal's external-wine scanner use the
+Responses API with `gpt-6-luna` (vision, web image search, and structured output).
+Set `OPENAI_API_KEY` on the server; `OPENAI_WINE_MODEL` optionally overrides only
+this scanner. The selected model must support image inputs, web search with image
+results, and JSON schema output. Existing sommelier/pairing models are unchanged.
+The previous optional Bing search integration is no longer used by this feature.
+
+The browser strips photo metadata and resizes uploads before sending them for
+identification. The uploaded photo is never stored as the wine's bottle image.
+The server accepts an image URL only when it occurs in an actual web image search
+result, with a source page. The review screen shows that source and flags images
+of the same wine from another/unspecified vintage. Review the image before saving;
+remote hosts may block images or remove them later. If no matching image is found,
+the wine can be saved without one or with a manually supplied HTTP(S) image link.
+Technical-sheet links must also occur in the research sources.
+
+Unknown vintages are left blank (stored as `0`, the existing unknown/NV value).
+Unknown peak years stay blank; drinking windows and peak years are estimates.
+Every scan starts a fresh form, cancelling previous requests. AI output cannot set
+IDs, ownership, stock quantities, prices, ratings, or journal participation.
+
+**About wine IDs:** IDs are internal references, not bottle sequence numbers. New
+wines receive a Postgres-generated UUID. Historic imports retain numeric,
+timestamp-shaped, or `import-…` IDs so that journal reviews and participation keep
+pointing to the correct wine. A row may represent several bottles; partial
+consumption creates a separate journal row with a new UUID. Do not renumber
+existing IDs. No database migration is required for the scanner update.
+
+References: [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna),
+[web image search](https://developers.openai.com/api/docs/guides/tools-web-search).

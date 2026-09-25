@@ -1,215 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { ApiError, apiError, checkOrigin } from '@/lib/api-error';
+import { requireCellar } from '@/lib/auth/session';
+import { extractWineFromPhoto, MAX_SCAN_BODY_BYTES, validateScanImage, WineScanError } from '@/lib/ai/wine-extraction';
 
 export const runtime = 'nodejs';
-
-type ExtractRequest = {
-  image: string; // data URL or https URL
-  locale?: string;
-};
-
-type ExtractedWine = {
-  bottle: string;
-  country: string;
-  region: string;
-  vintage: number;
-  style: string;
-  grapes: string;
-  drinkingWindow: string;
-  peakYear: number;
-  foodPairingNotes: string;
-  mealToHaveWithThisWine: string;
-  notes: string;
-  price?: number;
-  bottle_image?: string;
-  technical_sheet?: string;
-};
-
-function normalizeStyle(input: string): string {
-  const s = (input || '').toLowerCase();
-  if (s.includes('spark')) return 'Sparkling';
-  if (s.includes('rosé') || s.includes('rose')) return 'Rosé';
-  if (s.includes('sweet') || s.includes('dessert')) return 'Sweet';
-  if (s.includes('fortified') || s.includes('port') || s.includes('sherry')) return 'Fortified';
-  if (s.includes('white')) return 'White';
-  if (s.includes('red')) return 'Red';
-  return input || '';
-}
-
-function coerceNumber(n: any, fallback: number | null = null): number | null {
-  const x = typeof n === 'string' ? parseInt(n, 10) : typeof n === 'number' ? n : NaN;
-  return Number.isFinite(x) ? x : fallback;
-}
+export const maxDuration = 120;
 
 export async function POST(request: NextRequest) {
   try {
-    const { image, locale }: ExtractRequest = await request.json();
-
-    if (!image) {
-      return NextResponse.json({ error: 'Missing image' }, { status: 400 });
-    }
-
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: 'Missing OPENAI_API_KEY' }, { status: 500 });
-    }
-
-    const localeInstruction = locale === 'pt' ? 'Escreva os campos "foodPairingNotes" e "mealToHaveWithThisWine" em português (pt-BR).' : 'Write the fields "foodPairingNotes" and "mealToHaveWithThisWine" in English.';
-
-    const systemPrompt = `You are a master sommelier and wine-knowledge assistant. Read the wine label and infer the wine's identity and typical profile (from region, grapes, producer, and vintage). Then:
- - Determine a realistic drinking window and peak year based on style, structure, and quality cues. Be conservative if uncertain.
- - Provide expert pairing guidance that complements the likely tasting profile (acidity, tannin, body, sweetness, aromatics, oak, bubbles).
- - Create ONE specific, creative meal suggestion that pairs exceptionally well with this wine (protein + method + sides/sauce), ideally coherent with origin or grape traditions.
-  - ${localeInstruction}
-
-Return ONLY strict JSON matching this schema (no commentary):
-{
-  "bottle": string,                // winery + cuvée + vintage if present
-  "country": string,               // country name
-  "region": string,                // region/appellation
-  "vintage": number,               // 4-digit year; if missing, infer best guess else use current year
-  "style": string,                 // One of: Red, White, Rosé, Sparkling, Sweet, Fortified
-  "grapes": string,                // comma-separated varieties
-  "drinkingWindow": string,        // e.g., "2025-2035"; infer from structure/quality; be realistic, but don't make it too short
-  "peakYear": number,              // your best estimate of the maturity peak
-  "foodPairingNotes": string,      // Describe wine's characteristics and food pairing suggestions
-  "mealToHaveWithThisWine": string,// ONE creative dish (method + key sides/sauce)
-  "notes": string,                 // omit
-  "price": number,                 // omit
-}`;
-
-    const userPrompt = `${locale === 'pt' ? 'Extraia as informações do rótulo do vinho nesta imagem e retorne apenas JSON.' : 'Extract wine label information from this image and return JSON only.'}`;
-
-    const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          {
-            role: 'user',
-            content: [
-              { type: 'text', text: userPrompt },
-              { type: 'image_url', image_url: { url: image } },
-            ],
-          },
-        ],
-        temperature: 0.2,
-        response_format: { type: 'json_object' },
-      }),
-    });
-
-    if (!openaiRes.ok) {
-      const errText = await openaiRes.text().catch(() => '');
-      return NextResponse.json({ error: 'OpenAI request failed', details: errText }, { status: 502 });
-    }
-
-    const json = await openaiRes.json();
-    const content = json?.choices?.[0]?.message?.content;
-    if (!content) {
-      return NextResponse.json({ error: 'No content returned from OpenAI' }, { status: 502 });
-    }
-
-    let parsed: any;
+    checkOrigin(request);
+    await requireCellar();
+    if (!process.env.OPENAI_API_KEY) throw new ApiError(503, 'Wine scanning needs an OpenAI API key configured on the server.');
+    const reader = request.body?.getReader();
+    if (!reader) throw new ApiError(400, 'Upload a wine label photo.');
+    const chunks: Uint8Array[] = [];
+    let size = 0;
     try {
-      parsed = typeof content === 'string' ? JSON.parse(content) : content;
-    } catch {
-      // Attempt to extract JSON block
-      const match = String(content).match(/\{[\s\S]*\}/);
-      if (match) {
-        parsed = JSON.parse(match[0]);
-      } else {
-        return NextResponse.json({ error: 'Failed to parse JSON from OpenAI' }, { status: 502 });
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        size += value.byteLength;
+        if (size > MAX_SCAN_BODY_BYTES) { await reader.cancel(); throw new ApiError(413, 'The photo is too large. Try a smaller image.'); }
+        chunks.push(value);
       }
-    }
-
-    const extracted: ExtractedWine = {
-      bottle: parsed.bottle || '',
-      country: parsed.country || '',
-      region: parsed.region || '',
-      vintage: coerceNumber(parsed.vintage, new Date().getFullYear())!,
-      style: normalizeStyle(parsed.style || ''),
-      grapes: parsed.grapes || '',
-      drinkingWindow: parsed.drinkingWindow || '',
-      peakYear: coerceNumber(parsed.peakYear, new Date().getFullYear() + 2)!,
-      foodPairingNotes: parsed.foodPairingNotes || '',
-      mealToHaveWithThisWine: parsed.mealToHaveWithThisWine || '',
-      notes: parsed.notes || '',
-      price: parsed.price != null ? Number(parsed.price) : undefined,
-      bottle_image: typeof parsed.bottle_image === 'string' ? parsed.bottle_image : undefined,
-      technical_sheet: typeof parsed.technical_sheet === 'string' ? parsed.technical_sheet : undefined,
-    };
-
-    // Try to enrich bottle_image with an actual web URL via Bing Image Search if configured
-    const bingKey = process.env.BING_IMAGE_SEARCH_KEY || process.env.AZURE_BING_SEARCH_KEY;
-    const needsImage = !extracted.bottle_image || !/^https?:\/\//i.test(extracted.bottle_image);
-    if (bingKey && needsImage) {
-      try {
-        const qParts = [extracted.bottle, String(extracted.vintage || ''), extracted.region, 'bottle']
-          .filter(Boolean)
-          .join(' ');
-        const bingUrl = `https://api.bing.microsoft.com/v7.0/images/search?q=${encodeURIComponent(qParts)}&safeSearch=Strict&count=10`; 
-        const bingRes = await fetch(bingUrl, {
-          headers: { 'Ocp-Apim-Subscription-Key': bingKey },
-        });
-        if (bingRes.ok) {
-          const b = await bingRes.json();
-          const blacklist = ['pinterest', 'aliexpress', 'ebay', 'shopee'];
-          const pick = (b.value || []).find((item: any) => {
-            const url: string = item?.contentUrl || '';
-            const host = (() => { try { return new URL(url).hostname; } catch { return ''; } })();
-            const okExt = /(\.jpg|\.jpeg|\.png|\.webp)(\?|$)/i.test(url);
-            const notBlacklisted = host && !blacklist.some(bad => host.includes(bad));
-            return url.startsWith('http') && okExt && notBlacklisted;
-          });
-          if (pick?.contentUrl) {
-            extracted.bottle_image = pick.contentUrl;
-          }
-        }
-      } catch (e) {
-        // Ignore search errors; keep whatever we have
-        console.warn('Bing image search failed', e);
-      }
-    }
-
-    // Try to enrich technical_sheet via Bing Web Search if configured and missing
-    const needsTech = !extracted.technical_sheet || !/^https?:\/\//i.test(extracted.technical_sheet);
-    if (bingKey && needsTech) {
-      try {
-        const q = [extracted.bottle, String(extracted.vintage || ''), 'technical sheet OR fact sheet OR "tech sheet" filetype:pdf']
-          .filter(Boolean)
-          .join(' ');
-        const searchUrl = `https://api.bing.microsoft.com/v7.0/search?q=${encodeURIComponent(q)}&safeSearch=Strict&count=15`;
-        const sRes = await fetch(searchUrl, { headers: { 'Ocp-Apim-Subscription-Key': bingKey } });
-        if (sRes.ok) {
-          const s = await sRes.json();
-          const webPages = s?.webPages?.value || [];
-          const blacklist = ['pinterest', 'aliexpress', 'ebay', 'shopee'];
-          const candidates = webPages.filter((it: any) => {
-            const url: string = it?.url || '';
-            const host = (() => { try { return new URL(url).hostname; } catch { return ''; } })();
-            const notBlacklisted = host && !blacklist.some(bad => host.includes(bad));
-            const hasCue = /(technical|tech|fact)\s*sheet/i.test(it?.name || '') || /(technical|tech|fact)\s*sheet/i.test(it?.snippet || '') || /\.pdf(\?|$)/i.test(url);
-            return url.startsWith('http') && notBlacklisted && hasCue;
-          });
-          // Prefer PDFs
-          const pdf = candidates.find((it: any) => /\.pdf(\?|$)/i.test(it?.url || ''));
-          const pick = pdf || candidates[0];
-          if (pick?.url) {
-            extracted.technical_sheet = pick.url;
-          }
-        }
-      } catch (e) {
-        console.warn('Bing web search failed', e);
-      }
-    }
-
-    return NextResponse.json({ extracted });
-  } catch (error: any) {
-    console.error('AI extract error:', error);
-    return NextResponse.json({ error: 'Failed to extract wine data' }, { status: 500 });
+    } finally { reader.releaseLock(); }
+    const body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+    validateScanImage(body?.image);
+    const signal = AbortSignal.any([request.signal, AbortSignal.timeout(110_000)]);
+    const result = await extractWineFromPhoto({ image: body.image, locale: body.locale === 'pt' ? 'pt' : 'en',
+      apiKey: process.env.OPENAI_API_KEY, model: process.env.OPENAI_WINE_MODEL?.trim() || undefined, signal });
+    return NextResponse.json(result, { headers: { 'Cache-Control': 'private, no-store' } });
+  } catch (error) {
+    if (error instanceof WineScanError) return apiError(new ApiError(error.status, error.message));
+    if (error instanceof Error && ['AbortError', 'TimeoutError'].includes(error.name)) return apiError(new ApiError(504, 'Wine research timed out. Please try again.'));
+    return apiError(error);
   }
 }

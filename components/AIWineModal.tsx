@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { WineFormData } from '@/types/wine';
+import { useWineScan } from '@/hooks/useWineScan';
+import WineScanReview from './WineScanReview';
 import { X, Upload, Camera, Loader2, CheckCircle, AlertCircle, Wine as WineIcon, Sparkles, RefreshCw } from 'lucide-react';
 
 import type { CellarStorage } from '@/types/database';
@@ -12,11 +14,10 @@ interface AIWineModalProps {
   onManageStorage?: () => void;
   isOpen: boolean;
   onClose: () => void;
-  onAddWine: (wineData: WineFormData) => void;
+  onAddWine: (wineData: WineFormData) => void | Promise<void>;
   locale?: 'en' | 'pt';
 }
 
-type ProcessingStep = 'upload' | 'processing' | 'review' | 'saving';
 
 export default function AIWineModal({ storage, onManageStorage, isOpen, onClose, onAddWine, locale = 'en' }: AIWineModalProps) {
   const t = {
@@ -33,11 +34,11 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
     uploadSub: locale === 'pt'
       ? 'Tire uma foto nítida do rótulo da garrafa. Nossa IA extrairá automaticamente as informações do vinho.'
       : 'Take a clear photo of the wine bottle label. Our AI will extract all the wine information automatically.',
-    uploadCta: locale === 'pt' ? 'Clique para enviar ou arraste e solte' : 'Click to upload or drag and drop',
-    uploadTypes: locale === 'pt' ? 'PNG, JPG, GIF até 10MB' : 'PNG, JPG, GIF up to 10MB',
+    uploadCta: locale === 'pt' ? 'Clique para enviar uma foto' : 'Click to upload a photo',
+    uploadTypes: locale === 'pt' ? 'PNG, JPG, WebP até 10MB' : 'PNG, JPG, WebP up to 10MB',
     altUploadedBottle: locale === 'pt' ? 'Garrafa enviada' : 'Uploaded wine bottle',
     processingHeader: locale === 'pt' ? 'Processando imagem...' : 'Processing Image...',
-    processingSub: locale === 'pt' ? 'Nossa IA está analisando o rótulo da garrafa para extrair informações.' : 'Our AI is analyzing the wine bottle label to extract information.',
+    processingSub: locale === 'pt' ? 'Lendo o rótulo e pesquisando uma imagem da garrafa e informações do vinho. Isso pode levar um minuto.' : 'Reading the label and searching for a bottle image and reliable wine information. This can take a minute.',
     reviewHeader: locale === 'pt' ? 'Informações do vinho extraídas' : 'Wine Information Extracted',
     reviewSub: locale === 'pt' ? 'Revise e edite as informações abaixo antes de salvar.' : 'Please review and edit the information below before saving.',
     labelWineName: locale === 'pt' ? 'Nome do vinho' : 'Wine Name',
@@ -67,227 +68,15 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
     saveWine: locale === 'pt' ? 'Salvar vinho' : 'Save Wine',
     saving: locale === 'pt' ? 'Salvando...' : 'Saving...'
   } as const;
-  // Client-side image downscaling helpers
-  const MAX_SIDE = 1600;
-  const JPEG_QUALITY = 0.82;
-
-  const fileToDataURL = (file: Blob): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const fr = new FileReader();
-      fr.onerror = () => reject(new Error('Failed to read file'));
-      fr.onload = () => resolve(String(fr.result));
-      fr.readAsDataURL(file);
+  const { currentStep, uploadedImage, processingError, setProcessingError, scanResult, formData, setFormData,
+    fileInputRef, handleImageUpload, handleSave, handleClose, handleInputChange, backToUpload, sessionVersion } = useWineScan({
+      isOpen, onClose, onAddWine, locale, external: false,
     });
-
-  const blobToDataURL = (blob: Blob): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const fr = new FileReader();
-      fr.onerror = () => reject(new Error('Failed to read blob'));
-      fr.onload = () => resolve(String(fr.result));
-      fr.readAsDataURL(blob);
-    });
-
-  const downscaleImageToDataURL = async (
-    file: File,
-    maxSide: number = MAX_SIDE,
-    quality: number = JPEG_QUALITY
-  ): Promise<string> => {
-    try {
-      if (typeof window !== 'undefined' && 'createImageBitmap' in window) {
-        // Use createImageBitmap to respect EXIF orientation when supported
-        // @ts-ignore - imageOrientation is supported in modern browsers
-        const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
-        const { width, height } = bitmap;
-        const scale = Math.min(1, maxSide / Math.max(width, height));
-        const targetW = Math.max(1, Math.round(width * scale));
-        const targetH = Math.max(1, Math.round(height * scale));
-        const canvas = document.createElement('canvas');
-        canvas.width = targetW;
-        canvas.height = targetH;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) throw new Error('Canvas not supported');
-        ctx.drawImage(bitmap, 0, 0, targetW, targetH);
-        const blob: Blob | null = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
-        if (!blob) throw new Error('Failed to encode image');
-        return await blobToDataURL(blob);
-      }
-    } catch (e) {
-      // Fallback to HTMLImageElement pipeline if createImageBitmap fails
-      console.warn('createImageBitmap pipeline failed, falling back:', e);
-    }
-
-    // Fallback path using Image element
-    const dataUrl = await fileToDataURL(file);
-    await new Promise<void>((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve();
-      img.onerror = () => reject(new Error('Failed to load image'));
-      img.src = dataUrl;
-    });
-    const img = document.createElement('img');
-    img.src = dataUrl;
-    const targetPromise = new Promise<string>((resolve, reject) => {
-      img.onload = async () => {
-        const { width, height } = img;
-        const scale = Math.min(1, maxSide / Math.max(width, height));
-        const targetW = Math.max(1, Math.round(width * scale));
-        const targetH = Math.max(1, Math.round(height * scale));
-        const canvas = document.createElement('canvas');
-        canvas.width = targetW;
-        canvas.height = targetH;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return reject(new Error('Canvas not supported'));
-        ctx.drawImage(img, 0, 0, targetW, targetH);
-        const blob: Blob | null = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
-        if (!blob) return reject(new Error('Failed to encode image'));
-        const out = await blobToDataURL(blob);
-        resolve(out);
-      };
-      img.onerror = () => reject(new Error('Failed to load image'));
-    });
-    return targetPromise;
-  };
-
-  const [currentStep, setCurrentStep] = useState<ProcessingStep>('upload');
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-  const [processingError, setProcessingError] = useState<string | null>(null);
-  const [extractedData, setExtractedData] = useState<Partial<WineFormData> | null>(null);
-  const [formData, setFormData] = useState<WineFormData>({
-    bottle: '',
-    country: '',
-    region: '',
-    vintage: new Date().getFullYear(),
-    drinkingWindow: '',
-    peakYear: new Date().getFullYear() + 5,
-    foodPairingNotes: '',
-    mealToHaveWithThisWine: '',
-    style: '',
-    grapes: '',
-    location: '',
-    quantity: 1,
-    price: undefined,
-    notes: '',
-    technical_sheet: '',
-    bottle_image: '',
-    fromCellar: true,
-    status: 'in_cellar',
-    consumedDate: null,
-  });
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEnrichingPairing, setIsEnrichingPairing] = useState(false);
   const [isSuggestingMeal, setIsSuggestingMeal] = useState(false);
-
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    try {
-      const compressedDataUrl = await downscaleImageToDataURL(file);
-      setUploadedImage(compressedDataUrl);
-      // Keep in form for preview; will be replaced by a web URL from AI if found
-      setFormData(prev => ({ ...prev, bottle_image: compressedDataUrl }));
-      await processImageWithAI(compressedDataUrl);
-    } catch (err) {
-      console.error('Image processing failed:', err);
-      setProcessingError(t.errorCouldNotProcess);
-    }
-  };
-
-  const processImageWithAI = async (imageData: string) => {
-    setCurrentStep('processing');
-    setProcessingError(null);
-
-    try {
-      const res = await fetch('/api/ai/extract-wine', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: imageData, locale }),
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error || 'AI extraction failed');
-      }
-
-      const data = await res.json();
-      const extracted = data?.extracted as Partial<WineFormData>;
-
-      if (!extracted || !extracted.bottle) {
-        throw new Error('AI did not return valid data');
-      }
-
-      // Ensure style conforms to main app expectations
-      const normalizedStyle = (() => {
-        const s = (extracted.style || '').toLowerCase();
-        if (s.includes('spark')) return 'Sparkling';
-        if (s.includes('rosé') || s.includes('rose')) return 'Rosé';
-        if (s.includes('sweet') || s.includes('dessert')) return 'Sweet';
-        if (s.includes('fortified') || s.includes('port') || s.includes('sherry')) return 'Fortified';
-        if (s.includes('white')) return 'White';
-        if (s.includes('red')) return 'Red';
-        return extracted.style || '';
-      })();
-
-      const merged: Partial<WineFormData> = {
-        ...extracted,
-        style: normalizedStyle,
-      };
-
-      setExtractedData(merged);
-      setFormData(prev => ({ ...prev, ...merged }));
-      if (merged.bottle_image && /^https?:\/\//i.test(String(merged.bottle_image))) {
-        setUploadedImage(String(merged.bottle_image));
-      }
-      setCurrentStep('review');
-    } catch (error) {
-      console.error('AI extraction error:', error);
-      setProcessingError(t.errorProcessFail);
-      setCurrentStep('upload');
-    }
-  };
-
-  const handleSave = async () => {
-    setCurrentStep('saving');
-    try {
-      await onAddWine(formData);
-      handleClose();
-    } catch (error) {
-      setProcessingError(t.errorSaveFail);
-      setCurrentStep('review');
-    }
-  };
-
-  const handleClose = () => {
-    setCurrentStep('upload');
-    setUploadedImage(null);
-    setProcessingError(null);
-    setExtractedData(null);
-    setFormData({
-      bottle: '',
-      country: '',
-      region: '',
-      vintage: new Date().getFullYear(),
-      drinkingWindow: '',
-      peakYear: new Date().getFullYear() + 5,
-      foodPairingNotes: '',
-      mealToHaveWithThisWine: '',
-      style: '',
-      grapes: '',
-      location: '',
-      quantity: 1,
-      price: undefined,
-      notes: '',
-      technical_sheet: '',
-      bottle_image: '',
-      fromCellar: true,
-      status: 'in_cellar',
-      consumedDate: null,
-    });
-    onClose();
-  };
-
-  const handleInputChange = (field: keyof WineFormData, value: string | number | undefined) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  useEffect(() => {
+    if (currentStep === 'upload') { setIsEnrichingPairing(false); setIsSuggestingMeal(false); }
+  }, [currentStep]);
 
   const callEnrichAPI = async (mode: 'pairing' | 'meal' | 'both') => {
     const payload = {
@@ -317,30 +106,34 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
   };
 
   const handleEnrichPairing = async () => {
+    const version = sessionVersion.current;
     try {
       setProcessingError(null);
       setIsEnrichingPairing(true);
       const out = await callEnrichAPI('pairing');
+      if (version !== sessionVersion.current) return;
       setFormData(prev => ({ ...prev, foodPairingNotes: out.foodPairingNotes || prev.foodPairingNotes }));
     } catch (e) {
-      console.error(e);
+      if (version !== sessionVersion.current) return;
       setProcessingError(t.errorEnrichFail);
     } finally {
-      setIsEnrichingPairing(false);
+      if (version === sessionVersion.current) setIsEnrichingPairing(false);
     }
   };
 
   const handleSuggestMeal = async () => {
+    const version = sessionVersion.current;
     try {
       setProcessingError(null);
       setIsSuggestingMeal(true);
       const out = await callEnrichAPI('meal');
+      if (version !== sessionVersion.current) return;
       setFormData(prev => ({ ...prev, mealToHaveWithThisWine: out.mealToHaveWithThisWine || prev.mealToHaveWithThisWine }));
     } catch (e) {
-      console.error(e);
+      if (version !== sessionVersion.current) return;
       setProcessingError(t.errorMealFail);
     } finally {
-      setIsSuggestingMeal(false);
+      if (version === sessionVersion.current) setIsSuggestingMeal(false);
     }
   };
 
@@ -356,6 +149,8 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
           </h3>
           <button
             onClick={handleClose}
+            disabled={currentStep === 'saving'}
+            aria-label={locale === 'pt' ? 'Fechar' : 'Close'}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
             <X className="h-6 w-6" />
@@ -390,7 +185,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
 
         {/* Error Message */}
         {processingError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-center">
+          <div role="alert" className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-center">
             <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
             <span className="text-red-800 text-sm">{processingError}</span>
           </div>
@@ -413,7 +208,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp"
                 onChange={handleImageUpload}
                 className="hidden"
               />
@@ -461,20 +256,12 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
               </p>
             </div>
 
-            {uploadedImage && (
-              <div className="mb-6 text-center">
-                <img
-                  src={uploadedImage}
-                  alt={t.altUploadedBottle}
-                  className="mx-auto max-h-32 rounded-lg shadow-md"
-                />
-              </div>
-            )}
+            <WineScanReview result={scanResult} imageUrl={formData.bottle_image} locale={locale} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelWineName}</label>
-                <input
+                <input aria-label={t.labelWineName}
                   type="text"
                   value={formData.bottle}
                   onChange={(e) => handleInputChange('bottle', e.target.value)}
@@ -483,16 +270,16 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelVintage}</label>
-                <input
+                <input aria-label={t.labelVintage} placeholder={locale === 'pt' ? 'Sem safra / desconhecida' : 'Non-vintage / unknown'}
                   type="number"
-                  value={formData.vintage}
-                  onChange={(e) => handleInputChange('vintage', parseInt(e.target.value))}
+                  value={formData.vintage || ''}
+                  onChange={(e) => handleInputChange('vintage', Number(e.target.value))}
                   className="input-field"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelCountry}</label>
-                <input
+                <input aria-label={t.labelCountry}
                   type="text"
                   value={formData.country}
                   onChange={(e) => handleInputChange('country', e.target.value)}
@@ -501,7 +288,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelRegion}</label>
-                <input
+                <input aria-label={t.labelRegion}
                   type="text"
                   value={formData.region}
                   onChange={(e) => handleInputChange('region', e.target.value)}
@@ -510,7 +297,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelStyle}</label>
-                <input
+                <input aria-label={t.labelStyle}
                   type="text"
                   value={formData.style}
                   onChange={(e) => handleInputChange('style', e.target.value)}
@@ -519,7 +306,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelGrapes}</label>
-                <input
+                <input aria-label={t.labelGrapes}
                   type="text"
                   value={formData.grapes}
                   onChange={(e) => handleInputChange('grapes', e.target.value)}
@@ -528,7 +315,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelDrinkingWindow}</label>
-                <input
+                <input aria-label={t.labelDrinkingWindow}
                   type="text"
                   value={formData.drinkingWindow}
                   onChange={(e) => handleInputChange('drinkingWindow', e.target.value)}
@@ -537,16 +324,16 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelPeakYear}</label>
-                <input
+                <input aria-label={t.labelPeakYear}
                   type="number"
-                  value={formData.peakYear}
-                  onChange={(e) => handleInputChange('peakYear', parseInt(e.target.value))}
+                  value={formData.peakYear || ''}
+                  onChange={(e) => handleInputChange('peakYear', e.target.value === '' ? '' : Number(e.target.value))}
                   className="input-field"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelPrice}</label>
-                <input
+                <input aria-label={t.labelPrice}
                   type="number"
                   value={formData.price || ''}
                   onChange={(e) => handleInputChange('price', e.target.value ? parseFloat(e.target.value) : undefined)}
@@ -582,7 +369,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
                     )}
                   </button>
                 </label>
-                <textarea
+                <textarea aria-label={t.labelFoodPairing}
                   value={formData.foodPairingNotes}
                   onChange={(e) => handleInputChange('foodPairingNotes', e.target.value)}
                   className="input-field"
@@ -614,7 +401,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
                     )}
                   </button>
                 </label>
-                <input
+                <input aria-label={t.labelSuggestedMeal}
                   type="text"
                   value={formData.mealToHaveWithThisWine}
                   onChange={(e) => handleInputChange('mealToHaveWithThisWine', e.target.value)}
@@ -623,7 +410,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelNotes}</label>
-                <textarea
+                <textarea aria-label={t.labelNotes}
                   value={formData.notes}
                   onChange={(e) => handleInputChange('notes', e.target.value)}
                   className="input-field"
@@ -633,7 +420,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelBottleImageUrl}</label>
-                <input
+                <input aria-label={t.labelBottleImageUrl}
                   type="url"
                   value={formData.bottle_image || ''}
                   onChange={(e) => handleInputChange('bottle_image', e.target.value)}
@@ -643,7 +430,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t.labelTechSheetUrl}</label>
-                <input
+                <input aria-label={t.labelTechSheetUrl}
                   type="url"
                   value={formData.technical_sheet || ''}
                   onChange={(e) => handleInputChange('technical_sheet', e.target.value)}
@@ -655,7 +442,7 @@ export default function AIWineModal({ storage, onManageStorage, isOpen, onClose,
 
             <div className="flex justify-end space-x-3 pt-4">
               <button
-                onClick={() => setCurrentStep('upload')}
+                onClick={backToUpload} disabled={currentStep === 'saving'}
                 className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 {t.backToUpload}

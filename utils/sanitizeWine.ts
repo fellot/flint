@@ -5,7 +5,7 @@ const MAX_BOTTLE_IMAGE_URL_LENGTH = 2048;
  * Returns an HTTP(S) URL or undefined when the value should be discarded.
  */
 export function sanitizeBottleImage(value?: string | null): string | undefined {
-  if (!value) {
+  if (typeof value !== 'string') {
     return undefined;
   }
 
@@ -23,7 +23,13 @@ export function sanitizeBottleImage(value?: string | null): string | undefined {
     return undefined;
   }
 
-  return trimmed;
+  try {
+    const url = new URL(trimmed);
+    if (!url.hostname || url.username || url.password) return undefined;
+    return url.href;
+  } catch {
+    return undefined;
+  }
 }
 
 /**
