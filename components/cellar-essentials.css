@@ -172,7 +172,7 @@
   .essential-match { font-size: 0; }
   .essential-match svg { width: 15px; height: 15px; }
 }
-@media (max-width: 760px) {
+@media (max-width: 1000px) {
   .shopping-pick { grid-template-columns: minmax(0, 1fr) 145px; gap: 18px 20px; }
   .shopping-style { grid-column: 1 / -1; }
   .shopping-coverage { margin-top: 7px; display: flex; flex-wrap: wrap; gap: 6px 14px; }
@@ -181,6 +181,8 @@
   .shopping-number { width: 25px; }
   .shopping-heading h2 { font-size: 30px; }
   .shopping-edition { display: none; }
+}
+@media (max-width: 760px) {
   .essentials-masthead { padding-top: 4px; }
   .essentials-search-row { flex-wrap: wrap; }
   .essentials-search { flex-basis: 100%; }

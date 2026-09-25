@@ -75,8 +75,8 @@ export const CELLAR_SHOPPING_PICKS: CellarShoppingPick[] = [
         priceCad: 23.25,
         url: 'https://www.lcbo.com/en/santa-rita-floresta-carmenere-34733',
         note: {
-          en: 'Indexed clearance price at review (regular C$27.95); stock unconfirmed. Concrete ageing offers a fresh, herbal alternative with less oak influence.',
-          pt: 'Preço de liquidação no índice de busca na revisão (regular C$27,95); estoque não confirmado. A maturação em concreto oferece uma alternativa fresca e herbal, com menor influência da madeira.',
+          en: 'Clearance price at review (regular C$27.95); stock unconfirmed. Concrete ageing offers a fresh, herbal alternative with less oak influence.',
+          pt: 'Preço de liquidação na revisão (regular C$27,95); estoque não confirmado. A maturação em concreto oferece uma alternativa fresca e herbal, com menor influência da madeira.',
         },
       },
     ],
@@ -205,8 +205,8 @@ export const CELLAR_SHOPPING_PICKS: CellarShoppingPick[] = [
       pt: 'Um contraste opcional de Rioja tradicional: uma referência de Reserva maduro para explorar a relação entre fruta, madeira e evolução em garrafa ao lado de expressões mais contemporâneas.',
     },
     note: {
-      en: 'The review on the live listing cited 2027–2040. A different review appeared in the search index; their drinking windows have not been combined.',
-      pt: 'A crítica na página consultada citava 2027–2040. Outra crítica aparecia no índice de busca; as janelas de consumo não foram combinadas.',
+      en: 'The published drinking window is 2027–2040. Stock was unconfirmed at review.',
+      pt: 'A janela de consumo publicada é 2027–2040. O estoque não foi confirmado na revisão.',
     },
   },
 ];
