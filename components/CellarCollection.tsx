@@ -23,6 +23,10 @@ import AddExternalWineModal from './AddExternalWineModal';
 import SommelierWidget from './SommelierWidget';
 import { useCellarMenuActions } from './CellarMenuActions';
 import SommelierPet from './SommelierPet';
+import JournalBadges from './JournalBadges';
+import BadgeUnlockNotice from './BadgeUnlockNotice';
+import { getJournalBadgeAwards } from '@/lib/journal-badges';
+import { useJournalBadgeCelebration } from '@/hooks/useJournalBadgeCelebration';
 
 export interface CellarCollectionProps {
   wines: Wine[];
@@ -103,6 +107,9 @@ export default function CellarCollection({ wines, cellarName, cellarId, mode = '
   const [unratedOnly, setUnratedOnly] = useState(false);
   const [actionError, setActionError] = useState('');
   const [toast, setToast] = useState('');
+  const badgeScope = `${cellarId || cellarName || 'cellar'}:${people.find(person => person.isMe)?.id || 'pending'}`;
+  const badgeAwards = useMemo(() => getJournalBadgeAwards(wines), [wines]);
+  const badgeCelebration = useJournalBadgeCelebration(wines, badgeScope, loading, Boolean(error));
 
   useEffect(() => { if (toast) { const timer = setTimeout(() => setToast(''), 4500); return () => clearTimeout(timer); } }, [toast]);
   useEffect(() => { const url = new URL(window.location.href); if (url.searchParams.has('welcome')) { url.searchParams.delete('welcome'); window.history.replaceState({}, '', url.pathname + url.search + url.hash); } }, []);
@@ -158,6 +165,8 @@ export default function CellarCollection({ wines, cellarName, cellarId, mode = '
     </section>
     <section className="reserve-totals" aria-label={pt ? 'Resumo da coleção' : 'Collection overview'}>{stats.map(({ icon: Icon, value, label }) => <div key={label}><Icon size={15} strokeWidth={1.5} /><strong>{loading ? '—' : value.toLocaleString(locale)}</strong><span>{label}</span></div>)}</section>
 
+    {journal && <JournalBadges awards={badgeAwards} locale={locale} loading={loading} error={Boolean(error)} onViewWine={id => { const wine = collection.find(item => item.id === id); if (wine) setSelected(wine); }} />}
+
     <section id="collection" className="wine-collection">
       <div className="collection-heading"><div><h2>{journal ? (pt ? 'Meu ranking de vinhos' : 'My wine ranking') : (pt ? 'As garrafas' : 'The bottles')}<span>{loading ? '' : collection.length}</span></h2></div><button className="flint-button" onClick={() => setAdding('choose')}><Plus size={17} />{journal ? (pt ? 'Registrar vinho' : 'Log a wine') : (pt ? 'Adicionar vinho' : 'Add a wine')}</button></div>
       <div className="collection-toolbar"><label className="collection-search"><Search size={18} /><span className="sr-only">{pt ? 'Buscar na coleção' : 'Search your collection'}</span><input type="search" value={filters.search} onChange={event => setFilter('search', event.target.value)} placeholder={pt ? 'Busque um vinho, uva, região…' : 'Find a wine, grape, region…'} /></label><div className="toolbar-controls"><button className={`filter-toggle ${filtersOpen ? 'active' : ''}`} aria-expanded={filtersOpen} aria-controls="wine-filters" onClick={() => setFiltersOpen(!filtersOpen)}><SlidersHorizontal size={16} />{pt ? 'Filtros' : 'Filters'}{filterCount > 0 && <span>{filterCount}</span>}</button>{view === 'grid' && <label className="sort-select"><span className="sr-only">{pt ? 'Ordenar vinhos' : 'Sort wines'}</span><select value={`${sort.key}:${sort.direction}`} onChange={event => { const [key, direction] = event.target.value.split(':'); setSort({ key: key as WineSortKey, direction: direction as 'asc' | 'desc' }); }}>{!['name:asc', 'vintage:desc', 'vintage:asc', 'ready:asc', 'myRating:desc', 'myRating:asc', 'criticRating:desc', 'criticRating:asc'].includes(`${sort.key}:${sort.direction}`) && <option value={`${sort.key}:${sort.direction}`}>{pt ? 'Ordem da tabela' : 'Table column order'}</option>}{journal && <><option value="myRating:desc">{pt ? 'Minha nota: maior primeiro' : 'My score: highest first'}</option><option value="myRating:asc">{pt ? 'Minha nota: menor primeiro' : 'My score: lowest first'}</option></>}{!journal && <><option value="criticRating:desc">{pt ? 'Críticos: maior nota primeiro' : 'Critics: highest first'}</option><option value="criticRating:asc">{pt ? 'Críticos: menor nota primeiro' : 'Critics: lowest first'}</option></>}<option value="name:asc">{pt ? 'Nome: A–Z' : 'Name: A–Z'}</option><option value="vintage:desc">{pt ? 'Safras recentes' : 'Newest vintage'}</option><option value="vintage:asc">{pt ? 'Safras antigas' : 'Oldest vintage'}</option>{!journal && <option value="ready:asc">{pt ? 'Prontos primeiro' : 'Ready first'}</option>}</select></label>}<div className="view-switch" role="group" aria-label={pt ? 'Visualização' : 'Collection layout'}><button className={view === 'grid' ? 'active' : ''} aria-pressed={view === 'grid'} aria-label={pt ? 'Ver cartões' : 'Grid view'} onClick={() => setView('grid')}><LayoutGrid size={16} /></button><button className={view === 'list' ? 'active' : ''} aria-pressed={view === 'list'} aria-label={pt ? 'Ver lista' : 'List view'} onClick={() => setView('list')}><List size={18} /></button></div></div></div>
@@ -198,6 +207,6 @@ export default function CellarCollection({ wines, cellarName, cellarId, mode = '
     {journal && adding === 'manual' && <AddExternalWineModal isOpen onClose={() => setAdding(null)} onAddWine={addWine} />}
     {!journal && <SommelierPet open={sommelierOpen} onOpen={() => setSommelierOpen(true)} locale={locale} />}
     <SommelierWidget isOpen={sommelierOpen} onClose={() => setSommelierOpen(false)} wines={wines.filter(wine => wine.status === 'in_cellar')} locale={locale} />
-    {toast && <div className="flint-toast" role="status"><Check size={17} />{toast}<button onClick={() => setToast('')} aria-label="Dismiss notification"><X size={15} /></button></div>}
+    {badgeCelebration.awards.length > 0 ? <BadgeUnlockNotice awards={badgeCelebration.awards} locale={locale} onDismiss={badgeCelebration.dismiss} /> : toast && <div className="flint-toast" role="status"><Check size={17} />{toast}<button onClick={() => setToast('')} aria-label="Dismiss notification"><X size={15} /></button></div>}
   </main>;
 }
