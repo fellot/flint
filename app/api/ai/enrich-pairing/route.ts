@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { AI_MODEL, CHAT_REASONING_EFFORT } from '@/lib/ai/models';
 
 export const runtime = 'nodejs';
+export const maxDuration = 30;
 
 export const POST = async (request: NextRequest) => {
   try {
@@ -32,16 +34,16 @@ export const POST = async (request: NextRequest) => {
     ].filter(Boolean).join('\n');
 
     const system = lang === 'pt-BR'
-      ? `Você é um sommelier mestre. Dadas informações do vinho, gere:\n- Notas de harmonização (clareza, perfil do vinho e combinações típicas), incluindo uma recomendação de decantação e, se conhecido, a sigla do crítico + nota (ex.: RP 94) integradas no texto.\n- UMA sugestão de prato específico (proteína + método + acompanhamentos/molho) que harmonize muito bem.\nSeja conciso e prático.`
-      : `You are a master sommelier. Given wine info, produce:\n- Food pairing notes (clarity, wine profile, typical matches) that also include a decanting recommendation and, if known, critic initials + score (e.g., RP 94) embedded in the text.\n- ONE specific main dish (protein + method + sides/sauce) that pairs exceptionally well.\nBe concise and practical.`;
+      ? `Você é um sommelier mestre. Dadas informações do vinho, gere:\n- Notas de harmonização (clareza, perfil do vinho e combinações típicas), incluindo uma sugestão de decantação. Não inclua notas de críticos ou alegações de pesquisa; os dados fornecidos não incluem avaliações verificadas.\n- UMA sugestão de prato específico (proteína + método + acompanhamentos/molho) que harmonize muito bem.\nSeja conciso e prático.`
+      : `You are a master sommelier. Given wine info, produce:\n- Food pairing notes (clarity, wine profile, typical matches) that also include suggested decanting guidance. Do not include critic scores or claim research; the supplied data has no verified ratings.\n- ONE specific main dish (protein + method + sides/sauce) that pairs exceptionally well.\nBe concise and practical.`;
 
     const user = [
       lang === 'pt-BR' ? 'Informações do vinho:' : 'Wine info:',
       summary,
       constraints,
       lang === 'pt-BR'
-        ? `Incorpore a recomendação de decantação e, se disponível, o código do crítico + nota (ex.: RP 94) dentro de \"foodPairingNotes\". Retorne APENAS JSON estrito neste formato:\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string\n}`
-        : `Embed the decanting recommendation and, if available, critic code + score (e.g., RP 94) inside \"foodPairingNotes\". Return ONLY strict JSON in this format:\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string\n}`,
+        ? `Incorpore a recomendação de decantação dentro de \"foodPairingNotes\". Retorne APENAS JSON estrito neste formato:\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string\n}`
+        : `Embed the decanting recommendation inside \"foodPairingNotes\". Return ONLY strict JSON in this format:\n{\n  "foodPairingNotes": string,\n  "mealToHaveWithThisWine": string\n}`,
       mode === 'meal'
         ? (lang === 'pt-BR' ? 'Escolha um prato diferente do atual, evitando repetição.' : 'Choose a different main dish than the current one; avoid repetition.')
         : '',
@@ -49,12 +51,17 @@ export const POST = async (request: NextRequest) => {
 
     const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
+      signal: AbortSignal.any([request.signal, AbortSignal.timeout(22000)]),
+      cache: 'no-store',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: AI_MODEL,
+        reasoning_effort: CHAT_REASONING_EFFORT,
+        max_completion_tokens: 1200,
+        store: false,
         messages: [
           { role: 'system', content: system },
           { role: 'user', content: user },
@@ -65,8 +72,7 @@ export const POST = async (request: NextRequest) => {
     });
 
     if (!openaiRes.ok) {
-      const errText = await openaiRes.text().catch(() => '');
-      return NextResponse.json({ error: 'OpenAI request failed', details: errText }, { status: 502 });
+      return NextResponse.json({ error: 'Pairing suggestions are unavailable. Please try again shortly.' }, { status: 502 });
     }
 
     const json = await openaiRes.json();
@@ -93,6 +99,9 @@ export const POST = async (request: NextRequest) => {
 
     return NextResponse.json(out);
   } catch (error) {
+    if (error instanceof Error && ['AbortError', 'TimeoutError'].includes(error.name)) {
+      return NextResponse.json({ error: 'Pairing suggestions timed out. Please try again.' }, { status: 504 });
+    }
     console.error('AI enrich error:', error);
     return NextResponse.json({ error: 'Failed to enrich pairing or meal' }, { status: 500 });
   }

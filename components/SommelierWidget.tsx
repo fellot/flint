@@ -144,25 +144,16 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
                     : 'bg-white text-gray-800 rounded-2xl rounded-bl-md px-4 py-2.5 shadow-sm border border-gray-100'
                 }`}
               >
-                {m.wineName && m.wineImage ? (
+                {m.wineName && m.wineImage && m.content.includes(m.wineName) ? (
                   <>
-                    {m.content.split(m.wineName).map((part, j, arr) => (
-                      <span key={j}>
-                        {part}
-                        {j < arr.length - 1 && (
-                          <button
-                            onClick={() => setExpandedImage({ src: m.wineImage!, alt: m.wineName! })}
-                            className="font-semibold underline decoration-[#722F37]/40 underline-offset-2 hover:decoration-[#722F37] transition-colors cursor-pointer"
-                          >
-                            {m.wineName}
-                          </button>
-                        )}
-                      </span>
-                    ))}
+                    {m.content.slice(0, m.content.indexOf(m.wineName))}
+                    <button onClick={() => setExpandedImage({ src: m.wineImage!, alt: m.wineName! })}
+                      className="font-semibold underline decoration-[#722F37]/40 underline-offset-2 hover:decoration-[#722F37] transition-colors cursor-pointer">
+                      {m.wineName}
+                    </button>
+                    {m.content.slice(m.content.indexOf(m.wineName) + m.wineName.length)}
                   </>
-                ) : (
-                  m.content
-                )}
+                ) : m.content}
               </div>
             </div>
           ))}

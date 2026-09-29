@@ -257,3 +257,17 @@ The supplied inventory and decisions are retained in the [audit JSON](reviews/20
 - [Owner account invitations](https://supabase.com/docs/reference/javascript/auth-admin-inviteuserbyemail)
 - [Email/password authentication and recovery](https://supabase.com/docs/guides/auth/passwords)
 - [Postgres row level security](https://supabase.com/docs/guides/database/postgres/row-level-security)
+
+## My palate and personal sommelier recommendations
+
+Before deploying this update, run the full contents of
+[`migrations/20260928000000_personal_palate.sql`](migrations/20260928000000_personal_palate.sql)
+in **Supabase → SQL Editor → New query → Run**, after your existing migrations.
+This adds a private per-user preferences table. It preserves journal/wine data,
+can be rerun, and seeds only Felipe's already-stated preferences if his confirmed
+account exists. Other accounts start neutral. No password or new key is needed.
+
+Deploy the updated app, then open **My palate**. Keep the existing server-only
+`OPENAI_API_KEY` in Vercel for chat and generated evening plans. No AI call is
+needed to view or edit the profile. See [the feature guide](../docs/my-palate.md)
+for privacy, scoring rules and limitations.

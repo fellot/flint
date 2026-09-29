@@ -165,6 +165,7 @@ export default function CellarCollection({ wines, cellarName, cellarId, mode = '
     </section>
     <section className="reserve-totals" aria-label={pt ? 'Resumo da coleção' : 'Collection overview'}>{stats.map(({ icon: Icon, value, label }) => <div key={label}><Icon size={15} strokeWidth={1.5} /><strong>{loading ? '—' : value.toLocaleString(locale)}</strong><span>{label}</span></div>)}</section>
 
+    {journal && <a className="text-button journal-palate-link" href="/my-palate">{pt ? 'Meu paladar · o que estas avaliações estão revelando' : 'My palate · what these tastings are telling us'} <ArrowUpRight size={15} /></a>}
     {journal && <JournalBadges awards={badgeAwards} locale={locale} loading={loading} error={Boolean(error)} onViewWine={id => { const wine = collection.find(item => item.id === id); if (wine) setSelected(wine); }} />}
 
     <section id="collection" className="wine-collection">

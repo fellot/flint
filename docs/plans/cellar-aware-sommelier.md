@@ -1,6 +1,6 @@
 # Cellar-aware sommelier — future plan
 
-Status: parked by the owner on 2026-09-23. This document records the agreed direction; the architecture is not implemented by the floating-pet change.
+Status: originally parked on 2026-09-23. On 2026-09-28 the owner authorized the first personal-palate release: live authorized inventory, editable per-user preferences, journal context, shared chat/planner logic and maturity ranking are implemented in the repository. See [implementation and setup](../my-palate.md). Purchase research, a Responses/tool migration, richer maturity provenance and shared-dinner profiles remain future work. On 2026-09-29 all AI features were moved to `gpt-6-luna`; chat/planner retain the Chat Completions endpoint while broader tool changes are parked.
 
 ## Goal
 

@@ -1,19 +1,19 @@
 # Flint: AI integrations and API map
 
-Reviewed: **2026-09-26**. This describes the current repository, not a verified Vercel deployment. Model names below are the defaults/configuration in code; this audit did not make paid provider calls or verify account access to those models.
+Reviewed: **2026-09-29**. This describes the current repository, not a verified Vercel deployment. Model names below are the defaults/configuration in code; this audit did not make paid provider calls or verify account access to those models.
 
 ## 1. Overview
 
-Flint has **four AI endpoints**, all implemented as Next.js server routes calling OpenAI with `fetch`. Two interfaces share the sommelier endpoint, two share label scanning, and two forms expose pairing/meal buttons. There is no separate hosted agent, vector database, fine-tuned model, or shared persistent AI memory in the current implementation.
+Flint has **four AI endpoints**, all implemented as Next.js server routes calling OpenAI with `fetch`. Two interfaces share the sommelier endpoint, two share label scanning, and two forms expose pairing/meal buttons. There is no separate hosted agent, vector database, fine-tuned model, or model-managed persistent memory. Explicit personal preferences now persist in Supabase, with fresh journal-derived evidence.
 
 | User-facing feature | Entry point | Internal call | Model configured in code | External API | Web research? |
 | --- | --- | --- | --- | --- | --- |
-| Floating sommelier | Main cellar → click the pet → send a message | `POST /api/ai/sommelier` | `gpt-4o-mini` | OpenAI Chat Completions | No |
-| Full sommelier page | `/sommelier` → send a message | Same endpoint | `gpt-4o-mini` | OpenAI Chat Completions | No |
-| Add wine by photo | Main cellar → Add a wine → scan | `POST /api/ai/extract-wine` | `OPENAI_WINE_MODEL`, default `gpt-6-luna` | OpenAI Responses | Text and image search tools |
+| Floating sommelier | Main cellar → click the pet → send a message | `POST /api/ai/sommelier` | `gpt-6-luna` | OpenAI Chat Completions | No |
+| Full sommelier page | `/sommelier` → send a message | Same endpoint | `gpt-6-luna` | OpenAI Chat Completions | No |
+| Add wine by photo | Main cellar → Add a wine → scan | `POST /api/ai/extract-wine` | `gpt-6-luna` | OpenAI Responses | Text and image search tools |
 | Add external wine by photo | Journal → add external wine → scan | Same endpoint | Same scan model | OpenAI Responses | Text and image search tools |
-| Improve Food Pairing Notes / suggest another meal | Scan review in the cellar, or Edit wine in cellar/journal | `POST /api/ai/enrich-pairing` | `gpt-4o-mini` | OpenAI Chat Completions | No |
-| Personalized evening | “Tonight, perhaps…” → Set the mood → Make a night of it | `POST /api/ai/reserve` | `gpt-4o-mini` | OpenAI Chat Completions | No |
+| Improve Food Pairing Notes / suggest another meal | Scan review in the cellar, or Edit wine in cellar/journal | `POST /api/ai/enrich-pairing` | `gpt-6-luna` | OpenAI Chat Completions | No |
+| Personalized evening | “Tonight, perhaps…” → Set the mood → Make a night of it | `POST /api/ai/reserve` | `gpt-6-luna` | OpenAI Chat Completions | No |
 
 External OpenAI URLs used by the code:
 
@@ -32,7 +32,8 @@ flowchart LR
   Chat --> Completions["OpenAI Chat Completions"]
   Pair --> Completions
   Reserve --> Completions
-  DB[("Supabase cellar inventory")] --> Reserve
+  DB[("Supabase inventory, own journal and preferences")] --> Reserve
+  DB --> Chat
   Scan --> Responses["OpenAI Responses"]
   Responses --> Search["Web text and image search"]
   Scan --> Review["Editable review form"]
@@ -44,25 +45,31 @@ The AI routes produce suggestions or draft fields. They do not add, consume, del
 
 ## 2. Sommelier chat
 
-**Callers:** `components/SommelierWidget.tsx:69` and `app/sommelier/page.tsx:56`.
-**Prompt, projection, maturity logic and provider call:** `app/api/ai/sommelier/route.ts`.
+**Callers:** `components/SommelierWidget.tsx` and `app/sommelier/page.tsx`.
+**Route:** `app/api/ai/sommelier/route.ts`.
+**Shared context/prompt/provider:** `lib/ai/cellar-context.ts`, `lib/ai/personal-sommelier.ts`.
 
-### Data path
+Both chat interfaces now fetch authorized stock, the acting user's journal, and
+per-user preferences on the server. The browser sends bounded user turns plus
+the last discussed wine ID; it no longer supplies inventory or resends generated
+assistant prose. The server rejects privileged message roles, checks origin and
+cellar access, validates positive stock and returned wine/evidence IDs, and ranks
+the model's suitable suggestions by estimated maturity. Follow-up answers use
+the same formatter in both interfaces.
 
-1. The browser obtains wines from the authenticated `/api/wines` endpoint. The floating widget receives active wines from `CellarCollection`; the full page fetches the cellar's wine records itself.
-2. Each message sends `{ wines, messages, locale }` to the sommelier route. `messages` contains the current component's entire conversation, including the newly entered message.
-3. The route filters by `status === 'in_cellar'` (a missing status defaults to `in_cellar`). It does **not** check positive quantity or reload the wine list from Supabase.
-4. OpenAI receives a reduced list containing ID, bottle name, country, region, vintage, style, grapes, pairing notes, suggested meal, drinking window, peak year, computed maturity status and ordinary wine notes, plus conversation text.
-5. The response can be a clarification, recommendation, or follow-up answer. Recommendations contain a wine ID/name, reason, serving temperature, decanting guidance, and optional alternative IDs.
-6. The browser looks up shelf location, image and alternative names in its inventory and formats the reply.
+**Personalization:** `/my-palate` stores editable preferences and journal-learning
+controls. Patterns use own personal scores and existing Cellar Essentials rules;
+single observations are tentative. Opt-out/dismissal removes learning evidence.
+The profile is account-wide, while journal evidence is selected-cellar scoped.
+No other participant's ratings or comments are provided. Prices, private wine
+notes, people and locations are excluded from model context. User-authored notes
+and conversation may themselves contain personal information.
 
-**Maturity prompting:** numeric `peakYear` compared with the current year produces past/at/near peak or “years until peak.” The prompt prioritizes past/at peak, then near peak. This is prompt guidance, not a server-enforced candidate ranking. The drinking window is sent as text but does not drive this route's maturity calculation. Values such as `2040+` or `Past peak` do not become numeric peaks here. There is no live weather lookup or seasonal calendar input beyond what the user says and the current year.
-
-**Personalization:** personal journal scores/comments, inferred taste preferences, and critic scores are not included in the model's inventory projection. Consumed wines are filtered out. Preferences can influence the current conversation if the user states them there; they are not saved as a profile.
-
-**Memory and privacy:** chat lives in React state, not a conversation table or provider thread. The widget and full-page chat do not share history. The server resends all supplied conversation text. Although shelf locations are excluded from the initial inventory projection, formatted assistant replies include them and those replies are sent back in later messages. User-entered messages can also contain personal information.
-
-**Configuration:** temperature `0.4`; JSON-object mode, without strict field/ID validation; no explicit output-token cap, request timeout, history cap, or application rate limit. All routes are protected by login middleware, but this handler does not additionally call `requireCellar` or `checkOrigin`.
+**Configuration:** `gpt-6-luna`; reasoning effort `none`; temperature 0.4; strict JSON schema;
+`max_completion_tokens: 2200`; 22-second provider timeout; 30-second route duration;
+`store:false`. The UI sends up to 12 recent user messages. Candidate/review
+context is capped at 80 each. No shared conversation persistence or live shopping
+research. See [My palate](my-palate.md) for exact ranking, exclusions and limits.
 
 ## 3. Wine identification and web images
 
@@ -97,52 +104,46 @@ The scanner no longer calls the previous optional Bing image/web search integrat
 - The prompt asks for concise pairing guidance, decanting advice, and one specific main dish. It refines current notes or avoids repeating the current meal.
 - Output always contains `foodPairingNotes` and `mealToHaveWithThisWine`; the calling button applies its relevant field.
 - Values stay in the editable form until the user saves the wine. Manual add forms do not call AI automatically; the external-photo review does not expose these enrichment buttons.
-- Model `gpt-4o-mini`, temperature `0.5`, JSON-object mode. No web research, explicit token cap, timeout or rate limit.
+- Model `gpt-6-luna`, reasoning effort `none`, temperature `0.5`, JSON-object mode, `max_completion_tokens: 1200`, `store:false`, 22-second timeout. No web research or rate limit.
 - Login middleware applies; the handler has no separate cellar-membership/origin check and accepts the wine description supplied by the browser.
 
-**Accuracy issue:** the prompt asks for critic initials and scores “if known,” but supplies neither verified ratings nor a research tool. It can therefore introduce an unsupported critic score into pairing text. This differs from the newer scanner, which explicitly forbids invented scores.
+The prompt forbids critic scores and claims of research because this feature has no verified rating sources. Pairing and decanting text remains model-generated guidance for review.
 
 ## 5. “Tonight, perhaps…” evening planner
 
-**Caller:** `components/ReserveSpotlight.tsx:56`.
-**Route/prompt:** `app/api/ai/reserve/route.ts`.
-**Shared candidate selection and local fallback:** `utils/reserve.ts`; maturity helper `utils/cellar.ts:5`.
+**Caller:** `components/ReserveSpotlight.tsx`.
+**Route:** `app/api/ai/reserve/route.ts`.
 
-- Input: occasion, short scene (maximum 240 characters), cellar ID and locale. The browser does not supply the model's inventory.
-- The route verifies membership, loads fresh cellar stock from Supabase, filters positive quantities, and selects up to 40 occasion candidates.
-- Local ranking gives preference to readiness, sparkling wines for celebrations, larger quantities for company, and Coravin bottles for unwinding. Sweet/fortified styles are reserved for the dessert occasion.
-- The model receives only candidate IDs/names, vintages, countries, regions, styles, grapes, pairing/meal descriptions and a drinking-window description. No journal reviews, personal wine notes, prices, people or shelf locations are projected.
-- Output: a permitted wine ID, evening title, reason, meal and conversation question. Strict JSON schema restricts IDs to supplied candidates; the server and browser also validate the result.
-- Model `gpt-4o-mini`, temperature `0.8`, maximum 600 output tokens; 18-second provider timeout; 30-second route duration; a best-effort 10-second per-user cooldown in server-instance memory.
-- Closing/changing choices cancels the browser request. AI failure leaves the local recommendations usable. The request's cancellation signal is not forwarded to the provider call, which has its own timeout.
+The AI planner shares the personal sommelier service above. It accepts an occasion,
+scene (240 characters) and cellar ID, loads fresh authorized stock and own journal,
+and applies existing occasion filters. Generated title, reason, meal, question and
+journal citations are validated and shown in the dialog. Model settings match
+chat. The existing best-effort 10-second per-user cooldown remains.
 
-The initial card, occasion choices, shuffle, surprise reveal, meal fallback and conversation question work locally without an AI call. Only **Make a night of it** generates new content. Generated plans are component state, not stored recommendations.
+Initial card selection, occasion choices, shuffle, reveal, meal fallback and
+conversation questions still work locally without AI. Only **Make a night of it**
+uses personal context. Closing the dialog aborts the browser request; the provider
+has its own timeout. Generated plans stay in component state.
 
-## 6. Common behavior and observed gaps
+## 6. Common behavior and remaining gaps
 
 | Concern | Current implementation |
 | --- | --- |
 | Provider keys | Server-only `OPENAI_API_KEY` for all four routes |
-| Model selection | Three hard-coded `gpt-4o-mini` routes; scanning alone accepts `OPENAI_WINE_MODEL` |
-| Streaming | None: browser waits for a completed JSON response |
-| Fresh stock | Planner reads server-side; chat trusts its browser snapshot |
-| Journal/taste learning | Not implemented in the model inputs |
-| Web research | Only scanning; no live buying agent or technical-sheet retrieval for chat |
-| Usage accounting | No shared AI request/usage/cost records or central monitoring wrapper found |
-| Rate limits | Planner's in-memory cooldown only; not shared across server instances |
-| Error handling | Scanner/planner return controlled errors; chat/pairing can include raw provider error bodies in `details` |
-| Database writes | Separate user-confirmed wine/journal endpoints, not model tool calls |
+| Model selection | All four endpoints use `AI_MODEL` (`gpt-6-luna`) in `lib/ai/models.ts`; no environment override |
+| Streaming | None; browser waits for JSON |
+| Fresh stock | Both chat and planner now read authorized server inventory |
+| Journal/taste learning | Per-user preferences, own scores/comments and evidence-based patterns; migration required |
+| Web research | Only scanning; buying agent remains future work |
+| Usage accounting | No shared request/cost telemetry |
+| Rate limits | Planner in-memory cooldown; no distributed limit |
+| Error handling | All four routes keep provider error bodies out of browser responses |
+| Writes | Separate user actions; recommendation calls never modify inventory |
 
-### Findings to address in a later implementation
-
-1. **Bring the two chat interfaces into agreement.** The floating widget handles `type: "answer"`; the full `/sommelier` page handles only `question` specially and otherwise formats a recommendation. A valid follow-up answer can render with undefined recommendation fields.
-2. **Make chat recommendations depend on authenticated, current stock.** The chat route lacks positive-quantity filtering and does not validate returned recommendation IDs against allowed candidates. It also accepts browser-supplied message roles, including `system`.
-3. **Unify maturity rules.** Chat derives status from a numeric peak; the planner ranks using `getMaturity`, which treats dates after a window's start as ready even after its end. The planner separately supplies an overdue-window warning. These paths can disagree and do not implement one shared “best estimated peak period” policy.
-4. **Remove unsupported rating claims from pairing generation.** Pass verified critic data or omit critic scores from that prompt.
-5. **Connect the personal journal deliberately.** A persistent taste profile and purchase recommendations remain future work; changing the model alone will not add them.
-6. **Centralize operational controls.** A common model configuration, typed responses, payload/history limits, membership checks, timeouts, safe errors, and usage tracking would reduce drift between routes.
-
-The agreed future direction is recorded in [the cellar-aware sommelier plan](/Users/elotfel/Documents/GitHub/flint/docs/plans/cellar-aware-sommelier.md). It remains a plan, separate from the implemented features above.
+Remaining work: evaluate live recommendation quality, improve maturity source
+provenance and large-cellar retrieval, centralize operational controls, and implement sourced
+purchase guidance. The [longer-term plan](plans/cellar-aware-sommelier.md) records
+those future phases; [My palate](my-palate.md) describes the implemented release.
 
 ## 7. Other website API calls (not AI)
 
@@ -157,6 +158,7 @@ All paths below are same-origin Next.js routes. Supabase SDK calls happen on the
 | `/api/auth/reset-password` | POST | Supabase `updateUser({ password })` after authentication |
 | `/api/auth/cellar` | POST | Validate membership and change the selected-cellar cookie |
 | `/auth/callback` | GET | Supabase `exchangeCodeForSession` or `verifyOtp`; auth redirect rather than an `/api` route |
+| `/api/palate` | GET, PUT | Read derived personal profile; save only the authenticated user’s preferences |
 | `/api/wines` | GET, POST | List inventory with journal data; insert cellar stock or call `log_consumed_wine` for a new journal wine |
 | `/api/wines/[id]` | GET, PUT, DELETE | Read, edit or delete a wine within an authorized cellar |
 | `/api/wines/[id]/consume` | POST | `consume_wine` transaction: stock, tasting participants and optional personal review |
@@ -169,7 +171,7 @@ All paths below are same-origin Next.js routes. Supabase SDK calls happen on the
 
 Main callers: `hooks/useWineInventory.ts`, `components/CellarSession.tsx`, `components/AuthForm.tsx`, `app/sommelier/page.tsx`, `app/cellar-essentials/page.tsx`, `app/wine-map/page.tsx`, and `app/wine-trivia/page.tsx`.
 
-Supabase tables involved: `cellars`, `cellar_members`, `wines`, `cellar_people`, `wine_participants`, `wine_reviews`, `cellar_fridges`, `cellar_storage_locations`, plus Supabase Auth. The middleware also calls `auth.getUser()` to authenticate protected page/API requests; handlers may perform their own user/membership checks too.
+Supabase tables involved: `cellars`, `cellar_members`, `wines`, `cellar_people`, `wine_participants`, `wine_reviews`, `cellar_fridges`, `cellar_storage_locations`, `palate_preferences`, plus Supabase Auth. The middleware also calls `auth.getUser()` to authenticate protected page/API requests; handlers may perform their own user/membership checks too.
 
 ### Other external network dependencies
 
@@ -186,12 +188,13 @@ Supabase tables involved: `cellars`, `cellar_members`, `wines`, `cellar_people`,
 | Variable | Purpose |
 | --- | --- |
 | `OPENAI_API_KEY` | Required by all AI routes; server-only |
-| `OPENAI_WINE_MODEL` | Optional scanner model override; default `gpt-6-luna` |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public Supabase key; legacy `NEXT_PUBLIC_SUPABASE_ANON_KEY` also supported |
 | `SUPABASE_SECRET_KEY` | Optional server-only account-invitation key; legacy `SUPABASE_SERVICE_ROLE_KEY` also supported |
 | `NEXT_PUBLIC_SITE_URL` | Deployed origin for recovery and invitation redirects |
 
-Model/prompt files: `app/api/ai/sommelier/route.ts`, `app/api/ai/enrich-pairing/route.ts`, `app/api/ai/reserve/route.ts`, and `lib/ai/wine-extraction.ts`. There is currently no shared prompt registry or central model-selection file covering all four features.
+Model/prompt files: `lib/ai/personal-sommelier.ts`, `lib/ai/cellar-context.ts`, `app/api/ai/enrich-pairing/route.ts`, and `lib/ai/wine-extraction.ts`. All features import the model from `lib/ai/models.ts`. The former `OPENAI_WINE_MODEL` override is no longer read and can be removed from Vercel. Chat, pairing and the planner explicitly use reasoning effort `none` to preserve their previous interactive behavior; scanning retains Responses reasoning `low` and its research tools. Chat requests use `max_completion_tokens`, not deprecated `max_tokens`. There is no shared prompt registry.
 
-Audit method: traced every `/api/ai` caller and provider URL, enumerated route handlers and Supabase operations, and checked client persistence/confirmation behavior. This document changes no runtime code. Deployment settings, provider availability, actual costs/latencies, and production traffic were not inspected.
+Audit method: traced every `/api/ai` caller and provider URL, enumerated route handlers and Supabase operations, and checked client persistence/confirmation behavior. This map reflects the personal-palate implementation; live provider behavior remains unverified. Deployment settings, provider availability, actual costs/latencies, and production traffic were not inspected.
+
+Model migration references: [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna), [model parameter guidance](https://developers.openai.com/api/docs/guides/latest-model), [Chat Completions parameters](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create).

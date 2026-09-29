@@ -949,3 +949,5 @@ summary::-webkit-details-marker { display: none; }
 .ritual-evidence { font-size: 12px; line-height: 1.6; margin-top: 12px; color: var(--muted); }
 .ritual-evidence summary { cursor: pointer; color: var(--burgundy); }
 .ritual-evidence ul { margin-top: 8px; }
+
+.journal-palate-link { margin: 0 0 20px; font-size: 13px; color: var(--burgundy); white-space: normal; }

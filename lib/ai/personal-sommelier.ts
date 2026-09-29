@@ -3,6 +3,7 @@ import type { PalateProfile } from '@/types/palate';
 import { ApiError } from '@/lib/api-error';
 import { buildPalate, learningJournal, tasteAffinity } from '@/lib/palate';
 import { cellarContext, isExploration, maturity, PERSONAL_SOMMELIER_RULES } from './cellar-context';
+import { AI_MODEL, CHAT_REASONING_EFFORT } from './models';
 
 export type ChatMessage = { role: 'user' | 'assistant'; content: string };
 export function chatInput(value: unknown): ChatMessage[] {
@@ -68,7 +69,8 @@ export async function personalSommelier({ wines, profile, locale, messages, even
     method: 'POST', signal: AbortSignal.timeout(22000), cache: 'no-store',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'gpt-4o-mini', temperature: 0.4, max_tokens: 2200, store: false,
+      model: AI_MODEL, reasoning_effort: CHAT_REASONING_EFFORT,
+      temperature: 0.4, max_completion_tokens: 2200, store: false,
       messages: [
         { role: 'system', content: `${PERSONAL_SOMMELIER_RULES}\nRespond in ${locale === 'pt' ? 'Brazilian Portuguese' : 'English'}.
 Return type answer for follow-ups, question only when needed, or recommendation. Propose up to FOUR suitable bottles in preference order, including the best maturity tier compatible with this request and an adventurous alternative if possible. The server makes the final selection, prioritizing maturity among suitable suggestions; write a self-contained reason for each. Never propose an unsuitable wine just to fill the list. If no bottle fits, explain in answer, with an empty recommendations array. For an empty cellar, answer helpfully without inventing stock.

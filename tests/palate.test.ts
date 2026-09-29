@@ -108,6 +108,8 @@ test('provider flow uses fresh candidates, validates evidence and preserves even
   try {
     globalThis.fetch = async (_url, init) => {
       const sent = JSON.parse(String(init?.body));
+      assert.equal(sent.model, 'gpt-6-luna'); assert.equal(sent.reasoning_effort, 'none');
+      assert.equal(sent.max_completion_tokens, 2200); assert.equal('max_tokens' in sent, false);
       assert.equal(sent.response_format.json_schema.strict, true); assert.equal(sent.store, false);
       const input = sent.messages[1].content;
       assert.match(input, /"score":95/); assert.match(input, /"discovery":"balanced"/);

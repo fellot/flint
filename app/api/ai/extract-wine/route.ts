@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     validateScanImage(body?.image);
     const signal = AbortSignal.any([request.signal, AbortSignal.timeout(110_000)]);
     const result = await extractWineFromPhoto({ image: body.image, locale: body.locale === 'pt' ? 'pt' : 'en',
-      apiKey: process.env.OPENAI_API_KEY, model: process.env.OPENAI_WINE_MODEL?.trim() || undefined, signal });
+      apiKey: process.env.OPENAI_API_KEY, signal });
     return NextResponse.json(result, { headers: { 'Cache-Control': 'private, no-store' } });
   } catch (error) {
     if (error instanceof WineScanError) return apiError(new ApiError(error.status, error.message));

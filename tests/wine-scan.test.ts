@@ -21,9 +21,11 @@ function result(overrides: Record<string, unknown> = {}, search = true) {
   ] };
 }
 
-test('scanner uses Responses vision, required web/image search, strict output and configurable model', async () => {
-  const request = buildWineExtractionRequest(photo, 'pt', 'configured-model');
-  assert.equal(request.model, 'configured-model');
+test('scanner uses Luna Responses vision, required web/image search and strict output', async () => {
+  const request = buildWineExtractionRequest(photo, 'pt');
+  assert.equal(request.model, 'gpt-6-luna');
+  assert.deepEqual(request.reasoning, { effort: 'low' });
+  assert.equal('temperature' in request, false);
   assert.equal(request.store, false);
   assert.equal(request.tool_choice, 'required');
   assert.equal(request.input[0].content[1].image_url, photo);

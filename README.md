@@ -16,6 +16,7 @@ See [the AI integrations and API map](docs/ai-integrations.md) for the current m
 ### 🍇 **Wine Management**
 - **Add New Wines**: Comprehensive form with all essential wine details
 - **Edit Existing Wines**: Modify any wine information at any time
+- **My palate**: Editable personal preferences and journal-informed sommelier/AI evening picks, with evidence, opt-out and dismissal controls; see [setup](docs/my-palate.md)
 - **Managed Wine Fridges**: Name fridges, manage levels, and pick bottle locations from a list; see [setup and migration](supabase/README.md#8-managed-wine-fridges-and-selectable-locations)
 - **Mark as Consumed**: Track when you drink wines and add ratings
 - **Delete Wines**: Remove wines from your collection when needed
@@ -259,19 +260,21 @@ sharing and journal dialog.
 
 **Optional AI plans:** set the server-only `OPENAI_API_KEY` in `.env.local` and in
 Vercel → Project Settings → Environment Variables, then redeploy. “Make a night
-of it” calls `/api/ai/reserve` on demand using the existing `gpt-4o-mini` model.
-No database migration or new package is required. Without the key, the local
+of it” calls `/api/ai/reserve` on demand using the `gpt-6-luna` model.
+Apply the [My palate migration](supabase/migrations/20260928000000_personal_palate.sql) first. No new package is required. Without the key, the local
 occasion selections and reveal continue working; the AI action reports that
 personalized plans are unavailable.
 
-The endpoint verifies cellar membership and reads inventory from Supabase. It
-sends up to 40 available candidates (basic wine details, pairings and estimated
-windows), the selected occasion and the short scene to OpenAI. It excludes
-prices, account details, journal comments and private wine notes. Structured
-output is checked against the candidate IDs before rendering. There is an
-18-second provider timeout and a best-effort 10-second per-user cooldown per
-server instance, not a distributed rate limit. Inventory is never mutated by
-planning; generated food and conversation ideas are suggestions.
+The endpoint verifies cellar membership and reads fresh inventory, the signed-in
+user's own journal, and editable **My palate** preferences from Supabase. Both
+sommelier chats and the planner share this context and maturity ranking. It sends
+up to 80 available candidates and 80 eligible personal reviews; prices, other
+participants, account identifiers, private inventory notes and locations are
+excluded. Structured output and journal evidence IDs are validated. The provider
+timeout is 22 seconds; the planner retains a best-effort 10-second per-user
+cooldown. Inventory is never mutated by planning.
+
+See [My palate setup, privacy and selection rules](docs/my-palate.md).
 
 API reference: [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
 
@@ -279,9 +282,9 @@ API reference: [OpenAI Structured Outputs](https://developers.openai.com/api/doc
 
 Both **Add wine → Scan label** and the journal's external-wine scanner use the
 Responses API with `gpt-6-luna` (vision, web image search, and structured output).
-Set `OPENAI_API_KEY` on the server; `OPENAI_WINE_MODEL` optionally overrides only
-this scanner. The selected model must support image inputs, web search with image
-results, and JSON schema output. Existing sommelier/pairing models are unchanged.
+Set `OPENAI_API_KEY` on the server. All AI features use the shared `gpt-6-luna`
+configuration in `lib/ai/models.ts`. The former `OPENAI_WINE_MODEL` scanner override
+is no longer read and can be removed from deployment settings.
 The previous optional Bing search integration is no longer used by this feature.
 
 The browser strips photo metadata and resizes uploads before sending them for
