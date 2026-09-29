@@ -262,3 +262,49 @@ test('owner can add participants to a consumed wine even when they were not orig
     assert.equal((await db.query<WineRow>("select * from public.wines where id = 'stock'")).rows[0].quantity, 3);
   } finally { await db.close(); }
 });
+
+test('Rodrigo setup creates an empty isolated owner cellar and reruns without resetting it', async () => {
+  const { db, as } = await database();
+  const cellar = 'aa6bceae-3a83-4c8b-a759-3b5e8743a47d';
+  const script = await readFile('supabase/add-rodrigo-cellar.sql', 'utf8');
+  try {
+    await db.exec(await readFile('supabase/migrations/20260916020000_managed_wine_fridges.sql', 'utf8'));
+    await db.exec(await readFile('supabase/migrations/20260917000000_merge_wine_fridge_a.sql', 'utf8'));
+    await assert.rejects(db.exec(script), /Create the Authentication account/);
+    await db.exec('rollback');
+    assert.equal((await db.query('select id from public.cellars where id = $1', [cellar])).rows.length, 0);
+    await db.exec(`insert into auth.users (id, email, email_confirmed_at) values ('${invited}', 'rodrigoramosvieira@gmail.com', now())`);
+    await db.exec(script);
+    await db.exec(script);
+    assert.deepEqual((await db.query('select role from public.cellar_members where cellar_id = $1', [cellar])).rows, [{ role: 'owner' }]);
+    assert.deepEqual((await db.query('select name, user_id from public.cellar_people where cellar_id = $1', [cellar])).rows, [{ name: 'Rodrigo', user_id: invited }]);
+    assert.equal((await db.query('select id from public.wines where cellar_id = $1', [cellar])).rows.length, 0);
+    assert.equal((await db.query('select id from public.cellar_fridges where cellar_id = $1', [cellar])).rows.length, 0);
+    assert.deepEqual((await db.query('select label from public.cellar_storage_locations where cellar_id = $1', [cellar])).rows, [{ label: '' }]);
+    await as(owner);
+    assert.equal((await db.query('select id from public.cellars where id = $1', [cellar])).rows.length, 0);
+    await as(invited);
+    assert.deepEqual((await db.query('select id from public.cellars')).rows, [{ id: cellar }]);
+    assert.equal((await db.query('select id from public.wines')).rows.length, 0);
+    await db.query("insert into public.wines (cellar_id, bottle, country, style) values ($1, 'Later addition', 'Italy', 'Red')", [cellar]);
+    await db.exec('reset role');
+    await db.query("update public.cellars set name = 'Personal name', locale = 'pt' where id = $1", [cellar]);
+    await db.exec(script);
+    assert.deepEqual((await db.query('select name, locale from public.cellars where id = $1', [cellar])).rows, [{ name: 'Personal name', locale: 'pt' }]);
+    assert.equal((await db.query('select id from public.wines where cellar_id = $1', [cellar])).rows.length, 1);
+  } finally { await db.close(); }
+});
+
+test('Rodrigo diagnostics report missing accounts and schema prerequisites without changing data', async () => {
+  const { db } = await database();
+  try {
+    const check = await readFile('supabase/check-rodrigo-cellar.sql', 'utf8');
+    const before = (await db.query('select * from public.cellars order by id')).rows;
+    const output = (await db.query<{ rodrigo_setup_check: { auth_accounts: unknown[]; required_tables: Record<string, boolean>; membership_role_column: boolean } }>(check)).rows[0].rodrigo_setup_check;
+    assert.deepEqual(output.auth_accounts, []);
+    assert.equal(output.required_tables['public.cellars'], true);
+    assert.equal(output.required_tables['public.cellar_storage_locations'], false);
+    assert.equal(output.membership_role_column, true);
+    assert.deepEqual((await db.query('select * from public.cellars order by id')).rows, before);
+  } finally { await db.close(); }
+});

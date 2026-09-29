@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Wine } from '@/types/wine';
+import { useCellar } from './CellarSession';
+import { formatSommelierReply } from '@/utils/sommelier-chat';
 import { X, Send, Loader2, Wine as WineIcon } from 'lucide-react';
 
 type Msg = { role: 'user' | 'assistant'; content: string; wineImage?: string; wineName?: string };
@@ -15,6 +17,8 @@ interface SommelierWidgetProps {
 
 export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' }: SommelierWidgetProps) {
   const isPT = locale === 'pt';
+  const { dataSource } = useCellar();
+  const [lastWineId, setLastWineId] = useState<string | undefined>();
   const [input, setInput] = useState('');
   const [pending, setPending] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([{ role: 'assistant', content: isPT ? 'Diga o que vai comer, seu humor, ocasião ou clima e eu sugerirei a garrafa perfeita da sua adega.' : 'Tell me what you are eating, your mood, occasion or weather, and I will suggest the perfect bottle from your cellar.' }]);
@@ -55,8 +59,6 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
     textarea.style.height = `${Math.min(textarea.scrollHeight, 112)}px`;
   }, [input, isOpen, viewport]);
 
-  // Only pass data needed by the model; API will also re-filter by status
-  const wineList = useMemo(() => wines, [wines]);
 
   const submit = async () => {
     const trimmed = input.trim();
@@ -69,7 +71,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
       const res = await fetch('/api/ai/sommelier', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wines: wineList, messages: [...messages, userMsg], locale }),
+        body: JSON.stringify({ cellarId: dataSource, messages: [...messages, userMsg].filter(m => m.role === 'user').slice(-12).map(({ role, content }) => ({ role, content: content.slice(0, 4000) })), lastWineId }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -77,43 +79,14 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
       }
       const out = await res.json();
 
-      // Handle clarifying question flow
-      if (out?.type === 'question' && out?.question) {
-        setMessages(prev => [...prev, { role: 'assistant', content: String(out.question) }]);
-        return;
-      }
-
-      // Handle follow-up answer flow
-      if (out?.type === 'answer' && out?.answer) {
-        setMessages(prev => [...prev, { role: 'assistant', content: String(out.answer) }]);
-        return;
-      }
-
-      // Enhance with location and alternate names on the client
-      const picked = wineList.find(w => String(w.id) === String(out.wineId));
-      const location = picked?.location ? String(picked.location) : undefined;
-      const regionYear = picked ? `${picked.region || ''}${picked.region ? ' • ' : ''}${picked.vintage || ''}` : '';
-      const locationLine = location
-        ? (isPT ? `\n\nOnde está: ${location}` : `\n\nWhere to find it: ${location}`)
-        : '';
-
-      const altNames = Array.isArray(out.alternatives)
-        ? out.alternatives
-            .map((id: string) => wineList.find(w => String(w.id) === String(id))?.bottle)
-            .filter(Boolean)
-        : [];
-
-      const reply = isPT
-        ? `Eu escolheria: ${out.bottle}${regionYear ? ` (${regionYear})` : ''}.\n\nPor quê: ${out.reason}\n\nPara aproveitar melhor, sirva a ${out.servingTemperature} · Decantação: ${out.decanting}.${locationLine}${altNames.length ? `\n\nAlternativas: ${altNames.join(', ')}` : ''}`
-        : `I'd go with: ${out.bottle}${regionYear ? ` (${regionYear})` : ''}.\n\nWhy: ${out.reason}\n\nFor best enjoyment, serve at ${out.servingTemperature} · Decanting: ${out.decanting}.${locationLine}${altNames.length ? `\n\nAlternatives: ${altNames.join(', ')}` : ''}`;
+      if (out.type === 'recommendation') setLastWineId(out.wineId);
       setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: reply,
-        wineName: out.bottle,
-        wineImage: picked?.bottle_image || undefined,
+        role: 'assistant', content: formatSommelierReply(out, isPT),
+        wineName: out.type === 'recommendation' ? out.bottle : undefined,
+        wineImage: out.wine?.bottle_image,
       }]);
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'assistant', content: isPT ? 'Desculpe, algo deu errado.' : 'Sorry, something went wrong.' }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: e instanceof Error ? e.message : (isPT ? 'Desculpe, algo deu errado.' : 'Sorry, something went wrong.') }]);
     } finally {
       setPending(false);
     }
@@ -211,11 +184,13 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
 
         {/* Input */}
         <div className="sommelier-chat-composer bg-white border-t border-gray-100 px-3 py-3">
+          <a href="/my-palate" className="block text-xs text-[#851c38] mb-2">{isPT ? 'Meu paladar · preferências e diário' : 'My palate · preferences & journal'}</a>
           <div className="flex items-center space-x-2 bg-gray-50 rounded-xl px-3 py-1 border border-gray-200 focus-within:border-[#722F37]/40 focus-within:ring-2 focus-within:ring-[#722F37]/10 transition-all">
             <textarea
               ref={inputRef}
               aria-label={isPT ? 'Mensagem para o sommelier' : 'Message your sommelier'}
               rows={1}
+              maxLength={4000}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); submit(); } }}

@@ -1,9 +1,10 @@
 import type { Wine } from '@/types/wine';
 import { getMaturity, styleFamily } from './cellar';
+import type { PalateEvidence } from '@/types/palate';
 
 export const occasions = ['unwind', 'dinner', 'company', 'celebrate', 'dessert'] as const;
 export type Occasion = typeof occasions[number];
-export type EveningPlan = { wineId: string; title: string; reason: string; meal: string; question: string };
+export type EveningPlan = { wineId: string; title: string; reason: string; meal: string; question: string; evidence?: Pick<PalateEvidence, 'id' | 'bottle' | 'vintage' | 'score'>[] };
 export const occasionCopy = {
   en: {
     unwind: { label: 'Just because', title: 'No occasion required.', question: 'What small thing made today a good day?' },
@@ -77,5 +78,15 @@ export function parseEveningPlan(value: unknown, wines: Wine[]): EveningPlan | n
     if (typeof raw[key] !== 'string' || !raw[key].trim() || raw[key].length > limit) return null;
   }
   if (!wines.some(w => w.id === raw.wineId && w.status === 'in_cellar' && w.quantity > 0)) return null;
-  return Object.fromEntries(Object.keys(limits).map(key => [key, (raw[key] as string).trim()])) as EveningPlan;
+  const plan: EveningPlan = {
+    wineId: String(raw.wineId).trim(), title: String(raw.title).trim(), reason: String(raw.reason).trim(),
+    meal: String(raw.meal).trim(), question: String(raw.question).trim(),
+  };
+  if (Array.isArray(raw.evidence) && raw.evidence.length <= 3) {
+    plan.evidence = raw.evidence.filter(e => e && typeof e.id === 'string' && typeof e.bottle === 'string'
+      && e.bottle.length <= 500 && Number.isInteger(e.vintage)
+      && (e.score === null || (Number.isInteger(e.score) && e.score >= 0 && e.score <= 100)))
+      .map(e => ({ id: e.id, bottle: e.bottle, vintage: e.vintage, score: e.score }));
+  }
+  return plan;
 }

@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCellar } from '@/components/CellarSession';
 import { Wine } from '@/types/wine';
-import { Send, Wine as WineIcon, Loader2, Globe } from 'lucide-react';
+import { formatSommelierReply } from '@/utils/sommelier-chat';
+import { Send, Wine as WineIcon, Loader2 } from 'lucide-react';
 
 type Msg = { role: 'user' | 'assistant'; content: string };
 
@@ -17,14 +18,7 @@ export default function SommelierPage() {
     content: 'Tell me what you are eating, your mood, occasion or weather, and I will suggest the perfect bottle from your cellar.',
   }]);
   const [pending, setPending] = useState(false);
-  const [lastRec, setLastRec] = useState<null | {
-    wineId: string;
-    bottle: string;
-    reason: string;
-    servingTemperature: string;
-    decanting: string;
-    alternatives?: string[];
-  }>(null);
+  const [lastWineId, setLastWineId] = useState<string | undefined>();
 
   useEffect(() => {
     fetchWines();
@@ -51,14 +45,13 @@ export default function SommelierPage() {
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setPending(true);
-    setLastRec(null);
     try {
       const res = await fetch('/api/ai/sommelier', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          wines,
-          messages: [...messages, userMsg],
+          cellarId: dataSource, lastWineId,
+          messages: [...messages, userMsg].filter(m => m.role === 'user').slice(-12).map(({ role, content }) => ({ role, content: content.slice(0, 4000) })),
           locale: isPortugueseMode ? 'pt' : 'en',
         }),
       });
@@ -68,40 +61,16 @@ export default function SommelierPage() {
       }
       const out = await res.json();
 
-      // Clarifying question path
-      if (out?.type === 'question' && out?.question) {
-        setMessages(prev => [...prev, { role: 'assistant', content: String(out.question) }]);
-        return;
-      }
-
-      const picked = wines.find(w => String(w.id) === String(out.wineId));
-      const location = picked?.location ? String(picked.location) : undefined;
-      const regionYear = picked ? `${picked.region || ''}${picked.region ? ' • ' : ''}${picked.vintage || ''}` : '';
-      const locationLine = location
-        ? (isPortugueseMode ? `\n\nOnde está: ${location}` : `\n\nWhere to find it: ${location}`)
-        : '';
-
-      // Conversational, friendly tone
-      const altNames = Array.isArray(out.alternatives)
-        ? out.alternatives
-            .map((id: string) => wines.find(w => String(w.id) === String(id))?.bottle)
-            .filter(Boolean)
-        : [];
-
-      const recText = isPortugueseMode
-        ? `Eu escolheria: ${out.bottle}${regionYear ? ` (${regionYear})` : ''}.\n\nPor quê: ${out.reason}\n\nPara aproveitar melhor, sirva a ${out.servingTemperature} · Decantação: ${out.decanting}.${locationLine}${altNames.length ? `\n\nAlternativas: ${altNames.join(', ')}` : ''}`
-        : `I’d go with: ${out.bottle}${regionYear ? ` (${regionYear})` : ''}.\n\nWhy: ${out.reason}\n\nFor best enjoyment, serve at ${out.servingTemperature} · Decanting: ${out.decanting}.${locationLine}${altNames.length ? `\n\nAlternatives: ${altNames.join(', ')}` : ''}`;
-      setMessages(prev => [...prev, { role: 'assistant', content: recText }]);
-      setLastRec(out);
+      if (out.type === 'recommendation') setLastWineId(out.wineId);
+      setMessages(prev => [...prev, { role: 'assistant', content: formatSommelierReply(out, isPortugueseMode) }]);
     } catch (e) {
       console.error(e);
-      setMessages(prev => [...prev, { role: 'assistant', content: isPortugueseMode ? 'Desculpe, algo deu errado.' : 'Sorry, something went wrong.' }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: e instanceof Error ? e.message : (isPortugueseMode ? 'Desculpe, algo deu errado.' : 'Sorry, something went wrong.') }]);
     } finally {
       setPending(false);
     }
   };
 
-  const headerTitle = isPortugueseMode ? 'Sommelier' : 'Sommelier';
   const placeholder = isPortugueseMode ? 'O que você vai comer/ocasião/humor/clima?' : 'What are you eating/occasion/mood/weather?';
 
   return (
@@ -110,6 +79,7 @@ export default function SommelierPage() {
         <p className="eyebrow">{isPortugueseMode ? 'SEU SOMMELIER PESSOAL' : 'YOUR SOMMELIER, ON CALL'}</p>
         <h1>{isPortugueseMode ? 'O que vai bem com hoje?' : 'What pairs with today?'}</h1>
         <p>{isPortugueseMode ? 'Conte sobre o prato, a ocasião ou seu humor. Vamos encontrar a garrafa certa na sua adega.' : 'Tell us about the meal, the occasion, or your mood. We’ll find a bottle from your cellar to match.'}</p>
+        <a href="/my-palate" className="text-button" style={{ marginTop: 16, color: 'var(--burgundy)' }}>{isPortugueseMode ? 'Meu paladar · preferências e diário' : 'My palate · preferences & journal'}</a>
       </header>
 
       <main className="max-w-5xl">
@@ -132,6 +102,7 @@ export default function SommelierPage() {
           <div className="mt-3 border-t pt-3 flex items-center space-x-2">
             <input
               type="text"
+              maxLength={4000}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); } }}
@@ -157,7 +128,7 @@ export default function SommelierPage() {
             <h2 className="text-lg font-semibold text-gray-900">{isPortugueseMode ? 'Sua Adega (disponíveis)' : 'Your Cellar (available)'}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            {wines.filter(w => w.status === 'in_cellar').map(w => (
+            {wines.filter(w => w.status === 'in_cellar' && w.quantity > 0).map(w => (
               <div key={w.id} className="border rounded-md p-2">
                 <div className="font-medium text-gray-900">{w.bottle}</div>
                 <div className="text-gray-600">{w.style} • {w.region} • {w.vintage}</div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import CellarDialog from './CellarDialog';
 import type { Wine } from '@/types/wine';
+import { tastingNotes, toggleTastingNote } from '@/lib/palate';
 
 export function ReviewFields({ rating, comment, onRating, onComment, pt }: {
   rating: string; comment: string; onRating: (value: string) => void; onComment: (value: string) => void; pt: boolean;
@@ -10,6 +11,11 @@ export function ReviewFields({ rating, comment, onRating, onComment, pt }: {
   return <div className="personal-review-fields">
     <label>{pt ? 'Minha nota' : 'My score'}<div className="score-input"><input type="number" min={0} max={100} step={1} value={rating} onChange={event => onRating(event.target.value)} placeholder="—" /><span>/ 100</span></div><small>{pt ? 'Opcional. Sem nota, fica no final do diário.' : 'Optional. Unrated bottles appear at the end of your journal.'}</small></label>
     <label>{pt ? 'Meu comentário' : 'My comment'}<textarea value={comment} onChange={event => onComment(event.target.value)} maxLength={5000} rows={4} placeholder={pt ? 'O sabor, a companhia, a ocasião…' : 'The flavor, the company, the occasion…'} /><small>{pt ? 'Sua nota e seu comentário pertencem apenas ao seu diário.' : 'Your score and comment are personal to your journal.'}</small></label>
+    <div className="review-note-chips" aria-label={pt ? 'Notas rápidas' : 'Quick tasting notes'}>{tastingNotes.map(note => {
+      const text = pt ? note.pt : note.en;
+      return <button key={note.id} type="button" aria-pressed={comment.split('\n').includes(text)} onClick={() => onComment(toggleTastingNote(comment, text).slice(0, 5000))}>{text.replace(/\.$/, '')}</button>;
+    })}</div>
+    <small>{pt ? 'Estas notas são adicionadas ao comentário. “Jovem demais” e “defeito” excluem esta prova do aprendizado.' : 'These notes are added to your comment. “Too young to judge” and “faulty” exclude this tasting from learning.'}</small>
   </div>;
 }
 

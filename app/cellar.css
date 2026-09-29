@@ -940,3 +940,12 @@ summary::-webkit-details-marker { display: none; }
 .account-management { border-top: 1px solid var(--line); padding: 6px 0; }
 .account-dropdown .account-management button { border: 0; padding: 10px 8px; border-radius: 4px; text-align: left; }
 .account-dropdown .account-management button:hover:not(:disabled) { background: #f4e8e9; color: var(--burgundy); }
+
+.account-dropdown .account-palate-link { display: flex; align-items: center; gap: 10px; padding: 12px 0; font-size: 13px; }
+.review-note-chips { display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0; }
+.review-note-chips button { border: 1px solid var(--line); border-radius: 20px; padding: 7px 12px; font-size: 12px; background: var(--paper); }
+.review-note-chips button[aria-pressed=true] { color: var(--burgundy); border-color: var(--burgundy); background: #f4e7e9; }
+
+.ritual-evidence { font-size: 12px; line-height: 1.6; margin-top: 12px; color: var(--muted); }
+.ritual-evidence summary { cursor: pointer; color: var(--burgundy); }
+.ritual-evidence ul { margin-top: 8px; }

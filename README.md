@@ -2,6 +2,10 @@
 
 A modern wine inventory management system backed by Supabase Auth and Postgres built with Next.js, TypeScript, and Tailwind CSS. Perfect for wine enthusiasts who want to track their collection, manage inventory, and keep detailed notes about their wines.
 
+## AI and API architecture
+
+See [the AI integrations and API map](docs/ai-integrations.md) for the current models, prompts, data flows, configuration, and known gaps.
+
 ## ✨ Features
 
 ### 🏠 **Dashboard & Overview**
