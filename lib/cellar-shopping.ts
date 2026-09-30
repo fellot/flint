@@ -1,5 +1,7 @@
 import type { Wine } from '../types/wine';
 import { getEssentialJournalMatches, getEssentialMatches } from './cellar-essentials';
+import { CELLAR_ESSENTIALS } from '../data/cellar-essentials';
+import type { ShoppingGap } from '../types/shopping';
 
 export type ShoppingCoverage = {
   status: 'unknown' | 'in-cellar' | 'in-journal' | 'unmatched' | 'check-blend';
@@ -49,4 +51,16 @@ export function getShoppingCoverage(essentialId: string, wines: Wine[], inventor
     cellarCount,
     journalCount,
   };
+}
+
+/** All guide styles, derived solely from the supplied authorized inventory. */
+export function getShoppingGaps(wines: Wine[]): ShoppingGap[] {
+  const stock = wines.filter(w => w.status === 'in_cellar' && w.quantity > 0);
+  return CELLAR_ESSENTIALS.map(entry => {
+    const coverage = getShoppingCoverage(entry.id, wines);
+    const uncertainStock = getShoppingCoverage(entry.id, stock).status === 'check-blend';
+    return { id: entry.id, name: entry.name, category: entry.category, tier: entry.tier,
+      cellarCount: coverage.cellarCount, journalCount: coverage.journalCount,
+      status: coverage.cellarCount ? 'covered' : uncertainStock ? 'review' : coverage.journalCount ? 'restock' : 'explore' };
+  });
 }

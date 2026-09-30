@@ -5,7 +5,7 @@ Implemented in the repository on 2026-09-28. Apply the migration and deploy befo
 ## Setup
 
 1. In Supabase → SQL Editor → New query, run the complete contents of [`20260928000000_personal_palate.sql`](../supabase/migrations/20260928000000_personal_palate.sql). Run this after the existing cellar/journal migrations. It is safe to rerun: existing preferences are preserved.
-2. Deploy this application revision. The existing server-only `OPENAI_API_KEY` powers both sommelier interfaces and the evening planner. No new package or API key is needed.
+2. Deploy this application revision. The existing server-only `OPENAI_API_KEY` powers both sommelier interfaces, the evening planner and the Cellar Essentials buyer. No new package or API key is needed.
 3. Open **My palate** in the sidebar, account menu, journal, or sommelier. Edit preferences and press **Save my palate**.
 
 The migration seeds only the confirmed account `felipeloturco@gmail.com` with the owner's stated adventurous/avoid-semi-sweet/no-fixed-budget preferences, if that account exists. Other users start neutral. No global personal preferences are hard-coded into the app. A missing migration produces an actionable error rather than silently losing preferences.
@@ -36,7 +36,7 @@ Both `POST /api/ai/sommelier` and `POST /api/ai/reserve` use `lib/ai/personal-so
 5. One `gpt-6-luna` Chat Completions call identifies up to four suitable wines and explains each, or returns an answer/question. Food and free-text suitability are still model judgments; the server sorts the model's suitable set by maturity, then supported taste affinity (except adventurous mode, which retains model ordering within a maturity tier).
 6. Validate IDs, fields, sizes and actual journal evidence references. Resolve bottle metadata from the server, never a model-invented identity. Rank suitable suggestions in code and display a contrasting unfamiliar alternative when one was supplied and can be established from this journal's coverage.
 
-The AI does not guarantee full-cellar optimality, infer unrecorded sweetness/chemistry, search live shops, purchase bottles, or learn hidden permanent preferences from chat. Mature-but-unsuitable wines must not be included just to satisfy ranking. Larger-cellar retrieval and a quality evaluation with live provider responses remain future work.
+The drinking sommelier does not guarantee full-cellar optimality, infer unrecorded sweetness/chemistry, search live shops, purchase bottles, or learn hidden permanent preferences from chat. The separate [Cellar Essentials buyer](cellar-buyer.md) now uses the same permitted personal context to research shopping options. Mature-but-unsuitable wines must not be included just to satisfy ranking. Larger-cellar retrieval and a quality evaluation with live provider responses remain future work.
 
 The evening planner keeps its existing occasion filters and local fallback. Only the explicit AI action is personalized. Main-card shuffling remains local, not an AI request.
 

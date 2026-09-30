@@ -28,6 +28,6 @@ export default function CellarEssentialsPage() {
   }, [cellar.id, revision]);
 
   const current = inventory?.cellarId === cellar.id ? inventory : null;
-  return <CellarEssentials wines={current?.wines || []} locale={cellar.locale} loading={!current}
+  return <CellarEssentials key={cellar.id} cellarId={cellar.id} cellarName={cellar.name} wines={current?.wines || []} locale={cellar.locale} loading={!current}
     error={current?.error} onRetry={() => setRevision(value => value + 1)} />;
 }

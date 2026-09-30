@@ -28,13 +28,15 @@ function tastingDate(value: string | null, locale: 'en' | 'pt') {
 
 interface Props {
   wines: Wine[];
+  cellarId: string;
+  cellarName: string;
   locale?: 'en' | 'pt';
   loading?: boolean;
   error?: boolean;
   onRetry?: () => void;
 }
 
-export default function CellarEssentials({ wines, locale = 'en', loading = false, error = false, onRetry }: Props) {
+export default function CellarEssentials({ wines, cellarId, cellarName, locale = 'en', loading = false, error = false, onRetry }: Props) {
   const pt = locale === 'pt';
   const [view, setView] = useState<'guide' | 'shopping'>('guide');
   const [category, setCategory] = useState<GuideCategory | 'all'>('all');
@@ -78,12 +80,13 @@ export default function CellarEssentials({ wines, locale = 'en', loading = false
 
     <div className="essentials-view-switch" role="group" aria-label={pt ? 'Seção do guia' : 'Guide section'}>
       <button type="button" aria-pressed={view === 'guide'} onClick={() => setView('guide')}><BookOpen size={16} />{pt ? 'Guia de estilos' : 'Field guide'}</button>
-      <button type="button" aria-pressed={view === 'shopping'} onClick={() => setView('shopping')}><ShoppingBag size={16} />{pt ? 'Lista de compras' : 'Shopping list'}<span>{pt ? 'Tintos' : 'Reds'}</span></button>
+      <button type="button" aria-pressed={view === 'shopping'} onClick={() => setView('shopping')}><ShoppingBag size={16} />{pt ? 'Lista de compras' : 'Shopping list'}<span>{pt ? 'Para esta adega' : 'For this cellar'}</span></button>
     </div>
 
-    {error && <div className="essentials-error" role="alert"><p>{pt ? 'Você pode explorar o guia e a lista de compras. Não foi possível consultar seus vinhos agora.' : 'You can still explore the guide and shopping list. We couldn’t check your wines right now.'}</p>{onRetry && <button type="button" onClick={onRetry}>{pt ? 'Tentar novamente' : 'Try again'}</button>}</div>}
+    {error && <div className="essentials-error" role="alert"><p>{pt ? 'Você pode explorar o guia. Não foi possível consultar seus vinhos para identificar lacunas agora.' : 'You can still explore the guide. We couldn’t check your wines to identify shopping gaps right now.'}</p>{onRetry && <button type="button" onClick={onRetry}>{pt ? 'Tentar novamente' : 'Try again'}</button>}</div>}
 
-    {view === 'shopping' ? <CellarEssentialsShopping wines={wines} locale={locale} loading={loading} error={error} /> : <>
+    <div hidden={view !== 'shopping'}><CellarEssentialsShopping key={cellarId} wines={wines} cellarId={cellarId} cellarName={cellarName} locale={locale} loading={loading} error={error} /></div>
+    {view === 'guide' && <>
     <section className="essentials-controls" aria-label={pt ? 'Explorar o guia' : 'Browse the guide'}>
       <div className="essentials-search-row">
         <label className="essentials-search"><Search size={18} /><span className="sr-only">{pt ? 'Buscar estilos, uvas ou regiões' : 'Search styles, grapes or regions'}</span><input type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder={pt ? 'Uma uva, uma região, algo novo…' : 'A grape, a place, something new…'} />{search && <button type="button" onClick={() => setSearch('')} aria-label={pt ? 'Limpar busca' : 'Clear search'}><X size={16} /></button>}</label>

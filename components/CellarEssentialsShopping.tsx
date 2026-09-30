@@ -1,81 +1,142 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { ArrowUpRight, BookOpen, Check, ChevronDown, ShoppingBag } from 'lucide-react';
-import { CELLAR_ESSENTIALS } from '@/data/cellar-essentials';
-import { CELLAR_SHOPPING_PICKS, SHOPPING_REVIEWED_AT, US_WINE_RESTRICTION_URL } from '@/data/cellar-shopping';
-import { getShoppingCoverage } from '@/lib/cellar-shopping';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
+import { ArrowUpRight, Check, ChevronDown, Loader2, Search, Send, ShoppingBag, Sparkles, X } from 'lucide-react';
+import { CELLAR_ESSENTIALS, type GuideCategory } from '@/data/cellar-essentials';
+import { getShoppingGaps } from '@/lib/cellar-shopping';
+import { readResponse } from '@/lib/client-api';
+import type { ShoppingBrief, ShoppingReply } from '@/types/shopping';
 import type { Wine } from '@/types/wine';
+import './cellar-shopping.css';
 
 interface Props {
-  wines: Wine[];
-  locale: 'en' | 'pt';
-  loading: boolean;
-  error: boolean;
+  wines: Wine[]; cellarId: string; cellarName: string;
+  locale: 'en' | 'pt'; loading: boolean; error: boolean;
 }
+type Turn = { id: number; user: string; reply?: ShoppingReply; error?: string };
+const emptyBrief: ShoppingBrief = { market: '', retailers: '', budget: '' };
+const categories: [GuideCategory | 'all', string, string][] = [
+  ['all', 'All styles', 'Todos os estilos'], ['red', 'Reds', 'Tintos'], ['white', 'Whites', 'Brancos'],
+  ['sparkling', 'Sparkling', 'Espumantes'], ['rose', 'Rosé', 'Rosés'], ['fortified', 'Dry fortified', 'Fortificados secos'], ['sweet', 'Sweet', 'Doces'],
+];
 
-export default function CellarEssentialsShopping({ wines, locale, loading, error }: Props) {
+export default function CellarEssentialsShopping({ wines, cellarId, cellarName, locale, loading, error }: Props) {
   const pt = locale === 'pt';
-  const [scope, setScope] = useState<'all' | 'new' | 'journal'>('all');
+  const [brief, setBrief] = useState<ShoppingBrief>({ ...emptyBrief });
+  const [draft, setDraft] = useState('');
+  const [turns, setTurns] = useState<Turn[]>([]);
+  const [pending, setPending] = useState(false);
+  const [category, setCategory] = useState<GuideCategory | 'all'>('all');
+  const coverage = useRef<HTMLDetailsElement>(null);
+  const [scope, setScope] = useState<'gaps' | 'explore' | 'restock' | 'covered'>('gaps');
+  const controller = useRef<AbortController | null>(null);
+  const turnId = useRef(0);
+  const replyHeading = useRef<HTMLHeadingElement>(null);
   const available = !loading && !error;
-  const coverage = useMemo(() => new Map(CELLAR_SHOPPING_PICKS.map(pick => [pick.id, getShoppingCoverage(pick.essentialId, wines, available)])), [wines, available]);
-  const picks = CELLAR_SHOPPING_PICKS.filter(pick => !available || scope === 'all' || coverage.get(pick.id)?.status === (scope === 'new' ? 'unmatched' : 'in-journal'));
-  const date = new Intl.DateTimeFormat(pt ? 'pt-BR' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${SHOPPING_REVIEWED_AT}T12:00:00Z`));
-  const money = (value: number) => new Intl.NumberFormat(pt ? 'pt-BR' : 'en-CA', { style: 'currency', currency: 'CAD', currencyDisplay: 'narrowSymbol' }).format(value);
+  const gaps = useMemo(() => getShoppingGaps(wines), [wines]);
+  const counts = (status: string) => gaps.filter(g => g.status === status).length;
+  const visible = gaps.filter(g => (category === 'all' || g.category === category)
+    && (scope === 'gaps' ? g.status !== 'covered' : g.status === scope));
+  const latest = [...turns].reverse().find(t => t.reply)?.reply;
+  const latestGapStatus = new Map(gaps.map(g => [g.id, g.status]));
 
-  return <section className="essentials-shopping" aria-labelledby="shopping-heading">
+  useEffect(() => () => controller.current?.abort(), []);
+
+  async function send(message: string) {
+    const content = message.trim();
+    if (!content || controller.current || !available) return;
+    const currentController = new AbortController();
+    controller.current = currentController;
+    const id = ++turnId.current;
+    const previous = turns.filter(t => t.reply);
+    const messages = [...previous.map(t => ({ role: 'user', content: t.user })), { role: 'user', content }].slice(-12);
+    setTurns(current => [...current, { id, user: content }]);
+    setDraft(''); setPending(true);
+    const timeout = setTimeout(() => currentController.abort('timeout'), 110000);
+    try {
+      const response = await fetch('/api/ai/shopping', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: currentController.signal,
+        body: JSON.stringify({ cellarId, messages, brief,
+          previousProducts: latest?.products.map(p => ({ name: p.name, url: p.url })) || [] }),
+      });
+      const reply = await readResponse<ShoppingReply>(response);
+      if (reply.cellarId !== cellarId || !Array.isArray(reply.products)) throw new Error(pt ? 'A pesquisa não corresponde à adega selecionada.' : 'The research does not match the selected cellar.');
+      if (currentController.signal.aborted) return;
+      setBrief(reply.brief);
+      setTurns(current => current.map(t => t.id === id ? { ...t, reply } : t));
+      // Keep page scrolling natural; keyboard/screen-reader users can find the new reply.
+      requestAnimationFrame(() => replyHeading.current?.focus({ preventScroll: true }));
+    } catch (e) {
+      const message = currentController.signal.aborted
+        ? (pt ? 'Pesquisa interrompida. Você pode tentar novamente.' : 'Research stopped. You can try again.')
+        : e instanceof Error ? e.message : (pt ? 'Não foi possível pesquisar.' : 'Could not complete the research.');
+      setTurns(current => current.map(t => t.id === id ? { ...t, error: message } : t));
+      setDraft(content);
+    } finally {
+      clearTimeout(timeout);
+      if (controller.current === currentController) { controller.current = null; setPending(false); }
+    }
+  }
+
+  const starters = [
+    pt ? 'Quais são as principais lacunas desta adega?' : 'What are the biggest gaps in this cellar?',
+    pt ? 'Encontre três tintos para preencher as lacunas.' : 'Find three reds to fill the gaps.',
+    pt ? 'Quero começar uma adega pequena e variada.' : 'Help me start a small, varied cellar.',
+  ];
+  const date = (s: string) => new Intl.DateTimeFormat(pt ? 'pt-BR' : 'en-CA', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(s));
+  const money = (amount: number, currency: string) => {
+    try { return new Intl.NumberFormat(pt ? 'pt-BR' : 'en-CA', { style: 'currency', currency, currencyDisplay: 'code' }).format(amount); }
+    catch { return `${currency} ${amount.toFixed(2)}`; }
+  };
+
+  return <section className="essentials-shopping cellar-buyer" aria-labelledby="shopping-heading">
     <header className="shopping-heading">
-      <div><p className="eyebrow">{pt ? 'A PRÓXIMA GARRAFA · TINTOS' : 'THE NEXT BOTTLE · RED WINES'}</p><h2 id="shopping-heading">{pt ? 'Abra espaço para uma descoberta.' : 'Make room for a new favourite.'}</h2><p>{pt ? 'Uma seleção da LCBO e Cellar Collection para explorar novos estilos, revisitar favoritos e comparar expressões.' : 'A shortlist from LCBO and the Cellar Collection to explore new styles, revisit favourites, and try a different expression.'}</p></div>
-      <div className="shopping-edition"><ShoppingBag size={19} strokeWidth={1.4} /><strong>{CELLAR_SHOPPING_PICKS.length}</strong><span>{pt ? 'escolhas para explorar' : 'picks to explore'}</span></div>
+      <div><p className="eyebrow">{pt ? 'A PRÓXIMA GARRAFA' : 'THE NEXT BOTTLE'} · {cellarName}</p><h2 id="shopping-heading">{pt ? 'Uma adega com a sua assinatura.' : 'A cellar with your signature.'}</h2>
+        <p>{pt ? 'Descubra o que falta, diga onde você compra e encontre garrafas que acrescentam algo à sua coleção.' : 'Discover what’s missing, tell me where you shop, and find bottles that bring something new to your collection.'}</p></div>
+      <div className="shopping-edition"><ShoppingBag size={19} strokeWidth={1.4} /><strong>{available ? counts('explore') + counts('restock') : '—'}</strong><span>{pt ? 'estilos fora do estoque' : 'styles absent from stock'}</span></div>
     </header>
 
-    <div className="shopping-toolbar">
-      <p>{pt ? 'Pesquisa de' : 'Researched'} <time dateTime={SHOPPING_REVIEWED_AT}>{date}</time><span> · </span>CAD / 750 mL</p>
-      <label>{pt ? 'Mostrar' : 'Show'}<select value={available ? scope : 'all'} disabled={!available} onChange={event => setScope(event.target.value as typeof scope)}><option value="all">{pt ? 'Todas as sugestões' : 'All suggestions'}</option><option value="new">{pt ? 'Sem correspondência nos meus vinhos' : 'No match in my wines'}</option><option value="journal">{pt ? 'No diário, fora da adega' : 'Tasted, no longer in cellar'}</option></select></label>
+    {!available ? <p className="buyer-notice" role="status">{loading ? (pt ? 'Consultando esta adega…' : 'Checking this cellar…') : (pt ? 'Não é possível identificar lacunas enquanto o estoque estiver indisponível. Tente carregar seus vinhos novamente.' : 'Gaps cannot be identified while inventory is unavailable. Reload your wines to continue.')}</p> : <>
+      <div className="buyer-overview" aria-label={pt ? 'Cobertura desta adega' : 'Coverage of this cellar'}>
+        <button onClick={() => { setScope('covered'); if (coverage.current) coverage.current.open = true; }} aria-pressed={scope === 'covered'}><strong>{counts('covered')}</strong><span>{pt ? 'estilos na adega' : 'styles in cellar'}</span></button>
+        <button onClick={() => { setScope('explore'); if (coverage.current) coverage.current.open = true; }} aria-pressed={scope === 'explore'}><strong>{counts('explore')}</strong><span>{pt ? 'sem correspondência' : 'without a match'}</span></button>
+        <button onClick={() => { setScope('restock'); if (coverage.current) coverage.current.open = true; }} aria-pressed={scope === 'restock'}><strong>{counts('restock')}</strong><span>{pt ? 'no diário, fora do estoque' : 'tasted, no longer stocked'}</span></button>
+        <button onClick={() => { setScope('gaps'); if (coverage.current) coverage.current.open = true; }} aria-pressed={scope === 'gaps'}><Search size={18} /><span>{pt ? 'Ver oportunidades' : 'See opportunities'}</span></button>
+      </div>
+      <details ref={coverage} className="buyer-coverage">
+        <summary>{pt ? 'O mapa da sua coleção' : 'Your collection at a glance'}<span>{pt ? 'Todos os fundamentais' : 'All Essentials'}</span><ChevronDown size={16} /></summary>
+        <div className="buyer-gap-filters"><label>{pt ? 'Tipo de vinho' : 'Wine type'}<select value={category} onChange={e => setCategory(e.target.value as typeof category)}>{categories.map(([id, en, br]) => <option key={id} value={id}>{pt ? br : en}</option>)}</select></label><p>{pt ? 'Correspondências conservadoras: dados incompletos podem ocultar um estilo que você já tem. Os doces são opcionais.' : 'Matches use recorded wine details; incomplete records can hide a style you already own. Sweet styles are optional.'}</p></div>
+        <ul className="buyer-gap-list">{visible.map(g => <li key={g.id}><div><strong>{g.name[locale]}</strong><span>{g.status === 'covered' ? (pt ? 'Na adega' : 'In cellar') : g.status === 'restock' ? (pt ? 'Já provado · fora do estoque' : 'Tasted · absent from stock') : g.status === 'review' ? (pt ? 'Conferir composição do corte' : 'Check blend composition') : (pt ? 'Sem correspondência no estoque ou diário' : 'No match in stock or journal')}</span></div>{['explore', 'restock'].includes(g.status) && <button disabled={pending} onClick={() => void send(pt ? `Vamos explorar opções de ${g.name.pt} para esta adega.` : `Let’s explore ${g.name.en} options for this cellar.`)} aria-label={`${pt ? 'Pesquisar' : 'Research'} ${g.name[locale]}`}><ArrowUpRight size={16} /></button>}{g.status === 'covered' && <Check size={15} />}</li>)}</ul>
+        {!visible.length && <p className="buyer-notice">{pt ? 'Nenhum estilo nesta seleção.' : 'No styles in this selection.'}</p>}
+      </details>
+    </>}
+
+    <div className="buyer-conversation">
+      <header className="buyer-intro"><span className="buyer-monogram"><Sparkles size={22} strokeWidth={1.2} /></span><div><h3>{pt ? 'Seu comprador de vinhos.' : 'Your wine buyer.'}</h3><p>{pt ? 'Da lacuna à garrafa certa. Vamos conversar.' : 'From a missing style to the right bottle. Let’s talk.'}</p></div><Link href="/my-palate">{pt ? 'Meu paladar' : 'My palate'}<ArrowUpRight size={13} /></Link></header>
+      <p className="buyer-context-note">{pt ? `Esta conversa é para ${cellarName}. Usa o estoque atual e suas preferências pessoais; começa do zero ao mudar de adega ou recarregar.` : `This conversation belongs to ${cellarName}. It uses current stock and your personal preferences; it starts fresh when you switch cellars or reload.`}</p>
+      <div className="buyer-brief"><label>{pt ? 'Onde você compra?' : 'Where do you shop?'}<input value={brief.market} onChange={e => setBrief(b => ({ ...b, market: e.target.value }))} maxLength={160} disabled={pending} placeholder={pt ? 'País, região ou cidade' : 'Country, region or city'} /></label><label>{pt ? 'Lojas preferidas · opcional' : 'Preferred retailers · optional'}<input value={brief.retailers} onChange={e => setBrief(b => ({ ...b, retailers: e.target.value }))} maxLength={240} disabled={pending} placeholder={pt ? 'Ex.: LCBO + Cellar Collection' : 'e.g. LCBO + Cellar Collection'} /></label><label>{pt ? 'Orçamento · opcional' : 'Budget · optional'}<input value={brief.budget} onChange={e => setBrief(b => ({ ...b, budget: e.target.value }))} maxLength={160} disabled={pending} placeholder={pt ? 'Por garrafa e moeda, ou sem limite' : 'Per bottle and currency, or no limit'} /></label></div>
+      {!turns.length && <div className="buyer-starters">{starters.map(s => <button key={s} disabled={!available || pending} onClick={() => void send(s)}>{s}<ArrowUpRight size={14} /></button>)}</div>}
+      <div className="buyer-transcript" aria-label={pt ? 'Conversa de compras' : 'Shopping conversation'}>
+        {turns.map((turn, index) => <article className="buyer-turn" key={turn.id}>
+          <p className="buyer-user"><span>{pt ? 'Você' : 'You'}</span>{turn.user}</p>
+          {turn.error && <p className="buyer-notice buyer-error" role="alert">{turn.error}</p>}
+          {turn.reply && <div className="buyer-answer"><h4 tabIndex={-1} ref={index === turns.length - 1 ? replyHeading : undefined}>{pt ? 'O sommelier sugere' : 'From your sommelier'}{turn.reply.searched && <small>{pt ? 'Pesquisa de' : 'Researched'} {date(turn.reply.checkedAt)}</small>}</h4><p className="buyer-prose">{turn.reply.answer}</p>
+            {turn.reply.products.length > 0 && <div className="buyer-products">{turn.reply.products.map(p => {
+              const style = CELLAR_ESSENTIALS.find(e => e.id === p.essentialId)!;
+              const nowCovered = latestGapStatus.get(p.essentialId) === 'covered';
+              return <article className="buyer-product" key={p.url}><p className="eyebrow">{style.name[locale]}{nowCovered ? (pt ? ' · Agora na adega' : ' · Now in cellar') : ''}</p><h5><a href={p.url} target="_blank" rel="noopener noreferrer">{p.name}<ArrowUpRight size={14} /></a></h5><p className="buyer-product-meta">{p.vintage ?? (pt ? 'Safra não confirmada / NV' : 'Vintage unconfirmed / NV')} · {p.retailer}{p.size ? ` · ${p.size}` : ''}</p><p>{p.reason}</p><div className="buyer-price"><strong>{p.price !== null && p.currency ? money(p.price, p.currency) : (pt ? 'Preço não confirmado' : 'Price unconfirmed')}</strong><span className={`buyer-stock buyer-stock-${p.availability}`}>{p.availability === 'available' ? (pt ? 'Disponível na pesquisa' : 'Available at research') : p.availability === 'unavailable' ? (pt ? 'Indisponível na pesquisa' : 'Unavailable at research') : (pt ? 'Estoque não confirmado' : 'Stock unconfirmed')}</span></div><p className="buyer-product-note">{p.availabilityNote}</p><details><summary>{pt ? 'Por que esta opção?' : 'About this option'}<ChevronDown size={13} /></summary><p>{p.evidence}</p>{p.drinkingGuidance && <p>{p.drinkingGuidance}</p>}</details><a className="buyer-retailer" href={p.url} target="_blank" rel="noopener noreferrer">{pt ? 'Conferir no vendedor' : 'Check retailer'}<ArrowUpRight size={14} /></a></article>;
+            })}</div>}
+            {turn.reply.omitted > 0 && <p className="buyer-notice">{pt ? 'Algumas opções foram removidas porque não foi possível validar o link, o estilo ou a lacuna. Peça outra pesquisa.' : 'Some options were omitted because their source, style or cellar gap could not be validated. Ask for another search.'}</p>}
+            {turn.reply.searched && !turn.reply.products.length && <p className="buyer-notice">{pt ? 'Nenhuma opção de compra validada nesta pesquisa.' : 'No validated purchase options in this search.'}</p>}
+            {turn.reply.sources.length > 0 && <details className="buyer-sources"><summary>{pt ? 'Fontes da pesquisa' : 'Research sources'}<ChevronDown size={13} /></summary><ul>{turn.reply.sources.map(s => <li key={s.url}><a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}<ArrowUpRight size={12} /></a></li>)}</ul></details>}
+            {turn.reply.question && <p className="buyer-question">{turn.reply.question}</p>}
+          </div>}
+        </article>)}
+      </div>
+      {pending && <div className="buyer-progress" role="status"><Loader2 size={16} className="buyer-spinner" /><span>{pt ? 'Consultando sua adega e preparando a resposta. Pesquisas online podem levar cerca de um minuto…' : 'Reviewing your cellar and preparing a reply. Online research can take about a minute…'}</span><button onClick={() => controller.current?.abort()}>{pt ? 'Parar' : 'Stop'}</button></div>}
+      <form className="buyer-compose" onSubmit={e => { e.preventDefault(); void send(draft); }}><label className="sr-only" htmlFor="buyer-message">{pt ? 'Mensagem para o comprador' : 'Message your wine buyer'}</label><textarea id="buyer-message" value={draft} onChange={e => setDraft(e.target.value)} maxLength={2000} rows={2} disabled={!available || pending} placeholder={pt ? 'Encontre brancos secos para as lacunas. Quero beber neste ano…' : 'Find dry whites for my gaps. I’d like to drink them this year…'} /><button className="flint-button" disabled={!available || pending || !draft.trim()} type="submit"><Send size={15} />{pt ? 'Enviar' : 'Send'}</button></form>
+      <footer className="buyer-footer"><p>{pt ? 'Preços, safras e estoque podem mudar. Confirme no vendedor. As sugestões não compram nem adicionam garrafas ao estoque.' : 'Prices, vintages and stock can change. Confirm with the retailer. Suggestions never purchase or add bottles to your stock.'}</p>{turns.length > 0 && <button disabled={pending} onClick={() => { setTurns([]); setDraft(''); setBrief({ ...emptyBrief }); }}><X size={13} />{pt ? 'Nova conversa' : 'Start fresh'}</button>}</footer>
     </div>
-    <p className="shopping-stock-note">{pt ? 'Preços e estoque refletem a data da pesquisa. Confirme a safra, o preço e a disponibilidade no link antes de comprar.' : 'Prices and stock reflect the research date. Check the linked listing for the current vintage, price and availability before buying.'}</p>
-
-    <div className="shopping-list" role="list" aria-label={pt ? 'Sugestões de compra de tintos' : 'Red wine shopping suggestions'}>
-      {picks.map(pick => {
-        const entry = CELLAR_ESSENTIALS.find(item => item.id === pick.essentialId)!;
-        const match = coverage.get(pick.id)!;
-        const number = CELLAR_SHOPPING_PICKS.indexOf(pick) + 1;
-        const retailer = pick.retailer === 'cellar-collection' ? 'Cellar Collection' : 'LCBO';
-        return <article key={pick.id} className={`shopping-pick${pick.availability === 'unavailable' ? ' shopping-pending' : ''}`} role="listitem">
-          <div className="shopping-style">
-            <span className="shopping-number">{String(number).padStart(2, '0')}</span>
-            <div><p className="shopping-intent">{pick.intent === 'restock' ? (pt ? 'PARA REVISITAR' : 'TO REVISIT') : pick.intent === 'contrast' ? (pt ? 'UM CONTRASTE OPCIONAL' : 'AN OPTIONAL CONTRAST') : (pt ? 'PARA EXPLORAR' : 'TO EXPLORE')}</p><h3>{entry.name[locale]}</h3>
-              <div className="shopping-coverage">
-                {match.cellarCount > 0 && <span className="shopping-in-cellar"><Check size={12} />{pt ? 'Na sua adega' : 'In your cellar'}</span>}
-                {match.journalCount > 0 && <span className="shopping-in-journal"><BookOpen size={12} />{pt ? 'No seu diário' : 'In your journal'}</span>}
-                {match.status === 'unmatched' && <span>{pt ? 'Sem correspondência nos seus vinhos' : 'No match in your wines'}</span>}
-                {match.status === 'check-blend' && <span>{pt ? 'Confira a proporção de Malbec nos seus cortes' : 'Check Malbec proportions in your blends'}</span>}
-                {match.status === 'unknown' && <span>{loading ? (pt ? 'Consultando seus vinhos…' : 'Checking your wines…') : (pt ? 'Correspondências indisponíveis' : 'Matches unavailable')}</span>}
-              </div>
-            </div>
-          </div>
-
-          <div className="shopping-wine">
-            <p className="shopping-wine-meta">{pick.vintage} <span>·</span> {retailer} <span>·</span> #{pick.sku}</p>
-            <h4><a href={pick.url} target="_blank" rel="noopener noreferrer">{pick.name}<ArrowUpRight size={14} /><span className="sr-only">{pt ? '(abre em nova aba)' : '(opens in a new tab)'}</span></a></h4>
-            <p>{pick.reason[locale]}</p>
-            {(pick.note || pick.alternatives?.length) && <details className="shopping-details"><summary>{pick.alternatives?.length ? (pt ? 'Notas e outras opções' : 'Notes & other options') : (pt ? 'Notas da seleção' : 'Selection notes')}<ChevronDown size={13} /></summary>
-              <div>{pick.note && <p>{pick.note[locale]}</p>}{pick.availability === 'unavailable' && <a className="shopping-source-link" href={US_WINE_RESTRICTION_URL} target="_blank" rel="noopener noreferrer">{pt ? 'Informações da LCBO sobre produtos dos EUA' : 'LCBO update on U.S. products'}<ArrowUpRight size={12} /></a>}
-                {pick.alternatives?.map(alternative => <div className="shopping-alternative" key={alternative.url}><a href={alternative.url} target="_blank" rel="noopener noreferrer">{alternative.name}<ArrowUpRight size={12} /></a><strong>{money(alternative.priceCad)}</strong><p>{alternative.note[locale]}</p></div>)}
-              </div>
-            </details>}
-          </div>
-
-          <div className="shopping-buy">
-            <strong className="shopping-price">{money(pick.priceCad)}</strong>
-            {pick.availability === 'unavailable' && <small>{pt ? 'Último preço anunciado' : 'Last listed price'}</small>}
-            <span className={`shopping-availability availability-${pick.availability}`}>{pick.availability === 'unavailable' ? (pt ? 'Indisponível na pesquisa' : 'Unavailable at review') : pick.availability === 'observed-stock' ? (pt ? `${pick.observedQuantity} observadas em ${date}` : `${pick.observedQuantity} observed ${date}`) : (pt ? 'Estoque não confirmado' : 'Stock unconfirmed')}</span>
-            <a className="shopping-retailer-link" href={pick.url} target="_blank" rel="noopener noreferrer">{pick.availability === 'unavailable' ? (pt ? 'Ver anúncio' : 'View listing') : (pt ? `Ver na ${retailer}` : `View at ${retailer}`)}<ArrowUpRight size={14} /><span className="sr-only">{pt ? '(abre em nova aba)' : '(opens in a new tab)'}</span></a>
-          </div>
-        </article>;
-      })}
-    </div>
-    {!picks.length && <div className="essentials-empty"><ShoppingBag size={25} /><h3>{pt ? 'Explore a seleção completa.' : 'Explore the full shortlist.'}</h3><p>{pt ? 'Nenhuma sugestão corresponde a esse filtro.' : 'No suggestions match this filter.'}</p><button type="button" className="flint-button secondary" onClick={() => setScope('all')}>{pt ? 'Ver todas as sugestões' : 'Show all suggestions'}</button></div>}
-    <footer className="shopping-footnote"><p>{pt ? 'As correspondências acompanham seu estoque e seu diário pessoal; a seleção de compras é uma pesquisa datada. Malbec exige uma referência liderada pela uva — cortes de proporção desconhecida pedem conferência.' : 'Matches follow your current stock and personal journal; the shopping shortlist is dated research. Malbec calls for a grape-led reference — blends with unknown proportions need a closer look.'}</p><p>{pt ? 'Nesta edição: apenas tintos. Cadastros incompletos podem não aparecer nas correspondências.' : 'This edition covers red wines. Incomplete bottle records may not appear in matches.'}</p></footer>
   </section>;
 }

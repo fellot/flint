@@ -1,3 +1,4 @@
+// Historical September 2026 research for Felipe. Not used as recommendations in the live shopping UI.
 import type { LocalizedText } from './cellar-essentials';
 
 export type ShoppingIntent = 'explore' | 'restock' | 'contrast';

@@ -4,7 +4,7 @@ Reviewed: **2026-09-29**. This describes the current repository, not a verified 
 
 ## 1. Overview
 
-Flint has **four AI endpoints**, all implemented as Next.js server routes calling OpenAI with `fetch`. Two interfaces share the sommelier endpoint, two share label scanning, and two forms expose pairing/meal buttons. There is no separate hosted agent, vector database, fine-tuned model, or model-managed persistent memory. Explicit personal preferences now persist in Supabase, with fresh journal-derived evidence.
+Flint has **five AI endpoints**, all implemented as Next.js server routes calling OpenAI with `fetch`. Two interfaces share the sommelier endpoint, two share label scanning, and two forms expose pairing/meal buttons. There is no separate hosted agent, vector database, fine-tuned model, or model-managed persistent memory. Explicit personal preferences now persist in Supabase, with fresh journal-derived evidence.
 
 | User-facing feature | Entry point | Internal call | Model configured in code | External API | Web research? |
 | --- | --- | --- | --- | --- | --- |
@@ -13,6 +13,7 @@ Flint has **four AI endpoints**, all implemented as Next.js server routes callin
 | Add wine by photo | Main cellar → Add a wine → scan | `POST /api/ai/extract-wine` | `gpt-6-luna` | OpenAI Responses | Text and image search tools |
 | Add external wine by photo | Journal → add external wine → scan | Same endpoint | Same scan model | OpenAI Responses | Text and image search tools |
 | Improve Food Pairing Notes / suggest another meal | Scan review in the cellar, or Edit wine in cellar/journal | `POST /api/ai/enrich-pairing` | `gpt-6-luna` | OpenAI Chat Completions | No |
+| Cellar Essentials shopping | `/cellar-essentials` → Shopping list → send a request | `POST /api/ai/shopping` | `gpt-6-luna` | OpenAI Responses | Web search, retrieved URLs and citations |
 | Personalized evening | “Tonight, perhaps…” → Set the mood → Make a night of it | `POST /api/ai/reserve` | `gpt-6-luna` | OpenAI Chat Completions | No |
 
 External OpenAI URLs used by the code:
@@ -20,7 +21,7 @@ External OpenAI URLs used by the code:
 - `https://api.openai.com/v1/chat/completions`
 - `https://api.openai.com/v1/responses`
 
-All AI calls are initiated by a user action. Opening the pet, viewing a page, selecting an occasion, shuffling bottles, or revealing a conversation question does not itself make an AI request. One chat message, scan, pairing/meal click, or personalized-plan submission makes one application-level OpenAI request; a scan can additionally invoke provider-managed web tools within that request.
+All AI calls are initiated by a user action. Opening the pet, viewing a page, selecting an occasion, shuffling bottles, or revealing a conversation question does not itself make an AI request. One chat message, scan, pairing/meal click, or personalized-plan submission makes one application-level OpenAI request; scanning and the cellar buyer can additionally invoke provider-managed web tools within that request.
 
 ```mermaid
 flowchart LR
@@ -34,7 +35,10 @@ flowchart LR
   Reserve --> Completions
   DB[("Supabase inventory, own journal and preferences")] --> Reserve
   DB --> Chat
-  Scan --> Responses["OpenAI Responses"]
+  Buyer["Cellar Essentials buyer"] --> Shopping["POST /api/ai/shopping"]
+  DB --> Shopping
+  Shopping --> Responses["OpenAI Responses"]
+  Scan --> Responses
   Responses --> Search["Web text and image search"]
   Scan --> Review["Editable review form"]
   Review --> Save["User saves through /api/wines"]
@@ -125,27 +129,55 @@ conversation questions still work locally without AI. Only **Make a night of it*
 uses personal context. Closing the dialog aborts the browser request; the provider
 has its own timeout. Generated plans stay in component state.
 
-## 6. Common behavior and remaining gaps
+## 6. Cellar Essentials buyer
+
+**Caller:** `components/CellarEssentialsShopping.tsx`.
+**Route:** `app/api/ai/shopping/route.ts`.
+**Access/request handling:** `lib/ai/shopping-endpoint.ts`.
+**Context, prompt and source validation:** `lib/ai/shopping-advisor.ts`.
+
+The server verifies membership of the requested cellar before reading fresh stock,
+permitted own-journal evidence and the authenticated user's preferences. Coverage
+is calculated for all 39 Essentials. The conversation asks for a shopping market,
+accepts budget/retailer constraints, and researches missing or restocking styles.
+An empty cellar gets a small foundational selection rather than another account's
+shopping list. Unknown blend composition requires review before buying.
+
+Up to six product cards require actual completed web research, a retrieved source
+URL, and a valid match to a current gap. Source presence establishes URL provenance;
+exact product identity, vintage, price and availability still involve model judgment.
+Cards display uncertainty, retailer links and a research timestamp. No LCBO inventory
+API, purchase execution, persisted shortlist or automatic inventory write is used.
+The old curated file remains historical research and is not shown as a live shortlist.
+
+Configuration: `gpt-6-luna`, Responses, reasoning `low`, strict JSON output,
+`max_output_tokens: 5500`, `max_tool_calls: 6`, `store:false`; provider timeout
+100 seconds, browser timeout 110 seconds, route maximum 120 seconds. At most 12
+user turns, 120 descriptive stock labels and 30 eligible personal reviews are sent;
+coverage itself uses all stock. Duplicate suppression is per server instance.
+See [Cellar buyer](cellar-buyer.md) for setup, privacy and remaining validation.
+
+## 7. Common behavior and remaining gaps
 
 | Concern | Current implementation |
 | --- | --- |
-| Provider keys | Server-only `OPENAI_API_KEY` for all four routes |
-| Model selection | All four endpoints use `AI_MODEL` (`gpt-6-luna`) in `lib/ai/models.ts`; no environment override |
+| Provider keys | Server-only `OPENAI_API_KEY` for all five routes |
+| Model selection | All five endpoints use `AI_MODEL` (`gpt-6-luna`) in `lib/ai/models.ts`; no environment override |
 | Streaming | None; browser waits for JSON |
-| Fresh stock | Both chat and planner now read authorized server inventory |
+| Fresh stock | Chat, planner and buyer read authorized server inventory |
 | Journal/taste learning | Per-user preferences, own scores/comments and evidence-based patterns; migration required |
-| Web research | Only scanning; buying agent remains future work |
+| Web research | Scanning and the cellar buyer use Responses web tools |
 | Usage accounting | No shared request/cost telemetry |
-| Rate limits | Planner in-memory cooldown; no distributed limit |
-| Error handling | All four routes keep provider error bodies out of browser responses |
+| Rate limits | Planner cooldown and buyer duplicate suppression; no distributed limit |
+| Error handling | All five routes keep provider error bodies out of browser responses |
 | Writes | Separate user actions; recommendation calls never modify inventory |
 
 Remaining work: evaluate live recommendation quality, improve maturity source
-provenance and large-cellar retrieval, centralize operational controls, and implement sourced
-purchase guidance. The [longer-term plan](plans/cellar-aware-sommelier.md) records
+provenance and large-cellar retrieval, centralize operational controls, and evaluate live
+purchase research and retailer freshness. The [longer-term plan](plans/cellar-aware-sommelier.md) records
 those future phases; [My palate](my-palate.md) describes the implemented release.
 
-## 7. Other website API calls (not AI)
+## 8. Other website API calls (not AI)
 
 All paths below are same-origin Next.js routes. Supabase SDK calls happen on the server using the authenticated session and database row-level security, except the specifically authorized admin invitation operation.
 
@@ -177,13 +209,13 @@ Supabase tables involved: `cellars`, `cellar_members`, `wines`, `cellar_people`,
 
 - **Wine map:** Leaflet requests CARTO map tiles at `https://{s}.basemaps.cartocdn.com/...`; marker images come from `cdnjs.cloudflare.com`. OpenStreetMap attribution is shown. No AI geocoding call is implemented.
 - **Bottle portraits:** browsers load saved image URLs from their remote hosts. Technical sheets and retailer/source links open their destinations when clicked.
-- **Cellar Essentials shopping list:** curated products, prices, review dates and LCBO/Cellar Collection URLs live in `data/cellar-shopping.ts`. Coverage matching is local code using cellar/journal data. The website does not call a live LCBO stock/pricing API or generate a shopping list with AI at runtime.
+- **Cellar Essentials shopping:** purchase options are generated per authorized cellar through Responses web search. Retailer/source links are opened only when clicked. `data/cellar-shopping.ts` preserves earlier historical research; it is no longer displayed as the shopping list. There is no direct LCBO stock/pricing API integration.
 - **Badges:** local rules match personal journal entries to badge definitions; no AI or badge-award API call.
 - **Sommelier artwork:** `/images/sommelier-cat.png` is a static asset. Dragging saves its position in browser local storage; no image-generation API runs in the website.
 - **Vercel Analytics:** `app/layout.tsx` includes the analytics component. Its deployment-dependent network behavior was not measured by this code audit.
 - **Fonts:** `next/font/google` configures Inter; separate from AI features.
 
-## 8. Configuration and change locations
+## 9. Configuration and change locations
 
 | Variable | Purpose |
 | --- | --- |
@@ -193,8 +225,8 @@ Supabase tables involved: `cellars`, `cellar_members`, `wines`, `cellar_people`,
 | `SUPABASE_SECRET_KEY` | Optional server-only account-invitation key; legacy `SUPABASE_SERVICE_ROLE_KEY` also supported |
 | `NEXT_PUBLIC_SITE_URL` | Deployed origin for recovery and invitation redirects |
 
-Model/prompt files: `lib/ai/personal-sommelier.ts`, `lib/ai/cellar-context.ts`, `app/api/ai/enrich-pairing/route.ts`, and `lib/ai/wine-extraction.ts`. All features import the model from `lib/ai/models.ts`. The former `OPENAI_WINE_MODEL` override is no longer read and can be removed from Vercel. Chat, pairing and the planner explicitly use reasoning effort `none` to preserve their previous interactive behavior; scanning retains Responses reasoning `low` and its research tools. Chat requests use `max_completion_tokens`, not deprecated `max_tokens`. There is no shared prompt registry.
+Model/prompt files: `lib/ai/personal-sommelier.ts`, `lib/ai/cellar-context.ts`, `app/api/ai/enrich-pairing/route.ts`, `lib/ai/wine-extraction.ts`, and `lib/ai/shopping-advisor.ts`. All features import the model from `lib/ai/models.ts`. The former `OPENAI_WINE_MODEL` override is no longer read and can be removed from Vercel. Chat, pairing and the planner explicitly use reasoning effort `none` to preserve their previous interactive behavior; scanning and shopping use Responses reasoning `low` and research tools. Chat requests use `max_completion_tokens`, not deprecated `max_tokens`. There is no shared prompt registry.
 
-Audit method: traced every `/api/ai` caller and provider URL, enumerated route handlers and Supabase operations, and checked client persistence/confirmation behavior. This map reflects the personal-palate implementation; live provider behavior remains unverified. Deployment settings, provider availability, actual costs/latencies, and production traffic were not inspected.
+Audit method: traced every `/api/ai` caller and provider URL, enumerated route handlers and Supabase operations, and checked client persistence/confirmation behavior. This map reflects the personal-palate and cellar-buyer implementations; live provider behavior remains unverified. Deployment settings, provider availability, actual costs/latencies, and production traffic were not inspected.
 
 Model migration references: [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna), [model parameter guidance](https://developers.openai.com/api/docs/guides/latest-model), [Chat Completions parameters](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create).

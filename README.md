@@ -6,6 +6,8 @@ A modern wine inventory management system backed by Supabase Auth and Postgres b
 
 See [the AI integrations and API map](docs/ai-integrations.md) for the current models, prompts, data flows, configuration, and known gaps.
 
+See [the cellar improvement backlog](docs/backlog.md) for prioritized product improvements, acceptance criteria, and suggested delivery order.
+
 ## ✨ Features
 
 ### 🏠 **Dashboard & Overview**
@@ -16,6 +18,7 @@ See [the AI integrations and API map](docs/ai-integrations.md) for the current m
 ### 🍇 **Wine Management**
 - **Add New Wines**: Comprehensive form with all essential wine details
 - **Edit Existing Wines**: Modify any wine information at any time
+- **Cellar buyer**: Cellar Essentials shopping now compares the selected cellar with all 39 guide styles and researches purchase options through a conversation; see [setup and limits](docs/cellar-buyer.md)
 - **My palate**: Editable personal preferences and journal-informed sommelier/AI evening picks, with evidence, opt-out and dismissal controls; see [setup](docs/my-palate.md)
 - **Managed Wine Fridges**: Name fridges, manage levels, and pick bottle locations from a list; see [setup and migration](supabase/README.md#8-managed-wine-fridges-and-selectable-locations)
 - **Mark as Consumed**: Track when you drink wines and add ratings
