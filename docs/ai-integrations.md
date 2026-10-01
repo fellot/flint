@@ -1,6 +1,6 @@
 # Flint: AI integrations and API map
 
-Reviewed: **2026-09-29**. This describes the current repository, not a verified Vercel deployment. Model names below are the defaults/configuration in code; this audit did not make paid provider calls or verify account access to those models.
+Reviewed: **2026-10-01**. This describes the current repository, not a verified Vercel deployment. Model names below are the defaults/configuration in code; this audit did not make paid provider calls or verify account access to those models.
 
 ## 1. Overview
 
@@ -14,21 +14,22 @@ Flint has **five AI endpoints**, all implemented as Next.js server routes callin
 | Add external wine by photo | Journal → add external wine → scan | Same endpoint | Same scan model | OpenAI Responses | Text and image search tools |
 | Improve Food Pairing Notes / suggest another meal | Scan review in the cellar, or Edit wine in cellar/journal | `POST /api/ai/enrich-pairing` | `gpt-6-luna` | OpenAI Chat Completions | No |
 | Cellar Essentials shopping | `/cellar-essentials` → Shopping list → send a request | `POST /api/ai/shopping` | `gpt-6-luna` | OpenAI Responses | Web search, retrieved URLs and citations |
-| Personalized evening | “Tonight, perhaps…” → Set the mood → Make a night of it | `POST /api/ai/reserve` | `gpt-6-luna` | OpenAI Chat Completions | No |
+| Personalized evening | Main cellar → Surprise me / Another idea · AI | `POST /api/ai/reserve` | `gpt-6-luna` | OpenAI Chat Completions | No |
 
 External OpenAI URLs used by the code:
 
 - `https://api.openai.com/v1/chat/completions`
 - `https://api.openai.com/v1/responses`
 
-All AI calls are initiated by a user action. Opening the pet, viewing a page, selecting an occasion, shuffling bottles, or revealing a conversation question does not itself make an AI request. One chat message, scan, pairing/meal click, or personalized-plan submission makes one application-level OpenAI request; scanning and the cellar buyer can additionally invoke provider-managed web tools within that request.
+All AI calls are initiated by a user action. Opening the pet, viewing a page, setting the scene, selecting an occasion, or revealing a conversation question does not itself make an AI request. “Surprise me” and “Another idea · AI” each request a fresh plan. One chat message, scan, pairing/meal click, or plan submission makes one application-level OpenAI request; scanning and the cellar buyer can additionally invoke provider-managed web tools within that request.
 
 ```mermaid
 flowchart LR
   Pet["Floating pet chat"] --> Chat["POST /api/ai/sommelier"]
   Page["Sommelier page"] --> Chat
   Edit["Pairing and meal buttons"] --> Pair["POST /api/ai/enrich-pairing"]
-  Tonight["Make a night of it"] --> Reserve["POST /api/ai/reserve"]
+  Tonight["Surprise me / Another idea"] --> Reserve["POST /api/ai/reserve"]
+  Reserve --> Weather["Optional Open-Meteo weather"]
   Photo["Cellar or journal photo scan"] --> Scan["POST /api/ai/extract-wine"]
   Chat --> Completions["OpenAI Chat Completions"]
   Pair --> Completions
@@ -113,21 +114,35 @@ The scanner no longer calls the previous optional Bing image/web search integrat
 
 The prompt forbids critic scores and claims of research because this feature has no verified rating sources. Pairing and decanting text remains model-generated guidance for review.
 
-## 5. “Tonight, perhaps…” evening planner
+## 5. Contextual evening picks
 
 **Caller:** `components/ReserveSpotlight.tsx`.
 **Route:** `app/api/ai/reserve/route.ts`.
+**Request/access handling:** `lib/ai/reserve-endpoint.ts`.
+**Weather integration:** `lib/evening-weather.ts`.
 
-The AI planner shares the personal sommelier service above. It accepts an occasion,
-scene (240 characters) and cellar ID, loads fresh authorized stock and own journal,
-and applies existing occasion filters. Generated title, reason, meal, question and
-journal citations are validated and shown in the dialog. Model settings match
-chat. The existing best-effort 10-second per-user cooldown remains.
+The initial card is an invitation with no selected bottle. “Set the scene” opens
+controls only; “Surprise me” and “Another idea · AI” each request a fresh AI pick.
+There is no local recommendation fallback. The latter excludes the previous wine.
 
-Initial card selection, occasion choices, shuffle, reveal, meal fallback and
-conversation questions still work locally without AI. Only **Make a night of it**
-uses personal context. Closing the dialog aborts the browser request; the provider
-has its own timeout. Generated plans stay in component state.
+The server checks cellar membership, then loads fresh stock, own journal and My
+palate preferences. The shared personal sommelier receives occasion, a 240-character
+scene, local time and optional current weather. Food and explicit preferences take
+precedence; estimated maturity is prioritized among suitable wines. Weather is a
+soft cue, never a blanket exclusion for sparkling or another style.
+
+Location is requested only after clicking to generate. GPS is rounded to one decimal
+before transmission and again on the server. Open-Meteo gets approximate coordinates;
+OpenAI gets a weather summary, time and optional selected city, never coordinates.
+Users can explicitly select a city from `/api/weather/places` results or skip weather.
+Denied/failed location or failed/stale weather continues with no weather assumptions,
+and the result clearly labels the omission. Weather attribution is shown.
+
+Cancellation propagates to weather and OpenAI requests. Timeouts: browser 50 seconds
+(including up to 10 for geolocation), weather 8 seconds total, OpenAI 22 seconds,
+route maximum 60 seconds. Best-effort per-user in-flight suppression and 1.5-second
+post-request cooldown are per server instance. Plans and location choices stay only
+in component memory. See [behavior, privacy and setup](evening-picks.md).
 
 ## 6. Cellar Essentials buyer
 
@@ -190,6 +205,7 @@ All paths below are same-origin Next.js routes. Supabase SDK calls happen on the
 | `/api/auth/reset-password` | POST | Supabase `updateUser({ password })` after authentication |
 | `/api/auth/cellar` | POST | Validate membership and change the selected-cellar cookie |
 | `/auth/callback` | GET | Supabase `exchangeCodeForSession` or `verifyOtp`; auth redirect rather than an `/api` route |
+| `/api/weather/places` | POST | Authenticated city search through Open-Meteo / GeoNames; returns explicit location choices |
 | `/api/palate` | GET, PUT | Read derived personal profile; save only the authenticated user’s preferences |
 | `/api/wines` | GET, POST | List inventory with journal data; insert cellar stock or call `log_consumed_wine` for a new journal wine |
 | `/api/wines/[id]` | GET, PUT, DELETE | Read, edit or delete a wine within an authorized cellar |
@@ -207,6 +223,8 @@ Supabase tables involved: `cellars`, `cellar_members`, `wines`, `cellar_people`,
 
 ### Other external network dependencies
 
+- **Evening weather:** server-only Open-Meteo current weather and city search. No weather/location call on page load; GPS permission is requested only when a pick is requested in “Near me” mode. Optional `OPEN_METEO_API_KEY` switches to customer endpoints.
+
 - **Wine map:** Leaflet requests OpenStreetMap standard tiles at `https://tile.openstreetmap.org/{z}/{x}/{y}.png`; markers use local CSS, with no external marker-image dependency. OpenStreetMap attribution is shown. No AI geocoding call is implemented. Country/region text resolves to approximate points locally; stock and personal journal entries share the map. See [location storage and map behavior](wine-map.md).
 - **Bottle portraits:** browsers load saved image URLs from their remote hosts. Technical sheets and retailer/source links open their destinations when clicked.
 - **Cellar Essentials shopping:** purchase options are generated per authorized cellar through Responses web search. Retailer/source links are opened only when clicked. `data/cellar-shopping.ts` preserves earlier historical research; it is no longer displayed as the shopping list. There is no direct LCBO stock/pricing API integration.
@@ -220,6 +238,7 @@ Supabase tables involved: `cellars`, `cellar_members`, `wines`, `cellar_people`,
 | Variable | Purpose |
 | --- | --- |
 | `OPENAI_API_KEY` | Required by all AI routes; server-only |
+| `OPEN_METEO_API_KEY` | Optional commercial Open-Meteo key; server-only; omit for personal non-commercial use |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public Supabase key; legacy `NEXT_PUBLIC_SUPABASE_ANON_KEY` also supported |
 | `SUPABASE_SECRET_KEY` | Optional server-only account-invitation key; legacy `SUPABASE_SERVICE_ROLE_KEY` also supported |

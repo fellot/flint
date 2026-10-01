@@ -38,13 +38,16 @@ Both `POST /api/ai/sommelier` and `POST /api/ai/reserve` use `lib/ai/personal-so
 
 The drinking sommelier does not guarantee full-cellar optimality, infer unrecorded sweetness/chemistry, search live shops, purchase bottles, or learn hidden permanent preferences from chat. The separate [Cellar Essentials buyer](cellar-buyer.md) now uses the same permitted personal context to research shopping options. Mature-but-unsuitable wines must not be included just to satisfy ranking. Larger-cellar retrieval and a quality evaluation with live provider responses remain future work.
 
-The evening planner keeps its existing occasion filters and local fallback. Only the explicit AI action is personalized. Main-card shuffling remains local, not an AI request.
+The evening planner keeps its occasion filters but makes no automatic pick or local fallback.
+“Surprise me” and “Another idea · AI” each request a fresh personalized choice. It can use
+optional approximate location, current weather and local time alongside mood and taste;
+see [contextual evening picks](evening-picks.md).
 
 ### Chat and data controls
 
 Clients send up to 12 recent user turns and the last discussed wine ID. The server rejects system/developer roles and rebuilds wine context from authorized data. It drops prior assistant prose so old journal citations and shelf locations are not recycled into later requests. User-written chat is still sent as conversation; the learning toggle cannot remove facts the user explicitly types into it. The floating and full-page chats are separate in-memory conversations.
 
-Provider settings: `gpt-6-luna` (shared with every AI feature), reasoning effort `none`, strict JSON schema, temperature 0.4, `max_completion_tokens: 2200`, timeout 22 seconds, `store:false`; route limit 30 seconds. `store:false` is a request setting, not a claim about all provider retention. No automatic provider retries. Evening plans retain the existing best-effort 10-second per-user cooldown; distributed limiting and usage tracking are not implemented.
+Provider settings: `gpt-6-luna` (shared with every AI feature), reasoning effort `none`, strict JSON schema, temperature 0.4, `max_completion_tokens: 2200`, timeout 22 seconds, `store:false`; chat route limit 30 seconds, evening route 60 seconds including optional weather lookup. `store:false` is a request setting, not a claim about all provider retention. No automatic provider retries. Evening plans use best-effort per-user in-flight suppression and a 1.5-second cooldown; distributed limiting and usage tracking are not implemented.
 
 ## Validation
 

@@ -254,33 +254,30 @@ If you have any questions or need help with the Wine Cellar Manager, please:
 - Mutations return the updated storage and wine records, including cascaded location renames.
 
 
-### Tonight’s little ritual
+### A bottle for this moment
 
-A compact “Tonight, perhaps…” recommendation sits beside the cellar title.
-“Set the mood” opens a dialog with five occasions, a mystery-bottle reveal,
-meal suggestions and conversation prompts, leaving the wine table in view by default. The instant selections only use bottles currently in stock;
-sweet wines have their own occasion. Opening a bottle still uses the normal
-sharing and journal dialog.
+The main-cellar card starts as an invitation, with no automatic recommendation.
+**Surprise me** asks the AI for a bottle; **Set the scene** opens mood, food and
+location controls first. **Another idea · AI** makes a fresh request excluding
+the previous wine. Opening a bottle still uses the sharing and journal dialog.
 
-**Optional AI plans:** set the server-only `OPENAI_API_KEY` in `.env.local` and in
-Vercel → Project Settings → Environment Variables, then redeploy. “Make a night
-of it” calls `/api/ai/reserve` on demand using the `gpt-6-luna` model.
-Apply the [My palate migration](supabase/migrations/20260928000000_personal_palate.sql) first. No new package is required. Without the key, the local
-occasion selections and reveal continue working; the AI action reports that
-personalized plans are unavailable.
+Set the server-only `OPENAI_API_KEY` in `.env.local` and Vercel, then redeploy.
+The planner uses `gpt-6-luna`, fresh authorized stock, the user's own journal and
+**My palate** preferences. The existing [My palate migration](supabase/migrations/20260928000000_personal_palate.sql)
+is required; this weather update needs no additional SQL or packages.
 
-The endpoint verifies cellar membership and reads fresh inventory, the signed-in
-user's own journal, and editable **My palate** preferences from Supabase. Both
-sommelier chats and the planner share this context and maturity ranking. It sends
-up to 80 available candidates and 80 eligible personal reviews; prices, other
-participants, account identifiers, private inventory notes and locations are
-excluded. Structured output and journal evidence IDs are validated. The provider
-timeout is 22 seconds; the planner retains a best-effort 10-second per-user
-cooldown. Inventory is never mutated by planning.
+Optional browser location is requested only after a generation click. Coordinates
+are rounded before leaving the browser; Open-Meteo supplies current conditions,
+and AI receives the weather rather than coordinates. Users can choose a city or
+skip weather. Permission denial/weather failure continues without weather claims;
+AI failure shows an error rather than a locally invented recommendation.
 
-See [My palate setup, privacy and selection rules](docs/my-palate.md).
+Food and explicit preferences take precedence. The planner favours estimated peak
+readiness among suitable bottles; weather adds context without banning styles.
+Generated wine IDs and journal evidence are checked. Planning never changes stock.
 
-API reference: [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+See [evening picks: setup, privacy, limits and validation](docs/evening-picks.md)
+and [My palate](docs/my-palate.md).
 
 ### Wine label scanning
 

@@ -37,9 +37,15 @@ async function getJson(url: URL, signal: AbortSignal, fetcher: typeof fetch) {
   return response.json();
 }
 
+function providerUrl(service: 'api' | 'geocoding-api', path: string, params: Record<string, string>) {
+  const key = process.env.OPEN_METEO_API_KEY?.trim();
+  const url = new URL(`https://${key ? 'customer-' : ''}${service}.open-meteo.com${path}`);
+  url.search = new URLSearchParams({ ...params, ...(key ? { apikey: key } : {}) }).toString();
+  return url;
+}
+
 export async function searchWeatherPlaces(query: string, locale: 'en' | 'pt', signal: AbortSignal, fetcher: typeof fetch = fetch): Promise<WeatherPlace[]> {
-  const url = new URL('https://geocoding-api.open-meteo.com/v1/search');
-  url.search = new URLSearchParams({ name: query, count: '5', language: locale, format: 'json' }).toString();
+  const url = providerUrl('geocoding-api', '/v1/search', { name: query, count: '5', language: locale, format: 'json' });
   const data = record(await getJson(url, AbortSignal.any([signal, AbortSignal.timeout(5000)]), fetcher));
   if (data.error) throw new Error('Location search unavailable');
   return (Array.isArray(data.results) ? data.results : []).map(place).filter(p => p !== null).map(p => ({ id: p.id, label: p.label }));
@@ -70,17 +76,14 @@ export async function loadEveningWeather(location: EveningLocation, signal: Abor
     let point: { latitude: number; longitude: number };
     let label: string | null = null;
     if (location.mode === 'city') {
-      const url = new URL('https://geocoding-api.open-meteo.com/v1/get');
-      url.searchParams.set('id', String(location.placeId));
+      const url = providerUrl('geocoding-api', '/v1/get', { id: String(location.placeId) });
       const found = place(await getJson(url, boundedSignal, fetcher));
       if (!found || found.id !== location.placeId) return { status: 'unavailable' };
       point = found; label = found.label;
     } else point = { latitude: round(location.latitude), longitude: round(location.longitude) };
-    const key = process.env.OPEN_METEO_API_KEY;
-    const url = new URL(key ? 'https://customer-api.open-meteo.com/v1/forecast' : 'https://api.open-meteo.com/v1/forecast');
-    url.search = new URLSearchParams({ latitude: String(point.latitude), longitude: String(point.longitude),
+    const url = providerUrl('api', '/v1/forecast', { latitude: String(point.latitude), longitude: String(point.longitude),
       current: 'temperature_2m,apparent_temperature,precipitation,weather_code,is_day,wind_speed_10m', timezone: 'auto', timeformat: 'unixtime',
-      temperature_unit: 'celsius', wind_speed_unit: 'kmh', precipitation_unit: 'mm', ...(key ? { apikey: key } : {}) }).toString();
+      temperature_unit: 'celsius', wind_speed_unit: 'kmh', precipitation_unit: 'mm' });
     return parseWeather(await getJson(url, boundedSignal, fetcher), label);
   } catch (error) {
     if (signal.aborted) throw error;

@@ -38,12 +38,18 @@ export default function ReserveSpotlight({ wines, locale, year, cellarId, onView
   const request = useRef<AbortController | null>(null);
   const cityRequest = useRef<AbortController | null>(null);
   const trigger = useRef<HTMLButtonElement | null>(null);
+  const resultPanel = useRef<HTMLDivElement | null>(null);
   const restoreFocus = useRef(false);
   const latestWines = useRef(wines); latestWines.current = wines;
   useEffect(() => {
     if (!expanded && restoreFocus.current) { trigger.current?.focus(); restoreFocus.current = false; }
   }, [expanded]);
   useEffect(() => () => { request.current?.abort(); cityRequest.current?.abort(); }, []);
+  useEffect(() => {
+    if (generated && expanded && window.matchMedia('(max-width: 760px)').matches) {
+      resultPanel.current?.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    }
+  }, [generated, expanded]);
   const picks = occasionPicks(wines, occasion, year);
   const wine = generated ? picks.find(w => w.id === generated.wineId) : undefined;
   const plan = wine ? generated : null;
@@ -141,7 +147,7 @@ export default function ReserveSpotlight({ wines, locale, year, cellarId, onView
         <div className="ritual-body">
           <div className="ritual-invitation">
             <span className="ritual-kicker">{pt ? 'DA SUA RESERVA' : 'FROM YOUR RESERVE'}</span>
-            <h2>{pt ? <>Um momento.<br /><em>Uma boa garrafa.</em></> : <>A little serendipity.<br /><em>From your cellar.</em></>}</h2>
+            <h2>{pt ? <>Um momento.{' '}<br /><em>Uma boa garrafa.</em></> : <>A little serendipity.{' '}<br /><em>From your cellar.</em></>}</h2>
             <p>{pt ? 'Seu paladar, o clima lá fora e o que você tem em mente. Vamos juntar tudo.' : 'Your palate, the weather outside, and whatever you have in mind. Let’s put them together.'}</p>
             <div className="ritual-occasions" role="group" aria-label={pt ? 'Qual é a ocasião?' : 'What’s the occasion?'}>{occasions.map(key => {
               const Icon = icons[key];
@@ -170,7 +176,7 @@ export default function ReserveSpotlight({ wines, locale, year, cellarId, onView
             {!picks.length && <p className="ritual-error">{pt ? 'Sem garrafas para esta ocasião. Experimente outra.' : 'No bottles for this occasion. Try another mood.'}</p>}
             {error && <p className="ritual-error" role="alert">{error}</p>}
           </div>
-          <div className="ritual-ticket" aria-busy={busy}>
+          <div ref={resultPanel} className="ritual-ticket" aria-busy={busy}>
             {wine && plan ? <>
               <div className="ritual-ticket-top"><span>{pt ? 'PARA ESTE MOMENTO · COM IA' : 'FOR THIS MOMENT · AI INSPIRED'}</span></div>
               {weather && <div className="ritual-weather"><CloudSun size={17} /><div>{weather.status === 'available' ? <>
