@@ -1,7 +1,7 @@
-// Static coordinate lookup for wine regions
-// Format: "NormalizedCountry|Region" -> { lat, lng }
+// Approximate regional anchors for orientation, never winery or vineyard GPS.
+// Coordinates are derived from country/region text; they are not stored on wines.
 
-interface Coordinates {
+export interface Coordinates {
   lat: number;
   lng: number;
 }
@@ -18,13 +18,22 @@ const COUNTRY_ALIASES: Record<string, string> = {
   'África do Sul': 'South Africa',
   'Estados Unidos': 'United States',
   'Canadá': 'Canada',
+  'Croácia': 'Croatia', 'Hrvatska': 'Croatia', 'Líbano': 'Lebanon',
+  'Nova Zelândia': 'New Zealand', 'Grécia': 'Greece', 'Hungria': 'Hungary',
+  'USA': 'United States', 'US': 'United States', 'U.S.A.': 'United States',
+  'United States of America': 'United States', 'España': 'Spain', 'Italia': 'Italy',
+  'Deutschland': 'Germany', 'Österreich': 'Austria',
 };
 
+export const normalizePlace = (value: string) => (value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
 export function normalizeCountry(country: string): string {
-  return COUNTRY_ALIASES[country] || country;
+  const key = normalizePlace(country);
+  const alias = Object.entries(COUNTRY_ALIASES).find(([name]) => normalizePlace(name) === key);
+  return alias?.[1] || [...Object.keys(COUNTRY_CENTROIDS), ...Object.values(COUNTRY_ALIASES)].find(name => normalizePlace(name) === key) || (country || '').trim();
 }
 
-// Country centroids as fallback
+// Broad country anchors as explicit fallbacks, not exact geographic centroids.
 const COUNTRY_CENTROIDS: Record<string, Coordinates> = {
   'France': { lat: 46.6, lng: 2.2 },
   'Italy': { lat: 42.5, lng: 12.5 },
@@ -45,6 +54,12 @@ const COUNTRY_CENTROIDS: Record<string, Coordinates> = {
 // Region-specific coordinates
 const REGION_COORDINATES: Record<string, Coordinates> = {
   // France
+  // Added anchors: see docs/wine-map.md for geographic sources.
+  'France|Bordeaux': { lat: 44.84, lng: -0.58 },
+  'France|Beaujolais': { lat: 46.19, lng: 4.73 },
+  'France|Chablis': { lat: 47.81, lng: 3.80 },
+  'Croatia|Motovun, Istria': { lat: 45.34, lng: 13.83 },
+  'Lebanon|Bekaa Valley': { lat: 33.83, lng: 36.00 },
   'France|Champagne': { lat: 49.05, lng: 3.95 },
   'France|Champagne (Dizy)': { lat: 49.07, lng: 3.95 },
   'France|Champagne (Reims)': { lat: 49.25, lng: 3.88 },
@@ -55,7 +70,6 @@ const REGION_COORDINATES: Record<string, Coordinates> = {
   'France|Bordeaux – Médoc': { lat: 45.2, lng: -0.9 },
   'France|Bordeaux – Haut-Médoc': { lat: 45.1, lng: -0.75 },
   'France|Bordeaux (Entre-Deux-Mers area)': { lat: 44.75, lng: -0.2 },
-  'France|Bordeaux-style blend': { lat: 44.84, lng: -0.58 },
   'France|Sauternes': { lat: 44.53, lng: -0.34 },
   'France|Vouvray (Loire)': { lat: 47.37, lng: 0.8 },
   'France|Savennières (Loire)': { lat: 47.38, lng: -0.64 },
@@ -86,7 +100,6 @@ const REGION_COORDINATES: Record<string, Coordinates> = {
   'Spain|Priorat (Catalonia)': { lat: 41.2, lng: 0.75 },
   'Spain|Alicante': { lat: 38.35, lng: -0.48 },
   'Spain|Jumilla': { lat: 38.47, lng: -1.33 },
-  'Spain|Likely Castilla/Valencia': { lat: 39.47, lng: -1.0 },
 
   // Portugal
   'Portugal|Douro': { lat: 41.16, lng: -7.79 },
@@ -144,19 +157,63 @@ const REGION_COORDINATES: Record<string, Coordinates> = {
   'South Africa|Franschhoek': { lat: -33.87, lng: 19.12 },
 };
 
+// Explicit alternative names; longest whole-phrase match wins within a country.
+// No unrestricted substring guesses (e.g. “Bordeaux-style” outside Bordeaux).
+const REGION_ALIASES: Record<string, string[]> = {
+  'France|Burgundy (Corton)': ['Corton'],
+  'France|Northern Rhône': ['Northern Rhone', 'Rhone Nord', 'Crozes Hermitage', 'Hermitage', 'Cornas', 'Cote Rotie'],
+  'France|Châteauneuf-du-Pape': ['Chateauneuf du Pape'],
+  'France|Bordeaux (Haut-Médoc)': ['Haut Medoc'],
+  'France|Bordeaux – Médoc': ['Medoc', 'Pauillac'],
+  'France|Beaujolais': ['Beaujolais', 'Morgon'],
+  'France|Vouvray (Loire)': ['Vouvray'],
+  'France|Savennières (Loire)': ['Savennieres'],
+  'France|Sancerre (Loire)': ['Sancerre'],
+  'France|Anjou (Loire)': ['Anjou'],
+  'France|Beaujolais (Moulin-à-Vent, Saône-et-Loire)': ['Moulin a Vent'],
+  'Italy|Piedmont': ['Piemonte', 'Piedmont'],
+  'Italy|Piedmont (Langhe)': ['Langhe', 'Barolo', 'Barbaresco'],
+  'Italy|Tuscany': ['Tuscany', 'Toscana'],
+  'Italy|Tuscany (Brunello)': ['Brunello', 'Montalcino'],
+  'Italy|Tuscany (Chianti Classico)': ['Chianti Classico'],
+  'Italy|Lombardy (Valtellina)': ['Valtellina'],
+  'Italy|Alto Adige (Valle Isarco)': ['Valle Isarco'],
+  'Spain|Priorat (Catalonia)': ['Priorat', 'Priorato'],
+  'Portugal|Lisboa': ['Lisbon', 'Lisboa'],
+  'Argentina|Uco Valley (Mendoza)': ['Uco Valley', 'Valle de Uco'],
+  'Argentina|Agrelo, Luján de Cuyo (Mendoza)': ['Agrelo', 'Lujan de Cuyo'],
+  'Chile|Maipo Valley': ['Maipo'], 'Chile|Maule Valley': ['Maule'],
+  'Chile|Colchagua Valley': ['Colchagua'], 'Chile|Cachapoal Valley': ['Cachapoal'],
+  'United States|California (Paso Robles)': ['Paso Robles'],
+  'Australia|Barossa Valley': ['Barossa'],
+  'Brazil|Serra da Mantiqueira (Sul de Minas Gerais)': ['Serra da Mantiqueira', 'Sul de Minas Gerais'],
+  'Canada|Ontario (VQA Twenty Mile Bench, Niagara Peninsula)': ['Twenty Mile Bench', 'Niagara Peninsula'],
+  'Canada|Niagara-on-the-Lake': ['Niagara on the Lake'],
+  'Croatia|Motovun, Istria': ['Motovun', 'Istria', 'Istra'],
+  'Lebanon|Bekaa Valley': ['Bekaa', 'Beqaa', 'Bekaa Valley'],
+};
+
+export type WineOrigin = Coordinates & { precision: 'region' | 'country'; country: string; label: string };
+
+export function resolveWineOrigin(country: string, region: string): WineOrigin | null {
+  const normalized = normalizeCountry(country), place = normalizePlace(region);
+  const entries = Object.entries(REGION_COORDINATES).filter(([key]) => normalizePlace(key.split('|')[0]) === normalizePlace(normalized));
+  const result = (entry: [string, Coordinates]): WineOrigin => ({ ...entry[1], precision: 'region', country: entry[0].split('|')[0], label: entry[0].split('|')[1] });
+  // Uncertainty or a stylistic comparison is not a geographic origin.
+  if (place && !/\b(likely|unknown|uncertain|possibly|style|desconhecid[oa]|provavel)\b/.test(place)) {
+    const exact = entries.find(([key]) => normalizePlace(key.split('|')[1]) === place);
+    if (exact) return result(exact);
+    const matches = entries.flatMap(entry => [entry[0].split('|')[1], ...(REGION_ALIASES[entry[0]] || [])]
+      .map(normalizePlace).filter(alias => alias && ` ${place} `.includes(` ${alias} `))
+      .map(alias => ({ entry, length: alias.length })));
+    matches.sort((a, b) => b.length - a.length);
+    if (matches.length) return result(matches[0].entry);
+  }
+  const fallback = COUNTRY_CENTROIDS[normalized];
+  return fallback ? { ...fallback, country: normalized, precision: 'country', label: normalized } : null;
+}
+
 export function getCoordinates(country: string, region: string): Coordinates | null {
-  const normalized = normalizeCountry(country);
-  const key = `${normalized}|${region}`;
-
-  // Exact match
-  if (REGION_COORDINATES[key]) {
-    return REGION_COORDINATES[key];
-  }
-
-  // Fallback to country centroid
-  if (COUNTRY_CENTROIDS[normalized]) {
-    return COUNTRY_CENTROIDS[normalized];
-  }
-
-  return null;
+  const point = resolveWineOrigin(country, region);
+  return point ? { lat: point.lat, lng: point.lng } : null;
 }

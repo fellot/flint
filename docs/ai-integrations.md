@@ -207,7 +207,7 @@ Supabase tables involved: `cellars`, `cellar_members`, `wines`, `cellar_people`,
 
 ### Other external network dependencies
 
-- **Wine map:** Leaflet requests CARTO map tiles at `https://{s}.basemaps.cartocdn.com/...`; marker images come from `cdnjs.cloudflare.com`. OpenStreetMap attribution is shown. No AI geocoding call is implemented.
+- **Wine map:** Leaflet requests OpenStreetMap standard tiles at `https://tile.openstreetmap.org/{z}/{x}/{y}.png`; markers use local CSS, with no external marker-image dependency. OpenStreetMap attribution is shown. No AI geocoding call is implemented. Country/region text resolves to approximate points locally; stock and personal journal entries share the map. See [location storage and map behavior](wine-map.md).
 - **Bottle portraits:** browsers load saved image URLs from their remote hosts. Technical sheets and retailer/source links open their destinations when clicked.
 - **Cellar Essentials shopping:** purchase options are generated per authorized cellar through Responses web search. Retailer/source links are opened only when clicked. `data/cellar-shopping.ts` preserves earlier historical research; it is no longer displayed as the shopping list. There is no direct LCBO stock/pricing API integration.
 - **Badges:** local rules match personal journal entries to badge definitions; no AI or badge-award API call.

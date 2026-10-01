@@ -18,6 +18,7 @@ See [the cellar improvement backlog](docs/backlog.md) for prioritized product im
 ### 🍇 **Wine Management**
 - **Add New Wines**: Comprehensive form with all essential wine details
 - **Edit Existing Wines**: Modify any wine information at any time
+- **Wine map**: Explore current stock and personal journal tastings together, with explicit regional/country approximations and visible unmapped origins; see [location storage and map behavior](docs/wine-map.md)
 - **Cellar buyer**: Cellar Essentials shopping now compares the selected cellar with all 39 guide styles and researches purchase options through a conversation; see [setup and limits](docs/cellar-buyer.md)
 - **My palate**: Editable personal preferences and journal-informed sommelier/AI evening picks, with evidence, opt-out and dismissal controls; see [setup](docs/my-palate.md)
 - **Managed Wine Fridges**: Name fridges, manage levels, and pick bottle locations from a list; see [setup and migration](supabase/README.md#8-managed-wine-fridges-and-selectable-locations)
