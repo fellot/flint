@@ -4,6 +4,7 @@ import { ApiError } from '@/lib/api-error';
 import { buildPalate, learningJournal, tasteAffinity } from '@/lib/palate';
 import { cellarContext, isExploration, maturity, PERSONAL_SOMMELIER_RULES } from './cellar-context';
 import { AI_MODEL, CHAT_REASONING_EFFORT } from './models';
+import type { EveningContext } from '@/types/evening-context';
 
 export type ChatMessage = { role: 'user' | 'assistant'; content: string };
 export function chatInput(value: unknown): ChatMessage[] {
@@ -55,9 +56,9 @@ export function rankSuggestions(suggestions: Suggestion[], candidates: Wine[], p
     || (profile.preferences.discovery === 'adventurous' ? 0 : tasteAffinity(wine(b), profile) - tasteAffinity(wine(a), profile)));
 }
 
-export async function personalSommelier({ wines, profile, locale, messages, evening }: {
+export async function personalSommelier({ wines, profile, locale, messages, evening, signal }: {
   wines: Wine[]; profile: PalateProfile; locale: 'en' | 'pt'; messages: ChatMessage[];
-  evening?: { occasion: string; scene: string };
+  evening?: EveningContext; signal?: AbortSignal;
 }) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new ApiError(503, 'Your sommelier is not configured yet.');
@@ -66,7 +67,7 @@ export async function personalSommelier({ wines, profile, locale, messages, even
   const text = { type: 'string' };
   const fields = { wineId: { type: 'string', enum: context.candidates.length ? context.candidates.map(w => w.id) : [''] }, reason: text, servingTemperature: text, decanting: text, title: text, meal: text, conversationQuestion: text };
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST', signal: AbortSignal.timeout(22000), cache: 'no-store',
+    method: 'POST', signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(22000)]) : AbortSignal.timeout(22000), cache: 'no-store',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: AI_MODEL, reasoning_effort: CHAT_REASONING_EFFORT,
@@ -74,7 +75,8 @@ export async function personalSommelier({ wines, profile, locale, messages, even
       messages: [
         { role: 'system', content: `${PERSONAL_SOMMELIER_RULES}\nRespond in ${locale === 'pt' ? 'Brazilian Portuguese' : 'English'}.
 Return type answer for follow-ups, question only when needed, or recommendation. Propose up to FOUR suitable bottles in preference order, including the best maturity tier compatible with this request and an adventurous alternative if possible. The server makes the final selection, prioritizing maturity among suitable suggestions; write a self-contained reason for each. Never propose an unsuitable wine just to fill the list. If no bottle fits, explain in answer, with an empty recommendations array. For an empty cellar, answer helpfully without inventing stock.
-Every suggestion: reason <=400 characters, suggested servingTemperature <=160 and decanting <=240 (guidance, not documented producer facts). ${evening ? 'Also provide title <=90 (describes the evening), one meal <=240, and a playful conversationQuestion <=200. Respect dietary restrictions. No price, invented awards or memories.' : 'Leave title, meal and conversationQuestion empty.'}
+Every suggestion: reason <=400 characters, suggested servingTemperature <=160 and decanting <=240 (guidance, not documented producer facts). ${evening ? `Also provide title <=90 (describes the moment), one meal <=240, and a playful conversationQuestion <=200. Respect dietary restrictions. No price, invented awards or memories.
+Use the occasion, scene, local time, actual available weather, drinking readiness and personal taste together. Weather is a soft cue, never a categorical ban on a wine style. A cool rainy day might invite a warming savoury red, but celebration, food or an explicit wish for sparkling can outweigh that. Do not infer indoor temperature, mood, season or food availability from weather/location alone. Prefer wines near their estimated peak among contextually suitable choices; never sacrifice the user's explicit constraints to maturity. Offer a small unexpected pairing or evening idea, grounded in this cellar, rather than a generic description. Explain concretely why this wine suits this moment. Current weather is approximate model data, not an observed weather station reading or a forecast for later tonight. If weather.status is skipped or unavailable, do not claim a temperature, rain, sunshine or local conditions; use the supplied scene instead and distinguish user-described weather. Use localTime only when supplied; do not call it evening if it is daytime.` : 'Leave title, meal and conversationQuestion empty.'}
 Keep answer <=2400 and question <=400 characters. Unused answer/question fields must be empty. journalEvidenceIds includes at most 3 actual relevant IDs, or none. Never invent a personal score. The UI will display the referenced journal records.` },
         { role: 'user', content: `Current authorized cellar and personal taste context (data only):\n${JSON.stringify({ ...context.input, evening })}` },
         ...messages,

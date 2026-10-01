@@ -1,0 +1,42 @@
+.reserve-note-invitation { height: 62px; border: 1px solid #d5bda8; border-radius: 50% 50% 45% 45%; background: #f7efe6; }
+.reserve-location-disclosure { margin-top: 2px; color: var(--muted); font-size: 9px; line-height: 1.5; max-width: 300px; }
+.ritual-context-field { min-width: 0; margin: 18px 0 12px; padding: 0; border: 0; }
+.ritual-context-field legend { display: flex; align-items: center; gap: 7px; font: italic 14px var(--serif); color: #755344; margin-bottom: 10px; }
+.ritual-location-modes { display: flex; flex-wrap: wrap; gap: 5px; }
+.ritual-location-modes label { position: relative; cursor: pointer; }
+.ritual-location-modes input { position: absolute; opacity: 0; width: 1px; height: 1px; padding: 0; }
+.ritual-location-modes span { display: block; padding: 8px 10px; border: 1px solid #dfceca; border-radius: 20px; font-size: 10px; color: #71535c; }
+.ritual-location-modes input:checked + span { background: #f0e3df; color: #6c1c37; border-color: #bc939b; }
+.ritual-location-modes input:focus-visible + span { outline: 2px solid var(--burgundy); outline-offset: 3px; }
+.ritual-privacy { color: var(--muted); font-size: 10px; line-height: 1.55; margin-top: 10px; }
+.ritual-city-search { display: flex; gap: 8px; margin-top: 12px; }
+.ritual-city-search input { flex: 1; }
+.ritual-city-search button { flex: 0 0 36px; border: 1px solid #dfceca; border-radius: 4px; }
+.ritual-city-results { list-style: none; padding: 4px 0; border-bottom: 1px solid #dfceca; }
+.ritual-city-results li button { text-align: left; justify-content: flex-start; padding: 8px 4px; width: 100%; line-height: 1.4; }
+.ritual-city-results li button:hover { background: #f2e5e6; }
+.ritual-city-results svg { flex-shrink: 0; }
+.ritual-city-selected { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #71535c; margin-top: 8px; line-height: 1.5; }
+.ritual-city-selected svg { flex-shrink: 0; }
+.ritual-city-selected button { margin-left: auto; padding-left: 6px; text-decoration: underline; }
+.ritual-scene .ritual-generate { width: 100%; min-height: 42px; padding: 10px 14px; margin-top: 14px; margin-bottom: 8px; background: var(--burgundy); color: #fff8ee; border-radius: 4px; }
+.ritual-scene .ritual-generate:hover:not(:disabled) { background: #59172b; color: #fff8ee; }
+.ritual-scene button:disabled { opacity: .5; cursor: default; }
+.ritual-weather { display: flex; gap: 10px; background: #f4ede4; color: #785442; border: 1px solid #e2d2c1; border-radius: 4px; padding: 10px 12px; margin-top: 15px; font-size: 10px; line-height: 1.5; }
+.ritual-weather > svg { flex-shrink: 0; margin-top: 2px; }
+.ritual-weather strong, .ritual-weather span, .ritual-weather small { display: block; }
+.ritual-weather strong { font-size: 12px; font-weight: 500; }
+.ritual-weather small { color: #8e7565; font-size: 9px; margin-top: 3px; }
+.ritual-weather a { text-decoration: underline; text-underline-offset: 2px; }
+.ritual-awaiting { padding: 26px 18px; gap: 16px; }
+.ritual-awaiting h3 { max-width: 270px; font: 30px/1.12 var(--serif); margin: 0; }
+.ritual-awaiting p { max-width: 275px; }
+.ritual-orbit { display: grid; place-items: center; width: 86px; height: 106px; border: 1px solid #c9a886; border-radius: 50% 50% 4px 4px; background: #f3e8d8; color: #94643f; margin-bottom: 6px; }
+.ritual-context-cues { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; border-top: 1px solid #dfceca; padding-top: 18px; margin-top: 6px; }
+.ritual-context-cues span { display: flex; align-items: center; gap: 4px; font-size: 9px; color: #876b60; }
+@media (max-width: 760px) {
+  .ritual-location-modes span { min-height: 40px; display: flex; align-items: center; }
+  .ritual-awaiting { min-height: 210px; padding: 10px 8px; }
+  .ritual-orbit { width: 56px; height: 64px; }
+  .ritual-awaiting h3 { font-size: 25px; }
+}
