@@ -32,6 +32,23 @@ The **Your taste, by grape** section combines personal input with explainable ev
 
 The API sends bounded grape summaries alongside the existing permitted journal context. The integration follows the existing [OpenAI prompt-context guidance](https://developers.openai.com/api/docs/guides/prompt-engineering); no additional model call is added.
 
+## Grape flavour portraits
+
+Every catalogue grape has a flavour wheel in **My palate**. **Grape guide** lets anyone with access to the page browse the entire catalogue without adding a preference. Search works with the same names and aliases as the personal profile. Only explicitly choosing a personal label changes the draft; browsing, expanding and selecting wheel sectors never saves preferences.
+
+`data/grape-flavours.ts` contains the educational reference data. `components/GrapeFlavourWheel.tsx` renders an original segmented SVG with five rings and an equivalent text description. Open **Read the profile & its nuances** for keyboard-accessible values and the style caveat. The graphic works with pointer/touch input; it is responsive, contains no external image, and adds no API call or database column. English and Portuguese use the same values.
+
+### Meaning and provenance
+
+- The 1–5 levels are **Flint's illustrative editorial interpretation** of common qualitative descriptions, not measured intensities, published critic scores, source-provided numerical data, or a reconstruction of the reference poster. Ring length encodes intensity; area is not a percentage. A low sector means little typical expression, not a guarantee of absence.
+- Aroma intensity, body, acidity and tannin have separate meanings. Aroma 1–5 means little to strong; body means light to full; acidity/tannin means low to high. The interface explains the selected attribute and supplies numerical text so colour is not the only cue.
+- Red-wine wheels use red/dark fruit, flowers, herbs, pepper, earth, spice, body, acidity and tannin. White-wine wheels use citrus, apple/pear, stone fruit, tropical fruit, flowers, herbs, spice, honey, body and acidity. Honey and ripe-fruit aromas **do not imply residual sugar**. Sweetness is deliberately not assigned to a grape.
+- Palomino is shown explicitly as Fino Sherry, Pedro Ximénez as sweet PX Sherry, and Savagnin as oxidative Jura wine. Those wheels include ageing-related notes; they describe those styles, not inherent grape chemistry. Savagnin is not labelled fortified. Meunier is shown as a fresh white Champagne expression; Corvina as a fresh-grape red, not Amarone. Each profile includes a variation note.
+- Reviewed **2026-10-02**. Most entries link to the relevant [Wine Folly grape guide](https://winefolly.com/grapes/). Supplementary sources include [Rioja DOCa](https://riojawine.com/en-us/the-designation/grape-varieties/graciano/), [Vinistra](https://vinistra.hr/en/malvasia-istriana), [Comité Champagne](https://www.champagne.fr/en/champagne-tasting/the-tasting-experience), [Wines of Portugal](https://www.winesofportugal.com/en/portuguese-wines/grape-varieties/), [Bordeaux wines](https://www.bordeaux.com/en/grape-varieties/muscadelle/), [the Sherry council](https://www.sherry.wine/sherry-wine/dry-sherry-wines/fino), and the [Jura wine committee](https://www.jura-vins.com/medias/documents-a-telecharger/docs-utiles/CIVJ_PLQ_Pro_2009_GB_web.pdf). Individual producer references are clearly named on less commonly bottled grapes. Sources support the qualitative descriptions, **not the precise 1–5 values**. Per-grape links live with the data and appear on each card.
+- These reference values never feed `buildPalate`, journal scores, saved preferences or AI taste inference. The user's labels and wine evidence remain separate. Adding catalogue varieties still requires the existing catalogue/SQL validation update plus a flavour-data entry; the completeness test catches omissions.
+
+No additional SQL migration is required for the flavour guide. Saving personal grape labels still requires the grape-profile migration listed above.
+
 ## What the journal contributes
 
 - Only `status=consumed`, `inMyJournal=true`, `myRating` and `myComment` form personal evidence. Legacy cellar ratings/notes, critic ratings, ownership and badges are not preferences.

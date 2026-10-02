@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Grape, Plus, Search } from 'lucide-react';
 import { GRAPES, grapeName, normalizeGrapeText } from '@/data/grapes';
+import GrapeFlavourWheel from './GrapeFlavourWheel';
 import { GRAPE_LABELS, GRAPE_NOTE_LIMIT, GRAPE_PREFERENCE_LIMIT } from '@/lib/grape-profile';
 import type { GrapePreference, PalatePreferences, PalateProfile } from '@/types/palate';
 
@@ -12,7 +13,7 @@ export default function GrapePalate({ profile, draft, onChange, pt, cellarName }
   pt: boolean; cellarName: string;
 }) {
   const [query, setQuery] = useState('');
-  const [filter, setFilter] = useState<'all' | 'stated' | 'journal'>('all');
+  const [filter, setFilter] = useState<'all' | 'stated' | 'journal' | 'guide'>('all');
   const [showAll, setShowAll] = useState(false);
   const [notice, setNotice] = useState('');
   const locale = pt ? 'pt' : 'en';
@@ -23,7 +24,7 @@ export default function GrapePalate({ profile, draft, onChange, pt, cellarName }
     const grape = GRAPES.find(g => g.id === id);
     return normalizeGrapeText([grape?.name || id, ...(grape && 'aliases' in grape ? grape.aliases : [])].join(' ')).includes(normalizeGrapeText(query));
   };
-  const filtered = ids.filter(id => matches(id)
+  const filtered = (filter === 'guide' ? GRAPES.map(g => g.id) : ids).filter(id => matches(id)
     && (filter !== 'stated' || draft.grape_preferences.some(p => p.grapeId === id))
     && (filter !== 'journal' || journal.some(g => g.grapeId === id)));
   const suggestions = GRAPES.filter(g => !ids.includes(g.id) && matches(g.id)).slice(0, 8);
@@ -53,9 +54,11 @@ export default function GrapePalate({ profile, draft, onChange, pt, cellarName }
     <div className="grape-toolbar">
       <label className="grape-search"><Search size={17} aria-hidden="true" /><span className="sr-only">{pt ? 'Buscar uma uva' : 'Find a grape'}</span><input value={query} placeholder={pt ? 'Busque uma uva, ex.: Shiraz…' : 'Find a grape, e.g. Shiraz…'} onChange={e => { setQuery(e.target.value); setShowAll(false); }} /></label>
       <div className="grape-filters" aria-label={pt ? 'Filtrar perfil' : 'Filter grape profile'}>
-        {(['all', 'stated', 'journal'] as const).map(value => <button type="button" key={value} aria-pressed={filter === value} onClick={() => { setFilter(value); setShowAll(false); }}>{value === 'all' ? (pt ? 'Todas' : 'All grapes') : value === 'stated' ? (pt ? 'O que eu digo' : 'My preferences') : (pt ? 'Do diário' : 'From my journal')}</button>)}
+        {(['all', 'stated', 'journal', 'guide'] as const).map(value => <button type="button" key={value} aria-pressed={filter === value} onClick={() => { setFilter(value); setShowAll(false); }}>{value === 'all' ? (pt ? 'Meu perfil' : 'My profile') : value === 'stated' ? (pt ? 'O que eu digo' : 'My preferences') : value === 'guide' ? (pt ? 'Guia de uvas' : 'Grape guide') : (pt ? 'Do diário' : 'From my journal')}</button>)}
       </div>
     </div>
+    <p className="grape-flavour-intro">{pt ? 'Uma roda para conhecer cada uva. Toque nos setores ou abra os valores para explorar. São guias ilustrativos de 1–5 criados para Flint, não medições nem notas do seu paladar. Clima, maturação e elaboração mudam cada vinho.' : 'A wheel to get to know each grape. Tap a segment or open its values to explore. These are illustrative 1–5 guides made for Flint, not measurements or your personal scores. Climate, ripeness and winemaking shape every bottle.'}</p>
+    {filter === 'guide' && <p className="grape-guide-caption">{pt ? `Explore as ${GRAPES.length} uvas do catálogo. Navegar não altera suas preferências; escolha um rótulo quando quiser adicionar uma.` : `Explore all ${GRAPES.length} catalogue grapes. Browsing does not change your preferences; choose a label when you want to add one.`}</p>}
     {journalSettingsChanged && <p className="grape-notice" role="status">{pt ? 'Salve para atualizar as pistas com as novas opções do diário.' : 'Save to refresh the clues using your updated journal settings.'}</p>}
     {!draft.journal_enabled && <p className="grape-notice">{pt ? 'Aprendizado do diário desativado. Você ainda pode contar quais uvas gosta e quer explorar.' : 'Journal learning is off. You can still tell us which grapes you enjoy and want to explore.'}</p>}
     {atLimit && <p className="grape-notice">{pt ? 'Você tem 40 preferências. Remova uma antes de adicionar outra.' : 'You have 40 preferences. Clear one before adding another.'}</p>}
@@ -66,8 +69,10 @@ export default function GrapePalate({ profile, draft, onChange, pt, cellarName }
         const grape = GRAPES.find(g => g.id === id);
         return <article className={`grape-card ${stated ? `grape-${stated.preference}` : ''}`} key={id} aria-label={grapeName(id)}>
           <div className="grape-card-heading"><div><h3>{grapeName(id)}</h3>{grape && 'aliases' in grape && <p className="grape-aliases">{grape.aliases.join(' · ')}</p>}</div>
-            <span className={`grape-source ${stated ? 'stated' : ''}`}>{stated ? (pt ? 'Você diz' : 'You say') : (pt ? 'Pista do diário' : 'Journal clue')}</span>
+            <span className={`grape-source ${stated ? 'stated' : ''}`}>{stated ? (pt ? 'Você diz' : 'You say') : learned ? (pt ? 'Pista do diário' : 'Journal clue') : (pt ? 'Guia de uvas' : 'Grape guide')}</span>
           </div>
+          <GrapeFlavourWheel grapeId={id} pt={pt} />
+          <p className="grape-personal-heading">{pt ? 'E PARA O SEU PALADAR?' : 'AND FOR YOUR PALATE?'}</p>
           <div className="grape-labels" role="group" aria-label={`${pt ? 'Minha preferência por' : 'My preference for'} ${grapeName(id)}`}>
             {(Object.keys(GRAPE_LABELS) as GrapePreference['preference'][]).map(value => <button key={value} type="button" aria-pressed={stated?.preference === value} disabled={!stated && atLimit} onClick={() => setPreference(id, value)}>{GRAPE_LABELS[value][locale]}</button>)}
           </div>
@@ -91,14 +96,14 @@ export default function GrapePalate({ profile, draft, onChange, pt, cellarName }
         </article>;
       })}
     </div>
-    {!filtered.length && <p className="palate-empty">{query ? (pt ? 'Nenhuma uva do perfil corresponde à busca. Você pode adicionar uma abaixo.' : 'No profile grapes match. You can add a grape below.') : (pt ? 'Seu perfil começa com as suas provas — ou com uma uva que você escolher abaixo.' : 'Your profile starts with your tastings—or a grape you choose below.')}</p>}
+    {!filtered.length && <p className="palate-empty">{filter === 'guide' ? (pt ? 'Nenhuma uva do catálogo corresponde à busca. Tente outro nome ou sinônimo.' : 'No catalogue grapes match. Try another name or synonym.') : query ? (pt ? 'Nenhuma uva do perfil corresponde à busca. Você pode consultar o Guia de uvas ou adicionar uma abaixo.' : 'No profile grapes match. Try the Grape guide or add a grape below.') : (pt ? 'Seu perfil começa com as suas provas — explore também o Guia de uvas.' : 'Your profile starts with your tastings. You can also browse the Grape guide.')}</p>}
     {filtered.length > 6 && <button className="text-button grape-show-more" type="button" onClick={() => setShowAll(!showAll)}>{showAll ? (pt ? 'Mostrar menos' : 'Show fewer') : `${pt ? 'Ver todas as' : 'Show all'} ${filtered.length} ${pt ? 'uvas' : 'grapes'}`}</button>}
-    <details className="grape-add" open={!!query || ids.length === 0}>
+    {filter !== 'guide' && <details className="grape-add" open={!!query || ids.length === 0}>
       <summary><Plus size={16} aria-hidden="true" />{pt ? 'Mais uma uva para conhecer' : 'Another grape to get to know'}</summary>
       <p>{pt ? 'Adicione como “Quero explorar” e depois escolha seu rótulo e nota. Busque pelo nome ou sinônimo acima.' : 'Add as “Want to explore”, then choose your label and note. Search by name or synonym above.'}</p>
       <div className="grape-suggestions">{suggestions.map(g => <button type="button" disabled={atLimit} key={g.id} onClick={() => explore(g.id)}><Plus size={13} aria-hidden="true" />{g.name}<span>{pt ? 'Explorar' : 'Explore'}</span></button>)}</div>
       {!suggestions.length && <p>{pt ? 'Sem outras uvas listadas para esta busca. Use as notas gerais abaixo para variedades que ainda não estão no catálogo.' : 'No other listed grapes match. Use the general notes below for varieties not yet in the catalogue.'}</p>}
-    </details>
+    </details>}
     <span className="sr-only" role="status">{notice}</span>
     {!!profile.unmappedGrapeWines && draft.journal_enabled && <p className="grape-method">{profile.unmappedGrapeWines} {pt ? 'vinho(s) têm composição incompleta ou não reconhecida. Corrija o campo de uvas no' : 'wine(s) have incomplete or unrecognised composition. Update their grape field in your'} <Link href="/cellar-journal">{pt ? 'diário' : 'journal'}</Link> {pt ? 'para melhorar o perfil.' : 'to improve your profile.'}</p>}
     <p className="grape-method">{pt ? '“Evitar” exclui vinhos com essa uva registrada, inclusive blends. Salve as alterações no fim da página para usá-las no sommelier e nas sugestões de compra.' : '“Avoid” excludes wines with that grape recorded, including blends. Save at the bottom of this page to use your changes in sommelier and shopping suggestions.'}</p>

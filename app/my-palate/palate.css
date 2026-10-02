@@ -99,6 +99,45 @@
 .grape-suggestions button { display: flex; align-items: center; gap: 5px; border: 1px solid var(--line); background: #fffdfb; padding: 9px 12px; border-radius: 6px; font-size: 12px; color: var(--burgundy); }
 .grape-suggestions button span { color: var(--muted); font-size: 10px; padding-left: 4px; }
 .grape-notice { font-size: 12px; line-height: 1.7; padding: 12px 16px; margin-bottom: 16px; border-left: 2px solid var(--copper); background: #f3e9e3; }
+.grape-flavour-intro, .grape-guide-caption { font-size: 12px; line-height: 1.7; color: var(--muted); margin: 0 0 20px; max-width: 1000px; }
+.grape-guide-caption { border-left: 2px solid var(--copper); padding: 8px 14px; background: #f5eee6; }
+.grape-flavour { margin: 22px 0 0; padding-top: 16px; border-top: 1px solid var(--line); }
+.flavour-heading { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; color: var(--copper); font-size: 9px; font-weight: 600; letter-spacing: .15em; }
+.flavour-heading > span:last-child { color: var(--muted); font-weight: 400; letter-spacing: 0; white-space: nowrap; }
+.flavour-style { font: italic 14px/1.5 var(--serif); color: var(--muted); margin-top: 6px; }
+.flavour-wheel { display: block; width: 100%; max-width: 320px; height: auto; margin: -2px auto -8px; overflow: visible; }
+.flavour-track { fill: #f6f0e9; }
+.flavour-ring { stroke: #fffdfb; stroke-width: 1; }
+.flavour-sector { cursor: pointer; }
+.flavour-sector > text { fill: #655457; font-size: 10px; letter-spacing: .02em; }
+.flavour-selection { fill: transparent; stroke-width: 1.5; opacity: 0; }
+.flavour-sector.active .flavour-selection { opacity: 1; }
+.flavour-sector.active > text { fill: var(--burgundy); font-weight: 600; }
+.flavour-centre-value { font: 23px var(--serif); fill: var(--burgundy); }
+.flavour-centre-max { font: 9px Arial, sans-serif; fill: #76676a; }
+.flavour-centre-label { font: 6px Arial, sans-serif; letter-spacing: .12em; fill: #76676a; }
+.flavour-selected { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 11px; line-height: 1.6; min-height: 24px; }
+.flavour-selected i, .flavour-values i { display: block; width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.flavour-selected strong { font-weight: 500; color: var(--ink); }
+.flavour-selected > span { color: var(--muted); }
+.flavour-aromas { font: italic 17px/1.5 var(--serif); color: var(--burgundy); text-align: center; margin: 10px 0 18px; text-wrap: balance; }
+.flavour-details { border-top: 1px dashed var(--line); padding-top: 12px; }
+.flavour-details summary { color: var(--burgundy); font-size: 11px; cursor: pointer; line-height: 1.6; }
+.flavour-details p { color: var(--muted); font-size: 12px; line-height: 1.7; margin: 12px 0; }
+.flavour-values { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; margin: 15px 0; }
+.flavour-values button { display: flex; align-items: center; gap: 7px; min-height: 38px; text-align: left; padding: 7px 8px; border: 1px solid transparent; border-radius: 4px; font-size: 11px; color: var(--ink); }
+.flavour-values button > span { flex: 1; }
+.flavour-values button > strong { white-space: nowrap; color: var(--burgundy); }
+.flavour-values small { font-size: 9px; color: var(--muted); font-weight: 400; }
+.flavour-values button[aria-pressed=true] { background: #f4ebe8; border-color: #dbc3bc; }
+.flavour-values button:hover { background: #f6efea; }
+.flavour-axis-explanation { min-height: 40px; }
+.flavour-details .flavour-method { font-size: 11px; }
+.flavour-reference { font-size: 10px; line-height: 1.6; margin: 12px 0 18px; color: var(--muted); }
+.flavour-reference a { color: var(--burgundy); text-decoration: underline; text-underline-offset: 3px; }
+.flavour-reference a:focus-visible { outline: 2px solid var(--burgundy); outline-offset: 3px; }
+.grape-personal-heading { color: var(--copper); font-size: 9px; font-weight: 600; letter-spacing: .15em; border-top: 1px solid var(--line); padding-top: 17px; }
+.grape-personal-heading + .grape-labels { margin-top: 12px; }
 @media (max-width: 1000px) { .grape-card { padding: 18px; } .grape-card-heading { flex-wrap: wrap; } }
 @media (max-width: 700px) { .grape-heading { align-items: flex-start; gap: 12px; } .grape-tally { display: none; } .grape-grid { grid-template-columns: 1fr; } .grape-toolbar { gap: 8px; } .grape-filters button { padding: 10px; } .grape-average > span { max-width: 180px; } }
 @media (max-width: 960px) { .palate-preferences { padding-right: 24px; } .palate-learning { padding-left: 24px; } }
