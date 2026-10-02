@@ -1,24 +1,31 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Check, Compass, Heart, Sparkles } from 'lucide-react';
 import { useCellar } from '@/components/CellarSession';
 import GrapePalate from '@/components/GrapePalate';
 import { DEFAULT_PALATE } from '@/lib/palate';
 import type { PalatePreferences, PalateProfile } from '@/types/palate';
+import type { Cellar } from '@/types/database';
 import './palate.css';
 
 export default function MyPalate() {
   const { cellar, isPortugueseMode: pt } = useCellar();
+  return <PalatePage key={cellar.id} cellar={cellar} pt={pt} />;
+}
+
+function PalatePage({ cellar, pt }: { cellar: Cellar; pt: boolean }) {
   const [profile, setProfile] = useState<PalateProfile | null>(null);
   const [draft, setDraft] = useState<PalatePreferences>(DEFAULT_PALATE);
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
   const [saved, setSaved] = useState(false);
+  const requests = useRef<AbortController | null>(null);
   const endpoint = `/api/palate?cellarId=${encodeURIComponent(cellar.id)}`;
   useEffect(() => {
     const controller = new AbortController();
+    requests.current = controller;
     setProfile(null); setError('');
     fetch(endpoint, { cache: 'no-store', signal: controller.signal }).then(async response => {
       const result = await response.json();
@@ -37,13 +44,15 @@ export default function MyPalate() {
   }, [dirty]);
   async function save(event: React.FormEvent) {
     event.preventDefault(); setPending(true); setError(''); setSaved(false);
+    const signal = requests.current?.signal;
     try {
-      const response = await fetch(endpoint, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft) });
+      const response = await fetch(endpoint, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft), signal });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error);
+      if (signal?.aborted) return;
       setProfile(result); setDraft(result.preferences); setSaved(true);
-    } catch (e) { setError(e instanceof Error ? e.message : 'Unable to save your preferences.'); }
-    finally { setPending(false); }
+    } catch (e) { if (!signal?.aborted) setError(e instanceof Error ? e.message : 'Unable to save your preferences.'); }
+    finally { if (!signal?.aborted) setPending(false); }
   }
   return <main className="flint-subpage palate-page">
     <header className="subpage-heading">

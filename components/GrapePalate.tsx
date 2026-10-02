@@ -17,7 +17,8 @@ export default function GrapePalate({ profile, draft, onChange, pt, cellarName }
   const [notice, setNotice] = useState('');
   const locale = pt ? 'pt' : 'en';
   const journal = draft.journal_enabled ? profile.grapes : [];
-  const ids = Array.from(new Set([...draft.grape_preferences.map(p => p.grapeId), ...journal.map(g => g.grapeId)]));
+  // Keep a journal card in place while its label/notes are being edited.
+  const ids = Array.from(new Set([...journal.map(g => g.grapeId), ...draft.grape_preferences.map(p => p.grapeId)]));
   const matches = (id: string) => {
     const grape = GRAPES.find(g => g.id === id);
     return normalizeGrapeText([grape?.name || id, ...(grape && 'aliases' in grape ? grape.aliases : [])].join(' ')).includes(normalizeGrapeText(query));

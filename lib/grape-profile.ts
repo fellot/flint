@@ -26,27 +26,27 @@ export function grapePreferencesInput(raw: unknown): GrapePreference[] {
   });
 }
 
-const aliases = GRAPES.flatMap(g => [g.name, ...('aliases' in g ? g.aliases : [])]
-  .map(name => ({ id: g.id, name: normalizeGrapeText(name) })))
-  .sort((a, b) => b.name.length - a.name.length);
+const aliases = new Map(GRAPES.flatMap(g => [g.name, ...('aliases' in g ? g.aliases : [])]
+  .map(name => [normalizeGrapeText(name), g.id] as const)));
 
 export function recordedGrapes(text: string) {
-  let remaining = normalizeGrapeText(text || '');
   const ids = new Set<string>();
-  // Longest name first keeps Grenache Blanc distinct from Grenache. Word
-  // boundaries prevent Riesling from matching Welschriesling, for example.
-  for (const alias of aliases) {
-    const re = new RegExp(`(^|[^a-z0-9])${alias.name}(?=$|[^a-z0-9])`, 'g');
-    remaining = remaining.replace(re, (_match, prefix: string) => { ids.add(alias.id); return prefix + ' '; });
+  const percentages: number[] = [];
+  let unknown = false;
+  const parts = normalizeGrapeText(text || '').split(/[,;&+/()]|\b(?:and|et|e)\b/);
+  for (const part of parts) {
+    const name = part.replace(/\b(\d+(?:\.\d+)?)\s*%/g, (_match, value: string) => { percentages.push(Number(value)); return ''; }).trim();
+    if (!name) continue;
+    const id = aliases.get(name);
+    // Match the whole component: Grenache Gris must not become Grenache,
+    // and Riesling Italico must not become Riesling. Unclear prose stays unknown.
+    if (id) ids.add(id); else unknown = true;
   }
   // A sole recorded variety is usable evidence, not a purity certification.
   // "90%", "dominant", "others", unknown names and field-blend descriptors
   // remain incomplete; they never turn into single-variety score evidence.
-  const percentages: number[] = [];
-  const remainder = remaining.replace(/\b(\d+(?:\.\d+)?)\s*%/g, (_match, value: string) => { percentages.push(Number(value)); return ''; })
-    .replace(/\b(and|et|e)\b/g, '').replace(/[\s,;&+/().:]/g, '');
   const percentagesComplete = !percentages.length || (percentages.length === ids.size && Math.abs(percentages.reduce((a, b) => a + b, 0) - 100) < 0.01);
-  const complete = ids.size > 0 && !remainder && percentagesComplete;
+  const complete = ids.size > 0 && !unknown && percentagesComplete;
   return { ids: Array.from(ids), complete, composition: ids.size === 1 && complete ? 'single' as const : 'blend' as const };
 }
 

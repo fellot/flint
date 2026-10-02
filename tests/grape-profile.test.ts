@@ -26,7 +26,7 @@ test('grape identities merge synonyms but keep different grapes separate', () =>
   assert.deepEqual(recordedGrapes('Grenache Blanc').ids, ['grenache-blanc']);
   assert.deepEqual(recordedGrapes('Petite Sirah').ids, ['petite-sirah']);
   assert.deepEqual(recordedGrapes('Cabernet Sauvignon, Cabernet Franc').ids.sort(), ['cabernet-franc', 'cabernet-sauvignon']);
-  for (const text of ['Welschriesling', 'Pinot', 'Muscat', '', 'Unknown']) assert.deepEqual(recordedGrapes(text).ids, []);
+  for (const text of ['Welschriesling', 'Riesling Italico', 'Grenache Gris', 'Pinot', 'Muscat', '', 'Unknown']) assert.deepEqual(recordedGrapes(text).ids, []);
 });
 
 test('partial and unknown compositions never create single-grape evidence', () => {
