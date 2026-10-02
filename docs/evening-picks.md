@@ -13,8 +13,12 @@ Implemented October 1, 2026. This documents repository behavior, not a verified 
 - **Choose a city** searches after an explicit search click/Enter. The user selects
   a named region/country result; ambiguous names never silently use the first match.
 - **Skip weather** makes no location or weather request.
-- A successful pick shows a bottle, explanation, meal, conversation starter, drinking
+- A successful pick shows a bottle, a visible **Why this wine** explanation, meal, conversation starter, drinking
   window, optional personal journal evidence, and the actual weather context used.
+  The explanation connects the bottle to the strongest supported reasons for the
+  choice (food, mood, weather, taste or drinking readiness) in two or three short
+  sentences. Missing context is not invented. Sommelier chat uses the same prompt
+  and labels the explanation too; this does not require another AI call.
 - **Another idea · AI** makes a new request excluding the previous bottle. Input
   changes clear the old plan. Closing cancels pending work; switching cellars resets
   the entire component. Mobile scrolls to a completed result.

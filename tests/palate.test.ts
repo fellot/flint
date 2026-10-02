@@ -113,7 +113,7 @@ test('provider flow uses fresh candidates, validates evidence and preserves even
       assert.equal(sent.response_format.json_schema.strict, true); assert.equal(sent.store, false);
       const input = sent.messages[1].content;
       assert.match(input, /"score":95/); assert.match(input, /"discovery":"balanced"/);
-      return Response.json({ choices: [{ message: { content: JSON.stringify({ type: 'recommendation', answer: '', question: '', recommendations: [suggestion('future'), suggestion('now', { journalEvidenceIds: ['a'], title: 'A quiet dinner', meal: 'Mushroom risotto', conversationQuestion: 'Where next?' })] }) } }] });
+      return Response.json({ choices: [{ message: { content: JSON.stringify({ type: 'recommendation', answer: '', question: '', recommendations: [suggestion('future'), suggestion('now', { journalEvidenceIds: ['a'], reason: 'Its estimated peak makes this a promising time to open it. Your 95-point Brunello is an early clue that you may enjoy this style.', title: 'A quiet dinner', meal: 'Mushroom risotto', conversationQuestion: 'Where next?' })] }) } }] });
     };
     const result = await personalSommelier({ wines, profile: buildPalate(wines, DEFAULT_PALATE), locale: 'en', messages: [{ role: 'user', content: 'What tonight?' }] });
     assert.equal(result.type, 'recommendation');
@@ -122,6 +122,11 @@ test('provider flow uses fresh candidates, validates evidence and preserves even
     assert.match(formatSommelierReply(result, false), /From your journal/);
     const plan = parseEveningPlan({ ...result, question: result.conversationQuestion }, wines)!;
     assert.equal(plan.evidence?.[0].score, 95);
+    // Ranking can choose a different candidate from the provider's first suggestion.
+    // The explanation must stay with the bottle actually shown, in both interfaces.
+    assert.equal(plan.reason, 'Its estimated peak makes this a promising time to open it. Your 95-point Brunello is an early clue that you may enjoy this style.');
+    assert.ok(formatSommelierReply(result, false).includes(`Why this wine:\n${plan.reason}`));
+    assert.ok(formatSommelierReply(result, true).includes(`Por que este vinho:\n${plan.reason}`));
     globalThis.fetch = async () => Response.json({ choices: [{ message: { refusal: 'No' } }] });
     await assert.rejects(personalSommelier({ wines, profile: buildPalate(wines, DEFAULT_PALATE), locale: 'en', messages: [] }), /could not complete/);
   } finally { globalThis.fetch = originalFetch; if (originalKey === undefined) delete process.env.OPENAI_API_KEY; else process.env.OPENAI_API_KEY = originalKey; }

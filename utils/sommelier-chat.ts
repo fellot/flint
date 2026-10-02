@@ -14,7 +14,7 @@ export function formatSommelierReply(reply: ChatReply, pt: boolean) {
   const details = [reply.wine?.region, reply.wine?.vintage || 'NV'].filter(Boolean).join(' · ');
   const lines = [
     `${pt ? 'Eu escolheria' : 'I’d open'}: ${reply.bottle}${details ? ` (${details})` : ''}.`,
-    reply.reason,
+    reply.reason ? `${pt ? 'Por que este vinho' : 'Why this wine'}:\n${reply.reason}` : '',
     reply.servingTemperature ? `${pt ? 'Sugestão de serviço' : 'Serving suggestion'}: ${reply.servingTemperature}` : '',
     reply.decanting ? `${pt ? 'Decantação sugerida' : 'Decanting suggestion'}: ${reply.decanting}` : '',
     reply.wine?.location ? `${pt ? 'Onde está' : 'Where to find it'}: ${reply.wine.location}` : '',
