@@ -18,7 +18,7 @@ export async function PUT(request: NextRequest) {
     checkOrigin(request);
     const { supabase, cellar, user } = await requireCellar(request.nextUrl.searchParams.get('cellarId'));
     const raw = await request.text();
-    if (raw.length > 12000) throw new ApiError(413, 'Your palate notes are too long.');
+    if (raw.length > 30000) throw new ApiError(413, 'Your palate notes are too long.');
     await savePalate(supabase, user.id, JSON.parse(raw));
     return NextResponse.json((await loadPalate(supabase, cellar.id, user.id)).profile, { headers });
   } catch (error) { return apiError(error); }

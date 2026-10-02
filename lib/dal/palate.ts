@@ -2,13 +2,16 @@ import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 import { ApiError } from '@/lib/api-error';
-import { DEFAULT_PALATE, buildPalate, palateInput } from '@/lib/palate';
+import { DEFAULT_PALATE, buildPalate, palateInput, palateWrite } from '@/lib/palate';
 import { listWines } from './wines';
 import { withJournal } from './journal';
 
 function checkStorage(error: { code?: string } | null) {
   if (error?.code === '42P01' || error?.code === 'PGRST205') {
     throw new ApiError(503, 'My palate needs its database update. Run 20260928000000_personal_palate.sql in Supabase SQL Editor.');
+  }
+  if (error?.code === '42703' || error?.code === 'PGRST204') {
+    throw new ApiError(503, 'Your grape profile needs its database update. Run 20261002000000_grape_profile.sql in Supabase SQL Editor.');
   }
   if (error) throw error;
 }
@@ -26,7 +29,7 @@ export async function loadPalate(client: SupabaseClient<Database>, cellarId: str
 }
 
 export async function savePalate(client: SupabaseClient<Database>, userId: string, body: unknown) {
-  const preferences = palateInput(body);
+  const preferences = palateWrite(body);
   const { error } = await client.from('palate_preferences').upsert({ ...preferences, user_id: userId });
   checkStorage(error);
 }

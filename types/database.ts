@@ -48,7 +48,7 @@ export type FridgeInput = { id?: string; name: string; levelCount: number; first
 export type Database = {
   public: {
     Tables: {
-      palate_preferences: Table<PalatePreferences & { user_id: string; updated_at: string }, PalatePreferences & { user_id: string }, Partial<PalatePreferences>>;
+      palate_preferences: Table<PalatePreferences & { user_id: string; updated_at: string }, Partial<PalatePreferences> & { user_id: string }, Partial<PalatePreferences>>;
       cellar_fridges: Table<CellarFridge, never, never>;
       cellar_storage_locations: Table<StorageLocation, never, never>;
       cellars: Table<Cellar, Omit<Cellar, 'created_at'>, Partial<Omit<Cellar, 'created_at'>>>;

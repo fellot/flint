@@ -3,6 +3,7 @@ import type { PalateProfile } from '@/types/palate';
 import { buildPalate, evidenceFor, isRecordedSemiSweet, learningJournal, tasteAffinity } from '@/lib/palate';
 import { getEssentialJournalMatches, getEssentialMatches } from '@/lib/cellar-essentials';
 import { CELLAR_ESSENTIALS } from '@/data/cellar-essentials';
+import { grapeContext, GRAPE_CONTEXT_RULES, isAvoidedGrape } from '@/lib/grape-profile';
 
 export function maturity(wine: Wine, year: number) {
   const years = (wine.drinkingWindow || '').match(/\b(?:19|20|21)\d{2}\b/g)?.map(Number) || [];
@@ -22,7 +23,8 @@ export function maturity(wine: Wine, year: number) {
 
 export function cellarCandidates(wines: Wine[], profile: PalateProfile, year: number) {
   return wines.filter(w => w.status === 'in_cellar' && w.quantity > 0
-    && !(profile.preferences.avoid_semi_sweet && isRecordedSemiSweet(w)))
+    && !(profile.preferences.avoid_semi_sweet && isRecordedSemiSweet(w))
+    && !isAvoidedGrape(w, profile.preferences))
     .sort((a, b) => maturity(a, year).priority - maturity(b, year).priority
       || tasteAffinity(b, profile) - tasteAffinity(a, profile) || a.bottle.localeCompare(b.bottle));
 }
@@ -45,6 +47,7 @@ export function cellarContext(wines: Wine[], profile: PalateProfile, year: numbe
     candidates, evidence,
     input: {
       year, preferences: profile.preferences,
+      grapeProfile: grapeContext(activeProfile),
       journal: evidence, journalEntriesProvided: evidence.length,
       journalEntriesAvailable: journal.length,
       scoringBaseline: profile.preferences.journal_enabled ? activeProfile.average : null,
@@ -63,6 +66,7 @@ export function cellarContext(wines: Wine[], profile: PalateProfile, year: numbe
 }
 
 export const PERSONAL_SOMMELIER_RULES = `You are Flint's warm, concise personal sommelier.
+${GRAPE_CONTEXT_RULES}
 The supplied preferences are the user's explicit preferences; patterns and journal scores are tentative evidence, not universal truths. Respect explicit dislikes and today's food restrictions before recommending. Avoid semi-sweet does NOT mean avoid fully sweet dessert wines. Sweetness is unknown unless recorded; never infer it just from a grape or invent residual sugar. If the user excludes a feature and the wine's suitability is unknown, disclose the uncertainty or ask.
 Recommend only positive-stock IDs in inventory. Among suitable wines, prioritize lower maturity.priority, particularly near estimated peak. These are estimates, not guarantees. Never equate a passed peak year with spoilage or urgency. If only young or uncertain wines suit the request, explain the tradeoff. Food and explicit preferences take precedence over maturity.
 Use personal scores relative to scoringBaseline, never critic scores or ownership as evidence of liking. One tasting is an early clue, not a verdict on a region or grape. Don't infer acidity, oak, body or tannin preferences from scores alone. Comments can explain a score; account for bottle faults, youth, pairing and context. Missing styles are unexplored, not disliked. Do not recreate dismissed_patterns or use journal information when journal_enabled is false.

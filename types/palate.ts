@@ -1,9 +1,16 @@
+export type GrapePreference = {
+  grapeId: string;
+  preference: 'love' | 'like' | 'neutral' | 'avoid' | 'explore';
+  notes: string;
+};
+
 export type PalatePreferences = {
   discovery: 'familiar' | 'balanced' | 'adventurous';
   avoid_semi_sweet: boolean;
   preferences: string;
   journal_enabled: boolean;
   dismissed_patterns: string[];
+  grape_preferences: GrapePreference[];
 };
 
 export type PalateEvidence = {
@@ -20,4 +27,16 @@ export type PalatePattern = {
 export type PalateProfile = {
   preferences: PalatePreferences; journalCount: number; scoredCount: number;
   excludedCount: number; average: number | null; patterns: PalatePattern[];
+  grapes: GrapeProfile[];
+  unmappedGrapeWines: number;
+};
+
+export type GrapeProfile = {
+  grapeId: string;
+  singleWines: number;
+  blendWines: number;
+  scoredSingleWines: number;
+  average: number | null;
+  styles: string[];
+  evidence: (PalateEvidence & { composition: 'single' | 'blend' })[];
 };

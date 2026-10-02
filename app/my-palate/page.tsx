@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Check, Compass, Heart, Sparkles } from 'lucide-react';
 import { useCellar } from '@/components/CellarSession';
+import GrapePalate from '@/components/GrapePalate';
 import { DEFAULT_PALATE } from '@/lib/palate';
 import type { PalatePreferences, PalateProfile } from '@/types/palate';
 import './palate.css';
@@ -54,9 +55,10 @@ export default function MyPalate() {
     {error && <p className="flint-alert" role="alert">{error}</p>}
     {!profile ? <p role="status">{error ? (pt ? 'Atualize a página após resolver o problema.' : 'Reload this page after resolving the issue.') : (pt ? 'Conhecendo seu diário…' : 'Getting to know your journal…')}</p> : <form onSubmit={save}>
       <fieldset disabled={pending} className="palate-fieldset">
+        <GrapePalate key={cellar.id} profile={profile} draft={draft} onChange={grape_preferences => change({ grape_preferences })} pt={pt} cellarName={cellar.name} />
         <div className="palate-columns">
           <section className="palate-preferences" aria-labelledby="palate-explicit">
-            <p className="eyebrow">01 / {pt ? 'O QUE VOCÊ NOS CONTA' : 'YOU TOLD US'}</p>
+            <p className="eyebrow">02 / {pt ? 'O QUE VOCÊ NOS CONTA' : 'YOU TOLD US'}</p>
             <h2 id="palate-explicit">{pt ? 'O que faz a sua taça?' : 'What makes your glass?'}</h2>
             <p className="palate-muted">{pt ? 'Estas preferências são suas e valem em todas as suas adegas.' : 'These preferences belong to you and follow you across your cellars.'}</p>
             <fieldset className="palate-discovery">
@@ -77,7 +79,7 @@ export default function MyPalate() {
             </label>
           </section>
           <section className="palate-learning" aria-labelledby="palate-learned">
-            <p className="eyebrow">02 / {pt ? 'O QUE SEU DIÁRIO CONTA' : 'YOUR JOURNAL TELLS US'}</p>
+            <p className="eyebrow">03 / {pt ? 'O QUE SEU DIÁRIO CONTA' : 'YOUR JOURNAL TELLS US'}</p>
             <h2 id="palate-learned">{pt ? 'Um gosto tomando forma.' : 'A taste taking shape.'}</h2>
             <p className="palate-muted">{pt ? 'Somente suas avaliações em' : 'Only your own tastings in'} <strong>{cellar.name}</strong>. {pt ? 'Novas avaliações e edições atualizam estas pistas.' : 'New reviews and edits refresh these clues.'}</p>
             <div className="palate-stats"><span><strong>{profile.scoredCount}</strong>{pt ? 'notas pessoais' : 'personal scores'}</span><span><strong>{profile.average ?? '—'}</strong>{pt ? 'média por vinho / 100' : 'average per wine / 100'}</span></div>

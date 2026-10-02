@@ -113,6 +113,15 @@ test('refusals, incomplete responses, malformed JSON and unsafe URLs fail closed
   }
 });
 
+test('buyer honours explicit grape Avoid preferences even when a source calls Syrah Shiraz', () => {
+  const avoided = buildPalate([], { ...DEFAULT_PALATE, grape_preferences: [{ grapeId: 'syrah', preference: 'avoid', notes: '' }] });
+  const personal = shoppingContext([], avoided);
+  assert.equal(personal.input.grapeProfile.stated[0].grape, 'Syrah');
+  assert.equal(parseShoppingResponse(response(), personal, avoided).products.length, 0);
+  const curious = buildPalate([], { ...DEFAULT_PALATE, grape_preferences: [{ grapeId: 'syrah', preference: 'explore', notes: '' }] });
+  assert.equal(parseShoppingResponse(response(), shoppingContext([], curious), curious).products.length, 1);
+});
+
 test('provider failures are controlled and requests honour cancellation', async () => {
   const original = process.env.OPENAI_API_KEY; process.env.OPENAI_API_KEY = 'mock-only';
   try {

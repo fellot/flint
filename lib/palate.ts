@@ -3,10 +3,11 @@ import type { PalateEvidence, PalatePreferences, PalateProfile } from '@/types/p
 import { CELLAR_ESSENTIALS } from '@/data/cellar-essentials';
 import { getEssentialJournalMatches, getEssentialMatches } from './cellar-essentials';
 import { WineValidationError } from './wine-data';
+import { buildGrapeProfile, grapePreferencesInput, tastingIdentity } from './grape-profile';
 
 export const DEFAULT_PALATE: PalatePreferences = {
   discovery: 'balanced', avoid_semi_sweet: false, preferences: '',
-  journal_enabled: true, dismissed_patterns: [],
+  journal_enabled: true, dismissed_patterns: [], grape_preferences: [],
 };
 
 export function palateInput(raw: unknown): PalatePreferences {
@@ -23,6 +24,7 @@ export function palateInput(raw: unknown): PalatePreferences {
     discovery: p.discovery as PalatePreferences['discovery'], avoid_semi_sweet: p.avoid_semi_sweet,
     journal_enabled: p.journal_enabled, preferences: p.preferences.trim(),
     dismissed_patterns: Array.from(new Set(p.dismissed_patterns as string[])),
+    grape_preferences: grapePreferencesInput(p.grape_preferences),
   };
 }
 
@@ -63,11 +65,10 @@ export const evidenceFor = (w: Wine): PalateEvidence => ({
   comment: (w.myComment || '').slice(0, 1200), style: w.style, grapes: w.grapes,
   region: w.region, country: w.country,
 });
-const identity = (w: Wine) => `${w.bottle}|${w.vintage}|${w.country}`.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9|]/g, '');
 function distinctScores(wines: Wine[]) {
   // One vote per label/vintage; repeated bottles don't inflate confidence.
   const groups = new Map<string, (Wine & { myRating: number })[]>();
-  wines.filter(hasScore).forEach(w => groups.set(identity(w), [...(groups.get(identity(w)) || []), w]));
+  wines.filter(hasScore).forEach(w => groups.set(tastingIdentity(w), [...(groups.get(tastingIdentity(w)) || []), w]));
   return Array.from(groups.values()).map(group => ({ ...group[0], myRating: mean(group) }));
 }
 
@@ -87,7 +88,14 @@ export function buildPalate(wines: Wine[], preferences: PalatePreferences): Pala
     }];
   }).sort((a, b) => b.distinctWines - a.distinctWines || b.average - a.average);
   return { preferences, journalCount: journal.length, scoredCount: journal.filter(hasScore).length,
-    excludedCount: journal.length - usable.length, average: average === null ? null : rounded(average), patterns };
+    excludedCount: journal.length - usable.length, average: average === null ? null : rounded(average), patterns,
+    ...buildGrapeProfile(learningJournal(wines, preferences).map(evidenceFor)) };
+}
+
+// An older open tab must not erase grape preferences saved by a newer client.
+export function palateWrite(raw: unknown): Omit<PalatePreferences, 'grape_preferences'> & Partial<Pick<PalatePreferences, 'grape_preferences'>> {
+  const { grape_preferences, ...preferences } = palateInput(raw);
+  return Object.prototype.hasOwnProperty.call(raw, 'grape_preferences') ? { ...preferences, grape_preferences } : preferences;
 }
 
 // Only a recorded sweetness descriptor can exclude stock. Never assume every
