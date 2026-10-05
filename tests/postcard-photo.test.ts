@@ -94,6 +94,12 @@ test('a DNS rebinding answer cannot replace the validated socket address; global
   await fetchPostcardPhoto('https://images.example/bottle.png', ipv6.transport);
   assert.equal(ipv6.requests[0].pinned, '2606:4700:4700::1111');
   assert.equal(ipv6.requests[0].family, 6);
+  const dualStack = fakeTransport([{}], async () => [
+    { address: '2606:4700:4700::1111', family: 6 }, { address: '8.8.8.8', family: 4 },
+  ]);
+  await fetchPostcardPhoto('https://images.example/bottle.png', dualStack.transport);
+  assert.equal(dualStack.requests[0].pinned, '8.8.8.8', 'validated IPv4 should be preferred when IPv6 networking is unavailable');
+  assert.equal(dualStack.requests[0].family, 4);
 });
 
 test('every redirect target is independently validated and safe relative redirects succeed', async () => {

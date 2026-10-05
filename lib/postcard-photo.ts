@@ -62,7 +62,8 @@ async function pinnedAddress(url: URL, lookup: PostcardPhotoTransport['lookup'],
   signal.throwIfAborted();
   // Reject mixed public/private answers rather than relying on DNS answer order.
   if (!addresses.length || addresses.some(item => item.family !== isIP(item.address) || !isPublicAddress(item.address))) throw new Error(UNAVAILABLE);
-  return addresses[0];
+  // Some hosting environments have IPv6 DNS answers without outbound IPv6.
+  return addresses.find(item => item.family === 4) || addresses[0];
 }
 
 function requestPhoto(url: URL, address: Address, transport: PostcardPhotoTransport, signal: AbortSignal): Promise<IncomingMessage> {
