@@ -32,6 +32,7 @@ See [the cellar improvement backlog](docs/backlog.md) for prioritized product im
 - Add missing participants to a consumed wine from its journal row or details
 - Filter personal rankings by wine type (red, white, sparkling, etc.)
 - Journals show highest scores first in a compact sortable table
+- **Tasting postcards**: Turn a personal journal entry into a burgundy-and-cream image, customize the note and visible score/date, then save or share the PNG; see [how postcards work](docs/tasting-postcards.md)
 - Apply the [people and journals migration](supabase/README.md#6-add-people-and-personal-journals-existing-and-new-installations) before deploying
 
 ### 🔍 **Advanced Filtering & Search**
