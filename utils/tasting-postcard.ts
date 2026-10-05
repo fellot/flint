@@ -10,6 +10,7 @@ export interface PostcardOptions {
   note: string;
   showScore: boolean;
   showDate: boolean;
+  momentPhotoFit?: 'contain' | 'cover';
 }
 
 const BURGUNDY = '#642c3c';
@@ -130,7 +131,7 @@ function embeddedRaster(value: string | null | undefined): value is string {
     && /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(value);
 }
 
-function bottleIllustration(wine: Wine): string {
+function bottleIllustration(wine: Wine, transform = 'translate(434 222) scale(2.1)'): string {
   const palette = {
     red: ['#273b30', '#586647', '#642c3c'],
     white: ['#607246', '#a6b77e', '#bca375'],
@@ -139,7 +140,7 @@ function bottleIllustration(wine: Wine): string {
     sweet: ['#392934', '#665142', '#977142'],
     orange: ['#877343', '#c2a763', '#8a5336'],
   }[styleFamily(wine.style || '')];
-  return `<g transform="translate(434 222) scale(2.1)">
+  return `<g transform="${transform}">
     <defs><linearGradient id="bottle-glass"><stop stop-color="${palette[0]}"/><stop offset=".36" stop-color="${palette[1]}"/><stop offset=".8" stop-color="${palette[0]}"/><stop offset="1" stop-color="#18271f"/></linearGradient></defs>
     <ellipse cx="50" cy="205" rx="38" ry="4" fill="${INK}" opacity=".14"/>
     <path d="M39 9h22v47c0 14 18 21 19 39v102q0 7-8 7H28q-8 0-8-7V95c1-18 19-25 19-39Z" fill="url(#bottle-glass)"/>
@@ -153,8 +154,28 @@ function bottleIllustration(wine: Wine): string {
   </g>`;
 }
 
+function momentArtwork(wine: Wine, options: PostcardOptions, momentPhoto: string, bottlePhoto?: string | null): string {
+  const fit = options.momentPhotoFit === 'cover' ? 'slice' : 'meet';
+  const bottle = embeddedRaster(bottlePhoto)
+    ? `<image x="800" y="302" width="140" height="310" preserveAspectRatio="xMidYMid meet" xlink:href="${bottlePhoto}"/>`
+    : bottleIllustration(wine, 'translate(802 311) scale(1.35)');
+  return `<defs>
+        <clipPath id="postcard-moment-photo"><rect x="151" y="230" width="594" height="355"/></clipPath>
+        <clipPath id="postcard-moment-bottle"><rect x="798" y="298" width="144" height="315" rx="4"/></clipPath>
+      </defs>
+      <rect x="141" y="220" width="628" height="433" rx="2" fill="${INK}" opacity=".09"/>
+      <rect x="134" y="213" width="628" height="433" rx="2" fill="#fffaf1" stroke="#c4ad91" stroke-width="1"/>
+      <rect x="151" y="230" width="594" height="355" fill="#ece4d6"/>
+      <image x="151" y="230" width="594" height="355" clip-path="url(#postcard-moment-photo)" preserveAspectRatio="xMidYMid ${fit}" xlink:href="${momentPhoto}"/>
+      <text x="448" y="623" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" letter-spacing="3" fill="${MUTED}">${options.locale === 'pt' ? 'O MOMENTO' : 'THE MOMENT'}</text>
+      <path d="M784 633V380a86 86 0 0 1 172 0v253Z" fill="#ece2d4"/>
+      <path d="M790 626V380a80 80 0 0 1 160 0v246" fill="none" stroke="#c4ad91" stroke-width="1"/>
+      <g clip-path="url(#postcard-moment-bottle)">${bottle}</g>
+      <text x="870" y="653" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" letter-spacing="2" fill="${MUTED}">${options.locale === 'pt' ? 'O VINHO' : 'THE WINE'}</text>`;
+}
+
 /** A self-contained, exportable SVG. Only explicitly selected personal text is included. */
-export function buildTastingPostcardSvg(wine: Wine, options: PostcardOptions, photoDataUrl?: string | null): string {
+export function buildTastingPostcardSvg(wine: Wine, options: PostcardOptions, photoDataUrl?: string | null, momentPhotoDataUrl?: string | null): string {
   const pt = options.locale === 'pt';
   const title = limitedText(wine.bottle, 300) || (pt ? 'Um vinho para lembrar' : 'A wine to remember');
   let titleSize = graphemes(title).length > 60 ? 42 : graphemes(title).length > 32 ? 50 : 56;
@@ -178,14 +199,9 @@ export function buildTastingPostcardSvg(wine: Wine, options: PostcardOptions, ph
   const art = embeddedRaster(photoDataUrl)
     ? `<image x="348" y="213" width="384" height="439" preserveAspectRatio="xMidYMid meet" xlink:href="${photoDataUrl}"/>`
     : bottleIllustration(wine);
-  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${POSTCARD_WIDTH}" height="${POSTCARD_HEIGHT}" viewBox="0 0 ${POSTCARD_WIDTH} ${POSTCARD_HEIGHT}">
-    <rect width="1080" height="1350" fill="${BURGUNDY}"/>
-    <rect x="22" y="22" width="1036" height="1306" rx="2" fill="${CREAM}"/>
-    <rect x="43" y="43" width="994" height="1264" rx="1" fill="none" stroke="#ba9b80" stroke-width="1"/>
-    <g font-family="Georgia, 'Times New Roman', serif" fill="${INK}">
-      <text x="540" y="104" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="4" fill="${BURGUNDY}">${pt ? 'UM VINHO, UMA MEMÓRIA' : 'A BOTTLE, A MEMORY'}</text>
-      <text x="540" y="160" text-anchor="middle" font-size="35" font-style="italic">${pt ? 'Um brinde para guardar.' : 'A little toast to keep.'}</text>
-      <path d="M282 656V463a258 258 0 0 1 516 0v193Z" fill="#ece2d4"/>
+  const artwork = embeddedRaster(momentPhotoDataUrl)
+    ? momentArtwork(wine, options, momentPhotoDataUrl, photoDataUrl)
+    : `<path d="M282 656V463a258 258 0 0 1 516 0v193Z" fill="#ece2d4"/>
       <path d="M294 650V464a246 246 0 0 1 492 0v186" fill="none" stroke="#c4ad91" stroke-width="1"/>
       <g fill="none" stroke="#947b60" stroke-width="2" stroke-linecap="round" opacity=".65">
         <path d="M215 642c49-87 37-194 6-260m8 206-42-40m47-11 35-48m-34-5-37-47m27 1 19-39"/>
@@ -193,7 +209,15 @@ export function buildTastingPostcardSvg(wine: Wine, options: PostcardOptions, ph
         <path d="M187 548c-28-4-33-20-29-29 17-1 29 10 29 29Zm82-59c21-11 25-29 18-36-18 6-23 19-18 36Zm-71-52c-22-5-27-23-23-31 17 1 26 13 23 31Zm46-39c12-14 11-28 3-32-13 9-13 21-3 32Z"/>
         <path d="M893 548c28-4 33-20 29-29-17-1-29 10-29 29Zm-82-59c-21-11-25-29-18-36 18 6 23 19 18 36Zm71-52c22-5 27-23 23-31-17 1-26 13-23 31Zm-46-39c-12-14-11-28-3-32 13 9 13 21 3 32Z"/>
       </g>
-      ${art}
+      ${art}`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${POSTCARD_WIDTH}" height="${POSTCARD_HEIGHT}" viewBox="0 0 ${POSTCARD_WIDTH} ${POSTCARD_HEIGHT}">
+    <rect width="1080" height="1350" fill="${BURGUNDY}"/>
+    <rect x="22" y="22" width="1036" height="1306" rx="2" fill="${CREAM}"/>
+    <rect x="43" y="43" width="994" height="1264" rx="1" fill="none" stroke="#ba9b80" stroke-width="1"/>
+    <g font-family="Georgia, 'Times New Roman', serif" fill="${INK}">
+      <text x="540" y="104" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="4" fill="${BURGUNDY}">${pt ? 'UM VINHO, UMA MEMÓRIA' : 'A BOTTLE, A MEMORY'}</text>
+      <text x="540" y="160" text-anchor="middle" font-size="35" font-style="italic">${pt ? 'Um brinde para guardar.' : 'A little toast to keep.'}</text>
+      ${artwork}
       <text x="540" y="690" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" letter-spacing="4" fill="${BURGUNDY}">${pt ? 'SAFRA' : 'VINTAGE'} ${vintageLabel(wine)}</text>
       ${titleLines.map((line, i) => textLine(line, 540, titleStart + i * titleLeading, titleSize, 866)).join('')}
       ${originLines.map((line, i) => textLine(line, 540, 877 - ((originLines.length - 1) * 29) / 2 + i * 29, 23, 825, `fill="${MUTED}"`)).join('')}

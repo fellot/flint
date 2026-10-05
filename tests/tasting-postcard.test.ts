@@ -95,6 +95,73 @@ test('XML metacharacters and unsafe image references cannot introduce active or 
   assert.match(buildTastingPostcardSvg(wine(), options, rasterData), /<image[^>]+xlink:href="data:image\/png;base64,aGVsbG8="/);
 });
 
+test('a moment photo accompanies the wine bottle and preserves all selected tasting details', () => {
+  const bottle = 'data:image/png;base64,Ym90dGxl';
+  const moment = 'data:image/jpeg;base64,bW9tZW50';
+  const svg = buildTastingPostcardSvg(wine(), options, bottle, moment);
+  assert.equal((svg.match(/<image\s/g) || []).length, 2, 'both the moment and wine bottle should be visible');
+  assert.ok(svg.includes(`xlink:href="${bottle}"`));
+  assert.ok(svg.includes(`xlink:href="${moment}"`));
+  assert.match(svg, /THE MOMENT/);
+  assert.match(svg, /Quinta do Crasto Reserva/);
+  assert.match(svg, /Douro · Portugal/);
+  assert.match(svg, />94<tspan/);
+  assert.match(svg, /Oct 5, 2026/);
+  assert.match(svg, /Blackberries, soft tannins/);
+  assert.ok(!svg.includes('PRIVATE'));
+  assert.ok(!svg.includes('private.example'));
+  const illustrated = buildTastingPostcardSvg(wine(), { ...options, locale: 'pt' }, null, moment);
+  assert.equal((illustrated.match(/<image\s/g) || []).length, 1);
+  assert.match(illustrated, /id="bottle-glass"/);
+  assert.match(illustrated, /O MOMENTO/);
+  assert.match(illustrated, /O VINHO/);
+});
+
+test('the moment keeps the entire snapshot by default, with an explicitly clipped optional fill', () => {
+  const moment = 'data:image/jpeg;base64,bW9tZW50';
+  const contained = buildTastingPostcardSvg(wine(), options, null, moment);
+  const explicitContain = buildTastingPostcardSvg(wine(), { ...options, momentPhotoFit: 'contain' }, null, moment);
+  assert.equal(contained, explicitContain);
+  const filled = buildTastingPostcardSvg(wine(), { ...options, momentPhotoFit: 'cover' }, null, moment);
+  const momentImage = (svg: string) => (svg.match(/<image[^>]+clip-path="url\(#postcard-moment-photo\)"[^>]+>/) || [])[0] || '';
+  assert.match(momentImage(contained), /preserveAspectRatio="xMidYMid meet"/);
+  assert.match(momentImage(filled), /preserveAspectRatio="xMidYMid slice"/);
+  for (const svg of [contained, filled]) {
+    const clips = Array.from(svg.matchAll(/<clipPath[^>]+><rect x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"/g));
+    assert.equal(clips.length, 2, 'moment and bottle each need an explicit bounded clip');
+    clips.forEach(clip => {
+      const [, x, y, width, height] = clip.map(Number);
+      assert.ok(x >= 100 && x + width <= 980);
+      assert.ok(y >= 213 && y + height <= 656, 'photo content must stay above the wine identity');
+    });
+  }
+});
+
+test('absent or unsafe moment photos leave the original postcard byte-identical', () => {
+  const bottle = 'data:image/png;base64,Ym90dGxl';
+  const original = buildTastingPostcardSvg(wine(), options, bottle);
+  for (const moment of [undefined, null, '', 'https://private.example/moment.jpg', 'file:///private/moment.jpg', 'data:image/svg+xml;base64,PHN2Zy8+', 'data:image/jpeg;base64,bW9tZW50\"/><script/>', 'data:image/jpeg;base64,' + 'a'.repeat(8 * 1024 * 1024)]) {
+    assert.equal(buildTastingPostcardSvg(wine(), options, bottle, moment), original);
+  }
+  assert.equal(buildTastingPostcardSvg(wine(), { ...options, momentPhotoFit: 'cover' }, bottle), original);
+  assert.ok(!original.includes('THE MOMENT'));
+  assert.ok(!original.includes('postcard-moment-photo'));
+});
+
+test('long Unicode tasting text retains bounded layout when a moment photo is included', () => {
+  const moment = 'data:image/jpeg;base64,bW9tZW50';
+  const extremeWine = wine({ bottle: 'W葡萄👩‍👩‍👧‍👦'.repeat(1000), region: '葡萄'.repeat(1000), country: '国'.repeat(1000) });
+  const extremeOptions = { ...options, note: '🍷e\u0301 '.repeat(1000) };
+  const svg = buildTastingPostcardSvg(extremeWine, extremeOptions, null, moment);
+  const plain = buildTastingPostcardSvg(extremeWine, extremeOptions);
+  const identity = '<text x="540" y="690"';
+  assert.equal(svg.slice(svg.indexOf(identity)), plain.slice(plain.indexOf(identity)), 'adding a photo must preserve the lower tasting layout');
+  assert.ok(svg.length < 20000);
+  assert.ok(svg.includes('…'));
+  Array.from(svg.matchAll(/textLength="([\d.]+)"/g)).forEach(match => assert.ok(Number(match[1]) <= 866));
+  assert.match(svg, /width="1080" height="1350"/);
+});
+
 test('extreme Unicode and unbroken strings stay bounded without corrupting graphemes or XML', () => {
   const family = '👩‍👩‍👧‍👦';
   const svg = buildTastingPostcardSvg(wine({ bottle: ('W' + family + '葡萄' + 'e\u0301').repeat(1000), region: 'R'.repeat(10000), country: '国'.repeat(10000) }),
