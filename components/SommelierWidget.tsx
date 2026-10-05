@@ -5,6 +5,7 @@ import { Wine } from '@/types/wine';
 import { useCellar } from './CellarSession';
 import { formatSommelierReply } from '@/utils/sommelier-chat';
 import { X, Send, Loader2, Wine as WineIcon } from 'lucide-react';
+import { useSommelierAvatar } from './SommelierAvatarContext';
 
 type Msg = { role: 'user' | 'assistant'; content: string; wineImage?: string; wineName?: string };
 
@@ -17,6 +18,7 @@ interface SommelierWidgetProps {
 
 export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' }: SommelierWidgetProps) {
   const isPT = locale === 'pt';
+  const { avatar } = useSommelierAvatar();
   const { dataSource } = useCellar();
   const [lastWineId, setLastWineId] = useState<string | undefined>();
   const [input, setInput] = useState('');
@@ -104,7 +106,7 @@ export default function SommelierWidget({ isOpen, onClose, wines, locale = 'en' 
       <div className="sommelier-chat-companion">
         <span>{isPT ? 'Uma boa conversa. Um bom vinho.' : 'Good company. Good wine.'}</span>
         <button type="button" onClick={onClose} aria-label={isPT ? 'Recolher conversa' : 'Minimize chat'} title={isPT ? 'Recolher conversa' : 'Minimize chat'}>
-          <img src="/images/sommelier-cat.png" width={88} height={108} alt="" draggable={false} />
+          <img src={avatar.image} width={88} height={108} alt="" draggable={false} />
         </button>
       </div>
       <div className="sommelier-chat-frame rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden border border-white/20">

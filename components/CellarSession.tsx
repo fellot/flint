@@ -6,8 +6,10 @@ import CellarShell from './CellarShell';
 import FlintMark from './FlintMark';
 import type { Cellar } from '@/types/database';
 import { PUBLIC_PAGES } from '@/lib/auth/redirect';
+import SommelierAvatarProvider from './SommelierAvatarContext';
+import { sommelierAvatar, type SommelierAvatarId } from '@/lib/sommelier-avatar';
 
-type Session = { user: { email?: string }; cellars: Cellar[]; cellar: Cellar | null };
+type Session = { user: { id: string; email?: string; sommelierAvatar?: SommelierAvatarId }; cellars: Cellar[]; cellar: Cellar | null };
 const Context = createContext<Cellar | null>(null);
 export function useCellar() {
   const cellar = useContext(Context);
@@ -54,11 +56,13 @@ export default function CellarSession({ children }: { children: React.ReactNode 
   if (!session) return <div className="session-loading"><FlintMark /><p role={error ? 'alert' : 'status'}>{error || 'Opening your cellar…'}</p>{error && <button className="flint-button" onClick={() => window.location.reload()}>Try again</button>}</div>;
   return (
     <Context.Provider value={session.cellar}>
+      <SommelierAvatarProvider key={session.user.id} initialAvatar={sommelierAvatar(session.user.sommelierAvatar).id}>
       <CellarShell pathname={pathname} cellar={session.cellar} cellars={session.cellars} email={session.user.email} pending={pending} error={error}
         onSwitch={id => accountAction('/api/auth/cellar', { cellarId: id }, '/')}
         onSignOut={() => accountAction('/api/auth/logout', {}, '/login')}>
         {session.cellar ? children : <main className="session-empty"><p className="eyebrow">WELCOME TO FLINT</p><h1>Your next chapter starts here.</h1><p>Ask your cellar owner to assign your account to a cellar, then refresh this page.</p><button onClick={() => window.location.reload()} className="flint-button">Refresh</button></main>}
       </CellarShell>
+      </SommelierAvatarProvider>
     </Context.Provider>
   );
 }

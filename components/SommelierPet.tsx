@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
+import { useSommelierAvatar } from './SommelierAvatarContext';
 
 type Position = { x: number; y: number };
 const size = { width: 96, height: 128 };
@@ -21,6 +22,7 @@ function remember(position: Position) {
 
 export default function SommelierPet({ open, onOpen, locale = 'en' }: { open: boolean; onOpen: () => void; locale?: 'en' | 'pt' }) {
   const pt = locale === 'pt';
+  const { avatar } = useSommelierAvatar();
   const hintId = useId();
   const button = useRef<HTMLButtonElement>(null);
   const [position, setPosition] = useState<Position | null>(null);
@@ -91,7 +93,7 @@ export default function SommelierPet({ open, onOpen, locale = 'en' }: { open: bo
         setPosition(next); remember(next);
       }}>
       <span className="sommelier-pet-bubble" aria-hidden="true">{pt ? 'Uma boa garrafa?' : 'Something good?'}</span>
-      <img className="sommelier-pet-character" src="/images/sommelier-cat.png" width={96} height={112} alt="" draggable={false} aria-hidden="true" />
+      <img className="sommelier-pet-character" src={avatar.image} width={96} height={112} alt="" draggable={false} aria-hidden="true" />
       <span className="sommelier-pet-label">Sommelier</span>
     </button>
     <span id={hintId} className="sr-only">{pt ? 'Arraste para mover, ou use as setas quando selecionado. Enter abre a conversa.' : 'Drag to move, or use arrow keys while focused. Press Enter to open the chat.'}</span>

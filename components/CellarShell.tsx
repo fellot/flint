@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, BookOpen, ChevronDown, Compass, Heart, Library, LayoutGrid, LogOut, MapPin, Menu, Sparkles, Users, Wine, X } from 'lucide-react';
+import { ArrowUpRight, BookOpen, Check, ChevronDown, Compass, Heart, Library, LayoutGrid, LogOut, MapPin, Menu, Settings, Sparkles, Users, Wine, X } from 'lucide-react';
 import type { Cellar } from '@/types/database';
 import FlintMark from './FlintMark';
 import { CellarMenuActionsContext, type CellarMenuActions } from './CellarMenuActions';
+import AccountConfigurationDialog from './AccountConfigurationDialog';
 
 interface Props {
   children: React.ReactNode;
@@ -20,8 +21,20 @@ interface Props {
 
 export default function CellarShell({ children, pathname, cellar, cellars, email, pending, error, onSwitch, onSignOut }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [configurationOpen, setConfigurationOpen] = useState(false);
+  const [avatarSaved, setAvatarSaved] = useState(false);
   const [cellarActions, setCellarActions] = useState<CellarMenuActions | null>(null);
   const accountMenu = useRef<HTMLDetailsElement>(null);
+  const closeConfiguration = () => {
+    setConfigurationOpen(false);
+    // Wait for the modal to unmount so the account control is no longer inert.
+    requestAnimationFrame(() => accountMenu.current?.querySelector('summary')?.focus());
+  };
+  useEffect(() => {
+    if (!avatarSaved) return;
+    const timer = setTimeout(() => setAvatarSaved(false), 4000);
+    return () => clearTimeout(timer);
+  }, [avatarSaved]);
   const openManagement = (action: () => void) => {
     if (accountMenu.current) {
       accountMenu.current.open = false;
@@ -96,6 +109,7 @@ export default function CellarShell({ children, pathname, cellar, cellars, email
                 <button type="button" disabled={pending} onClick={() => openManagement(cellarActions.people)}><Users size={15} />{pt ? 'Pessoas' : 'People'}</button>
               </div>}
               {cellar && <a href="/my-palate" className="account-palate-link"><Heart size={15} />{pt ? 'Meu paladar' : 'My palate'}</a>}
+              <button type="button" className="account-configuration" disabled={pending} onClick={() => openManagement(() => { setAvatarSaved(false); setConfigurationOpen(true); })}><Settings size={15} />{pt ? 'Configurações' : 'Configuration'}</button>
               <button disabled={pending} onClick={onSignOut}><LogOut size={15} />{pt ? 'Sair' : 'Sign out'}</button></div>
           </details>
         </div>
@@ -104,5 +118,7 @@ export default function CellarShell({ children, pathname, cellar, cellars, email
       <div id="main-content">{children}</div>
       <footer className="flint-footer"><span>flint<span className="brand-period">.</span></span><p>{pt ? 'Colecione momentos. Saboreie histórias.' : 'Collect moments. Savor stories.'}</p><a href="/wine-trivia">{pt ? 'Algo para descobrir' : 'Something to discover'}<ArrowUpRight size={14} /></a></footer>
     </div>
+    {configurationOpen && <AccountConfigurationDialog pt={pt} onClose={closeConfiguration} onSaved={() => { closeConfiguration(); setAvatarSaved(true); }} />}
+    {avatarSaved && <div className="flint-toast" role="status"><Check size={17} />{pt ? 'Sua companhia está pronta. Avatar salvo.' : 'Good company, sorted. Avatar saved.'}<button type="button" onClick={() => setAvatarSaved(false)} aria-label={pt ? 'Dispensar notificação' : 'Dismiss notification'}><X size={15} /></button></div>}
   </div></CellarMenuActionsContext.Provider>;
 }
