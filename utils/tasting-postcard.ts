@@ -17,7 +17,8 @@ const BURGUNDY = '#642c3c';
 const CREAM = '#f8f2e7';
 const INK = '#442c30';
 const MUTED = '#876f65';
-const PHOTO_TIMEOUT_MS = 5000;
+// The authenticated image endpoint has an eight-second upstream deadline.
+const PHOTO_TIMEOUT_MS = 10000;
 
 // Remove characters that are illegal in XML, including unpaired UTF-16 surrogates.
 function cleanText(value: string | null | undefined): string {
@@ -232,8 +233,8 @@ export function buildTastingPostcardSvg(wine: Wine, options: PostcardOptions, ph
   </svg>`;
 }
 
-/** CORS-safe rasterization strips metadata and keeps all exports self-contained. */
-export async function loadPostcardPhoto(url: string | undefined): Promise<string | null> {
+/** Rasterization strips metadata and keeps all exports self-contained. */
+export async function loadPostcardPhoto(url: string | undefined, context?: { wineId: string; cellarId?: string }): Promise<string | null> {
   if (!url || typeof window === 'undefined' || typeof Image === 'undefined') return null;
   let source: URL;
   try { source = new URL(url, window.location.href); } catch { return null; }
@@ -241,6 +242,12 @@ export async function loadPostcardPhoto(url: string | undefined): Promise<string
   const rasterData = source.protocol === 'data:' && embeddedRaster(url);
   const sameOriginBlob = source.protocol === 'blob:' && source.origin === window.location.origin;
   if (!['http:', 'https:'].includes(source.protocol) && !rasterData && !sameOriginBlob) return null;
+  // Remote hosts can display a photo in <img> while denying canvas access.
+  // Fetch the authorized stored photo through our own origin before exporting.
+  if (context && ['http:', 'https:'].includes(source.protocol) && source.origin !== window.location.origin) {
+    source = new URL(`/api/wines/${encodeURIComponent(context.wineId)}/postcard-photo`, window.location.href);
+    if (context.cellarId) source.searchParams.set('dataSource', context.cellarId);
+  }
   return new Promise(resolve => {
     const img = new Image();
     let done = false;

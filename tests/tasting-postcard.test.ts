@@ -240,6 +240,17 @@ test('photo conversion requires safe protocols and anonymous CORS, and falls bac
   assert.equal(loaded.length, 0, 'disallowed schemes must never request an image');
   assert.equal(await loadPostcardPhoto('/bottle.jpg'), 'data:image/png;base64,aGVsbG8=');
   assert.deepEqual(loaded[0], { url: 'https://flint.example/bottle.jpg', cors: 'anonymous', referrer: 'no-referrer' });
+  assert.equal(await loadPostcardPhoto('https://remote.example/bottle.jpg', { wineId: 'wine/id', cellarId: 'cellar & friends' }), 'data:image/png;base64,aGVsbG8=');
+  assert.deepEqual(loaded[1], {
+    url: 'https://flint.example/api/wines/wine%2Fid/postcard-photo?dataSource=cellar+%26+friends',
+    cors: 'anonymous', referrer: 'no-referrer',
+  }, 'external stored photos use the cellar-authorized same-origin route, not their host');
+  assert.equal(await loadPostcardPhoto('https://remote.example/bottle.jpg', { wineId: 'wine' }), 'data:image/png;base64,aGVsbG8=');
+  assert.equal(loaded[2].url, 'https://flint.example/api/wines/wine/postcard-photo');
+  assert.equal(await loadPostcardPhoto('/bottle.jpg', { wineId: 'wine', cellarId: 'cellar' }), 'data:image/png;base64,aGVsbG8=');
+  assert.equal(loaded[3].url, 'https://flint.example/bottle.jpg', 'same-origin photos can already be exported directly');
+  assert.equal(await loadPostcardPhoto('data:image/png;base64,aGVsbG8=', { wineId: 'wine' }), 'data:image/png;base64,aGVsbG8=');
+  assert.equal(loaded[4].url, 'data:image/png;base64,aGVsbG8=', 'local raster data stays local');
   tainted = true;
   assert.equal(await loadPostcardPhoto('https://remote.example/bottle.jpg'), null, 'CORS failure should use illustration, not break postcard creation');
 });

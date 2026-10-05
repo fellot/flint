@@ -27,8 +27,8 @@ function initialNote(wine: Wine) {
   return truncatePostcardNote((wine.myComment || '').trim());
 }
 
-export default function TastingPostcardDialog({ wine, locale, onClose }: {
-  wine: Wine; locale: 'en' | 'pt'; onClose: () => void;
+export default function TastingPostcardDialog({ wine, locale, cellarId, onClose }: {
+  wine: Wine; locale: 'en' | 'pt'; cellarId?: string; onClose: () => void;
 }) {
   const pt = locale === 'pt';
   const id = useId();
@@ -59,7 +59,7 @@ export default function TastingPostcardDialog({ wine, locale, onClose }: {
   currentWine.current = wine.id;
   const activeMoment = momentPhoto?.wineId === wine.id ? momentPhoto : null;
   const momentData = activeMoment?.data || null;
-  const photoKey = JSON.stringify([wine.id, wine.bottle_image || '']);
+  const photoKey = JSON.stringify([cellarId || '', wine.id, wine.bottle_image || '']);
   const photoReady = photo?.key === photoKey;
   const photoData = photoReady ? photo.data : null;
   const requestKey = JSON.stringify([wine, locale, note, showScore, showDate, photoKey, photoReady, momentRevision, momentPending, Boolean(momentData), fillMomentFrame, attempt]);
@@ -91,13 +91,13 @@ export default function TastingPostcardDialog({ wine, locale, onClose }: {
 
   useEffect(() => {
     let cancelled = false;
-    loadPostcardPhoto(wine.bottle_image).then(data => {
+    loadPostcardPhoto(wine.bottle_image, { wineId: wine.id, cellarId }).then(data => {
       if (!cancelled) setPhoto({ key: photoKey, data });
     }).catch(() => {
       if (!cancelled) setPhoto({ key: photoKey, data: null });
     });
     return () => { cancelled = true; };
-  }, [photoKey, wine.bottle_image]);
+  }, [photoKey, cellarId, wine.id, wine.bottle_image]);
 
   useEffect(() => {
     setShareError(false);
