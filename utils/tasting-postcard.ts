@@ -17,8 +17,8 @@ const BURGUNDY = '#642c3c';
 const CREAM = '#f8f2e7';
 const INK = '#442c30';
 const MUTED = '#876f65';
-// The authenticated image endpoint has an eight-second upstream deadline.
-const PHOTO_TIMEOUT_MS = 10000;
+// Allow authentication and wine lookup before the eight-second image deadline.
+const PHOTO_TIMEOUT_MS = 15000;
 
 // Remove characters that are illegal in XML, including unpaired UTF-16 surrogates.
 function cleanText(value: string | null | undefined): string {
