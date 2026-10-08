@@ -6,6 +6,7 @@ export type ShoppingGap = {
   status: 'covered' | 'explore' | 'restock' | 'review'; cellarCount: number; journalCount: number;
 };
 export type ShoppingMessage = { role: 'user'; content: string };
+export type ShoppingAttachment = { name: string; data: string };
 export type ShoppingProduct = {
   essentialId: string; name: string; vintage: number | null;
   country: string; region: string; grapes: string; style: string;
@@ -18,4 +19,7 @@ export type ShoppingReply = {
   brief: ShoppingBrief; products: ShoppingProduct[];
   sources: { url: string; title: string }[]; searched: boolean; checkedAt: string;
   omitted: number;
+  documentPicks?: ShoppingDocumentPick[];
+  documentName?: string;
 };
+export type ShoppingDocumentPick = Omit<ShoppingProduct, 'url' | 'availability' | 'availabilityNote'> & { page: number };

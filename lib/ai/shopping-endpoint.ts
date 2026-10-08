@@ -3,6 +3,7 @@ import { ApiError, apiError, checkOrigin } from '@/lib/api-error';
 import type { PalateProfile } from '@/types/palate';
 import type { Wine } from '@/types/wine';
 import { shoppingAdvisor, shoppingInput } from '@/lib/ai/shopping-advisor';
+import { SHOPPING_REQUEST_MAX_BYTES, SHOPPING_TEXT_MAX_BYTES } from '@/lib/shopping-attachment';
 
 type ShoppingAccess = { cellar: { id: string; name: string; locale: 'en' | 'pt' }; userId: string; load: () => Promise<{ wines: Wine[]; profile: PalateProfile }> };
 
@@ -23,11 +24,15 @@ export function createShoppingHandler(authorize: (cellarId: string) => Promise<S
           const { done, value } = await reader.read();
           if (done) break;
           size += value.byteLength;
-          if (size > 40000) { await reader.cancel(); throw new ApiError(413, 'Please shorten the conversation.'); }
+          if (size > SHOPPING_REQUEST_MAX_BYTES) { await reader.cancel(); throw new ApiError(413, 'Use one PDF up to 3 MB and a shorter conversation.'); }
           chunks.push(value);
         }
       } finally { reader.releaseLock(); }
-      const input = shoppingInput(JSON.parse(Buffer.concat(chunks).toString('utf8')));
+      const body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+      // The attachment gets its own allowance; it cannot enlarge text/history limits.
+      const { attachment: _attachment, ...textBody } = body ?? {};
+      if (Buffer.byteLength(JSON.stringify(textBody), 'utf8') > SHOPPING_TEXT_MAX_BYTES) throw new ApiError(413, 'Please shorten the conversation.');
+      const input = shoppingInput(body);
       const { cellar, userId, load } = await authorize(input.cellarId);
       if (cellar.id !== input.cellarId) throw new ApiError(403, 'The selected cellar is not authorized.');
       const now = Date.now();
