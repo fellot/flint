@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Check, ChevronDown, Loader2, Search, Send, ShoppingBag, Sparkles, X } from 'lucide-react';
+import { ArrowUpRight, Check, ChevronDown, FileText, Loader2, Paperclip, Search, Send, ShoppingBag, Sparkles, X } from 'lucide-react';
 import { CELLAR_ESSENTIALS, type GuideCategory } from '@/data/cellar-essentials';
 import { getShoppingGaps } from '@/lib/cellar-shopping';
 import { readResponse } from '@/lib/client-api';
-import type { ShoppingBrief, ShoppingReply } from '@/types/shopping';
+import type { ShoppingAttachment, ShoppingBrief, ShoppingReply } from '@/types/shopping';
+import { readShoppingPdf } from '@/lib/shopping-attachment';
 import type { Wine } from '@/types/wine';
 import './cellar-shopping.css';
 
@@ -14,7 +15,7 @@ interface Props {
   wines: Wine[]; cellarId: string; cellarName: string;
   locale: 'en' | 'pt'; loading: boolean; error: boolean;
 }
-type Turn = { id: number; user: string; reply?: ShoppingReply; error?: string };
+type Turn = { id: number; user: string; attachmentName?: string; reply?: ShoppingReply; error?: string };
 const emptyBrief: ShoppingBrief = { market: '', retailers: '', budget: '' };
 const categories: [GuideCategory | 'all', string, string][] = [
   ['all', 'All styles', 'Todos os estilos'], ['red', 'Reds', 'Tintos'], ['white', 'Whites', 'Brancos'],
@@ -27,6 +28,11 @@ export default function CellarEssentialsShopping({ wines, cellarId, cellarName, 
   const [draft, setDraft] = useState('');
   const [turns, setTurns] = useState<Turn[]>([]);
   const [pending, setPending] = useState(false);
+  const [attachment, setAttachment] = useState<ShoppingAttachment | null>(null);
+  const [readingPdf, setReadingPdf] = useState(false);
+  const [attachmentError, setAttachmentError] = useState('');
+  const fileInput = useRef<HTMLInputElement>(null);
+  const fileReadId = useRef(0);
   const [category, setCategory] = useState<GuideCategory | 'all'>('all');
   const coverage = useRef<HTMLDetailsElement>(null);
   const [scope, setScope] = useState<'gaps' | 'explore' | 'restock' | 'covered'>('gaps');
@@ -41,23 +47,37 @@ export default function CellarEssentialsShopping({ wines, cellarId, cellarName, 
   const latest = [...turns].reverse().find(t => t.reply)?.reply;
   const latestGapStatus = new Map(gaps.map(g => [g.id, g.status]));
 
-  useEffect(() => () => controller.current?.abort(), []);
+  useEffect(() => () => { controller.current?.abort(); fileReadId.current++; }, []);
+
+  async function attachPdf(file?: File) {
+    if (!file || pending || readingPdf) return;
+    const id = ++fileReadId.current;
+    setReadingPdf(true); setAttachmentError('');
+    try {
+      const pdf = await readShoppingPdf(file);
+      if (fileReadId.current === id) setAttachment(pdf);
+    } catch (e) {
+      if (fileReadId.current === id) setAttachmentError(pt ? 'Escolha um PDF completo de até 3 MB. Se necessário, exporte apenas as páginas desejadas.' : e instanceof Error ? e.message : 'Could not attach this PDF.');
+    } finally { if (fileReadId.current === id) setReadingPdf(false); }
+  }
 
   async function send(message: string) {
-    const content = message.trim();
-    if (!content || controller.current || !available) return;
+    const content = message.trim() || (attachment ? (pt ? 'Quais vinhos desta lista em PDF você recomenda para minha adega e meu paladar? Explique suas escolhas.' : 'Which wines from this PDF list would you recommend for my cellar and palate? Explain your choices.') : '');
+    if (!content || controller.current || !available || readingPdf) return;
     const currentController = new AbortController();
     controller.current = currentController;
     const id = ++turnId.current;
     const previous = turns.filter(t => t.reply);
     const messages = [...previous.map(t => ({ role: 'user', content: t.user })), { role: 'user', content }].slice(-12);
-    setTurns(current => [...current, { id, user: content }]);
+    setTurns(current => [...current, { id, user: content, attachmentName: attachment?.name }]);
     setDraft(''); setPending(true);
     const timeout = setTimeout(() => currentController.abort('timeout'), 110000);
     try {
       const response = await fetch('/api/ai/shopping', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: currentController.signal,
         body: JSON.stringify({ cellarId, messages, brief,
+          attachment,
+          previousDocumentPicks: attachment && latest?.documentName === attachment.name ? latest.documentPicks?.map(p => ({ name: p.name, page: p.page })) || [] : [],
           previousProducts: latest?.products.map(p => ({ name: p.name, url: p.url })) || [] }),
       });
       const reply = await readResponse<ShoppingReply>(response);
@@ -119,15 +139,26 @@ export default function CellarEssentialsShopping({ wines, cellarId, cellarName, 
       {!turns.length && <div className="buyer-starters">{starters.map(s => <button key={s} disabled={!available || pending} onClick={() => void send(s)}>{s}<ArrowUpRight size={14} /></button>)}</div>}
       <div className="buyer-transcript" aria-label={pt ? 'Conversa de compras' : 'Shopping conversation'}>
         {turns.map((turn, index) => <article className="buyer-turn" key={turn.id}>
-          <p className="buyer-user"><span>{pt ? 'Você' : 'You'}</span>{turn.user}</p>
+          <p className="buyer-user"><span>{pt ? 'Você' : 'You'}</span>{turn.user}{turn.attachmentName && <small className="buyer-turn-attachment"><FileText size={13} />{turn.attachmentName}</small>}</p>
           {turn.error && <p className="buyer-notice buyer-error" role="alert">{turn.error}</p>}
           {turn.reply && <div className="buyer-answer"><h4 tabIndex={-1} ref={index === turns.length - 1 ? replyHeading : undefined}>{pt ? 'O sommelier sugere' : 'From your sommelier'}{turn.reply.searched && <small>{pt ? 'Pesquisa de' : 'Researched'} {date(turn.reply.checkedAt)}</small>}</h4><p className="buyer-prose">{turn.reply.answer}</p>
+            {!!turn.reply.documentPicks?.length && <section className="buyer-document-results" aria-label={pt ? 'Sugestões da lista em PDF' : 'Suggestions from your PDF list'}>
+              <p className="buyer-document-heading"><FileText size={16} /><span>{pt ? 'DA SUA LISTA EM PDF' : 'FROM YOUR PDF LIST'}<small>{turn.reply.documentName}</small></span></p>
+              <p className="buyer-context-note">{pt ? 'Preços e ofertas conforme o documento. Estoque atual não verificado. As páginas indicam a posição no PDF.' : 'Prices and offers as printed in the document. Current stock has not been checked. Page numbers refer to the PDF page order.'}</p>
+              <div className="buyer-products">{turn.reply.documentPicks.map((p, pickIndex) => <article className="buyer-product buyer-document-product" key={`${p.name}:${p.vintage}:${p.page}`}>
+                <p className="eyebrow">{String(pickIndex + 1).padStart(2, '0')} · {CELLAR_ESSENTIALS.find(e => e.id === p.essentialId)?.name[locale]}</p>
+                <h5>{p.name}</h5><p className="buyer-product-meta">{p.vintage ?? (pt ? 'Safra não confirmada / NV' : 'Vintage unconfirmed / NV')}{p.retailer ? ` · ${p.retailer}` : ''}{p.size ? ` · ${p.size}` : ''}</p>
+                <p>{p.reason}</p><div className="buyer-price"><strong>{p.price !== null && p.currency ? money(p.price, p.currency) : (pt ? 'Preço não confirmado' : 'Price unconfirmed')}</strong><span>{pt ? 'Preço no PDF' : 'PDF price'}</span></div>
+                <details><summary>{pt ? 'Detalhes da lista e quando beber' : 'List details & when to drink'}<ChevronDown size={13} /></summary><p>{p.evidence}</p>{p.drinkingGuidance && <p>{p.drinkingGuidance}</p>}</details>
+                <p className="buyer-pdf-citation"><FileText size={13} />{turn.reply?.documentName} · {pt ? 'pág.' : 'p.'} {p.page}</p>
+              </article>)}</div>
+            </section>}
             {turn.reply.products.length > 0 && <div className="buyer-products">{turn.reply.products.map(p => {
               const style = CELLAR_ESSENTIALS.find(e => e.id === p.essentialId)!;
               const nowCovered = latestGapStatus.get(p.essentialId) === 'covered';
               return <article className="buyer-product" key={p.url}><p className="eyebrow">{style.name[locale]}{nowCovered ? (pt ? ' · Agora na adega' : ' · Now in cellar') : ''}</p><h5><a href={p.url} target="_blank" rel="noopener noreferrer">{p.name}<ArrowUpRight size={14} /></a></h5><p className="buyer-product-meta">{p.vintage ?? (pt ? 'Safra não confirmada / NV' : 'Vintage unconfirmed / NV')} · {p.retailer}{p.size ? ` · ${p.size}` : ''}</p><p>{p.reason}</p><div className="buyer-price"><strong>{p.price !== null && p.currency ? money(p.price, p.currency) : (pt ? 'Preço não confirmado' : 'Price unconfirmed')}</strong><span className={`buyer-stock buyer-stock-${p.availability}`}>{p.availability === 'available' ? (pt ? 'Disponível na pesquisa' : 'Available at research') : p.availability === 'unavailable' ? (pt ? 'Indisponível na pesquisa' : 'Unavailable at research') : (pt ? 'Estoque não confirmado' : 'Stock unconfirmed')}</span></div><p className="buyer-product-note">{p.availabilityNote}</p><details><summary>{pt ? 'Por que esta opção?' : 'About this option'}<ChevronDown size={13} /></summary><p>{p.evidence}</p>{p.drinkingGuidance && <p>{p.drinkingGuidance}</p>}</details><a className="buyer-retailer" href={p.url} target="_blank" rel="noopener noreferrer">{pt ? 'Conferir no vendedor' : 'Check retailer'}<ArrowUpRight size={14} /></a></article>;
             })}</div>}
-            {turn.reply.omitted > 0 && <p className="buyer-notice">{pt ? 'Algumas opções foram removidas porque não foi possível validar o link, o estilo ou a lacuna. Peça outra pesquisa.' : 'Some options were omitted because their source, style or cellar gap could not be validated. Ask for another search.'}</p>}
+            {turn.reply.omitted > 0 && <p className="buyer-notice">{pt ? 'Algumas opções foram removidas porque não foi possível validar a fonte, o estilo, a lacuna ou a compatibilidade com seu paladar.' : 'Some options were omitted because their source, style, cellar gap or fit with your palate could not be validated.'}</p>}
             {turn.reply.searched && !turn.reply.products.length && <p className="buyer-notice">{pt ? 'Nenhuma opção de compra validada nesta pesquisa.' : 'No validated purchase options in this search.'}</p>}
             {turn.reply.sources.length > 0 && <details className="buyer-sources"><summary>{pt ? 'Fontes da pesquisa' : 'Research sources'}<ChevronDown size={13} /></summary><ul>{turn.reply.sources.map(s => <li key={s.url}><a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}<ArrowUpRight size={12} /></a></li>)}</ul></details>}
             {turn.reply.question && <p className="buyer-question">{turn.reply.question}</p>}
@@ -135,8 +166,16 @@ export default function CellarEssentialsShopping({ wines, cellarId, cellarName, 
         </article>)}
       </div>
       {pending && <div className="buyer-progress" role="status"><Loader2 size={16} className="buyer-spinner" /><span>{pt ? 'Consultando sua adega e preparando a resposta. Pesquisas online podem levar cerca de um minuto…' : 'Reviewing your cellar and preparing a reply. Online research can take about a minute…'}</span><button onClick={() => controller.current?.abort()}>{pt ? 'Parar' : 'Stop'}</button></div>}
-      <form className="buyer-compose" onSubmit={e => { e.preventDefault(); void send(draft); }}><label className="sr-only" htmlFor="buyer-message">{pt ? 'Mensagem para o comprador' : 'Message your wine buyer'}</label><textarea id="buyer-message" value={draft} onChange={e => setDraft(e.target.value)} maxLength={2000} rows={2} disabled={!available || pending} placeholder={pt ? 'Encontre brancos secos para as lacunas. Quero beber neste ano…' : 'Find dry whites for my gaps. I’d like to drink them this year…'} /><button className="flint-button" disabled={!available || pending || !draft.trim()} type="submit"><Send size={15} />{pt ? 'Enviar' : 'Send'}</button></form>
-      <footer className="buyer-footer"><p>{pt ? 'Preços, safras e estoque podem mudar. Confirme no vendedor. As sugestões não compram nem adicionam garrafas ao estoque.' : 'Prices, vintages and stock can change. Confirm with the retailer. Suggestions never purchase or add bottles to your stock.'}</p>{turns.length > 0 && <button disabled={pending} onClick={() => { setTurns([]); setDraft(''); setBrief({ ...emptyBrief }); }}><X size={13} />{pt ? 'Nova conversa' : 'Start fresh'}</button>}</footer>
+      <div className="buyer-attachment-controls">
+        <input ref={fileInput} type="file" accept="application/pdf,.pdf" aria-label={pt ? 'Anexar lista de vinhos em PDF' : 'Attach PDF wine list'} hidden onChange={e => { void attachPdf(e.target.files?.[0]); e.target.value = ''; }} />
+        <button className="buyer-attach" type="button" disabled={!available || pending || readingPdf} onClick={() => fileInput.current?.click()}>{readingPdf ? <Loader2 size={15} className="buyer-spinner" /> : <Paperclip size={15} />}{readingPdf ? (pt ? 'Preparando PDF…' : 'Preparing PDF…') : attachment ? (pt ? 'Trocar PDF' : 'Replace PDF') : (pt ? 'Anexar lista em PDF' : 'Attach PDF wine list')}</button>
+        <span>{pt ? 'Um PDF · até 3 MB' : 'One PDF · up to 3 MB'}</span>
+      </div>
+      {attachment && <div className="buyer-attachment" role="status"><FileText size={22} /><div><strong>{attachment.name}</strong><small>{pt ? 'Será usado nesta conversa até você remover.' : 'Used for this conversation until you remove it.'}</small></div><button type="button" disabled={pending || readingPdf} aria-label={pt ? 'Remover PDF' : 'Remove PDF'} onClick={() => { setAttachment(null); setAttachmentError(''); }}><X size={16} /></button></div>}
+      {attachmentError && <p className="buyer-notice buyer-error" role="alert">{attachmentError}</p>}
+      <p className="buyer-context-note">{pt ? 'Ao enviar, o PDF é compartilhado com a OpenAI para análise. Ele permanece apenas nesta conversa e é removido ao recarregar ou iniciar outra.' : 'When you send, the PDF is shared with OpenAI for analysis. The attachment is kept only in this conversation and cleared when you reload or start fresh.'}</p>
+      <form className="buyer-compose" onSubmit={e => { e.preventDefault(); void send(draft); }}><label className="sr-only" htmlFor="buyer-message">{pt ? 'Mensagem para o comprador' : 'Message your wine buyer'}</label><textarea id="buyer-message" value={draft} onChange={e => setDraft(e.target.value)} maxLength={2000} rows={2} disabled={!available || pending} placeholder={attachment ? (pt ? 'O que vale a pena comprar desta lista? (opcional)' : 'What is worth buying from this list? (optional)') : (pt ? 'Encontre brancos secos para as lacunas. Quero beber neste ano…' : 'Find dry whites for my gaps. I’d like to drink them this year…')} /><button className="flint-button" disabled={!available || pending || readingPdf || (!draft.trim() && !attachment)} type="submit"><Send size={15} />{pt ? 'Enviar' : 'Send'}</button></form>
+      <footer className="buyer-footer"><p>{pt ? 'Preços, safras e estoque podem mudar. Confirme no vendedor. As sugestões não compram nem adicionam garrafas ao estoque.' : 'Prices, vintages and stock can change. Confirm with the retailer. Suggestions never purchase or add bottles to your stock.'}</p>{(turns.length > 0 || attachment) && <button disabled={pending || readingPdf} onClick={() => { setTurns([]); setDraft(''); setBrief({ ...emptyBrief }); setAttachment(null); setAttachmentError(''); }}><X size={13} />{pt ? 'Nova conversa' : 'Start fresh'}</button>}</footer>
     </div>
   </section>;
 }

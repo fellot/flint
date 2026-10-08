@@ -42,6 +42,11 @@ export function shoppingInput(value: unknown) {
   if (previous.length > 6 || previous.some(p => !bounded(record(p).name, 200) || !shoppingUrl(record(p).url))) {
     throw new ApiError(400, 'Invalid previous shopping options. Start a new conversation.');
   }
+  const previousDocumentPicks = array(b.previousDocumentPicks);
+  if (previousDocumentPicks.length > 6 || previousDocumentPicks.some(p => !bounded(record(p).name, 200)
+    || !Number.isInteger(record(p).page) || Number(record(p).page) < 1 || Number(record(p).page) > 10000)) {
+    throw new ApiError(400, 'Invalid previous PDF options. Start a new conversation.');
+  }
   return {
     cellarId: text(b.cellarId),
     messages: b.messages.map(m => ({ role: 'user' as const, content: text(record(m).content) })),
@@ -49,6 +54,7 @@ export function shoppingInput(value: unknown) {
     // Previous names help with “a cheaper alternative”; no old AI prose or journal evidence is recycled.
     previousProducts: previous.map(p => ({ name: text(record(p).name), url: shoppingUrl(record(p).url)! })),
     attachment: parseShoppingPdf(b.attachment),
+    previousDocumentPicks: previousDocumentPicks.map(p => ({ name: text(record(p).name), page: Number(record(p).page) })),
   };
 }
 
@@ -121,7 +127,7 @@ Each product must have an exact essentialId, product name <=200, country <=80, r
 Availability available requires explicit evidence for the exact vintage and purchase market now; a listing or cached search snippet alone is unknown. If sold out, use unavailable. availabilityNote <=300 explains evidence/uncertainty, evidence <=350 gives a brief factual paraphrase of the listing, reason <=600 explains which gap it fills and any taste connection, drinkingGuidance <=200 distinguishes a sourced window from an estimate/unknown. Prefer an appropriate ready option if the user wants to drink soon, rather than inferring maturity from prestige. Do not pretend every gap must be filled.
 answer <=1800 is a concise conversational overview of the cellar gaps and selection strategy, not a list of product prices or links; product specifics belong in products. question <=300 is one useful follow-up question or empty. No markdown links in prose: the UI renders verified sources with the products. Never purchase, reserve, add stock or change the user's stored profile.`,
     input: [{ role: 'user', content: JSON.stringify({ today: new Date().toISOString().slice(0, 10), ...context.input,
-      brief: input.brief, previousProducts: input.previousProducts, conversation: input.messages,
+      brief: input.brief, previousProducts: input.previousProducts, previousDocumentPicks: input.previousDocumentPicks, conversation: input.messages,
       attachedDocument: input.attachment?.name ?? null }) },
       ...(input.attachment ? [{ role: 'user', content: [{ type: 'input_file', filename: input.attachment.name,
         file_data: `data:application/pdf;base64,${input.attachment.data}` }] }] : [])] as const,
