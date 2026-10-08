@@ -13,7 +13,7 @@ export function pdfFilename(name: string) {
 // Shared by the browser and server. This checks transport/signature, not whether
 // every PDF object is readable. The model provider handles damaged/encrypted PDFs.
 export function validPdfBytes(bytes: Uint8Array) {
-  const startsWith = (value: Uint8Array, text: string) => [...text].every((c, i) => value[i] === c.charCodeAt(0));
+  const startsWith = (value: Uint8Array, text: string) => Array.from(text).every((c, i) => value[i] === c.charCodeAt(0));
   if (bytes.length < 16 || !startsWith(bytes, '%PDF-')) return false;
   const tail = bytes.slice(Math.max(0, bytes.length - 1024));
   return Array.from(tail).map(b => String.fromCharCode(b)).join('').includes('%%EOF');
