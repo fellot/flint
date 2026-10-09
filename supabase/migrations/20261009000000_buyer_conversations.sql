@@ -2,6 +2,23 @@
 -- Safe to rerun. Requires the existing cellars and cellar_members tables.
 begin;
 
+-- Check the selected database before creating anything. A working Flint cellar
+-- already has these tables; never create empty substitutes to bypass this check.
+do $$
+declare missing text[];
+begin
+  select array_agg(required.name order by required.name) into missing
+  from (values ('public.cellars'), ('public.cellar_members'), ('auth.users')) as required(name)
+  where to_regclass(required.name) is null;
+  if missing is not null then
+    raise exception 'Buyer history needs the existing Flint database tables.'
+      using errcode = 'P0001',
+        detail = 'Missing: ' || array_to_string(missing, ', '),
+        hint = 'Check that SQL Editor is in the same Supabase project as your website. Run supabase/check-buyer-history.sql to inspect its schema. Only for a new installation, apply 20260915000000_cellars_and_wines.sql and the existing setup migrations first.';
+  end if;
+end;
+$$;
+
 create table if not exists public.buyer_conversations (
   id uuid primary key default gen_random_uuid(),
   cellar_id text not null references public.cellars(id) on delete cascade,

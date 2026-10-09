@@ -29,6 +29,15 @@ foundations rather than a request to buy every Essential.
 
 ## Saved conversations (2026-10-09)
 
+If SQL Editor reports `relation "public.cellars" does not exist`, the selected
+database is missing Flint's base tables. Check the project against the website's
+`NEXT_PUBLIC_SUPABASE_URL` (local configuration: `gfrtsvxvizlpxzrdxcgz`), then run
+the read-only [buyer history diagnostic](../supabase/check-buyer-history.sql).
+It reports required tables and wine/cellar tables in other schemas without reading
+user or wine records. The migration now checks dependencies before creating any
+history tables. Only a confirmed new installation should run the original schema
+and setup migrations; do not create empty replacements in an existing database.
+
 - **Previous conversations** lists your chats in the selected cellar, newest first,
   20 at a time. Open one to view its questions, replies, product cards and PDF page
   references, and continue it. Long chats load 20 turns at a time with **Load earlier
@@ -101,7 +110,8 @@ the same PDF on follow-ups until **Remove PDF**, **Replace PDF**, **Start fresh*
 reload, or a cellar switch. The file is held in page memory and is not saved to
 Supabase, browser storage or the OpenAI Files API. Removing it stops future
 transmission; earlier conversation text can still show its filename/citations.
-No new SQL, dependency or environment variable is required.
+PDF support itself needs no extra SQL, dependency or environment variable; saved
+conversation history requires the migration listed above.
 
 Browser/server validation bounds the file size, filename and canonical base64,
 and checks the PDF header/trailer. It does not fully parse PDF objects or

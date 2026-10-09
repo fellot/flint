@@ -18,6 +18,32 @@ const brief = { market: 'Ontario', retailers: 'LCBO', budget: '' };
 const reply: ShoppingReply = { cellarId: 'a', cellarName: 'Sample cellar', answer: 'Consider a dry red.', question: 'Would you like alternatives?', brief,
   products: [], sources: [], checkedAt: '2026-10-09T12:00:00Z', searched: false, omitted: 0, documentPicks: [] };
 
+test('buyer migration checks missing dependencies before writes and its diagnostic works on an empty database', async () => {
+  const db = new PGlite();
+  try {
+    const migration = await readFile('supabase/migrations/20261009000000_buyer_conversations.sql', 'utf8');
+    await assert.rejects(db.exec(migration), (error: unknown) => {
+      const e = error as { code: string; message: string; detail: string; hint: string };
+      assert.equal(e.code, 'P0001');
+      assert.match(e.message, /existing Flint database tables/);
+      assert.match(e.detail, /public.cellars/);
+      assert.match(e.hint, /same Supabase project/);
+      return true;
+    });
+    await db.exec('rollback');
+    const diagnostic = await readFile('supabase/check-buyer-history.sql', 'utf8');
+    const result = await db.query<{ buyer_history_setup_check: { required_tables: Record<string, boolean>; wine_and_cellar_tables: unknown[] } }>(diagnostic);
+    assert.equal(result.rows[0].buyer_history_setup_check.required_tables['public.cellars'], false);
+    assert.equal(result.rows[0].buyer_history_setup_check.required_tables['public.buyer_conversations'], false);
+    assert.deepEqual(result.rows[0].buyer_history_setup_check.wine_and_cellar_tables, []);
+    // A similarly named table in another schema is reported, never silently used.
+    await db.exec('create schema legacy; create table legacy.cellars(id text primary key);');
+    const otherSchema = await db.query<{ buyer_history_setup_check: { required_tables: Record<string, boolean>; wine_and_cellar_tables: { schema: string; table: string }[] } }>(diagnostic);
+    assert.equal(otherSchema.rows[0].buyer_history_setup_check.required_tables['public.cellars'], false);
+    assert.equal(otherSchema.rows[0].buyer_history_setup_check.wine_and_cellar_tables[0].schema, 'legacy');
+  } finally { await db.close(); }
+});
+
 test('buyer migration reruns and enforces owner + cellar isolation, atomic revisions, recovery, and no PDF bytes', async () => {
   const db = new PGlite();
   try {
