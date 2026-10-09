@@ -133,3 +133,25 @@ test('AI reserves the question, resumes owned context and saves its reply before
     assert.equal((await missing(request())).status, 503); assert.equal(events.filter(e => e === 'AI').length, 1);
   } finally { if (original === undefined) delete process.env.OPENAI_API_KEY; else process.env.OPENAI_API_KEY = original; }
 });
+
+test('research failures are saved and a failed reply write is reported without hiding the answer', async t => {
+  const original = process.env.OPENAI_API_KEY; process.env.OPENAI_API_KEY = 'test-only';
+  let providerFails = true, savedFailure = '', failedReplyWrite = false;
+  const storage = { begin: async () => ({ id: cid, title: 'Failure test', revision: 1, createdAt: reply.checkedAt, updatedAt: reply.checkedAt }), context: async () => [],
+    finish: async (_id: string, _turn: string, result: ShoppingReply | null, error: string | null) => {
+      if (error) savedFailure = error;
+      if (result && failedReplyWrite) throw new ApiError(503, 'Database offline');
+    } } as unknown as BuyerHistory;
+  t.mock.method(globalThis, 'fetch', async () => providerFails ? Response.json({}, { status: 500 }) : Response.json({ status: 'completed', output: [{ type: 'message', role: 'assistant', content: [{ type: 'output_text', text: JSON.stringify(reply) }] }] }));
+  const makeApi = () => createShoppingHandler(async () => ({ cellar: { id: 'a', name: 'Sample cellar', locale: 'en' }, userId: owner,
+    load: async () => ({ wines: [], profile: buildPalate([], DEFAULT_PALATE) }), history: storage }));
+  const request = () => new Request('https://flint.example/api/ai/shopping', { method: 'POST', body: JSON.stringify({ cellarId: 'a', conversationId: cid, revision: 0, turnId: tid, brief, messages: [{ role: 'user', content: 'Find a dry red' }] }) });
+  try {
+    const failed = await makeApi()(request());
+    assert.equal(failed.status, 502); assert.equal(failed.headers.get('X-Shopping-Conversation-Id'), cid);
+    assert.match(savedFailure, /unavailable/);
+    providerFails = false; failedReplyWrite = true;
+    const response = await makeApi()(request()); const result = await response.json();
+    assert.equal(response.status, 200); assert.equal(result.answer, reply.answer); assert.match(result.historyWarning, /could not be saved/);
+  } finally { if (original === undefined) delete process.env.OPENAI_API_KEY; else process.env.OPENAI_API_KEY = original; }
+});

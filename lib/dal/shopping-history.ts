@@ -43,8 +43,9 @@ export function buyerHistory(client: SupabaseClient<Database>, cellarId: string,
       const { data, error } = await client.rpc('begin_buyer_turn', { p_cellar_id: cellarId, p_conversation_id: input.conversationId,
         p_turn_id: input.turnId, p_revision: input.revision, p_message: input.message, p_brief: input.brief, p_attachment_name: input.attachmentName || null });
       checkHistoryStorage(error);
-      if (!data) throw new ApiError(503, 'The question could not be saved.');
-      return conversationSummary(data);
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row || row.id !== input.conversationId || !Number.isInteger(row.revision)) throw new ApiError(503, 'The question could not be saved.');
+      return conversationSummary(row);
     },
     async context(id: string) {
       await owned(id);

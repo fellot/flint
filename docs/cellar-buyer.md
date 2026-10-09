@@ -19,15 +19,62 @@ foundations rather than a request to buy every Essential.
 
 - Configure the existing server-only `OPENAI_API_KEY` in Vercel and redeploy.
   All AI features use `gpt-6-luna`; the buyer needs Responses web-search access.
-- No new SQL or dependency is needed for this feature. The existing
+- Run [20261009000000_buyer_conversations.sql](../supabase/migrations/20261009000000_buyer_conversations.sql) in Supabase SQL Editor to enable saved conversations, then deploy the updated app. No new key or dependency is needed. The existing
   [My palate migration](../supabase/migrations/20260928000000_personal_palate.sql)
   and earlier inventory/journal migrations must already be applied. A missing
   palate table produces an actionable error rather than dropping preferences.
-- Conversation and shopping constraints stay in page memory. Switching between
-  Field guide and Shopping list keeps the conversation; changing cellars or
-  reloading starts fresh. Research can be stopped or restarted.
+- Sent questions, replies and the shopping brief are saved privately by account and cellar. Reopen them through **Previous conversations** after reloading, changing cellars, or signing in on another device. Unsent drafts and PDF bytes stay in page memory. Research can be stopped or restarted.
 - The former fixed shortlist in `data/cellar-shopping.ts` remains historical
   research and is no longer displayed as live shopping recommendations.
+
+## Saved conversations (2026-10-09)
+
+- **Previous conversations** lists your chats in the selected cellar, newest first,
+  20 at a time. Open one to view its questions, replies, product cards and PDF page
+  references, and continue it. Long chats load 20 turns at a time with **Load earlier
+  messages**; the stored transcript is not truncated to the AI context limit.
+- **New conversation** starts an empty chat and preserves earlier saved chats.
+  A title comes from the first question; the pencil beside it lets you rename it.
+- History is private to the authenticated account, including in a shared cellar.
+  Both ownership and current cellar membership are checked in the API, RLS and
+  write functions. Losing cellar access hides that cellar's chats.
+- Old recommendations are historical records. The restored-chat notice explains
+  that price/availability can change. Continuing always reloads current stock,
+  journal-learning permissions and preferences. Only the most recent 11 completed
+  user questions plus the new question, and narrow product references from the
+  latest answer, go into the next request. Stored assistant prose is not replayed.
+  Turning journal learning off does not delete already saved historical answers.
+- PDF **filenames and cited pages** are saved, not the file contents. Reattach the
+  PDF after reopening to ask new questions about it. Never rely on a former file's
+  contents being available to the model.
+- Chats from before this feature were never stored and cannot be recovered after
+  leaving/reloading that page. Saving starts with new questions after deployment
+  and applying the migration. It does not retroactively import old in-memory chats.
+
+Storage: `buyer_conversations` (owner, cellar, title, brief, revision, timestamps)
+plus `buyer_turns` (question, optional filename, reply or failure, status, ordinal).
+`begin_buyer_turn` atomically saves the question before the AI call; a row lock,
+revision check and pending-turn check reject stale/double submissions from other
+tabs. `finish_buyer_turn` records the completed answer or controlled failure. An
+abandoned pending question becomes resumable after 120 seconds; a late response
+cannot overwrite a question already marked interrupted. If the answer cannot be
+saved, the UI keeps it visible with an explicit warning, rather than reporting it
+saved. Opening a conversation after an uncertain network result recovers whatever
+reached the database. There is no automatic replay of a paid research call.
+
+Reads and title edits use `/api/shopping/conversations` and
+`/api/shopping/conversations/[id]`, always with a selected `cellarId`, private
+no-store responses, and ownership checks. History writes require the new SQL
+migration: a missing table/function produces the exact migration filename before
+starting AI research. Existing old clients without a conversation ID retain the
+previous nonpersistent response contract until refreshed.
+
+The migration was executed twice in local Postgres tests, including same-cellar
+member isolation, cross-cellar rejection, membership removal, direct-write denial,
+revision conflicts, failed turns and stale-turn recovery. API tests cover resuming
+from server history instead of browser-invented history, failure persistence and
+failed answer writes. Browser checks use sample history and mocked AI/storage;
+production Supabase deployment and live AI calls were not performed.
 
 ## Architecture and access
 
@@ -116,7 +163,7 @@ retailer page before buying. Research responses can include unavailable options
 when that is what the sources establish; no match is also a valid outcome.
 
 The app never purchases, reserves, adds stock or edits journal records from a
-shopping response. No wishlist or product research is persisted in Supabase yet.
+shopping response. Recommendation cards are retained as part of saved conversations; there is no separate wishlist.
 
 ## Limits and verification
 

@@ -146,7 +146,7 @@ in component memory. See [behavior, privacy and setup](evening-picks.md).
 
 ## 6. Cellar Essentials buyer
 
-PDF attachment support updated: **2026-10-08**.
+PDF support: **2026-10-08**. Private conversation history: **2026-10-09**.
 
 **Caller:** `components/CellarEssentialsShopping.tsx`.
 **Route:** `app/api/ai/shopping/route.ts`.
@@ -164,7 +164,7 @@ Up to six product cards require actual completed web research, a retrieved sourc
 URL, and a valid match to a current gap. Source presence establishes URL provenance;
 exact product identity, vintage, price and availability still involve model judgment.
 Cards display uncertainty, retailer links and a research timestamp. No LCBO inventory
-API, purchase execution, persisted shortlist or automatic inventory write is used.
+API, purchase execution, separate wishlist or automatic inventory write is used.
 The old curated file remains historical research and is not shown as a live shortlist.
 
 The buyer also accepts one PDF wine list up to 3 MB. The browser sends its filename
@@ -176,6 +176,15 @@ references and document prices, separate from live web products. They require a
 valid cellar-gap match and respect explicit avoid preferences; page contents and
 offer accuracy still depend on model interpretation. PDFs are not persisted in
 Supabase or uploaded through the Files API. No additional key or SQL is needed.
+
+Sent buyer conversations now persist in `buyer_conversations` and `buyer_turns`,
+scoped to the current user and cellar. **Previous conversations** reopens a chat,
+including historical product cards and PDF filename/page citations; PDF bytes
+must be reattached. The server saves each question before requesting AI and saves
+the answer before reporting success. Reopening does not call AI. Follow-ups use
+fresh authorized context plus recent saved user questions and product references,
+not prior assistant prose. Apply `20261009000000_buyer_conversations.sql` before
+using the updated UI. No new environment variable is required.
 
 Configuration: `gpt-6-luna`, Responses, reasoning `low`, strict JSON output,
 `max_output_tokens: 5500`, `max_tool_calls: 6`, `store:false`; provider timeout
@@ -218,6 +227,8 @@ All paths below are same-origin Next.js routes. Supabase SDK calls happen on the
 | `/api/auth/cellar` | POST | Validate membership and change the selected-cellar cookie |
 | `/auth/callback` | GET | Supabase `exchangeCodeForSession` or `verifyOtp`; auth redirect rather than an `/api` route |
 | `/api/weather/places` | POST | Authenticated city search through Open-Meteo / GeoNames; returns explicit location choices |
+| `/api/shopping/conversations` | GET | List only the user’s conversations in the selected cellar |
+| `/api/shopping/conversations/[id]` | GET, PATCH | Read paginated saved turns or rename an owned conversation |
 | `/api/palate` | GET, PUT | Read derived personal profile; save only the authenticated user’s preferences |
 | `/api/wines` | GET, POST | List inventory with journal data; insert cellar stock or call `log_consumed_wine` for a new journal wine |
 | `/api/wines/[id]` | GET, PUT, DELETE | Read, edit or delete a wine within an authorized cellar |
@@ -231,7 +242,7 @@ All paths below are same-origin Next.js routes. Supabase SDK calls happen on the
 
 Main callers: `hooks/useWineInventory.ts`, `components/CellarSession.tsx`, `components/AuthForm.tsx`, `app/sommelier/page.tsx`, `app/cellar-essentials/page.tsx`, `app/wine-map/page.tsx`, and `app/wine-trivia/page.tsx`.
 
-Supabase tables involved: `cellars`, `cellar_members`, `wines`, `cellar_people`, `wine_participants`, `wine_reviews`, `cellar_fridges`, `cellar_storage_locations`, `palate_preferences`, plus Supabase Auth. The middleware also calls `auth.getUser()` to authenticate protected page/API requests; handlers may perform their own user/membership checks too.
+Supabase tables involved: `cellars`, `cellar_members`, `wines`, `cellar_people`, `wine_participants`, `wine_reviews`, `cellar_fridges`, `cellar_storage_locations`, `palate_preferences`, `buyer_conversations`, `buyer_turns`, plus Supabase Auth. The middleware also calls `auth.getUser()` to authenticate protected page/API requests; handlers may perform their own user/membership checks too.
 
 ### Other external network dependencies
 
