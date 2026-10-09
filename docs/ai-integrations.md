@@ -146,6 +146,8 @@ in component memory. See [behavior, privacy and setup](evening-picks.md).
 
 ## 6. Cellar Essentials buyer
 
+PDF attachment support updated: **2026-10-08**.
+
 **Caller:** `components/CellarEssentialsShopping.tsx`.
 **Route:** `app/api/ai/shopping/route.ts`.
 **Access/request handling:** `lib/ai/shopping-endpoint.ts`.
@@ -164,6 +166,16 @@ exact product identity, vintage, price and availability still involve model judg
 Cards display uncertainty, retailer links and a research timestamp. No LCBO inventory
 API, purchase execution, persisted shortlist or automatic inventory write is used.
 The old curated file remains historical research and is not shown as a live shortlist.
+
+The buyer also accepts one PDF wine list up to 3 MB. The browser sends its filename
+and base64 contents only when the user sends a message, retaining it for follow-ups
+until removed, replaced or the conversation is cleared. The server checks file
+size/signature and passes it as a native Responses `input_file`, together with
+fresh authorized cellar and palate context. PDF recommendations have filename/page
+references and document prices, separate from live web products. They require a
+valid cellar-gap match and respect explicit avoid preferences; page contents and
+offer accuracy still depend on model interpretation. PDFs are not persisted in
+Supabase or uploaded through the Files API. No additional key or SQL is needed.
 
 Configuration: `gpt-6-luna`, Responses, reasoning `low`, strict JSON output,
 `max_output_tokens: 5500`, `max_tool_calls: 6`, `store:false`; provider timeout

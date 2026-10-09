@@ -31,12 +31,52 @@ foundations rather than a request to buy every Essential.
 
 ## Architecture and access
 
+### PDF wine lists (2026-10-08)
+
+In **Shopping list → Your wine buyer**, choose **Attach PDF wine list**, select
+one PDF up to 3 MB, and send a question. Sending with the message blank asks for
+recommendations from the list automatically. The buyer compares the list with
+the current cellar's Essentials gaps and the acting user's permitted journal and
+palate evidence. A shopping market is optional for advice from the PDF; it is
+still needed for live retailer research.
+
+PDF picks show their ranking, reason, price as printed when unambiguous, bottle
+size/vintage when known, and a filename/page reference. Page numbers refer to the
+physical PDF order. These are separate from web product cards: a document offer
+does not establish current stock or pricing, and does not require a retailer URL.
+Missing or case-only prices remain unconfirmed. The prompt asks the model to
+explain unreadable lists or a lack of suitable gap-filling wines.
+
+Selecting a file only reads it locally. Each **Send** includes the attached PDF
+in an OpenAI Responses `input_file` alongside fresh authorized cellar context.
+The model can read text and page images, including scanned lists. It receives
+the same PDF on follow-ups until **Remove PDF**, **Replace PDF**, **Start fresh**,
+reload, or a cellar switch. The file is held in page memory and is not saved to
+Supabase, browser storage or the OpenAI Files API. Removing it stops future
+transmission; earlier conversation text can still show its filename/citations.
+No new SQL, dependency or environment variable is required.
+
+Browser/server validation bounds the file size, filename and canonical base64,
+and checks the PDF header/trailer. It does not fully parse PDF objects or
+independently verify cited page contents. Model interpretation and page references
+still need user review; damaged/encrypted PDFs may need a fresh unlocked export.
+Document instructions and filenames are treated as untrusted data. PDF-only picks
+must pass the same gap, identity and explicit avoid-preference checks as web picks;
+PDF URLs cannot substitute for web-search provenance. Current-document names and
+page references provide follow-up context without retaining prior assistant prose.
+
+See the [OpenAI PDF input guide](https://developers.openai.com/api/docs/guides/file-inputs).
+
+### Request flow
+
 `CellarEssentialsShopping` → `POST /api/ai/shopping` → authenticated cellar access
 → fresh Supabase stock, own journal and preferences → deterministic Essentials
-coverage → one OpenAI Responses request with web search → validated product cards.
+coverage → one OpenAI Responses request with optional PDF and web search → validated
+document and/or web product cards.
 
 The browser supplies a cellar ID, up to 12 bounded user turns, shopping constraints
-and at most six previous product references. It cannot choose the user, model or
+and at most six previous web references and six previous PDF references, plus an
+optional PDF. It cannot choose the user, model or
 inventory. The server verifies requested-cellar membership before loading data or
 calling OpenAI. There is no separate hosted agent or fine-tuning service.
 
@@ -84,11 +124,21 @@ Responses uses reasoning `low`, strict structured output, `store:false`, up to
 5,500 output tokens and six tool calls per request. It returns at most six products,
 with the prompt targeting at most four styles per turn. The provider timeout is
 100 seconds, browser timeout 110 seconds, and route duration 120 seconds. There is
-no streaming or automatic retry. Requests have a 40 KB limit and best-effort
+no streaming or automatic retry. Non-attachment request data retains a 40 KB limit;
+the total request allows 4,236,352 bytes for a 3 MiB PDF encoded as base64 plus
+conversation data. Requests have best-effort
 per-instance duplicate suppression with a four-second completion cooldown;
 distributed rate limiting and cost telemetry remain backlog items.
 
 `store:false` is a request setting, not a statement about all provider retention.
+
+`tests/shopping-pdf.test.ts` additionally covers browser/server file validation,
+payload limits, native file input and follow-ups, source separation, PDF pick
+validation, cellar authorization and provider errors. The full suite passed with
+170 tests, along with typecheck and production build. The PDF browser checks used
+a sample one-page list and mocked AI: desktop/mobile layout, selecting without
+sending, blank-message sending, follow-up context, removal and invalid-file errors.
+Live PDF interpretation and recommendation quality have not been verified.
 
 `tests/shopping-advisor.test.ts` covers empty/independent cellar coverage, journal
 privacy and opt-out, request bounds, authorized server context, source validation,

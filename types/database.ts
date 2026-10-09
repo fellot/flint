@@ -1,4 +1,6 @@
 import type { PalatePreferences } from './palate';
+import type { BuyerConversationRow, BuyerTurnRow } from '@/lib/shopping-history';
+import type { ShoppingBrief, ShoppingReply } from './shopping';
 // Kept in sync with supabase/migrations/*.sql.
 export type Cellar = { id: string; name: string; locale: 'en' | 'pt'; created_at: string };
 export type WineRow = {
@@ -48,6 +50,8 @@ export type FridgeInput = { id?: string; name: string; levelCount: number; first
 export type Database = {
   public: {
     Tables: {
+      buyer_conversations: Table<BuyerConversationRow, never, { title: string }>;
+      buyer_turns: Table<BuyerTurnRow, never, never>;
       palate_preferences: Table<PalatePreferences & { user_id: string; updated_at: string }, Partial<PalatePreferences> & { user_id: string }, Partial<PalatePreferences>>;
       cellar_fridges: Table<CellarFridge, never, never>;
       cellar_storage_locations: Table<StorageLocation, never, never>;
@@ -60,6 +64,14 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      begin_buyer_turn: {
+        Args: { p_cellar_id: string; p_conversation_id: string; p_turn_id: string; p_revision: number; p_message: string; p_brief: ShoppingBrief; p_attachment_name: string | null };
+        Returns: BuyerConversationRow;
+      };
+      finish_buyer_turn: {
+        Args: { p_cellar_id: string; p_conversation_id: string; p_turn_id: string; p_reply: ShoppingReply | null; p_error: string | null };
+        Returns: undefined;
+      };
       save_cellar_fridge: {
         Args: { p_cellar_id: string; p_name: string; p_level_count: number; p_first_level?: number; p_id?: string };
         Returns: string;

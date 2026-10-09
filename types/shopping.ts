@@ -21,5 +21,18 @@ export type ShoppingReply = {
   omitted: number;
   documentPicks?: ShoppingDocumentPick[];
   documentName?: string;
+  historyWarning?: string;
 };
 export type ShoppingDocumentPick = Omit<ShoppingProduct, 'url' | 'availability' | 'availabilityNote'> & { page: number };
+
+export type ShoppingConversationSummary = {
+  id: string; title: string; createdAt: string; updatedAt: string; revision: number;
+};
+export type ShoppingSavedTurn = {
+  id: string; user: string; attachmentName?: string; reply?: ShoppingReply;
+  error?: string; status: 'pending' | 'completed' | 'failed'; createdAt: string;
+};
+export type ShoppingConversation = {
+  conversation: ShoppingConversationSummary; brief: ShoppingBrief;
+  turns: ShoppingSavedTurn[]; hasOlder: boolean; nextOffset: number;
+};
